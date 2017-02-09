@@ -7,7 +7,7 @@ Type supported SQL query builder.
 ### Clauses
 
 - [ ] `CREATE TABLE {TABLE}`
-- [ ] `INSERT INTO {TABLE}`
+- [x] `INSERT INTO {TABLE} ({COLUMN})`
 - [x] `SELECT {COLUMN}`
 - [ ] `SELECT DISTINCT {COLUMN}`
 - [x] `FROM {TABLE}`
@@ -63,6 +63,10 @@ Type supported SQL query builder.
 
 - [x] `{COLUMN} ASC`
 - [x] `{COLUMN} DESC`
+
+### Values
+
+- [x] `VALUES ({VALUE})`
 
 ### Sets
 
