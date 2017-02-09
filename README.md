@@ -6,19 +6,19 @@ Type supported SQL query builder.
 
 ### Clauses
 
-- [] `CREATE TABLE {TABLE}`
-- [] `INSERT INTO {TABLE}`
+- [ ] `CREATE TABLE {TABLE}`
+- [ ] `INSERT INTO {TABLE}`
 - [x] `SELECT {COLUMN}`
-- [] `SELECT DISTINCT {COLUMN}`
+- [ ] `SELECT DISTINCT {COLUMN}`
 - [x] `FROM {TABLE}`
 - [x] `WHERE {OPERATION}`
-- [] `GROUP BY {COLUMN}`
-- [] `HAVING`
+- [ ] `GROUP BY {COLUMN}`
+- [ ] `HAVING`
 - [x] `ORDER BY {ORDER}`
-- [] `LIMIT`
-- [] `UPDATE {TABLE}`
-- [] `SET {OPERATION}`
-- [] `DELETE`
+- [ ] `LIMIT`
+- [ ] `UPDATE {TABLE}`
+- [ ] `SET {OPERATION}`
+- [ ] `DELETE`
 
 ### Aliases
 
@@ -35,7 +35,7 @@ Type supported SQL query builder.
 ### Join Conditions
 
 - [x] `ON {COLUMN} = {COLUMN}`
-- [] `USING {COLUMN}`
+- [ ] `USING {COLUMN}`
 
 ### Logical Operators
 
@@ -66,11 +66,11 @@ Type supported SQL query builder.
 
 ### Sets
 
-- [] `UNION`
-- [] `UNION ALL`
-- [] `INTERSECT`
-- [] `INTERSECT ALL`
-- [] `EXCEPT`
-- [] `EXCEPT ALL`
+- [ ] `UNION`
+- [ ] `UNION ALL`
+- [ ] `INTERSECT`
+- [ ] `INTERSECT ALL`
+- [ ] `EXCEPT`
+- [ ] `EXCEPT ALL`
 
 ### Subqueries
