@@ -94,6 +94,23 @@ VALUES
 				19,
 			},
 		},
+		{
+			q.Delete().From(
+				q.T("login_history"),
+			).Where(
+				q.C("login_date").Lt("2004-07-02 09:00:00"),
+			),
+			"DELETE FROM login_history WHERE login_date < ?",
+			`DELETE
+FROM
+  login_history
+WHERE
+  login_date < ?
+`,
+			[]interface{}{
+				"2004-07-02 09:00:00",
+			},
+		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
 			sql, values := q.Build(c.statement)

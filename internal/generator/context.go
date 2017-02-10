@@ -65,8 +65,15 @@ func (f Context) TopBracket() bool {
 }
 
 func (f Context) Join(sqls ...string) string {
-	if f.Breaking() {
-		return strings.Join(sqls, "")
+	ss := []string{}
+	for _, sql := range sqls {
+		if sql != "" {
+			ss = append(ss, sql)
+		}
 	}
-	return strings.Join(sqls, " ")
+
+	if f.Breaking() {
+		return strings.Join(ss, "")
+	}
+	return strings.Join(ss, " ")
 }

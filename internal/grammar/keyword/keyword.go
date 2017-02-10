@@ -31,4 +31,5 @@ const (
 	Values      = "VALUES"
 	Update      = "UPDATE"
 	Set         = "SET"
+	Delete      = "DELETE"
 )

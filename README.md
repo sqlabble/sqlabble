@@ -18,7 +18,7 @@ Type supported SQL query builder.
 - [x] `VALUES ({VALUE})`
 - [x] `UPDATE {TABLE}`
 - [x] `SET ({ASSIGNMENT})`
-- [ ] `DELETE`
+- [x] `DELETE`
 - [x] `CREATE TABLE {TABLE}`
 
 ### Aliases

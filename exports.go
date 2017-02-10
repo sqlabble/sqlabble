@@ -7,6 +7,7 @@ var (
 	Select      = token.NewSelect
 	InsertInto  = token.NewInsertInto
 	Update      = token.NewUpdate
+	Delete      = token.NewDelete
 
 	Column = token.NewColumn
 	C      = Column
