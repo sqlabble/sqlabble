@@ -4,10 +4,16 @@ Type supported SQL query builder.
 
 ## Supports
 
+### Statement
+
+- [x] `CREATE TABLE {TABLE} ({COLUMN} {DEFINITION})`
+- [x] `INSERT INTO {TABLE} ({COLUMN})`
+- [ ] `UPDATE {TABLE}`
+- [ ] `SET {OPERATION}`
+- [ ] `DELETE`
+
 ### Clauses
 
-- [ ] `CREATE TABLE {TABLE}`
-- [x] `INSERT INTO {TABLE} ({COLUMN})`
 - [x] `SELECT {COLUMN}`
 - [ ] `SELECT DISTINCT {COLUMN}`
 - [x] `FROM {TABLE}`
@@ -16,9 +22,6 @@ Type supported SQL query builder.
 - [ ] `HAVING`
 - [x] `ORDER BY {ORDER}`
 - [ ] `LIMIT`
-- [ ] `UPDATE {TABLE}`
-- [ ] `SET {OPERATION}`
-- [ ] `DELETE`
 
 ### Aliases
 
@@ -78,3 +81,5 @@ Type supported SQL query builder.
 - [ ] `EXCEPT ALL`
 
 ### Subqueries
+
+N/A

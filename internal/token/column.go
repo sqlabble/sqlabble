@@ -32,6 +32,10 @@ type Column struct {
 }
 
 func (c Column) Generator() generator.Generator {
+	return c.Expression()
+}
+
+func (c Column) Expression() generator.Expression {
 	return generator.NewExpression(
 		c.name,
 	)
@@ -39,6 +43,12 @@ func (c Column) Generator() generator.Generator {
 
 func (c Column) ColumnName() string {
 	return c.name
+}
+
+func (c Column) Definition(definition string) Definition {
+	d := NewDefinition(definition)
+	d.column = c
+	return d
 }
 
 func (c Column) As(alias string) ColumnAs {

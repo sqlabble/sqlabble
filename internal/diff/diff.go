@@ -16,7 +16,7 @@ func SQL(got, want string) string {
 
 func Values(got, want []interface{}) string {
 	return fmt.Sprintf(
-		"values\n got: %+v\nwant: %+v\n",
+		"values\n got: %+v\nwant: %+v",
 		got,
 		want,
 	)

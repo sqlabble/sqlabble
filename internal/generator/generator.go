@@ -39,6 +39,9 @@ type Expression struct {
 }
 
 func NewExpression(sql string, values ...interface{}) Expression {
+	if len(values) == 0 {
+		values = []interface{}{}
+	}
 	return Expression{
 		sql:    sql,
 		values: values,
@@ -48,7 +51,6 @@ func NewExpression(sql string, values ...interface{}) Expression {
 func (e Expression) Generate(ctx Context) (string, []interface{}) {
 	h := ctx.Head()
 	ctx = ctx.ClearHead()
-
 	if ctx.Breaking() {
 		p := ctx.Prefix()
 		return fmt.Sprintf("%s%s%s\n", p, h, e.sql), e.values
@@ -57,12 +59,18 @@ func (e Expression) Generate(ctx Context) (string, []interface{}) {
 }
 
 func (e Expression) Prepend(sql string, values ...interface{}) Expression {
+	if len(values) == 0 {
+		values = []interface{}{}
+	}
 	e.sql = sql + e.sql
 	e.values = append(values, e.values...)
 	return e
 }
 
 func (e Expression) Append(sql string, values ...interface{}) Expression {
+	if len(values) == 0 {
+		values = []interface{}{}
+	}
 	e.sql = e.sql + sql
 	e.values = append(e.values, values...)
 	return e
@@ -85,6 +93,11 @@ func (c Container) Generate(ctx Context) (string, []interface{}) {
 	ctx = ctx.ClearHead()
 	cs, cvs := c.children.Generate(ctx.IncDepth())
 	return ctx.Join(ps, cs), append(pvs, cvs...)
+}
+
+func (c Container) AddChild(children ...Generator) Container {
+	c.children = append(c.children, children...)
+	return c
 }
 
 type Join struct {
@@ -194,12 +207,12 @@ func (o Operator) Generate(ctx Context) (string, []interface{}) {
 }
 
 type Not struct {
-	formatter Generator
+	generator Generator
 }
 
-func NewNot(formatter Generator) Not {
+func NewNot(generator Generator) Not {
 	return Not{
-		formatter: formatter,
+		generator: generator,
 	}
 }
 
@@ -216,7 +229,7 @@ func (n Not) Generate(ctx Context) (string, []interface{}) {
 	head := ctx.Head()
 	ctx = ctx.ClearBracketDepth()
 
-	sql, values := n.formatter.Generate(ctx.IncDepth().ClearHead())
+	sql, values := n.generator.Generate(ctx.IncDepth().ClearHead())
 
 	if ctx.Breaking() {
 		p := ctx.Prefix()
@@ -224,4 +237,28 @@ func (n Not) Generate(ctx Context) (string, []interface{}) {
 	}
 
 	return fmt.Sprintf("%s%s(%s)", head, op, sql), values
+}
+
+type Bracket struct {
+	generator Generator
+}
+
+func NewBracket(g Generator) Bracket {
+	return Bracket{
+		generator: g,
+	}
+}
+
+func (b Bracket) Generate(ctx Context) (string, []interface{}) {
+	head := ctx.Head()
+	ctx = ctx.ClearBracketDepth()
+
+	sql, values := b.generator.Generate(ctx.IncDepth().ClearHead())
+
+	if ctx.Breaking() {
+		p := ctx.Prefix()
+		return fmt.Sprintf("%s%s(\n%s%s)\n", p, head, sql, p), values
+	}
+
+	return fmt.Sprintf("%s(%s)", head, sql), values
 }
