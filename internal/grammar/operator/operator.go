@@ -23,4 +23,6 @@ const (
 
 	IsNull    Operator = "IS NULL"
 	IsNotNull Operator = "IS NOT NULL"
+
+	As = "AS"
 )

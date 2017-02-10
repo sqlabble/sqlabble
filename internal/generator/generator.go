@@ -67,13 +67,33 @@ func (e Expression) Prepend(sql string, values ...interface{}) Expression {
 	return e
 }
 
-func (e Expression) Append(sql string, values ...interface{}) Expression {
-	if len(values) == 0 {
-		values = []interface{}{}
-	}
-	e.sql = e.sql + sql
-	e.values = append(e.values, values...)
+func (e Expression) Append(exp Expression) Expression {
+	e.sql = e.sql + " " + exp.sql
+	e.values = append(e.values, exp.values...)
 	return e
+}
+
+type Placeholders struct {
+	value []interface{}
+}
+
+func NewPlaceholders(values ...interface{}) Expression {
+	return NewExpression(
+		placeholders(len(values)),
+		values...,
+	)
+}
+
+func placeholders(i int) string {
+	s := ""
+	for ; i > 0; i-- {
+		if i > 1 {
+			s += "?, "
+			continue
+		}
+		s += "?"
+	}
+	return s
 }
 
 type Container struct {

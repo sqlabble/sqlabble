@@ -371,11 +371,11 @@ func (t On) Generator() generator.Generator {
 }
 
 func (t On) Expression() generator.Expression {
-	c1 := t.column1.ColumnName()
-	c2 := t.column2.ColumnName()
-	return t.join.Expression().Append(
-		fmt.Sprintf(" ON %s = %s", c1, c2),
-	)
+	return t.join.Expression().
+		Append(generator.NewExpression("ON")).
+		Append(t.column1.Expression()).
+		Append(generator.NewExpression("=")).
+		Append(t.column2.Expression())
 }
 
 func (o On) Prev() grammar.Table {

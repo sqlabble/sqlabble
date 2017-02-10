@@ -1,10 +1,6 @@
 package token
 
-import (
-	"fmt"
-
-	"github.com/minodisk/sqlabble/internal/generator"
-)
+import "github.com/minodisk/sqlabble/internal/generator"
 
 type Definition struct {
 	column     Column
@@ -18,9 +14,8 @@ func NewDefinition(definition string) Definition {
 }
 
 func (d Definition) Generator() generator.Generator {
-	return d.column.Expression().Append(
-		fmt.Sprintf(" %s", d.definition),
-	)
+	return d.column.Expression().
+		Append(generator.NewExpression(d.definition))
 }
 
 type Definitions struct {

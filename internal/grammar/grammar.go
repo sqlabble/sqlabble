@@ -10,28 +10,34 @@ type Statement interface {
 	Generator() generator.Generator
 }
 
-type Values interface {
+type Container interface {
 	Statement
-	Clause() Clause
-	Prev() Values
+	Container() generator.Container
+}
+
+type Expression interface {
+	Statement
 	Expression() generator.Expression
 }
 
 type Clause interface {
-	Statement
+	Container
 	Prev() Clause
-	Container() generator.Container
 }
 
 type Column interface {
-	Statement
+	Expression
 	ColumnName() string
 }
 
+type ColumnAlias interface {
+	Column
+	Alias() string
+}
+
 type Table interface {
-	Statement
+	Expression
 	Prev() Table
-	Expression() generator.Expression
 	Join(Table) Table
 	InnerJoin(Table) Table
 	LeftJoin(Table) Table
@@ -55,4 +61,10 @@ type LogicalOperation interface {
 type Order interface {
 	Statement
 	Direction() direction.Direction
+}
+
+type Values interface {
+	Expression
+	Clause() Clause
+	Prev() Values
 }

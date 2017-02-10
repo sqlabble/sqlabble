@@ -50,7 +50,7 @@ func TestCreateTableSQL(t *testing.T) {
 			token.NewCreateTable(
 				token.NewTable("foo"),
 			).Definitions(
-				token.NewColumn("name").Definition("VARCHAR(255)"),
+				token.NewColumn("name").Define("VARCHAR(255)"),
 			),
 			"CREATE TABLE foo (name VARCHAR(255))",
 			`> CREATE TABLE
@@ -65,8 +65,8 @@ func TestCreateTableSQL(t *testing.T) {
 			token.NewCreateTable(
 				token.NewTable("foo"),
 			).Definitions(
-				token.NewColumn("name").Definition("VARCHAR(255)"),
-				token.NewColumn("gender").Definition("ENUM('M', 'F')"),
+				token.NewColumn("name").Define("VARCHAR(255)"),
+				token.NewColumn("gender").Define("ENUM('M', 'F')"),
 			),
 			"CREATE TABLE foo (name VARCHAR(255), gender ENUM('M', 'F'))",
 			`> CREATE TABLE
@@ -82,9 +82,9 @@ func TestCreateTableSQL(t *testing.T) {
 			token.NewCreateTable(
 				token.NewTable("foo"),
 			).Definitions(
-				token.NewColumn("name").Definition("VARCHAR(255)"),
-				token.NewColumn("gender").Definition("ENUM('M', 'F')"),
-				token.NewColumn("birth_date").Definition("DATE"),
+				token.NewColumn("name").Define("VARCHAR(255)"),
+				token.NewColumn("gender").Define("ENUM('M', 'F')"),
+				token.NewColumn("birth_date").Define("DATE"),
 			),
 			"CREATE TABLE foo (name VARCHAR(255), gender ENUM('M', 'F'), birth_date DATE)",
 			`> CREATE TABLE

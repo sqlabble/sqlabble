@@ -3,12 +3,10 @@ package keyword
 type Clause string
 
 const (
-	Select      Clause = "SELECT"
-	From        Clause = "FROM"
-	Where       Clause = "WHERE"
-	OrderBy     Clause = "ORDER BY"
-	InsertInto  Clause = "INSERT INTO"
-	CreateTable Clause = "CREATE TABLE"
+	Select  Clause = "SELECT"
+	From    Clause = "FROM"
+	Where   Clause = "WHERE"
+	OrderBy Clause = "ORDER BY"
 )
 
 type JoinType string
@@ -28,5 +26,9 @@ const (
 )
 
 const (
-	Values = "VALUES"
+	CreateTable = "CREATE TABLE"
+	InsertInto  = "INSERT INTO"
+	Values      = "VALUES"
+	Update      = "UPDATE"
+	Set         = "SET"
 )

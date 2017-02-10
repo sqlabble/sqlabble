@@ -5,7 +5,9 @@ import (
 	"strings"
 
 	"github.com/minodisk/sqlabble/internal/generator"
+	"github.com/minodisk/sqlabble/internal/grammar"
 	"github.com/minodisk/sqlabble/internal/grammar/direction"
+	"github.com/minodisk/sqlabble/internal/grammar/operator"
 )
 
 func NewColumn(name string) Column {
@@ -45,7 +47,7 @@ func (c Column) ColumnName() string {
 	return c.name
 }
 
-func (c Column) Definition(definition string) Definition {
+func (c Column) Define(definition string) Definition {
 	d := NewDefinition(definition)
 	d.column = c
 	return d
@@ -56,6 +58,10 @@ func (c Column) As(alias string) ColumnAs {
 		column: c,
 		alias:  alias,
 	}
+}
+
+func (c Column) Assign(value interface{}) Assign {
+	return NewAssign(c, value)
 }
 
 func (c Column) Eq(value interface{}) Eq {
@@ -125,20 +131,24 @@ func (c Column) Desc() Order {
 }
 
 type ColumnAs struct {
-	column Column
+	column grammar.Column
 	alias  string
 }
 
 func (c ColumnAs) Generator() generator.Generator {
-	return generator.NewExpression(
-		fmt.Sprintf(
-			"%s AS %s",
-			c.column.name,
-			c.alias,
-		),
-	)
+	return c.Expression()
+}
+
+func (c ColumnAs) Expression() generator.Expression {
+	return c.column.Expression().
+		Append(generator.NewExpression(operator.As)).
+		Append(generator.NewExpression(c.Alias()))
 }
 
 func (c ColumnAs) ColumnName() string {
-	return c.column.name
+	return c.column.ColumnName()
+}
+
+func (c ColumnAs) Alias() string {
+	return c.alias
 }
