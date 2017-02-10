@@ -6,18 +6,18 @@ import (
 	"github.com/minodisk/sqlabble/internal/grammar/keyword"
 )
 
-type Where struct {
+type Having struct {
 	prev      grammar.Clause
 	operation grammar.Operation
 }
 
-func NewWhere(operation grammar.Operation) Where {
-	return Where{
+func NewHaving(operation grammar.Operation) Having {
+	return Having{
 		operation: operation,
 	}
 }
 
-func (w Where) Generator() generator.Generator {
+func (w Having) Generator() generator.Generator {
 	cs := grammar.Clauses(w)
 	fs := make([]generator.Generator, len(cs))
 	for i, c := range cs {
@@ -26,23 +26,17 @@ func (w Where) Generator() generator.Generator {
 	return generator.NewGenerators(fs...)
 }
 
-func (w Where) Container() generator.Container {
+func (w Having) Container() generator.Container {
 	return generator.NewContainer(
-		generator.NewExpression(string(keyword.Where)),
+		generator.NewExpression(string(keyword.Having)),
 		w.operation.Generator(),
 	)
 }
 
-func (c Where) Child() grammar.Statement {
+func (c Having) Child() grammar.Statement {
 	return c.operation
 }
 
-func (c Where) Prev() grammar.Clause {
+func (c Having) Prev() grammar.Clause {
 	return c.prev
-}
-
-func (c Where) OrderBy(os ...grammar.Order) OrderBy {
-	o := NewOrderBy(os...)
-	o.prev = c
-	return o
 }

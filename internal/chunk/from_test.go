@@ -24,6 +24,7 @@ func TestFromSQL(t *testing.T) {
 		sqlIndent string
 		values    []interface{}
 	}{
+		// 0
 		{
 			chunk.NewFrom(
 				chunk.NewTable("foo"),
@@ -34,6 +35,7 @@ func TestFromSQL(t *testing.T) {
 `,
 			[]interface{}{},
 		},
+		// 1
 		{
 			chunk.NewFrom(
 				chunk.NewTable("foo").As("a"),
@@ -44,6 +46,7 @@ func TestFromSQL(t *testing.T) {
 `,
 			[]interface{}{},
 		},
+		// 2
 		{
 			chunk.NewFrom(
 				chunk.NewTable("foo").As("a").Join(
@@ -54,6 +57,53 @@ func TestFromSQL(t *testing.T) {
 			`> FROM
 >   foo AS a
 >   JOIN bar
+`,
+			[]interface{}{},
+		},
+		// 3
+		{
+			chunk.NewFrom(
+				chunk.NewTable("foo"),
+			).Where(
+				chunk.NewColumn("age").Gt(20),
+			),
+			"FROM foo WHERE age > ?",
+			`> FROM
+>   foo
+> WHERE
+>   age > ?
+`,
+			[]interface{}{
+				20,
+			},
+		},
+		// 4
+		{
+			chunk.NewFrom(
+				chunk.NewTable("foo"),
+			).OrderBy(
+				chunk.NewColumn("age").Asc(),
+			),
+			"FROM foo ORDER BY age ASC",
+			`> FROM
+>   foo
+> ORDER BY
+>   age ASC
+`,
+			[]interface{}{},
+		},
+		// 5
+		{
+			chunk.NewFrom(
+				chunk.NewTable("foo"),
+			).GroupBy(
+				chunk.NewColumn("id"),
+			),
+			"FROM foo GROUP BY id",
+			`> FROM
+>   foo
+> GROUP BY
+>   id
 `,
 			[]interface{}{},
 		},

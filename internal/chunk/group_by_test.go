@@ -11,42 +11,58 @@ import (
 	"github.com/minodisk/sqlabble/internal/grammar"
 )
 
-func TestWhereType(t *testing.T) {
-	if _, ok := interface{}(chunk.Where{}).(grammar.Clause); !ok {
-		t.Errorf("chunk.Where doesn't implement grammar.Clause")
+func TestGroupByType(t *testing.T) {
+	if _, ok := interface{}(chunk.GroupBy{}).(grammar.Clause); !ok {
+		t.Errorf("chunk.GroupBy doesn't implement grammar.Clause")
 	}
 }
 
-func TestWhereSQL(t *testing.T) {
+func TestGroupBySQL(t *testing.T) {
 	for i, c := range []struct {
-		statement chunk.Where
+		statement grammar.Statement
 		sql       string
 		sqlIndent string
 		values    []interface{}
 	}{
 		{
-			chunk.NewWhere(
-				chunk.NewColumn("foo").Eq(100),
+			chunk.NewGroupBy(
+				chunk.NewColumn("foo"),
 			),
-			"WHERE foo = ?",
-			`> WHERE
->   foo = ?
+			"GROUP BY foo",
+			`> GROUP BY
+>   foo
 `,
-			[]interface{}{100},
+			[]interface{}{},
 		},
 		{
-			chunk.NewWhere(
-				chunk.NewAnd(
-					chunk.NewColumn("foo").Eq(100),
-					chunk.NewColumn("bar").Eq("abc"),
-				),
+			chunk.NewGroupBy(
+				chunk.NewColumn("foo"),
+				chunk.NewColumn("bar"),
+				chunk.NewColumn("baz"),
 			),
-			"WHERE foo = ? AND bar = ?",
-			`> WHERE
->   foo = ?
->   AND bar = ?
+			"GROUP BY foo, bar, baz",
+			`> GROUP BY
+>   foo
+>   , bar
+>   , baz
 `,
-			[]interface{}{100, "abc"},
+			[]interface{}{},
+		},
+		{
+			chunk.NewGroupBy(
+				chunk.NewColumn("foo"),
+			).Having(
+				chunk.NewColumn("COUNT(*)").Gt(200),
+			),
+			"GROUP BY foo HAVING COUNT(*) > ?",
+			`> GROUP BY
+>   foo
+> HAVING
+>   COUNT(*) > ?
+`,
+			[]interface{}{
+				200,
+			},
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {

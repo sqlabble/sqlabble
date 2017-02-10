@@ -44,5 +44,13 @@ func (f From) Where(operation grammar.Operation) Where {
 }
 
 func (f From) OrderBy(orders ...grammar.Order) OrderBy {
-	return NewOrderBy(orders...)
+	o := NewOrderBy(orders...)
+	o.prev = f
+	return o
+}
+
+func (f From) GroupBy(column Column, columns ...Column) GroupBy {
+	g := NewGroupBy(column, columns...)
+	g.prev = f
+	return g
 }

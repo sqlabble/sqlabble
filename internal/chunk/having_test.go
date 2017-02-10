@@ -11,38 +11,38 @@ import (
 	"github.com/minodisk/sqlabble/internal/grammar"
 )
 
-func TestWhereType(t *testing.T) {
-	if _, ok := interface{}(chunk.Where{}).(grammar.Clause); !ok {
-		t.Errorf("chunk.Where doesn't implement grammar.Clause")
+func TestHavingType(t *testing.T) {
+	if _, ok := interface{}(chunk.Having{}).(grammar.Clause); !ok {
+		t.Errorf("chunk.Having doesn't implement grammar.Clause")
 	}
 }
 
-func TestWhereSQL(t *testing.T) {
+func TestHavingSQL(t *testing.T) {
 	for i, c := range []struct {
-		statement chunk.Where
+		statement chunk.Having
 		sql       string
 		sqlIndent string
 		values    []interface{}
 	}{
 		{
-			chunk.NewWhere(
+			chunk.NewHaving(
 				chunk.NewColumn("foo").Eq(100),
 			),
-			"WHERE foo = ?",
-			`> WHERE
+			"HAVING foo = ?",
+			`> HAVING
 >   foo = ?
 `,
 			[]interface{}{100},
 		},
 		{
-			chunk.NewWhere(
+			chunk.NewHaving(
 				chunk.NewAnd(
 					chunk.NewColumn("foo").Eq(100),
 					chunk.NewColumn("bar").Eq("abc"),
 				),
 			),
-			"WHERE foo = ? AND bar = ?",
-			`> WHERE
+			"HAVING foo = ? AND bar = ?",
+			`> HAVING
 >   foo = ?
 >   AND bar = ?
 `,
