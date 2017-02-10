@@ -1,4 +1,4 @@
-package token_test
+package chunk_test
 
 import (
 	"fmt"
@@ -6,14 +6,14 @@ import (
 	"testing"
 
 	"github.com/minodisk/sqlabble"
+	"github.com/minodisk/sqlabble/internal/chunk"
 	"github.com/minodisk/sqlabble/internal/diff"
 	"github.com/minodisk/sqlabble/internal/grammar"
-	"github.com/minodisk/sqlabble/internal/token"
 )
 
 func TestCreateTableType(t *testing.T) {
-	// if _, ok := interface{}(token.From{}).(grammar.Clause); !ok {
-	// 	t.Errorf("token.FromClause doesn't implement grammar.Clause")
+	// if _, ok := interface{}(chunk.From{}).(grammar.Clause); !ok {
+	// 	t.Errorf("chunk.FromClause doesn't implement grammar.Clause")
 	// }
 }
 
@@ -25,8 +25,8 @@ func TestCreateTableSQL(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			token.NewCreateTable(
-				token.NewTable("foo"),
+			chunk.NewCreateTable(
+				chunk.NewTable("foo"),
 			),
 			"CREATE TABLE foo",
 			`> CREATE TABLE
@@ -35,8 +35,8 @@ func TestCreateTableSQL(t *testing.T) {
 			[]interface{}{},
 		},
 		{
-			token.NewCreateTable(
-				token.NewTable("foo"),
+			chunk.NewCreateTable(
+				chunk.NewTable("foo"),
 			).Definitions(),
 			"CREATE TABLE foo ()",
 			`> CREATE TABLE
@@ -47,10 +47,10 @@ func TestCreateTableSQL(t *testing.T) {
 			[]interface{}{},
 		},
 		{
-			token.NewCreateTable(
-				token.NewTable("foo"),
+			chunk.NewCreateTable(
+				chunk.NewTable("foo"),
 			).Definitions(
-				token.NewColumn("name").Define("VARCHAR(255)"),
+				chunk.NewColumn("name").Define("VARCHAR(255)"),
 			),
 			"CREATE TABLE foo (name VARCHAR(255))",
 			`> CREATE TABLE
@@ -62,11 +62,11 @@ func TestCreateTableSQL(t *testing.T) {
 			[]interface{}{},
 		},
 		{
-			token.NewCreateTable(
-				token.NewTable("foo"),
+			chunk.NewCreateTable(
+				chunk.NewTable("foo"),
 			).Definitions(
-				token.NewColumn("name").Define("VARCHAR(255)"),
-				token.NewColumn("gender").Define("ENUM('M', 'F')"),
+				chunk.NewColumn("name").Define("VARCHAR(255)"),
+				chunk.NewColumn("gender").Define("ENUM('M', 'F')"),
 			),
 			"CREATE TABLE foo (name VARCHAR(255), gender ENUM('M', 'F'))",
 			`> CREATE TABLE
@@ -79,12 +79,12 @@ func TestCreateTableSQL(t *testing.T) {
 			[]interface{}{},
 		},
 		{
-			token.NewCreateTable(
-				token.NewTable("foo"),
+			chunk.NewCreateTable(
+				chunk.NewTable("foo"),
 			).Definitions(
-				token.NewColumn("name").Define("VARCHAR(255)"),
-				token.NewColumn("gender").Define("ENUM('M', 'F')"),
-				token.NewColumn("birth_date").Define("DATE"),
+				chunk.NewColumn("name").Define("VARCHAR(255)"),
+				chunk.NewColumn("gender").Define("ENUM('M', 'F')"),
+				chunk.NewColumn("birth_date").Define("DATE"),
 			),
 			"CREATE TABLE foo (name VARCHAR(255), gender ENUM('M', 'F'), birth_date DATE)",
 			`> CREATE TABLE

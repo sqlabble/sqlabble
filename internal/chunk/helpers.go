@@ -1,4 +1,4 @@
-package token
+package chunk
 
 func Placeholders(i int) string {
 	s := ""

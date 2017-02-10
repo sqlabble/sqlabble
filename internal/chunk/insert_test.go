@@ -1,4 +1,4 @@
-package token_test
+package chunk_test
 
 import (
 	"fmt"
@@ -6,14 +6,14 @@ import (
 	"testing"
 
 	"github.com/minodisk/sqlabble"
+	"github.com/minodisk/sqlabble/internal/chunk"
 	"github.com/minodisk/sqlabble/internal/diff"
 	"github.com/minodisk/sqlabble/internal/grammar"
-	"github.com/minodisk/sqlabble/internal/token"
 )
 
 func TestInsertType(t *testing.T) {
-	if _, ok := interface{}(token.InsertInto{}).(grammar.Clause); !ok {
-		t.Errorf("token.Insert doesn't implement grammar.Clause")
+	if _, ok := interface{}(chunk.InsertInto{}).(grammar.Clause); !ok {
+		t.Errorf("chunk.Insert doesn't implement grammar.Clause")
 	}
 }
 
@@ -25,10 +25,10 @@ func TestInsertSQL(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			token.NewInsertInto(
-				token.NewTable("foo"),
-				token.NewColumn("name"),
-				token.NewColumn("age"),
+			chunk.NewInsertInto(
+				chunk.NewTable("foo"),
+				chunk.NewColumn("name"),
+				chunk.NewColumn("age"),
 			),
 			"INSERT INTO foo (name, age)",
 			`> INSERT INTO
@@ -37,10 +37,10 @@ func TestInsertSQL(t *testing.T) {
 			[]interface{}{},
 		},
 		{
-			token.NewInsertInto(
-				token.NewTable("foo"),
-				token.NewColumn("name"),
-				token.NewColumn("age"),
+			chunk.NewInsertInto(
+				chunk.NewTable("foo"),
+				chunk.NewColumn("name"),
+				chunk.NewColumn("age"),
 			).Values(
 				"Obi-Wan Kenobi",
 				53,
@@ -57,10 +57,10 @@ func TestInsertSQL(t *testing.T) {
 			},
 		},
 		{
-			token.NewInsertInto(
-				token.NewTable("foo"),
-				token.NewColumn("name"),
-				token.NewColumn("age"),
+			chunk.NewInsertInto(
+				chunk.NewTable("foo"),
+				chunk.NewColumn("name"),
+				chunk.NewColumn("age"),
 			).Values(
 				"Obi-Wan Kenobi",
 				63,

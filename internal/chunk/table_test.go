@@ -1,4 +1,4 @@
-package token_test
+package chunk_test
 
 import (
 	"fmt"
@@ -6,15 +6,15 @@ import (
 	"testing"
 
 	"github.com/minodisk/sqlabble"
+	"github.com/minodisk/sqlabble/internal/chunk"
 	"github.com/minodisk/sqlabble/internal/diff"
 	"github.com/minodisk/sqlabble/internal/grammar"
-	"github.com/minodisk/sqlabble/internal/token"
 )
 
 func TestTableType(t *testing.T) {
 	for _, c := range []interface{}{
-		token.Table{},
-		token.TableAs{},
+		chunk.Table{},
+		chunk.TableAs{},
 	} {
 		t.Run(fmt.Sprintf("Table type %T", c), func(t *testing.T) {
 			if _, ok := c.(grammar.Table); !ok {
@@ -32,15 +32,15 @@ func TestTable(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			token.NewTable("foo"),
+			chunk.NewTable("foo"),
 			"foo",
 			`foo
 `,
 			[]interface{}{},
 		},
 		{
-			token.NewTable("foo").
-				Join(token.NewTable("bar")),
+			chunk.NewTable("foo").
+				Join(chunk.NewTable("bar")),
 			"foo JOIN bar",
 			`foo
 JOIN bar
@@ -48,8 +48,8 @@ JOIN bar
 			[]interface{}{},
 		},
 		{
-			token.NewTable("foo").
-				InnerJoin(token.NewTable("bar")),
+			chunk.NewTable("foo").
+				InnerJoin(chunk.NewTable("bar")),
 			"foo INNER JOIN bar",
 			`foo
 INNER JOIN bar
@@ -57,8 +57,8 @@ INNER JOIN bar
 			[]interface{}{},
 		},
 		{
-			token.NewTable("foo").
-				LeftJoin(token.NewTable("bar")),
+			chunk.NewTable("foo").
+				LeftJoin(chunk.NewTable("bar")),
 			"foo LEFT JOIN bar",
 			`foo
 LEFT JOIN bar
@@ -66,8 +66,8 @@ LEFT JOIN bar
 			[]interface{}{},
 		},
 		{
-			token.NewTable("foo").
-				RightJoin(token.NewTable("bar")),
+			chunk.NewTable("foo").
+				RightJoin(chunk.NewTable("bar")),
 			"foo RIGHT JOIN bar",
 			`foo
 RIGHT JOIN bar
@@ -104,15 +104,15 @@ func TestAs(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			token.NewTable("foo").As("f"),
+			chunk.NewTable("foo").As("f"),
 			"foo AS f",
 			`foo AS f
 `,
 			[]interface{}{},
 		},
 		{
-			token.NewTable("foo").As("f").
-				Join(token.NewTable("bar")),
+			chunk.NewTable("foo").As("f").
+				Join(chunk.NewTable("bar")),
 			"foo AS f JOIN bar",
 			`foo AS f
 JOIN bar
@@ -120,8 +120,8 @@ JOIN bar
 			[]interface{}{},
 		},
 		{
-			token.NewTable("foo").As("f").
-				InnerJoin(token.NewTable("bar")),
+			chunk.NewTable("foo").As("f").
+				InnerJoin(chunk.NewTable("bar")),
 			"foo AS f INNER JOIN bar",
 			`foo AS f
 INNER JOIN bar
@@ -129,8 +129,8 @@ INNER JOIN bar
 			[]interface{}{},
 		},
 		{
-			token.NewTable("foo").As("f").
-				LeftJoin(token.NewTable("bar")),
+			chunk.NewTable("foo").As("f").
+				LeftJoin(chunk.NewTable("bar")),
 			"foo AS f LEFT JOIN bar",
 			`foo AS f
 LEFT JOIN bar
@@ -138,8 +138,8 @@ LEFT JOIN bar
 			[]interface{}{},
 		},
 		{
-			token.NewTable("foo").As("f").
-				RightJoin(token.NewTable("bar")),
+			chunk.NewTable("foo").As("f").
+				RightJoin(chunk.NewTable("bar")),
 			"foo AS f RIGHT JOIN bar",
 			`foo AS f
 RIGHT JOIN bar
@@ -176,8 +176,8 @@ func TestJoin(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			statement: token.NewJoin(
-				token.NewTable("foo"),
+			statement: chunk.NewJoin(
+				chunk.NewTable("foo"),
 			),
 			sql: "JOIN foo",
 			sqlIndent: `JOIN foo
@@ -185,8 +185,8 @@ func TestJoin(t *testing.T) {
 			values: []interface{}{},
 		},
 		{
-			statement: token.NewJoin(
-				token.NewTable("foo").As("f"),
+			statement: chunk.NewJoin(
+				chunk.NewTable("foo").As("f"),
 			),
 			sql: "JOIN foo AS f",
 			sqlIndent: `JOIN foo AS f
@@ -194,11 +194,11 @@ func TestJoin(t *testing.T) {
 			values: []interface{}{},
 		},
 		{
-			statement: token.NewJoin(
-				token.NewTable("foo"),
+			statement: chunk.NewJoin(
+				chunk.NewTable("foo"),
 			).On(
-				token.NewColumn("foo.id"),
-				token.NewColumn("bar.id"),
+				chunk.NewColumn("foo.id"),
+				chunk.NewColumn("bar.id"),
 			),
 			sql: "JOIN foo ON foo.id = bar.id",
 			sqlIndent: `JOIN foo ON foo.id = bar.id
@@ -206,11 +206,11 @@ func TestJoin(t *testing.T) {
 			values: []interface{}{},
 		},
 		{
-			statement: token.NewJoin(
-				token.NewTable("foo").As("f"),
+			statement: chunk.NewJoin(
+				chunk.NewTable("foo").As("f"),
 			).On(
-				token.NewColumn("f.id"),
-				token.NewColumn("b.id"),
+				chunk.NewColumn("f.id"),
+				chunk.NewColumn("b.id"),
 			),
 			sql: "JOIN foo AS f ON f.id = b.id",
 			sqlIndent: `JOIN foo AS f ON f.id = b.id
@@ -218,13 +218,13 @@ func TestJoin(t *testing.T) {
 			values: []interface{}{},
 		},
 		{
-			statement: token.NewJoin(
-				token.NewTable("foo").As("f"),
+			statement: chunk.NewJoin(
+				chunk.NewTable("foo").As("f"),
 			).On(
-				token.NewColumn("f.id"),
-				token.NewColumn("b.id"),
+				chunk.NewColumn("f.id"),
+				chunk.NewColumn("b.id"),
 			).Join(
-				token.NewTable("bar"),
+				chunk.NewTable("bar"),
 			),
 			sql: "JOIN foo AS f ON f.id = b.id JOIN bar",
 			sqlIndent: `JOIN foo AS f ON f.id = b.id
@@ -233,13 +233,13 @@ JOIN bar
 			values: []interface{}{},
 		},
 		{
-			statement: token.NewJoin(
-				token.NewTable("foo").As("f"),
+			statement: chunk.NewJoin(
+				chunk.NewTable("foo").As("f"),
 			).On(
-				token.NewColumn("f.id"),
-				token.NewColumn("b.id"),
+				chunk.NewColumn("f.id"),
+				chunk.NewColumn("b.id"),
 			).InnerJoin(
-				token.NewTable("bar"),
+				chunk.NewTable("bar"),
 			),
 			sql: "JOIN foo AS f ON f.id = b.id INNER JOIN bar",
 			sqlIndent: `JOIN foo AS f ON f.id = b.id
@@ -248,13 +248,13 @@ INNER JOIN bar
 			values: []interface{}{},
 		},
 		{
-			statement: token.NewJoin(
-				token.NewTable("foo").As("f"),
+			statement: chunk.NewJoin(
+				chunk.NewTable("foo").As("f"),
 			).On(
-				token.NewColumn("f.id"),
-				token.NewColumn("b.id"),
+				chunk.NewColumn("f.id"),
+				chunk.NewColumn("b.id"),
 			).LeftJoin(
-				token.NewTable("bar"),
+				chunk.NewTable("bar"),
 			),
 			sql: "JOIN foo AS f ON f.id = b.id LEFT JOIN bar",
 			sqlIndent: `JOIN foo AS f ON f.id = b.id
@@ -263,13 +263,13 @@ LEFT JOIN bar
 			values: []interface{}{},
 		},
 		{
-			statement: token.NewJoin(
-				token.NewTable("foo").As("f"),
+			statement: chunk.NewJoin(
+				chunk.NewTable("foo").As("f"),
 			).On(
-				token.NewColumn("f.id"),
-				token.NewColumn("b.id"),
+				chunk.NewColumn("f.id"),
+				chunk.NewColumn("b.id"),
 			).RightJoin(
-				token.NewTable("bar"),
+				chunk.NewTable("bar"),
 			),
 			sql: "JOIN foo AS f ON f.id = b.id RIGHT JOIN bar",
 			sqlIndent: `JOIN foo AS f ON f.id = b.id
@@ -307,8 +307,8 @@ func TestInnerJoin(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			statement: token.NewInnerJoin(
-				token.NewTable("foo"),
+			statement: chunk.NewInnerJoin(
+				chunk.NewTable("foo"),
 			),
 			sql: "INNER JOIN foo",
 			sqlIndent: `INNER JOIN foo
@@ -316,8 +316,8 @@ func TestInnerJoin(t *testing.T) {
 			values: []interface{}{},
 		},
 		{
-			statement: token.NewInnerJoin(
-				token.NewTable("foo").As("f"),
+			statement: chunk.NewInnerJoin(
+				chunk.NewTable("foo").As("f"),
 			),
 			sql: "INNER JOIN foo AS f",
 			sqlIndent: `INNER JOIN foo AS f
@@ -325,11 +325,11 @@ func TestInnerJoin(t *testing.T) {
 			values: []interface{}{},
 		},
 		{
-			statement: token.NewInnerJoin(
-				token.NewTable("foo"),
+			statement: chunk.NewInnerJoin(
+				chunk.NewTable("foo"),
 			).On(
-				token.NewColumn("foo.id"),
-				token.NewColumn("bar.id"),
+				chunk.NewColumn("foo.id"),
+				chunk.NewColumn("bar.id"),
 			),
 			sql: "INNER JOIN foo ON foo.id = bar.id",
 			sqlIndent: `INNER JOIN foo ON foo.id = bar.id
@@ -337,11 +337,11 @@ func TestInnerJoin(t *testing.T) {
 			values: []interface{}{},
 		},
 		{
-			statement: token.NewInnerJoin(
-				token.NewTable("foo").As("f"),
+			statement: chunk.NewInnerJoin(
+				chunk.NewTable("foo").As("f"),
 			).On(
-				token.NewColumn("f.id"),
-				token.NewColumn("b.id"),
+				chunk.NewColumn("f.id"),
+				chunk.NewColumn("b.id"),
 			),
 			sql: "INNER JOIN foo AS f ON f.id = b.id",
 			sqlIndent: `INNER JOIN foo AS f ON f.id = b.id
@@ -349,13 +349,13 @@ func TestInnerJoin(t *testing.T) {
 			values: []interface{}{},
 		},
 		{
-			statement: token.NewInnerJoin(
-				token.NewTable("foo").As("f"),
+			statement: chunk.NewInnerJoin(
+				chunk.NewTable("foo").As("f"),
 			).On(
-				token.NewColumn("f.id"),
-				token.NewColumn("b.id"),
+				chunk.NewColumn("f.id"),
+				chunk.NewColumn("b.id"),
 			).Join(
-				token.NewTable("bar"),
+				chunk.NewTable("bar"),
 			),
 			sql: "INNER JOIN foo AS f ON f.id = b.id JOIN bar",
 			sqlIndent: `INNER JOIN foo AS f ON f.id = b.id
@@ -364,13 +364,13 @@ JOIN bar
 			values: []interface{}{},
 		},
 		{
-			statement: token.NewInnerJoin(
-				token.NewTable("foo").As("f"),
+			statement: chunk.NewInnerJoin(
+				chunk.NewTable("foo").As("f"),
 			).On(
-				token.NewColumn("f.id"),
-				token.NewColumn("b.id"),
+				chunk.NewColumn("f.id"),
+				chunk.NewColumn("b.id"),
 			).InnerJoin(
-				token.NewTable("bar"),
+				chunk.NewTable("bar"),
 			),
 			sql: "INNER JOIN foo AS f ON f.id = b.id INNER JOIN bar",
 			sqlIndent: `INNER JOIN foo AS f ON f.id = b.id
@@ -379,13 +379,13 @@ INNER JOIN bar
 			values: []interface{}{},
 		},
 		{
-			statement: token.NewInnerJoin(
-				token.NewTable("foo").As("f"),
+			statement: chunk.NewInnerJoin(
+				chunk.NewTable("foo").As("f"),
 			).On(
-				token.NewColumn("f.id"),
-				token.NewColumn("b.id"),
+				chunk.NewColumn("f.id"),
+				chunk.NewColumn("b.id"),
 			).LeftJoin(
-				token.NewTable("bar"),
+				chunk.NewTable("bar"),
 			),
 			sql: "INNER JOIN foo AS f ON f.id = b.id LEFT JOIN bar",
 			sqlIndent: `INNER JOIN foo AS f ON f.id = b.id
@@ -394,13 +394,13 @@ LEFT JOIN bar
 			values: []interface{}{},
 		},
 		{
-			statement: token.NewInnerJoin(
-				token.NewTable("foo").As("f"),
+			statement: chunk.NewInnerJoin(
+				chunk.NewTable("foo").As("f"),
 			).On(
-				token.NewColumn("f.id"),
-				token.NewColumn("b.id"),
+				chunk.NewColumn("f.id"),
+				chunk.NewColumn("b.id"),
 			).RightJoin(
-				token.NewTable("bar"),
+				chunk.NewTable("bar"),
 			),
 			sql: "INNER JOIN foo AS f ON f.id = b.id RIGHT JOIN bar",
 			sqlIndent: `INNER JOIN foo AS f ON f.id = b.id
@@ -438,8 +438,8 @@ func TestLeftJoin(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			statement: token.NewLeftJoin(
-				token.NewTable("foo"),
+			statement: chunk.NewLeftJoin(
+				chunk.NewTable("foo"),
 			),
 			sql: "LEFT JOIN foo",
 			sqlIndent: `LEFT JOIN foo
@@ -447,8 +447,8 @@ func TestLeftJoin(t *testing.T) {
 			values: []interface{}{},
 		},
 		{
-			statement: token.NewLeftJoin(
-				token.NewTable("foo").As("f"),
+			statement: chunk.NewLeftJoin(
+				chunk.NewTable("foo").As("f"),
 			),
 			sql: "LEFT JOIN foo AS f",
 			sqlIndent: `LEFT JOIN foo AS f
@@ -456,11 +456,11 @@ func TestLeftJoin(t *testing.T) {
 			values: []interface{}{},
 		},
 		{
-			statement: token.NewLeftJoin(
-				token.NewTable("foo"),
+			statement: chunk.NewLeftJoin(
+				chunk.NewTable("foo"),
 			).On(
-				token.NewColumn("foo.id"),
-				token.NewColumn("bar.id"),
+				chunk.NewColumn("foo.id"),
+				chunk.NewColumn("bar.id"),
 			),
 			sql: "LEFT JOIN foo ON foo.id = bar.id",
 			sqlIndent: `LEFT JOIN foo ON foo.id = bar.id
@@ -468,11 +468,11 @@ func TestLeftJoin(t *testing.T) {
 			values: []interface{}{},
 		},
 		{
-			statement: token.NewLeftJoin(
-				token.NewTable("foo").As("f"),
+			statement: chunk.NewLeftJoin(
+				chunk.NewTable("foo").As("f"),
 			).On(
-				token.NewColumn("f.id"),
-				token.NewColumn("b.id"),
+				chunk.NewColumn("f.id"),
+				chunk.NewColumn("b.id"),
 			),
 			sql: "LEFT JOIN foo AS f ON f.id = b.id",
 			sqlIndent: `LEFT JOIN foo AS f ON f.id = b.id
@@ -480,13 +480,13 @@ func TestLeftJoin(t *testing.T) {
 			values: []interface{}{},
 		},
 		{
-			statement: token.NewLeftJoin(
-				token.NewTable("foo").As("f"),
+			statement: chunk.NewLeftJoin(
+				chunk.NewTable("foo").As("f"),
 			).On(
-				token.NewColumn("f.id"),
-				token.NewColumn("b.id"),
+				chunk.NewColumn("f.id"),
+				chunk.NewColumn("b.id"),
 			).Join(
-				token.NewTable("bar"),
+				chunk.NewTable("bar"),
 			),
 			sql: "LEFT JOIN foo AS f ON f.id = b.id JOIN bar",
 			sqlIndent: `LEFT JOIN foo AS f ON f.id = b.id
@@ -495,13 +495,13 @@ JOIN bar
 			values: []interface{}{},
 		},
 		{
-			statement: token.NewLeftJoin(
-				token.NewTable("foo").As("f"),
+			statement: chunk.NewLeftJoin(
+				chunk.NewTable("foo").As("f"),
 			).On(
-				token.NewColumn("f.id"),
-				token.NewColumn("b.id"),
+				chunk.NewColumn("f.id"),
+				chunk.NewColumn("b.id"),
 			).InnerJoin(
-				token.NewTable("bar"),
+				chunk.NewTable("bar"),
 			),
 			sql: "LEFT JOIN foo AS f ON f.id = b.id INNER JOIN bar",
 			sqlIndent: `LEFT JOIN foo AS f ON f.id = b.id
@@ -510,13 +510,13 @@ INNER JOIN bar
 			values: []interface{}{},
 		},
 		{
-			statement: token.NewLeftJoin(
-				token.NewTable("foo").As("f"),
+			statement: chunk.NewLeftJoin(
+				chunk.NewTable("foo").As("f"),
 			).On(
-				token.NewColumn("f.id"),
-				token.NewColumn("b.id"),
+				chunk.NewColumn("f.id"),
+				chunk.NewColumn("b.id"),
 			).LeftJoin(
-				token.NewTable("bar"),
+				chunk.NewTable("bar"),
 			),
 			sql: "LEFT JOIN foo AS f ON f.id = b.id LEFT JOIN bar",
 			sqlIndent: `LEFT JOIN foo AS f ON f.id = b.id
@@ -525,13 +525,13 @@ LEFT JOIN bar
 			values: []interface{}{},
 		},
 		{
-			statement: token.NewLeftJoin(
-				token.NewTable("foo").As("f"),
+			statement: chunk.NewLeftJoin(
+				chunk.NewTable("foo").As("f"),
 			).On(
-				token.NewColumn("f.id"),
-				token.NewColumn("b.id"),
+				chunk.NewColumn("f.id"),
+				chunk.NewColumn("b.id"),
 			).RightJoin(
-				token.NewTable("bar"),
+				chunk.NewTable("bar"),
 			),
 			sql: "LEFT JOIN foo AS f ON f.id = b.id RIGHT JOIN bar",
 			sqlIndent: `LEFT JOIN foo AS f ON f.id = b.id
@@ -569,8 +569,8 @@ func TestRightJoin(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			statement: token.NewRightJoin(
-				token.NewTable("foo"),
+			statement: chunk.NewRightJoin(
+				chunk.NewTable("foo"),
 			),
 			sql: "RIGHT JOIN foo",
 			sqlIndent: `RIGHT JOIN foo
@@ -578,8 +578,8 @@ func TestRightJoin(t *testing.T) {
 			values: []interface{}{},
 		},
 		{
-			statement: token.NewRightJoin(
-				token.NewTable("foo").As("f"),
+			statement: chunk.NewRightJoin(
+				chunk.NewTable("foo").As("f"),
 			),
 			sql: "RIGHT JOIN foo AS f",
 			sqlIndent: `RIGHT JOIN foo AS f
@@ -587,11 +587,11 @@ func TestRightJoin(t *testing.T) {
 			values: []interface{}{},
 		},
 		{
-			statement: token.NewRightJoin(
-				token.NewTable("foo"),
+			statement: chunk.NewRightJoin(
+				chunk.NewTable("foo"),
 			).On(
-				token.NewColumn("foo.id"),
-				token.NewColumn("bar.id"),
+				chunk.NewColumn("foo.id"),
+				chunk.NewColumn("bar.id"),
 			),
 			sql: "RIGHT JOIN foo ON foo.id = bar.id",
 			sqlIndent: `RIGHT JOIN foo ON foo.id = bar.id
@@ -599,11 +599,11 @@ func TestRightJoin(t *testing.T) {
 			values: []interface{}{},
 		},
 		{
-			statement: token.NewRightJoin(
-				token.NewTable("foo").As("f"),
+			statement: chunk.NewRightJoin(
+				chunk.NewTable("foo").As("f"),
 			).On(
-				token.NewColumn("f.id"),
-				token.NewColumn("b.id"),
+				chunk.NewColumn("f.id"),
+				chunk.NewColumn("b.id"),
 			),
 			sql: "RIGHT JOIN foo AS f ON f.id = b.id",
 			sqlIndent: `RIGHT JOIN foo AS f ON f.id = b.id
@@ -611,13 +611,13 @@ func TestRightJoin(t *testing.T) {
 			values: []interface{}{},
 		},
 		{
-			statement: token.NewRightJoin(
-				token.NewTable("foo").As("f"),
+			statement: chunk.NewRightJoin(
+				chunk.NewTable("foo").As("f"),
 			).On(
-				token.NewColumn("f.id"),
-				token.NewColumn("b.id"),
+				chunk.NewColumn("f.id"),
+				chunk.NewColumn("b.id"),
 			).Join(
-				token.NewTable("bar"),
+				chunk.NewTable("bar"),
 			),
 			sql: "RIGHT JOIN foo AS f ON f.id = b.id JOIN bar",
 			sqlIndent: `RIGHT JOIN foo AS f ON f.id = b.id
@@ -626,13 +626,13 @@ JOIN bar
 			values: []interface{}{},
 		},
 		{
-			statement: token.NewRightJoin(
-				token.NewTable("foo").As("f"),
+			statement: chunk.NewRightJoin(
+				chunk.NewTable("foo").As("f"),
 			).On(
-				token.NewColumn("f.id"),
-				token.NewColumn("b.id"),
+				chunk.NewColumn("f.id"),
+				chunk.NewColumn("b.id"),
 			).InnerJoin(
-				token.NewTable("bar"),
+				chunk.NewTable("bar"),
 			),
 			sql: "RIGHT JOIN foo AS f ON f.id = b.id INNER JOIN bar",
 			sqlIndent: `RIGHT JOIN foo AS f ON f.id = b.id
@@ -641,13 +641,13 @@ INNER JOIN bar
 			values: []interface{}{},
 		},
 		{
-			statement: token.NewRightJoin(
-				token.NewTable("foo").As("f"),
+			statement: chunk.NewRightJoin(
+				chunk.NewTable("foo").As("f"),
 			).On(
-				token.NewColumn("f.id"),
-				token.NewColumn("b.id"),
+				chunk.NewColumn("f.id"),
+				chunk.NewColumn("b.id"),
 			).LeftJoin(
-				token.NewTable("bar"),
+				chunk.NewTable("bar"),
 			),
 			sql: "RIGHT JOIN foo AS f ON f.id = b.id LEFT JOIN bar",
 			sqlIndent: `RIGHT JOIN foo AS f ON f.id = b.id
@@ -656,13 +656,13 @@ LEFT JOIN bar
 			values: []interface{}{},
 		},
 		{
-			statement: token.NewRightJoin(
-				token.NewTable("foo").As("f"),
+			statement: chunk.NewRightJoin(
+				chunk.NewTable("foo").As("f"),
 			).On(
-				token.NewColumn("f.id"),
-				token.NewColumn("b.id"),
+				chunk.NewColumn("f.id"),
+				chunk.NewColumn("b.id"),
 			).RightJoin(
-				token.NewTable("bar"),
+				chunk.NewTable("bar"),
 			),
 			sql: "RIGHT JOIN foo AS f ON f.id = b.id RIGHT JOIN bar",
 			sqlIndent: `RIGHT JOIN foo AS f ON f.id = b.id

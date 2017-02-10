@@ -1,4 +1,4 @@
-package token_test
+package chunk_test
 
 import (
 	"fmt"
@@ -6,14 +6,14 @@ import (
 	"testing"
 
 	"github.com/minodisk/sqlabble"
+	"github.com/minodisk/sqlabble/internal/chunk"
 	"github.com/minodisk/sqlabble/internal/diff"
 	"github.com/minodisk/sqlabble/internal/grammar"
-	"github.com/minodisk/sqlabble/internal/token"
 )
 
 func TestUpdateType(t *testing.T) {
 	for _, c := range []interface{}{
-		token.Update{},
+		chunk.Update{},
 	} {
 		t.Run(fmt.Sprintf("Type %T", c), func(t *testing.T) {
 			if _, ok := c.(grammar.Clause); !ok {
@@ -31,8 +31,8 @@ func TestUpdate(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			token.NewUpdate(
-				token.NewTable("foo"),
+			chunk.NewUpdate(
+				chunk.NewTable("foo"),
 			),
 			"UPDATE foo",
 			`> UPDATE
@@ -41,10 +41,10 @@ func TestUpdate(t *testing.T) {
 			[]interface{}{},
 		},
 		{
-			token.NewUpdate(
-				token.NewTable("foo"),
+			chunk.NewUpdate(
+				chunk.NewTable("foo"),
 			).Set(
-				token.NewColumn("bar").Assign(100),
+				chunk.NewColumn("bar").Assign(100),
 			),
 			"UPDATE foo SET bar = ?",
 			`> UPDATE

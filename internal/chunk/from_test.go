@@ -1,4 +1,4 @@
-package token_test
+package chunk_test
 
 import (
 	"fmt"
@@ -6,14 +6,14 @@ import (
 	"testing"
 
 	"github.com/minodisk/sqlabble"
+	"github.com/minodisk/sqlabble/internal/chunk"
 	"github.com/minodisk/sqlabble/internal/diff"
 	"github.com/minodisk/sqlabble/internal/grammar"
-	"github.com/minodisk/sqlabble/internal/token"
 )
 
 func TestFromType(t *testing.T) {
-	if _, ok := interface{}(token.From{}).(grammar.Clause); !ok {
-		t.Errorf("token.FromClause doesn't implement grammar.Clause")
+	if _, ok := interface{}(chunk.From{}).(grammar.Clause); !ok {
+		t.Errorf("chunk.FromClause doesn't implement grammar.Clause")
 	}
 }
 
@@ -25,8 +25,8 @@ func TestFromSQL(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			token.NewFrom(
-				token.NewTable("foo"),
+			chunk.NewFrom(
+				chunk.NewTable("foo"),
 			),
 			"FROM foo",
 			`> FROM
@@ -35,8 +35,8 @@ func TestFromSQL(t *testing.T) {
 			[]interface{}{},
 		},
 		{
-			token.NewFrom(
-				token.NewTable("foo").As("a"),
+			chunk.NewFrom(
+				chunk.NewTable("foo").As("a"),
 			),
 			"FROM foo AS a",
 			`> FROM
@@ -45,9 +45,9 @@ func TestFromSQL(t *testing.T) {
 			[]interface{}{},
 		},
 		{
-			token.NewFrom(
-				token.NewTable("foo").As("a").Join(
-					token.NewTable("bar"),
+			chunk.NewFrom(
+				chunk.NewTable("foo").As("a").Join(
+					chunk.NewTable("bar"),
 				),
 			),
 			"FROM foo AS a JOIN bar",

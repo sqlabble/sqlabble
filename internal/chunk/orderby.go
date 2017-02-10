@@ -1,4 +1,4 @@
-package token
+package chunk
 
 import (
 	"github.com/minodisk/sqlabble/internal/generator"

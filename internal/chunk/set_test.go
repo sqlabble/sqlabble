@@ -1,4 +1,4 @@
-package token_test
+package chunk_test
 
 import (
 	"fmt"
@@ -6,14 +6,14 @@ import (
 	"testing"
 
 	"github.com/minodisk/sqlabble"
+	"github.com/minodisk/sqlabble/internal/chunk"
 	"github.com/minodisk/sqlabble/internal/diff"
 	"github.com/minodisk/sqlabble/internal/grammar"
-	"github.com/minodisk/sqlabble/internal/token"
 )
 
 func TestSetType(t *testing.T) {
 	for _, c := range []interface{}{
-		token.Set{},
+		chunk.Set{},
 	} {
 		t.Run(fmt.Sprintf("Type %T", c), func(t *testing.T) {
 			if _, ok := c.(grammar.Clause); !ok {
@@ -31,8 +31,8 @@ func TestSet(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			token.NewSet(
-				token.NewColumn("foo").Assign(100),
+			chunk.NewSet(
+				chunk.NewColumn("foo").Assign(100),
 			),
 			"SET foo = ?",
 			`> SET
@@ -43,9 +43,9 @@ func TestSet(t *testing.T) {
 			},
 		},
 		{
-			token.NewSet(
-				token.NewColumn("foo").Assign(100),
-				token.NewColumn("bar").Assign(200),
+			chunk.NewSet(
+				chunk.NewColumn("foo").Assign(100),
+				chunk.NewColumn("bar").Assign(200),
 			),
 			"SET foo = ?, bar = ?",
 			`> SET
@@ -58,10 +58,10 @@ func TestSet(t *testing.T) {
 			},
 		},
 		{
-			token.NewSet(
-				token.NewColumn("foo").Assign(100),
-				token.NewColumn("bar").Assign(200),
-				token.NewColumn("baz").Assign(300),
+			chunk.NewSet(
+				chunk.NewColumn("foo").Assign(100),
+				chunk.NewColumn("bar").Assign(200),
+				chunk.NewColumn("baz").Assign(300),
 			),
 			"SET foo = ?, bar = ?, baz = ?",
 			`> SET
@@ -76,12 +76,12 @@ func TestSet(t *testing.T) {
 			},
 		},
 		{
-			token.NewSet(
-				token.NewColumn("foo").Assign(100),
-				token.NewColumn("bar").Assign(200),
-				token.NewColumn("baz").Assign(300),
+			chunk.NewSet(
+				chunk.NewColumn("foo").Assign(100),
+				chunk.NewColumn("bar").Assign(200),
+				chunk.NewColumn("baz").Assign(300),
 			).Where(
-				token.NewColumn("qux").Lte(400),
+				chunk.NewColumn("qux").Lte(400),
 			),
 			"SET foo = ?, bar = ?, baz = ? WHERE qux <= ?",
 			`> SET

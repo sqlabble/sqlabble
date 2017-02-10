@@ -1,4 +1,4 @@
-package token_test
+package chunk_test
 
 import (
 	"fmt"
@@ -6,16 +6,16 @@ import (
 	"testing"
 
 	"github.com/minodisk/sqlabble"
+	"github.com/minodisk/sqlabble/internal/chunk"
 	"github.com/minodisk/sqlabble/internal/diff"
 	"github.com/minodisk/sqlabble/internal/grammar"
-	"github.com/minodisk/sqlabble/internal/token"
 )
 
 func TestLogicalCondition(t *testing.T) {
 	for _, c := range []interface{}{
-		token.And{},
-		token.Or{},
-		token.Not{},
+		chunk.And{},
+		chunk.Or{},
+		chunk.Not{},
 	} {
 		t.Run(fmt.Sprintf("%T", c), func(t *testing.T) {
 			if _, ok := c.(grammar.LogicalOperation); !ok {
@@ -33,17 +33,17 @@ func TestLogicalCondition(t *testing.T) {
 
 func TestConditions(t *testing.T) {
 	for _, c := range []interface{}{
-		token.Eq{},
-		token.NotEq{},
-		token.Gt{},
-		token.Gte{},
-		token.Lt{},
-		token.Lte{},
-		token.Between{},
-		token.In{},
-		token.NotIn{},
-		token.Like{},
-		token.RegExp{},
+		chunk.Eq{},
+		chunk.NotEq{},
+		chunk.Gt{},
+		chunk.Gte{},
+		chunk.Lt{},
+		chunk.Lte{},
+		chunk.Between{},
+		chunk.In{},
+		chunk.NotIn{},
+		chunk.Like{},
+		chunk.RegExp{},
 	} {
 		t.Run(fmt.Sprintf("%T", c), func(t *testing.T) {
 			if _, ok := c.(grammar.Operation); !ok {
@@ -68,8 +68,8 @@ func TestAnd(t *testing.T) {
 	}{
 		// 0
 		{
-			statement: token.NewAnd(
-				token.NewNotEq(sqlabble.C("foo"), 100),
+			statement: chunk.NewAnd(
+				chunk.NewNotEq(sqlabble.C("foo"), 100),
 			),
 			sql: "foo != ?",
 			sqlIndent: `foo != ?
@@ -80,9 +80,9 @@ func TestAnd(t *testing.T) {
 		},
 		// 1
 		{
-			statement: token.NewAnd(
-				token.NewNotEq(sqlabble.C("foo"), 100),
-				token.NewEq(sqlabble.C("bar"), 200),
+			statement: chunk.NewAnd(
+				chunk.NewNotEq(sqlabble.C("foo"), 100),
+				chunk.NewEq(sqlabble.C("bar"), 200),
 			),
 			sql: "foo != ? AND bar = ?",
 			sqlIndent: `foo != ?
@@ -95,10 +95,10 @@ AND bar = ?
 		},
 		// 2
 		{
-			statement: token.NewAnd(
-				token.NewNotEq(sqlabble.C("foo"), 100),
-				token.NewEq(sqlabble.C("bar"), 200),
-				token.NewLike(sqlabble.C("baz"), "abc"),
+			statement: chunk.NewAnd(
+				chunk.NewNotEq(sqlabble.C("foo"), 100),
+				chunk.NewEq(sqlabble.C("bar"), 200),
+				chunk.NewLike(sqlabble.C("baz"), "abc"),
 			),
 			sql: "foo != ? AND bar = ? AND baz LIKE ?",
 			sqlIndent: `foo != ?
@@ -113,11 +113,11 @@ AND baz LIKE ?
 		},
 		// 3
 		{
-			statement: token.NewAnd(
-				token.NewAnd(
-					token.NewNotEq(sqlabble.C("foo"), 100),
-					token.NewEq(sqlabble.C("bar"), 200),
-					token.NewLike(sqlabble.C("baz"), "abc"),
+			statement: chunk.NewAnd(
+				chunk.NewAnd(
+					chunk.NewNotEq(sqlabble.C("foo"), 100),
+					chunk.NewEq(sqlabble.C("bar"), 200),
+					chunk.NewLike(sqlabble.C("baz"), "abc"),
 				),
 			),
 			sql: "foo != ? AND bar = ? AND baz LIKE ?",
@@ -133,12 +133,12 @@ AND baz LIKE ?
 		},
 		// 4
 		{
-			statement: token.NewAnd(
-				token.NewAnd(
-					token.NewAnd(
-						token.NewNotEq(sqlabble.C("foo"), 100),
-						token.NewEq(sqlabble.C("bar"), 200),
-						token.NewLike(sqlabble.C("baz"), "abc"),
+			statement: chunk.NewAnd(
+				chunk.NewAnd(
+					chunk.NewAnd(
+						chunk.NewNotEq(sqlabble.C("foo"), 100),
+						chunk.NewEq(sqlabble.C("bar"), 200),
+						chunk.NewLike(sqlabble.C("baz"), "abc"),
 					),
 				),
 			),
@@ -155,15 +155,15 @@ AND baz LIKE ?
 		},
 		// 5
 		{
-			statement: token.NewAnd(
-				token.NewAnd(
-					token.NewAnd(
-						token.NewNotEq(sqlabble.C("foo"), 100),
-						token.NewEq(sqlabble.C("bar"), 200),
-						token.NewLike(sqlabble.C("baz"), "abc"),
+			statement: chunk.NewAnd(
+				chunk.NewAnd(
+					chunk.NewAnd(
+						chunk.NewNotEq(sqlabble.C("foo"), 100),
+						chunk.NewEq(sqlabble.C("bar"), 200),
+						chunk.NewLike(sqlabble.C("baz"), "abc"),
 					),
 				),
-				token.NewGt(sqlabble.C("foo"), 300),
+				chunk.NewGt(sqlabble.C("foo"), 300),
 			),
 			sql: "(foo != ? AND bar = ? AND baz LIKE ?) AND foo > ?",
 			sqlIndent: `(
@@ -182,14 +182,14 @@ AND foo > ?
 		},
 		// 6
 		{
-			statement: token.NewAnd(
-				token.NewAnd(
-					token.NewAnd(
-						token.NewNotEq(sqlabble.C("foo"), 100),
-						token.NewEq(sqlabble.C("bar"), 200),
-						token.NewLike(sqlabble.C("baz"), "abc"),
+			statement: chunk.NewAnd(
+				chunk.NewAnd(
+					chunk.NewAnd(
+						chunk.NewNotEq(sqlabble.C("foo"), 100),
+						chunk.NewEq(sqlabble.C("bar"), 200),
+						chunk.NewLike(sqlabble.C("baz"), "abc"),
 					),
-					token.NewGt(sqlabble.C("foo"), 300),
+					chunk.NewGt(sqlabble.C("foo"), 300),
 				),
 			),
 			sql: "(foo != ? AND bar = ? AND baz LIKE ?) AND foo > ?",
@@ -238,8 +238,8 @@ func TestOr(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			statement: token.NewOr(
-				token.NewNotEq(sqlabble.C("foo"), 100),
+			statement: chunk.NewOr(
+				chunk.NewNotEq(sqlabble.C("foo"), 100),
 			),
 			sql: "foo != ?",
 			sqlIndent: `foo != ?
@@ -249,9 +249,9 @@ func TestOr(t *testing.T) {
 			},
 		},
 		{
-			statement: token.NewOr(
-				token.NewNotEq(sqlabble.C("foo"), 100),
-				token.NewEq(sqlabble.C("bar"), 200),
+			statement: chunk.NewOr(
+				chunk.NewNotEq(sqlabble.C("foo"), 100),
+				chunk.NewEq(sqlabble.C("bar"), 200),
 			),
 			sql: "foo != ? OR bar = ?",
 			sqlIndent: `foo != ?
@@ -263,10 +263,10 @@ OR bar = ?
 			},
 		},
 		{
-			statement: token.NewOr(
-				token.NewNotEq(sqlabble.C("foo"), 100),
-				token.NewEq(sqlabble.C("bar"), 200),
-				token.NewLike(sqlabble.C("baz"), "abc"),
+			statement: chunk.NewOr(
+				chunk.NewNotEq(sqlabble.C("foo"), 100),
+				chunk.NewEq(sqlabble.C("bar"), 200),
+				chunk.NewLike(sqlabble.C("baz"), "abc"),
 			),
 			sql: "foo != ? OR bar = ? OR baz LIKE ?",
 			sqlIndent: `foo != ?
@@ -280,11 +280,11 @@ OR baz LIKE ?
 			},
 		},
 		{
-			statement: token.NewOr(
-				token.NewOr(
-					token.NewNotEq(sqlabble.C("foo"), 100),
-					token.NewEq(sqlabble.C("bar"), 200),
-					token.NewLike(sqlabble.C("baz"), "abc"),
+			statement: chunk.NewOr(
+				chunk.NewOr(
+					chunk.NewNotEq(sqlabble.C("foo"), 100),
+					chunk.NewEq(sqlabble.C("bar"), 200),
+					chunk.NewLike(sqlabble.C("baz"), "abc"),
 				),
 			),
 			sql: "foo != ? OR bar = ? OR baz LIKE ?",
@@ -299,12 +299,12 @@ OR baz LIKE ?
 			},
 		},
 		{
-			statement: token.NewOr(
-				token.NewOr(
-					token.NewOr(
-						token.NewNotEq(sqlabble.C("foo"), 100),
-						token.NewEq(sqlabble.C("bar"), 200),
-						token.NewLike(sqlabble.C("baz"), "abc"),
+			statement: chunk.NewOr(
+				chunk.NewOr(
+					chunk.NewOr(
+						chunk.NewNotEq(sqlabble.C("foo"), 100),
+						chunk.NewEq(sqlabble.C("bar"), 200),
+						chunk.NewLike(sqlabble.C("baz"), "abc"),
 					),
 				),
 			),
@@ -320,15 +320,15 @@ OR baz LIKE ?
 			},
 		},
 		{
-			statement: token.NewOr(
-				token.NewOr(
-					token.NewOr(
-						token.NewNotEq(sqlabble.C("foo"), 100),
-						token.NewEq(sqlabble.C("bar"), 200),
-						token.NewLike(sqlabble.C("baz"), "abc"),
+			statement: chunk.NewOr(
+				chunk.NewOr(
+					chunk.NewOr(
+						chunk.NewNotEq(sqlabble.C("foo"), 100),
+						chunk.NewEq(sqlabble.C("bar"), 200),
+						chunk.NewLike(sqlabble.C("baz"), "abc"),
 					),
 				),
-				token.NewGt(sqlabble.C("foo"), 300),
+				chunk.NewGt(sqlabble.C("foo"), 300),
 			),
 			sql: "(foo != ? OR bar = ? OR baz LIKE ?) OR foo > ?",
 			sqlIndent: `(
@@ -346,14 +346,14 @@ OR foo > ?
 			},
 		},
 		{
-			statement: token.NewOr(
-				token.NewOr(
-					token.NewOr(
-						token.NewNotEq(sqlabble.C("foo"), 100),
-						token.NewEq(sqlabble.C("bar"), 200),
-						token.NewLike(sqlabble.C("baz"), "abc"),
+			statement: chunk.NewOr(
+				chunk.NewOr(
+					chunk.NewOr(
+						chunk.NewNotEq(sqlabble.C("foo"), 100),
+						chunk.NewEq(sqlabble.C("bar"), 200),
+						chunk.NewLike(sqlabble.C("baz"), "abc"),
 					),
-					token.NewGt(sqlabble.C("foo"), 300),
+					chunk.NewGt(sqlabble.C("foo"), 300),
 				),
 			),
 			sql: "(foo != ? OR bar = ? OR baz LIKE ?) OR foo > ?",
@@ -396,15 +396,15 @@ OR foo > ?
 
 func TestNot(t *testing.T) {
 	for i, c := range []struct {
-		statement token.Not
+		statement chunk.Not
 		sql       string
 		sqlIndent string
 		values    []interface{}
 	}{
 		// 0
 		{
-			statement: token.NewNot(
-				token.NewNotEq(sqlabble.C("foo"), 100),
+			statement: chunk.NewNot(
+				chunk.NewNotEq(sqlabble.C("foo"), 100),
 			),
 			sql: "NOT (foo != ?)",
 			sqlIndent: `NOT (
@@ -417,9 +417,9 @@ func TestNot(t *testing.T) {
 		},
 		// 1
 		{
-			statement: token.NewNot(
-				token.NewNot(
-					token.NewNotEq(sqlabble.C("foo"), 100),
+			statement: chunk.NewNot(
+				chunk.NewNot(
+					chunk.NewNotEq(sqlabble.C("foo"), 100),
 				),
 			),
 			sql: "NOT (NOT (foo != ?))",
@@ -435,10 +435,10 @@ func TestNot(t *testing.T) {
 		},
 		// 3
 		{
-			statement: token.NewNot(
-				token.NewNot(
-					token.NewNot(
-						token.NewNotEq(sqlabble.C("foo"), 100),
+			statement: chunk.NewNot(
+				chunk.NewNot(
+					chunk.NewNot(
+						chunk.NewNotEq(sqlabble.C("foo"), 100),
 					),
 				),
 			),
@@ -457,9 +457,9 @@ func TestNot(t *testing.T) {
 		},
 		// 4
 		{
-			statement: token.NewNot(
-				token.NewOr(
-					token.NewNotEq(sqlabble.C("foo"), 100),
+			statement: chunk.NewNot(
+				chunk.NewOr(
+					chunk.NewNotEq(sqlabble.C("foo"), 100),
 				),
 			),
 			sql: "NOT (foo != ?)",
@@ -473,11 +473,11 @@ func TestNot(t *testing.T) {
 		},
 		// 5
 		{
-			statement: token.NewNot(
-				token.NewOr(
-					token.NewNotEq(sqlabble.C("foo"), 100),
-					token.NewEq(sqlabble.C("bar"), 200),
-					token.NewLike(sqlabble.C("baz"), "abc"),
+			statement: chunk.NewNot(
+				chunk.NewOr(
+					chunk.NewNotEq(sqlabble.C("foo"), 100),
+					chunk.NewEq(sqlabble.C("bar"), 200),
+					chunk.NewLike(sqlabble.C("baz"), "abc"),
 				),
 			),
 			sql: "NOT (foo != ? OR bar = ? OR baz LIKE ?)",
@@ -495,12 +495,12 @@ func TestNot(t *testing.T) {
 		},
 		// 6
 		{
-			statement: token.NewNot(
-				token.NewNot(
-					token.NewOr(
-						token.NewNotEq(sqlabble.C("foo"), 100),
-						token.NewEq(sqlabble.C("bar"), 200),
-						token.NewLike(sqlabble.C("baz"), "abc"),
+			statement: chunk.NewNot(
+				chunk.NewNot(
+					chunk.NewOr(
+						chunk.NewNotEq(sqlabble.C("foo"), 100),
+						chunk.NewEq(sqlabble.C("bar"), 200),
+						chunk.NewLike(sqlabble.C("baz"), "abc"),
 					),
 				),
 			),
@@ -521,13 +521,13 @@ func TestNot(t *testing.T) {
 		},
 		// 7
 		{
-			statement: token.NewNot(
-				token.NewNot(
-					token.NewNot(
-						token.NewOr(
-							token.NewNotEq(sqlabble.C("foo"), 100),
-							token.NewEq(sqlabble.C("bar"), 200),
-							token.NewLike(sqlabble.C("baz"), "abc"),
+			statement: chunk.NewNot(
+				chunk.NewNot(
+					chunk.NewNot(
+						chunk.NewOr(
+							chunk.NewNotEq(sqlabble.C("foo"), 100),
+							chunk.NewEq(sqlabble.C("bar"), 200),
+							chunk.NewLike(sqlabble.C("baz"), "abc"),
 						),
 					),
 				),
@@ -574,13 +574,13 @@ func TestNot(t *testing.T) {
 
 func TestEq(t *testing.T) {
 	for _, c := range []struct {
-		eq            token.Eq
+		eq            chunk.Eq
 		wantSQL       string
 		wantIndentSQL string
 		wantValues    []interface{}
 	}{
 		{
-			eq:      token.NewEq(token.NewColumn("foo"), 100),
+			eq:      chunk.NewEq(chunk.NewColumn("foo"), 100),
 			wantSQL: "foo = ?",
 			wantIndentSQL: `foo = ?
 `,
@@ -618,12 +618,12 @@ func TestComplexOperation(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			statement: token.NewAnd(
-				token.NewOr(
-					token.NewNot(
-						token.NewAnd(
-							token.NewOr(
-								token.NewNot(
+			statement: chunk.NewAnd(
+				chunk.NewOr(
+					chunk.NewNot(
+						chunk.NewAnd(
+							chunk.NewOr(
+								chunk.NewNot(
 									sqlabble.C("foo").Eq(100),
 								),
 							),
@@ -643,27 +643,27 @@ func TestComplexOperation(t *testing.T) {
 			},
 		},
 		{
-			statement: token.NewOr(
-				token.NewNot(
-					token.NewRegExp(sqlabble.C("baz"), "def"),
+			statement: chunk.NewOr(
+				chunk.NewNot(
+					chunk.NewRegExp(sqlabble.C("baz"), "def"),
 				),
-				token.NewOr(
-					token.NewAnd(
-						token.NewBetween(sqlabble.C("qux"), 400, 500),
-						token.NewNot(
-							token.NewAnd(
-								token.NewOr(
-									token.NewNotEq(sqlabble.C("foo"), 100),
-									token.NewEq(sqlabble.C("bar"), 200),
-									token.NewLike(sqlabble.C("baz"), "abc"),
-									token.NewOr(
-										token.NewIn(sqlabble.C("baz"), "a", "b", "c"),
-										token.NewNotIn(sqlabble.C("qux"), 600, 700, 800),
+				chunk.NewOr(
+					chunk.NewAnd(
+						chunk.NewBetween(sqlabble.C("qux"), 400, 500),
+						chunk.NewNot(
+							chunk.NewAnd(
+								chunk.NewOr(
+									chunk.NewNotEq(sqlabble.C("foo"), 100),
+									chunk.NewEq(sqlabble.C("bar"), 200),
+									chunk.NewLike(sqlabble.C("baz"), "abc"),
+									chunk.NewOr(
+										chunk.NewIn(sqlabble.C("baz"), "a", "b", "c"),
+										chunk.NewNotIn(sqlabble.C("qux"), 600, 700, 800),
 									),
 								),
 							),
 						),
-						token.NewGt(sqlabble.C("foo"), 300),
+						chunk.NewGt(sqlabble.C("foo"), 300),
 					),
 				),
 			),

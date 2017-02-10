@@ -1,4 +1,4 @@
-package token_test
+package chunk_test
 
 import (
 	"fmt"
@@ -6,27 +6,27 @@ import (
 	"testing"
 
 	"github.com/minodisk/sqlabble"
+	"github.com/minodisk/sqlabble/internal/chunk"
 	"github.com/minodisk/sqlabble/internal/diff"
 	"github.com/minodisk/sqlabble/internal/grammar"
-	"github.com/minodisk/sqlabble/internal/token"
 )
 
 func TestWhereClauseIsCaluse(t *testing.T) {
-	if _, ok := interface{}(token.Where{}).(grammar.Clause); !ok {
-		t.Errorf("token.WhereClause doesn't implement grammar.Clause")
+	if _, ok := interface{}(chunk.Where{}).(grammar.Clause); !ok {
+		t.Errorf("chunk.WhereClause doesn't implement grammar.Clause")
 	}
 }
 
 func TestWhereClause(t *testing.T) {
 	for i, c := range []struct {
-		statement token.Where
+		statement chunk.Where
 		sql       string
 		sqlIndent string
 		values    []interface{}
 	}{
 		{
-			token.NewWhere(
-				token.NewColumn("foo").Eq(100),
+			chunk.NewWhere(
+				chunk.NewColumn("foo").Eq(100),
 			),
 			"WHERE foo = ?",
 			`> WHERE
@@ -35,10 +35,10 @@ func TestWhereClause(t *testing.T) {
 			[]interface{}{100},
 		},
 		{
-			token.NewWhere(
-				token.NewAnd(
-					token.NewColumn("foo").Eq(100),
-					token.NewColumn("bar").Eq("abc"),
+			chunk.NewWhere(
+				chunk.NewAnd(
+					chunk.NewColumn("foo").Eq(100),
+					chunk.NewColumn("bar").Eq("abc"),
 				),
 			),
 			"WHERE foo = ? AND bar = ?",

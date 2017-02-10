@@ -1,20 +1,20 @@
 package sqlabble
 
-import "github.com/minodisk/sqlabble/internal/token"
+import "github.com/minodisk/sqlabble/internal/chunk"
 
 var (
-	CreateTable = token.NewCreateTable
-	Select      = token.NewSelect
-	InsertInto  = token.NewInsertInto
-	Update      = token.NewUpdate
-	Delete      = token.NewDelete
+	CreateTable = chunk.NewCreateTable
+	Select      = chunk.NewSelect
+	InsertInto  = chunk.NewInsertInto
+	Update      = chunk.NewUpdate
+	Delete      = chunk.NewDelete
 
-	Column = token.NewColumn
+	Column = chunk.NewColumn
 	C      = Column
-	Table  = token.NewTable
+	Table  = chunk.NewTable
 	T      = Table
 
-	And = token.NewAnd
-	Or  = token.NewOr
-	Not = token.NewNot
+	And = chunk.NewAnd
+	Or  = chunk.NewOr
+	Not = chunk.NewNot
 )

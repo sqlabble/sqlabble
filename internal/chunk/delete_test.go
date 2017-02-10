@@ -1,4 +1,4 @@
-package token_test
+package chunk_test
 
 import (
 	"fmt"
@@ -6,14 +6,14 @@ import (
 	"testing"
 
 	"github.com/minodisk/sqlabble"
+	"github.com/minodisk/sqlabble/internal/chunk"
 	"github.com/minodisk/sqlabble/internal/diff"
 	"github.com/minodisk/sqlabble/internal/grammar"
-	"github.com/minodisk/sqlabble/internal/token"
 )
 
 func TestDeleteType(t *testing.T) {
-	if _, ok := interface{}(token.Delete{}).(grammar.Clause); !ok {
-		t.Errorf("token.Delete should implement grammar.Clause")
+	if _, ok := interface{}(chunk.Delete{}).(grammar.Clause); !ok {
+		t.Errorf("chunk.Delete should implement grammar.Clause")
 	}
 }
 
@@ -25,15 +25,15 @@ func TestDeleteSQL(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			token.NewDelete(),
+			chunk.NewDelete(),
 			"DELETE",
 			`> DELETE
 `,
 			[]interface{}{},
 		},
 		{
-			token.NewDelete().From(
-				token.NewTable("foo"),
+			chunk.NewDelete().From(
+				chunk.NewTable("foo"),
 			),
 			"DELETE FROM foo",
 			`> DELETE

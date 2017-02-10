@@ -1,4 +1,4 @@
-package token_test
+package chunk_test
 
 import (
 	"fmt"
@@ -6,27 +6,27 @@ import (
 	"testing"
 
 	"github.com/minodisk/sqlabble"
+	"github.com/minodisk/sqlabble/internal/chunk"
 	"github.com/minodisk/sqlabble/internal/diff"
 	"github.com/minodisk/sqlabble/internal/grammar"
-	"github.com/minodisk/sqlabble/internal/token"
 )
 
 func TestSelectClauseIsCaluse(t *testing.T) {
-	if _, ok := interface{}(token.Select{}).(grammar.Clause); !ok {
-		t.Errorf("token.SelectClause doesn't implement grammar.Clause")
+	if _, ok := interface{}(chunk.Select{}).(grammar.Clause); !ok {
+		t.Errorf("chunk.SelectClause doesn't implement grammar.Clause")
 	}
 }
 
 func TestSelectClause(t *testing.T) {
 	for i, c := range []struct {
-		statement token.Select
+		statement chunk.Select
 		sql       string
 		sqlIndent string
 		values    []interface{}
 	}{
 		{
-			token.NewSelect(
-				token.NewColumn("*"),
+			chunk.NewSelect(
+				chunk.NewColumn("*"),
 			),
 			"SELECT *",
 			`> SELECT
@@ -35,8 +35,8 @@ func TestSelectClause(t *testing.T) {
 			[]interface{}{},
 		},
 		{
-			token.NewSelect(
-				token.NewColumn("foo"),
+			chunk.NewSelect(
+				chunk.NewColumn("foo"),
 			),
 			"SELECT foo",
 			`> SELECT
@@ -45,8 +45,8 @@ func TestSelectClause(t *testing.T) {
 			[]interface{}{},
 		},
 		{
-			token.NewSelect(
-				token.NewColumn("foo").As("a"),
+			chunk.NewSelect(
+				chunk.NewColumn("foo").As("a"),
 			),
 			"SELECT foo AS a",
 			`> SELECT
@@ -55,10 +55,10 @@ func TestSelectClause(t *testing.T) {
 			[]interface{}{},
 		},
 		{
-			token.NewSelect(
-				token.NewColumn("foo").As("a"),
-				token.NewColumn("bar").As("b"),
-				token.NewColumn("baz").As("c"),
+			chunk.NewSelect(
+				chunk.NewColumn("foo").As("a"),
+				chunk.NewColumn("bar").As("b"),
+				chunk.NewColumn("baz").As("c"),
 			),
 			"SELECT foo AS a, bar AS b, baz AS c",
 			`> SELECT

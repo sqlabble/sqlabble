@@ -1,4 +1,4 @@
-package token_test
+package chunk_test
 
 import (
 	"fmt"
@@ -6,14 +6,14 @@ import (
 	"testing"
 
 	"github.com/minodisk/sqlabble"
+	"github.com/minodisk/sqlabble/internal/chunk"
 	"github.com/minodisk/sqlabble/internal/diff"
 	"github.com/minodisk/sqlabble/internal/grammar"
-	"github.com/minodisk/sqlabble/internal/token"
 )
 
 func TestOrderByClauseIsCaluse(t *testing.T) {
-	if _, ok := interface{}(token.OrderBy{}).(grammar.Clause); !ok {
-		t.Errorf("token.OrderByClause doesn't implement grammar.Clause")
+	if _, ok := interface{}(chunk.OrderBy{}).(grammar.Clause); !ok {
+		t.Errorf("chunk.OrderByClause doesn't implement grammar.Clause")
 	}
 }
 
@@ -25,8 +25,8 @@ func TestOrderByClause(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			token.NewOrderBy(
-				token.NewColumn("foo").Asc(),
+			chunk.NewOrderBy(
+				chunk.NewColumn("foo").Asc(),
 			),
 			"ORDER BY foo ASC",
 			`> ORDER BY
@@ -35,10 +35,10 @@ func TestOrderByClause(t *testing.T) {
 			[]interface{}{},
 		},
 		{
-			token.NewOrderBy(
-				token.NewColumn("foo").Desc(),
-				token.NewColumn("bar").Asc(),
-				token.NewColumn("baz").Desc(),
+			chunk.NewOrderBy(
+				chunk.NewColumn("foo").Desc(),
+				chunk.NewColumn("bar").Asc(),
+				chunk.NewColumn("baz").Desc(),
 			),
 			"ORDER BY foo DESC, bar ASC, baz DESC",
 			`> ORDER BY

@@ -1,11 +1,11 @@
-package token_test
+package chunk_test
 
 import (
 	"fmt"
 	"testing"
 
+	"github.com/minodisk/sqlabble/internal/chunk"
 	"github.com/minodisk/sqlabble/internal/diff"
-	"github.com/minodisk/sqlabble/internal/token"
 )
 
 func TestPlaceholders(t *testing.T) {
@@ -19,7 +19,7 @@ func TestPlaceholders(t *testing.T) {
 		{3, "?, ?, ?"},
 	} {
 		t.Run(fmt.Sprintf("Placeholder(%d) should be '%s'", c.input, c.want), func(t *testing.T) {
-			got := token.Placeholders(c.input)
+			got := chunk.Placeholders(c.input)
 			if got != c.want {
 				t.Error(diff.SQL(got, c.want))
 			}
