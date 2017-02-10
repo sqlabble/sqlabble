@@ -38,8 +38,10 @@ func TestBuild(t *testing.T) {
 			).OrderBy(
 				q.C("created_at").Desc(),
 				q.C("id").Asc(),
+			).Limit(
+				20*5, 20,
 			),
-			"SELECT created_at, name AS n, gender AS g, age FROM users WHERE g = ? AND (age < ? OR age = ? OR age >= ?) AND created_at BETWEEN ? AND ? ORDER BY created_at DESC, id ASC",
+			"SELECT created_at, name AS n, gender AS g, age FROM users WHERE g = ? AND (age < ? OR age = ? OR age >= ?) AND created_at BETWEEN ? AND ? ORDER BY created_at DESC, id ASC LIMIT ?, ?",
 			`SELECT
   created_at
   , name AS n
@@ -58,6 +60,8 @@ WHERE
 ORDER BY
   created_at DESC
   , id ASC
+LIMIT
+  ?, ?
 `,
 			[]interface{}{
 				"male",
@@ -66,6 +70,8 @@ ORDER BY
 				50,
 				"2016-01-01",
 				"2016-12-31",
+				100,
+				20,
 			},
 		},
 		{

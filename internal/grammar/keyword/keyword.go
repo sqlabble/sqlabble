@@ -1,14 +1,5 @@
 package keyword
 
-type Clause string
-
-const (
-	Select  Clause = "SELECT"
-	From    Clause = "FROM"
-	Where   Clause = "WHERE"
-	OrderBy Clause = "ORDER BY"
-)
-
 type JoinType string
 
 const (
@@ -26,10 +17,16 @@ const (
 )
 
 const (
-	CreateTable = "CREATE TABLE"
+	Select      = "SELECT"
+	From        = "FROM"
+	Where       = "WHERE"
+	GroupBy     = "GROUP BY"
+	OrderBy     = "ORDER BY"
+	Limit       = "LIMIT"
 	InsertInto  = "INSERT INTO"
 	Values      = "VALUES"
 	Update      = "UPDATE"
 	Set         = "SET"
 	Delete      = "DELETE"
+	CreateTable = "CREATE TABLE"
 )

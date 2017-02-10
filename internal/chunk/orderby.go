@@ -35,6 +35,12 @@ func (o OrderBy) Container() generator.Container {
 	)
 }
 
-func (c OrderBy) Prev() grammar.Clause {
-	return c.prev
+func (o OrderBy) Prev() grammar.Clause {
+	return o.prev
+}
+
+func (o OrderBy) Limit(offset, limit int) Limit {
+	l := NewLimit(offset, limit)
+	l.prev = o
+	return l
 }
