@@ -1,21 +1,5 @@
 package keyword
 
-type JoinType string
-
-const (
-	Join      JoinType = "JOIN"
-	InnerJoin JoinType = "INNER JOIN"
-	LeftJoin  JoinType = "LEFT JOIN"
-	RightJoin JoinType = "RIGHT JOIN"
-)
-
-type JoinCondition string
-
-const (
-	On    JoinCondition = "ON"
-	Using JoinCondition = "USING"
-)
-
 const (
 	Select      = "SELECT"
 	From        = "FROM"
@@ -30,4 +14,12 @@ const (
 	Set         = "SET"
 	Delete      = "DELETE"
 	CreateTable = "CREATE TABLE"
+
+	Join      = "JOIN"
+	InnerJoin = "INNER JOIN"
+	LeftJoin  = "LEFT JOIN"
+	RightJoin = "RIGHT JOIN"
+
+	On    = "ON"
+	Using = "USING"
 )

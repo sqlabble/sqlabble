@@ -58,12 +58,9 @@ func (e Expression) Generate(ctx Context) (string, []interface{}) {
 	return fmt.Sprintf("%s%s", h, e.sql), e.values
 }
 
-func (e Expression) Prepend(sql string, values ...interface{}) Expression {
-	if len(values) == 0 {
-		values = []interface{}{}
-	}
-	e.sql = sql + e.sql
-	e.values = append(values, e.values...)
+func (e Expression) Prepend(exp Expression) Expression {
+	e.sql = exp.sql + " " + e.sql
+	e.values = append(e.values, exp.values...)
 	return e
 }
 

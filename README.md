@@ -10,8 +10,8 @@ Type supported SQL query builder.
 - [ ] `SELECT DISTINCT {COLUMN}`
 - [x] `FROM {TABLE}`
 - [x] `WHERE {OPERATION}`
-- [ ] `GROUP BY {COLUMN}`
-- [ ] `HAVING`
+- [x] `GROUP BY {COLUMN}`
+- [x] `HAVING`
 - [x] `ORDER BY {ORDER}`
 - [x] `LIMIT`
 - [x] `INSERT INTO {TABLE} ({COLUMN})`
