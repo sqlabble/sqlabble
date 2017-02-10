@@ -90,3 +90,9 @@ func (j Join) On(column1, column2 Column) On {
 	o.join = j
 	return o
 }
+
+func (j Join) Using(column Column) Using {
+	o := NewUsing(column)
+	o.join = j
+	return o
+}

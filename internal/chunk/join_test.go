@@ -72,6 +72,28 @@ func TestJoin(t *testing.T) {
 `,
 			values: []interface{}{},
 		},
+		{
+			statement: chunk.NewJoin(
+				chunk.NewTable("foo"),
+			).Using(
+				chunk.NewColumn("id"),
+			),
+			sql: "JOIN foo USING id",
+			sqlIndent: `JOIN foo USING id
+`,
+			values: []interface{}{},
+		},
+		{
+			statement: chunk.NewJoin(
+				chunk.NewTable("foo").As("f"),
+			).Using(
+				chunk.NewColumn("id"),
+			),
+			sql: "JOIN foo AS f USING id",
+			sqlIndent: `JOIN foo AS f USING id
+`,
+			values: []interface{}{},
+		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
 			sql, values := sqlabble.Build(c.statement)
@@ -140,6 +162,28 @@ func TestInnerJoin(t *testing.T) {
 			),
 			sql: "INNER JOIN foo AS f ON f.id = b.id",
 			sqlIndent: `INNER JOIN foo AS f ON f.id = b.id
+`,
+			values: []interface{}{},
+		},
+		{
+			statement: chunk.NewInnerJoin(
+				chunk.NewTable("foo"),
+			).Using(
+				chunk.NewColumn("id"),
+			),
+			sql: "INNER JOIN foo USING id",
+			sqlIndent: `INNER JOIN foo USING id
+`,
+			values: []interface{}{},
+		},
+		{
+			statement: chunk.NewInnerJoin(
+				chunk.NewTable("foo").As("f"),
+			).Using(
+				chunk.NewColumn("id"),
+			),
+			sql: "INNER JOIN foo AS f USING id",
+			sqlIndent: `INNER JOIN foo AS f USING id
 `,
 			values: []interface{}{},
 		},
@@ -214,6 +258,28 @@ func TestLeftJoin(t *testing.T) {
 `,
 			values: []interface{}{},
 		},
+		{
+			statement: chunk.NewLeftJoin(
+				chunk.NewTable("foo"),
+			).Using(
+				chunk.NewColumn("id"),
+			),
+			sql: "LEFT JOIN foo USING id",
+			sqlIndent: `LEFT JOIN foo USING id
+`,
+			values: []interface{}{},
+		},
+		{
+			statement: chunk.NewLeftJoin(
+				chunk.NewTable("foo").As("f"),
+			).Using(
+				chunk.NewColumn("id"),
+			),
+			sql: "LEFT JOIN foo AS f USING id",
+			sqlIndent: `LEFT JOIN foo AS f USING id
+`,
+			values: []interface{}{},
+		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
 			sql, values := sqlabble.Build(c.statement)
@@ -282,6 +348,28 @@ func TestRightJoin(t *testing.T) {
 			),
 			sql: "RIGHT JOIN foo AS f ON f.id = b.id",
 			sqlIndent: `RIGHT JOIN foo AS f ON f.id = b.id
+`,
+			values: []interface{}{},
+		},
+		{
+			statement: chunk.NewRightJoin(
+				chunk.NewTable("foo"),
+			).Using(
+				chunk.NewColumn("id"),
+			),
+			sql: "RIGHT JOIN foo USING id",
+			sqlIndent: `RIGHT JOIN foo USING id
+`,
+			values: []interface{}{},
+		},
+		{
+			statement: chunk.NewRightJoin(
+				chunk.NewTable("foo").As("f"),
+			).Using(
+				chunk.NewColumn("id"),
+			),
+			sql: "RIGHT JOIN foo AS f USING id",
+			sqlIndent: `RIGHT JOIN foo AS f USING id
 `,
 			values: []interface{}{},
 		},

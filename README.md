@@ -62,7 +62,7 @@ Type supported SQL query builder.
 ### Join Conditions
 
 - [x] `ON {COLUMN} = {COLUMN}`
-- [ ] `USING {COLUMN}`
+- [x] `USING {COLUMN}`
 
 ### Orders
 

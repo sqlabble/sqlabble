@@ -3,6 +3,8 @@ package chunk
 import (
 	"github.com/minodisk/sqlabble/internal/generator"
 	"github.com/minodisk/sqlabble/internal/grammar"
+	"github.com/minodisk/sqlabble/internal/grammar/keyword"
+	"github.com/minodisk/sqlabble/internal/grammar/operator"
 )
 
 type On struct {
@@ -17,8 +19,8 @@ func NewOn(column1, column2 Column) On {
 	}
 }
 
-func (t On) Generator() generator.Generator {
-	ts := grammar.Tables(t)
+func (o On) Generator() generator.Generator {
+	ts := grammar.Tables(o)
 	fs := make([]generator.Generator, len(ts))
 	for i, t := range ts {
 		fs[i] = t.Expression()
@@ -26,15 +28,15 @@ func (t On) Generator() generator.Generator {
 	return generator.NewGenerators(fs...)
 }
 
-func (t On) Expression() generator.Expression {
-	e := generator.NewExpression("ON").
-		Append(t.column1.Expression()).
-		Append(generator.NewExpression("=")).
-		Append(t.column2.Expression())
-	if t.join == nil {
+func (o On) Expression() generator.Expression {
+	e := generator.NewExpression(keyword.On).
+		Append(o.column1.Expression()).
+		Append(generator.NewExpression(string(operator.Equal))).
+		Append(o.column2.Expression())
+	if o.join == nil {
 		return e
 	}
-	return t.join.Expression().
+	return o.join.Expression().
 		Append(e)
 }
 
