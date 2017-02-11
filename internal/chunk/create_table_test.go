@@ -12,9 +12,6 @@ import (
 )
 
 func TestCreateTableType(t *testing.T) {
-	// if _, ok := interface{}(chunk.From{}).(grammar.Clause); !ok {
-	// 	t.Errorf("chunk.FromClause doesn't implement grammar.Clause")
-	// }
 }
 
 func TestCreateTableSQL(t *testing.T) {

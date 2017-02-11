@@ -5,32 +5,17 @@ import (
 	"strings"
 
 	"github.com/minodisk/sqlabble/internal/generator"
-	"github.com/minodisk/sqlabble/internal/grammar"
 	"github.com/minodisk/sqlabble/internal/grammar/direction"
-	"github.com/minodisk/sqlabble/internal/grammar/operator"
 )
-
-func NewColumn(name string) Column {
-	return Column{name: name}
-}
-
-type Columns []Column
-
-func (cs Columns) Generator() generator.Generator {
-	names := make([]string, len(cs))
-	for i, c := range cs {
-		names[i] = c.name
-	}
-	return generator.NewExpression(
-		fmt.Sprintf(
-			"(%s)",
-			strings.Join(names, ", "),
-		),
-	)
-}
 
 type Column struct {
 	name string
+}
+
+func NewColumn(name string) Column {
+	return Column{
+		name: name,
+	}
 }
 
 func (c Column) Generator() generator.Generator {
@@ -47,17 +32,16 @@ func (c Column) ColumnName() string {
 	return c.name
 }
 
+func (c Column) As(alias string) ColumnAs {
+	a := NewColumnAs(alias)
+	a.column = c
+	return a
+}
+
 func (c Column) Define(definition string) Definition {
 	d := NewDefinition(definition)
 	d.column = c
 	return d
-}
-
-func (c Column) As(alias string) ColumnAs {
-	return ColumnAs{
-		column: c,
-		alias:  alias,
-	}
 }
 
 func (c Column) Assign(value interface{}) Assign {
@@ -130,25 +114,17 @@ func (c Column) Desc() Order {
 	}
 }
 
-type ColumnAs struct {
-	column grammar.Column
-	alias  string
-}
+type Columns []Column
 
-func (c ColumnAs) Generator() generator.Generator {
-	return c.Expression()
-}
-
-func (c ColumnAs) Expression() generator.Expression {
-	return c.column.Expression().
-		Append(generator.NewExpression(operator.As)).
-		Append(generator.NewExpression(c.Alias()))
-}
-
-func (c ColumnAs) ColumnName() string {
-	return c.column.ColumnName()
-}
-
-func (c ColumnAs) Alias() string {
-	return c.alias
+func (cs Columns) Generator() generator.Generator {
+	names := make([]string, len(cs))
+	for i, c := range cs {
+		names[i] = c.name
+	}
+	return generator.NewExpression(
+		fmt.Sprintf(
+			"(%s)",
+			strings.Join(names, ", "),
+		),
+	)
 }

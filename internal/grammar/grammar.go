@@ -30,11 +30,6 @@ type Column interface {
 	ColumnName() string
 }
 
-type ColumnAlias interface {
-	Column
-	Alias() string
-}
-
 type Table interface {
 	Expression
 	Prev() Table

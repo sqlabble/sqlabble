@@ -11,7 +11,9 @@ type Select struct {
 }
 
 func NewSelect(columns ...grammar.Column) Select {
-	return Select{columns: columns}
+	return Select{
+		columns: columns,
+	}
 }
 
 func (s Select) Generator() generator.Generator {

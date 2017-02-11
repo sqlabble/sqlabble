@@ -6,13 +6,13 @@ import (
 	"github.com/minodisk/sqlabble/internal/grammar/keyword"
 )
 
-func NewOrderBy(os ...grammar.Order) OrderBy {
-	return OrderBy{orders: os}
-}
-
 type OrderBy struct {
 	prev   grammar.Clause
 	orders []grammar.Order
+}
+
+func NewOrderBy(os ...grammar.Order) OrderBy {
+	return OrderBy{orders: os}
 }
 
 func (o OrderBy) Generator() generator.Generator {
