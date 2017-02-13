@@ -11,19 +11,26 @@ import (
 	"github.com/minodisk/sqlabble/internal/grammar"
 )
 
-func TestSelectClauseIsCaluse(t *testing.T) {
+func TestSelectType(t *testing.T) {
 	if _, ok := interface{}(chunk.Select{}).(grammar.Clause); !ok {
-		t.Errorf("chunk.SelectClause doesn't implement grammar.Clause")
+		t.Errorf("chunk.Select doesn't implement grammar.Clause")
 	}
 }
 
-func TestSelectClause(t *testing.T) {
+func TestSelectSQL(t *testing.T) {
 	for i, c := range []struct {
 		statement chunk.Select
 		sql       string
 		sqlIndent string
 		values    []interface{}
 	}{
+		{
+			chunk.NewSelect(),
+			"SELECT",
+			`> SELECT
+`,
+			[]interface{}{},
+		},
 		{
 			chunk.NewSelect(
 				chunk.NewColumn("*"),
@@ -62,6 +69,20 @@ func TestSelectClause(t *testing.T) {
 			),
 			"SELECT foo AS a, bar AS b, baz AS c",
 			`> SELECT
+>   foo AS a
+>   , bar AS b
+>   , baz AS c
+`,
+			[]interface{}{},
+		},
+		{
+			chunk.NewSelect().Distinct(
+				chunk.NewColumn("foo").As("a"),
+				chunk.NewColumn("bar").As("b"),
+				chunk.NewColumn("baz").As("c"),
+			),
+			"SELECT DISTINCT foo AS a, bar AS b, baz AS c",
+			`> SELECT DISTINCT
 >   foo AS a
 >   , bar AS b
 >   , baz AS c

@@ -7,7 +7,8 @@ import (
 )
 
 type Select struct {
-	columns []grammar.Column
+	distinct bool
+	columns  []grammar.Column
 }
 
 func NewSelect(columns ...grammar.Column) Select {
@@ -30,14 +31,24 @@ func (s Select) Container() generator.Container {
 	for i, c := range s.columns {
 		fs[i] = c.Generator()
 	}
+	k := generator.NewExpression(keyword.Select)
+	if s.distinct {
+		k = k.Append(generator.NewExpression(keyword.Distinct))
+	}
 	return generator.NewContainer(
-		generator.NewExpression(string(keyword.Select)),
+		k,
 		generator.NewComma(fs...),
 	)
 }
 
 func (c Select) Prev() grammar.Clause {
 	return nil
+}
+
+func (c Select) Distinct(columns ...grammar.Column) Select {
+	c.columns = append(c.columns, columns...)
+	c.distinct = true
+	return c
 }
 
 func (c Select) From(t grammar.Table) From {

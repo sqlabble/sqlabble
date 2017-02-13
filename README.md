@@ -6,8 +6,8 @@ Type supported SQL query builder.
 
 ### Clauses
 
-- [x] `SELECT {COLUMN|ALIASED COLUMN}`
-- [ ] `SELECT DISTINCT {COLUMN}`
+- [x] `SELECT {COLUMN}`
+- [x] `SELECT DISTINCT {COLUMN}`
 - [x] `FROM {TABLE}`
 - [x] `WHERE {OPERATION}`
 - [x] `GROUP BY {COLUMN}`

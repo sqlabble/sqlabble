@@ -2,6 +2,7 @@ package keyword
 
 const (
 	Select      = "SELECT"
+	Distinct    = "DISTINCT"
 	From        = "FROM"
 	Where       = "WHERE"
 	OrderBy     = "ORDER BY"
