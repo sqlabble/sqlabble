@@ -7,6 +7,52 @@ import (
 	"github.com/minodisk/sqlabble/internal/grammar/operator"
 )
 
+type Unions struct {
+	separator  Expression
+	generators []Generator
+}
+
+func NewUnions(separator Expression, generators ...Generator) Unions {
+	return Unions{
+		separator:  separator,
+		generators: generators,
+	}
+}
+
+func (us Unions) Generate(ctx Context) (string, []interface{}) {
+	res := []Generator{}
+	for i, g := range us.generators {
+		if needsBracket(ctx, g) {
+			g = NewBracket(g)
+		}
+		if i == 0 {
+			res = append(res, g)
+			continue
+		}
+		res = append(res, us.separator, g)
+	}
+	return NewGenerators(res...).Generate(ctx)
+}
+
+func needsBracket(ctx Context, generator Generator) bool {
+	if !ctx.flatUnion {
+		return true
+	}
+
+	gs, ok := generator.(Generators)
+	if !ok {
+		return true
+	}
+
+	for _, g := range gs {
+		if _, ok := g.(Unions); !ok {
+			return true
+		}
+	}
+
+	return false
+}
+
 type Generator interface {
 	Generate(Context) (string, []interface{})
 }

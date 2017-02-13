@@ -59,7 +59,7 @@ Type supported SQL query builder.
 - [x] `{TABLE} LEFT JOIN {TABLE}`
 - [x] `{TABLE} RIGHT JOIN {TABLE}`
 
-### Join Conditions
+#### Join Conditions
 
 - [x] `ON {COLUMN} = {COLUMN}`
 - [x] `USING {COLUMN}`
@@ -71,12 +71,12 @@ Type supported SQL query builder.
 
 ### Sets
 
-- [ ] `UNION`
-- [ ] `UNION ALL`
-- [ ] `INTERSECT`
-- [ ] `INTERSECT ALL`
-- [ ] `EXCEPT`
-- [ ] `EXCEPT ALL`
+- [x] `{STATEMENT} UNION {STATEMENT}`
+- [ ] `{STATEMENT} UNION ALL {STATEMENT}`
+- [ ] `{STATEMENT} INTERSECT {STATEMENT}`
+- [ ] `{STATEMENT} INTERSECT ALL {STATEMENT}`
+- [ ] `{STATEMENT} EXCEPT {STATEMENT}`
+- [ ] `{STATEMENT} EXCEPT ALL {STATEMENT}`
 
 ### Table Definitions
 

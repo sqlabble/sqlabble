@@ -3,21 +3,21 @@ package generator
 import "strings"
 
 type Context struct {
-	driverName           string
 	breaking             bool
 	prefix, indent, head string
 	depth, bracketDepth  int
+	flatUnion            bool
 }
 
-func NewContext(driverName, prefix, indent string) Context {
+func NewContext(prefix, indent string) Context {
 	return Context{
-		driverName:   strings.ToLower(driverName),
 		breaking:     prefix != "" || indent != "",
 		prefix:       prefix,
 		indent:       indent,
 		head:         "",
 		depth:        0,
 		bracketDepth: 0,
+		flatUnion:    false,
 	}
 }
 
@@ -60,6 +60,11 @@ func (f Context) IncBracketDepth() Context {
 
 func (f Context) TopBracket() bool {
 	return f.bracketDepth == 0
+}
+
+func (c Context) SetFlatUnion(flat bool) Context {
+	c.flatUnion = flat
+	return c
 }
 
 func (f Context) Join(sqls ...string) string {
