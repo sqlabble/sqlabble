@@ -1,41 +1,37 @@
 package sqlabble
 
-import (
-	"github.com/minodisk/sqlabble/internal/chunk"
-	"github.com/minodisk/sqlabble/internal/generator"
-	"github.com/minodisk/sqlabble/internal/grammar"
-)
+import "github.com/minodisk/sqlabble/internal/generator"
 
 var (
-	CreateTable    = chunk.NewCreateTable
-	Select         = chunk.NewSelect
-	SelectDistinct = chunk.NewSelectDistinct
-	InsertInto     = chunk.NewInsertInto
-	Update         = chunk.NewUpdate
-	Delete         = chunk.NewDelete
+	CreateTable    = newCreateTable
+	Select         = newSelect
+	SelectDistinct = newSelectDistinct
+	InsertInto     = newInsertInto
+	Update         = newUpdate
+	Delete         = newDelete
 
-	Column = chunk.NewColumn
-	C      = Column
-	Table  = chunk.NewTable
-	T      = Table
+	Column = newColumn
+	C      = newColumn
+	Table  = newTable
+	T      = newTable
 
-	And = chunk.NewAnd
-	Or  = chunk.NewOr
-	Not = chunk.NewNot
+	And = newAnd
+	Or  = newOr
+	Not = newNot
 
-	Union        = chunk.NewUnion
-	UnionAll     = chunk.NewUnionAll
-	Intersect    = chunk.NewIntersect
-	IntersectAll = chunk.NewIntersectAll
-	Except       = chunk.NewExcept
-	ExceptAll    = chunk.NewExceptAll
+	Union        = newUnion
+	UnionAll     = newUnionAll
+	Intersect    = newIntersect
+	IntersectAll = newIntersectAll
+	Except       = newExcept
+	ExceptAll    = newExceptAll
 )
 
-func Build(s grammar.Statement) (string, []interface{}) {
+func Build(s Node) (string, []interface{}) {
 	return NewBuilder("", "").Build(s)
 }
 
-func BuildIndent(s grammar.Statement, prefix, indent string) (string, []interface{}) {
+func BuildIndent(s Node, prefix, indent string) (string, []interface{}) {
 	return NewBuilder(prefix, indent).Build(s)
 }
 
@@ -57,6 +53,6 @@ func NewBuilderForMySQL4(prefix, indent string) Builder {
 	}
 }
 
-func (b Builder) Build(c grammar.Statement) (string, []interface{}) {
-	return c.Generator().Generate(b.context)
+func (b Builder) Build(c Node) (string, []interface{}) {
+	return c.generator().Generate(b.context)
 }

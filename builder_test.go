@@ -7,12 +7,11 @@ import (
 
 	q "github.com/minodisk/sqlabble"
 	"github.com/minodisk/sqlabble/internal/diff"
-	"github.com/minodisk/sqlabble/internal/grammar"
 )
 
 func TestBuild(t *testing.T) {
 	for i, c := range []struct {
-		statement grammar.Statement
+		statement q.Node
 		sql       string
 		sqlIndent string
 		values    []interface{}
