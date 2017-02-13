@@ -16,12 +16,12 @@ func (d Delete) Generator() generator.Generator {
 	cs := grammar.Clauses(d)
 	fs := make([]generator.Generator, len(cs))
 	for i, c := range cs {
-		fs[i] = c.Container()
+		fs[i] = c.ClauseGenerator()
 	}
 	return generator.NewGenerators(fs...)
 }
 
-func (d Delete) Container() generator.Container {
+func (d Delete) ClauseGenerator() generator.Generator {
 	return generator.NewContainer(
 		generator.NewExpression(keyword.Delete),
 	)

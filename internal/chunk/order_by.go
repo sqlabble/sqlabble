@@ -19,12 +19,12 @@ func (o OrderBy) Generator() generator.Generator {
 	cs := grammar.Clauses(o)
 	fs := make([]generator.Generator, len(cs))
 	for i, c := range cs {
-		fs[i] = c.Container()
+		fs[i] = c.ClauseGenerator()
 	}
 	return generator.NewGenerators(fs...)
 }
 
-func (o OrderBy) Container() generator.Container {
+func (o OrderBy) ClauseGenerator() generator.Generator {
 	fs := make([]generator.Generator, len(o.orders))
 	for i, c := range o.orders {
 		fs[i] = c.Generator()

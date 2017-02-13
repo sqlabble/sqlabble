@@ -2,18 +2,16 @@ package generator
 
 import "strings"
 
-var (
-	NonBreakingContext = NewContext("", "")
-)
-
 type Context struct {
+	driverName           string
 	breaking             bool
 	prefix, indent, head string
 	depth, bracketDepth  int
 }
 
-func NewContext(prefix, indent string) Context {
+func NewContext(driverName, prefix, indent string) Context {
 	return Context{
+		driverName:   strings.ToLower(driverName),
 		breaking:     prefix != "" || indent != "",
 		prefix:       prefix,
 		indent:       indent,

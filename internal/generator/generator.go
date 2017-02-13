@@ -33,6 +33,24 @@ func (fs Generators) Generate(ctx Context) (string, []interface{}) {
 	return ctx.Join(sqls...), values
 }
 
+type Expressions []Expression
+
+func NewExpressions(es ...Expression) Expressions {
+	return es
+}
+
+func (es Expressions) Generate(ctx Context) (string, []interface{}) {
+	if len(es) == 0 {
+		return "", nil
+	}
+	exp := es[0]
+	for i := 1; i < len(es); i++ {
+		e := es[i]
+		exp = exp.Append(e)
+	}
+	return exp.Generate(ctx)
+}
+
 type Expression struct {
 	sql    string
 	values []interface{}
@@ -70,8 +88,17 @@ func (e Expression) Append(exp Expression) Expression {
 	return e
 }
 
-type Placeholders struct {
-	value []interface{}
+func NewArray(es ...Expression) Expression {
+	sqls := make([]string, len(es))
+	values := []interface{}{}
+	for i, e := range es {
+		sqls[i] = e.sql
+		values = append(values, e.values...)
+	}
+	return NewExpression(
+		fmt.Sprintf("(%s)", strings.Join(sqls, ", ")),
+		values...,
+	)
 }
 
 func NewPlaceholders(values ...interface{}) Expression {
@@ -134,7 +161,7 @@ func (j Join) Generate(ctx Context) (string, []interface{}) {
 	values := []interface{}{}
 	for i, g := range j.generators {
 		var vs []interface{}
-		sqls[i], vs = g.Generate(NonBreakingContext)
+		sqls[i], vs = g.Generate(ctx)
 		values = append(values, vs...)
 	}
 	return NewExpression(strings.Join(sqls, j.sep), values...).Generate(ctx)

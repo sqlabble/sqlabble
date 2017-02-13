@@ -21,12 +21,12 @@ func (s Set) Generator() generator.Generator {
 	cs := grammar.Clauses(s)
 	gs := make([]generator.Generator, len(cs))
 	for i, c := range cs {
-		gs[i] = c.Container()
+		gs[i] = c.ClauseGenerator()
 	}
 	return generator.NewGenerators(gs...)
 }
 
-func (s Set) Container() generator.Container {
+func (s Set) ClauseGenerator() generator.Generator {
 	gs := make([]generator.Generator, len(s.assigns))
 	for i, a := range s.assigns {
 		gs[i] = a.Expression()

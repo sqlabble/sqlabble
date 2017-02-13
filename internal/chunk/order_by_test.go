@@ -11,13 +11,13 @@ import (
 	"github.com/minodisk/sqlabble/internal/grammar"
 )
 
-func TestOrderByClauseIsCaluse(t *testing.T) {
+func TestOrderByType(t *testing.T) {
 	if _, ok := interface{}(chunk.OrderBy{}).(grammar.Clause); !ok {
-		t.Errorf("chunk.OrderByClause doesn't implement grammar.Clause")
+		t.Errorf("chunk.OrderBy doesn't implement grammar.Clause")
 	}
 }
 
-func TestOrderByClause(t *testing.T) {
+func TestOrderBySQL(t *testing.T) {
 	for i, c := range []struct {
 		statement grammar.Statement
 		sql       string

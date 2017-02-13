@@ -21,7 +21,8 @@ type Expression interface {
 }
 
 type Clause interface {
-	Container
+	Statement
+	ClauseGenerator() generator.Generator
 	Prev() Clause
 }
 

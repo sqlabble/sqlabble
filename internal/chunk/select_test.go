@@ -76,7 +76,7 @@ func TestSelectSQL(t *testing.T) {
 			[]interface{}{},
 		},
 		{
-			chunk.NewSelect().Distinct(
+			chunk.NewSelectDistinct(
 				chunk.NewColumn("foo").As("a"),
 				chunk.NewColumn("bar").As("b"),
 				chunk.NewColumn("baz").As("c"),

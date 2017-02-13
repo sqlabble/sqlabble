@@ -13,7 +13,15 @@ type Select struct {
 
 func NewSelect(columns ...grammar.Column) Select {
 	return Select{
-		columns: columns,
+		distinct: false,
+		columns:  columns,
+	}
+}
+
+func NewSelectDistinct(columns ...grammar.Column) Select {
+	return Select{
+		distinct: true,
+		columns:  columns,
 	}
 }
 
@@ -21,12 +29,12 @@ func (s Select) Generator() generator.Generator {
 	cs := grammar.Clauses(s)
 	fs := make([]generator.Generator, len(cs))
 	for i, c := range cs {
-		fs[i] = c.Container()
+		fs[i] = c.ClauseGenerator()
 	}
 	return generator.NewGenerators(fs...)
 }
 
-func (s Select) Container() generator.Container {
+func (s Select) ClauseGenerator() generator.Generator {
 	fs := make([]generator.Generator, len(s.columns))
 	for i, c := range s.columns {
 		fs[i] = c.Generator()
@@ -43,12 +51,6 @@ func (s Select) Container() generator.Container {
 
 func (c Select) Prev() grammar.Clause {
 	return nil
-}
-
-func (c Select) Distinct(columns ...grammar.Column) Select {
-	c.columns = append(c.columns, columns...)
-	c.distinct = true
-	return c
 }
 
 func (c Select) From(t grammar.Table) From {

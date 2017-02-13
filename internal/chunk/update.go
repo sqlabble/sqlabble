@@ -18,10 +18,10 @@ func NewUpdate(table Table) Update {
 }
 
 func (u Update) Generator() generator.Generator {
-	return u.Container()
+	return u.ClauseGenerator()
 }
 
-func (u Update) Container() generator.Container {
+func (u Update) ClauseGenerator() generator.Generator {
 	return generator.NewContainer(
 		generator.NewExpression(keyword.Update),
 		u.table.Generator(),

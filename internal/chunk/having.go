@@ -21,12 +21,12 @@ func (w Having) Generator() generator.Generator {
 	cs := grammar.Clauses(w)
 	fs := make([]generator.Generator, len(cs))
 	for i, c := range cs {
-		fs[i] = c.Container()
+		fs[i] = c.ClauseGenerator()
 	}
 	return generator.NewGenerators(fs...)
 }
 
-func (w Having) Container() generator.Container {
+func (w Having) ClauseGenerator() generator.Generator {
 	return generator.NewContainer(
 		generator.NewExpression(string(keyword.Having)),
 		w.operation.Generator(),

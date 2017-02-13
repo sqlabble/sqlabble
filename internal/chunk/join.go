@@ -42,11 +42,11 @@ func NewRightJoin(table grammar.Table) Join {
 
 func (t Join) Generator() generator.Generator {
 	ts := grammar.Tables(t)
-	fs := make([]generator.Generator, len(ts))
+	es := make([]generator.Generator, len(ts))
 	for i, t := range ts {
-		fs[i] = t.Expression()
+		es[i] = t.Expression()
 	}
-	return generator.NewGenerators(fs...)
+	return generator.NewGenerators(es...)
 }
 
 func (t Join) Expression() generator.Expression {

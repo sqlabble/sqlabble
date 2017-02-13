@@ -8,7 +8,7 @@ import (
 
 type InsertInto struct {
 	table   grammar.Table
-	columns Columns
+	columns []Column
 }
 
 func NewInsertInto(table grammar.Table, columns ...Column) InsertInto {
@@ -22,18 +22,21 @@ func (s InsertInto) Generator() generator.Generator {
 	cs := grammar.Clauses(s)
 	gs := make([]generator.Generator, len(cs))
 	for i, c := range cs {
-		gs[i] = c.Container()
+		gs[i] = c.ClauseGenerator()
 	}
 	return generator.NewGenerators(gs...)
 }
 
-func (s InsertInto) Container() generator.Container {
+func (s InsertInto) ClauseGenerator() generator.Generator {
+	es := make([]generator.Expression, len(s.columns))
+	for i, c := range s.columns {
+		es[i] = c.Expression()
+	}
 	return generator.NewContainer(
 		generator.NewExpression(string(keyword.InsertInto)),
-		generator.NewJoin(
-			" ",
-			s.table.Generator(),
-			s.columns.Generator(),
+		generator.NewExpressions(
+			s.table.Expression(),
+			generator.NewArray(es...),
 		),
 	)
 }

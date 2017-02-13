@@ -23,12 +23,12 @@ func (l Limit) Generator() generator.Generator {
 	cs := grammar.Clauses(l)
 	fs := make([]generator.Generator, len(cs))
 	for i, c := range cs {
-		fs[i] = c.Container()
+		fs[i] = c.ClauseGenerator()
 	}
 	return generator.NewGenerators(fs...)
 }
 
-func (l Limit) Container() generator.Container {
+func (l Limit) ClauseGenerator() generator.Generator {
 	var p generator.Expression
 	if l.offset == 0 {
 		p = generator.NewPlaceholders(l.limit)

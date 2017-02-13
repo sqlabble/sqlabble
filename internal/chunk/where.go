@@ -21,24 +21,24 @@ func (w Where) Generator() generator.Generator {
 	cs := grammar.Clauses(w)
 	gs := make([]generator.Generator, len(cs))
 	for i, c := range cs {
-		gs[i] = c.Container()
+		gs[i] = c.ClauseGenerator()
 	}
 	return generator.NewGenerators(gs...)
 }
 
-func (w Where) Container() generator.Container {
+func (w Where) ClauseGenerator() generator.Generator {
 	return generator.NewContainer(
 		generator.NewExpression(keyword.Where),
 		w.operation.Generator(),
 	)
 }
 
-func (c Where) Prev() grammar.Clause {
-	return c.prev
+func (w Where) Prev() grammar.Clause {
+	return w.prev
 }
 
-func (c Where) OrderBy(os ...grammar.Order) OrderBy {
+func (w Where) OrderBy(os ...grammar.Order) OrderBy {
 	o := NewOrderBy(os...)
-	o.prev = c
+	o.prev = w
 	return o
 }

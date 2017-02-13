@@ -1,9 +1,6 @@
 package chunk
 
 import (
-	"fmt"
-	"strings"
-
 	"github.com/minodisk/sqlabble/internal/generator"
 	"github.com/minodisk/sqlabble/internal/grammar/direction"
 )
@@ -112,19 +109,4 @@ func (c Column) Desc() Order {
 		column:    c,
 		direction: direction.DESC,
 	}
-}
-
-type Columns []Column
-
-func (cs Columns) Generator() generator.Generator {
-	names := make([]string, len(cs))
-	for i, c := range cs {
-		names[i] = c.name
-	}
-	return generator.NewExpression(
-		fmt.Sprintf(
-			"(%s)",
-			strings.Join(names, ", "),
-		),
-	)
 }

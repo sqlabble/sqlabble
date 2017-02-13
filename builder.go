@@ -23,10 +23,24 @@ var (
 	Not = chunk.NewNot
 )
 
-func Build(c grammar.Statement) (string, []interface{}) {
-	return c.Generator().Generate(generator.NonBreakingContext)
+func Build(s grammar.Statement) (string, []interface{}) {
+	return NewBuilder("", "", "").Build(s)
 }
 
-func BuildIndent(c grammar.Statement, prefix, indent string) (string, []interface{}) {
-	return c.Generator().Generate(generator.NewContext(prefix, indent))
+func BuildIndent(s grammar.Statement, prefix, indent string) (string, []interface{}) {
+	return NewBuilder("", prefix, indent).Build(s)
+}
+
+type Builder struct {
+	context generator.Context
+}
+
+func NewBuilder(driverName, prefix, indent string) Builder {
+	return Builder{
+		context: generator.NewContext(driverName, prefix, indent),
+	}
+}
+
+func (b Builder) Build(c grammar.Statement) (string, []interface{}) {
+	return c.Generator().Generate(b.context)
 }

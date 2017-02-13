@@ -21,12 +21,12 @@ func (g GroupBy) Generator() generator.Generator {
 	cs := grammar.Clauses(g)
 	gs := make([]generator.Generator, len(cs))
 	for i, c := range cs {
-		gs[i] = c.Container()
+		gs[i] = c.ClauseGenerator()
 	}
 	return generator.NewGenerators(gs...)
 }
 
-func (g GroupBy) Container() generator.Container {
+func (g GroupBy) ClauseGenerator() generator.Generator {
 	gs := make([]generator.Generator, len(g.columns))
 	for i, c := range g.columns {
 		gs[i] = c.Generator()
