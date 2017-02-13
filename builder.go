@@ -23,7 +23,12 @@ var (
 	Or  = chunk.NewOr
 	Not = chunk.NewNot
 
-	Union = chunk.NewUnion
+	Union        = chunk.NewUnion
+	UnionAll     = chunk.NewUnionAll
+	Intersect    = chunk.NewIntersect
+	IntersectAll = chunk.NewIntersectAll
+	Except       = chunk.NewExcept
+	ExceptAll    = chunk.NewExceptAll
 )
 
 func Build(s grammar.Statement) (string, []interface{}) {
@@ -48,7 +53,7 @@ func NewBuilderForMySQL4(prefix, indent string) Builder {
 	return Builder{
 		context: generator.
 			NewContext(prefix, indent).
-			SetFlatUnion(true),
+			SetFlatSetOperation(true),
 	}
 }
 

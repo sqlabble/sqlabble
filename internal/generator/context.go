@@ -6,18 +6,18 @@ type Context struct {
 	breaking             bool
 	prefix, indent, head string
 	depth, bracketDepth  int
-	flatUnion            bool
+	flatSetOperation     bool
 }
 
 func NewContext(prefix, indent string) Context {
 	return Context{
-		breaking:     prefix != "" || indent != "",
-		prefix:       prefix,
-		indent:       indent,
-		head:         "",
-		depth:        0,
-		bracketDepth: 0,
-		flatUnion:    false,
+		breaking:         prefix != "" || indent != "",
+		prefix:           prefix,
+		indent:           indent,
+		head:             "",
+		depth:            0,
+		bracketDepth:     0,
+		flatSetOperation: false,
 	}
 }
 
@@ -62,8 +62,8 @@ func (f Context) TopBracket() bool {
 	return f.bracketDepth == 0
 }
 
-func (c Context) SetFlatUnion(flat bool) Context {
-	c.flatUnion = flat
+func (c Context) SetFlatSetOperation(flat bool) Context {
+	c.flatSetOperation = flat
 	return c
 }
 

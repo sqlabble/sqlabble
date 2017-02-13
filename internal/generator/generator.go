@@ -35,7 +35,7 @@ func (us Unions) Generate(ctx Context) (string, []interface{}) {
 }
 
 func needsBracket(ctx Context, generator Generator) bool {
-	if !ctx.flatUnion {
+	if !ctx.flatSetOperation {
 		return true
 	}
 

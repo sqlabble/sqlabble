@@ -6,17 +6,54 @@ import (
 	"github.com/minodisk/sqlabble/internal/grammar/keyword"
 )
 
-type Union struct {
+type SetOperation struct {
+	operator   string
 	statements []grammar.Statement
 }
 
-func NewUnion(statements ...grammar.Statement) Union {
-	return Union{
+func NewUnion(statements ...grammar.Statement) SetOperation {
+	return SetOperation{
+		operator:   keyword.Union,
 		statements: statements,
 	}
 }
 
-func (u Union) Generator() generator.Generator {
+func NewUnionAll(statements ...grammar.Statement) SetOperation {
+	return SetOperation{
+		operator:   keyword.UnionAll,
+		statements: statements,
+	}
+}
+
+func NewIntersect(statements ...grammar.Statement) SetOperation {
+	return SetOperation{
+		operator:   keyword.Intersect,
+		statements: statements,
+	}
+}
+
+func NewIntersectAll(statements ...grammar.Statement) SetOperation {
+	return SetOperation{
+		operator:   keyword.IntersectAll,
+		statements: statements,
+	}
+}
+
+func NewExcept(statements ...grammar.Statement) SetOperation {
+	return SetOperation{
+		operator:   keyword.Except,
+		statements: statements,
+	}
+}
+
+func NewExceptAll(statements ...grammar.Statement) SetOperation {
+	return SetOperation{
+		operator:   keyword.ExceptAll,
+		statements: statements,
+	}
+}
+
+func (u SetOperation) Generator() generator.Generator {
 	cs := grammar.Clauses(u)
 	gs := make([]generator.Generator, len(cs))
 	for i, c := range cs {
@@ -25,8 +62,8 @@ func (u Union) Generator() generator.Generator {
 	return generator.NewGenerators(gs...)
 }
 
-func (u Union) ClauseGenerator() generator.Generator {
-	sep := generator.NewExpression(keyword.Union)
+func (u SetOperation) ClauseGenerator() generator.Generator {
+	sep := generator.NewExpression(u.operator)
 	gs := make([]generator.Generator, len(u.statements))
 	for i, s := range u.statements {
 		gs[i] = s.Generator()
@@ -34,11 +71,11 @@ func (u Union) ClauseGenerator() generator.Generator {
 	return generator.NewUnions(sep, gs...)
 }
 
-func (u Union) Prev() grammar.Clause {
+func (u SetOperation) Prev() grammar.Clause {
 	return nil
 }
 
-func (u Union) OrderBy(os ...grammar.Order) OrderBy {
+func (u SetOperation) OrderBy(os ...grammar.Order) OrderBy {
 	o := NewOrderBy(os...)
 	o.prev = u
 	return o

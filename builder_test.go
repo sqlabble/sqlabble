@@ -117,6 +117,59 @@ WHERE
 				"2004-07-02 09:00:00",
 			},
 		},
+		{
+			q.Union(
+				q.Select(
+					q.Column("emp_id"),
+				).From(
+					q.Table("employee"),
+				).Where(
+					q.And(
+						q.Column("assigned_branch_id").Eq(2),
+						q.Or(
+							q.Column("title").Eq("Teller"),
+							q.Column("title").Eq("Head Teller"),
+						),
+					),
+				),
+				q.SelectDistinct(
+					q.Column("open_emp_id"),
+				).From(
+					q.Table("account"),
+				).Where(
+					q.Column("open_branch_id").Eq(2),
+				),
+			),
+			"(SELECT emp_id FROM employee WHERE assigned_branch_id = ? AND (title = ? OR title = ?)) UNION (SELECT DISTINCT open_emp_id FROM account WHERE open_branch_id = ?)",
+			`(
+  SELECT
+    emp_id
+  FROM
+    employee
+  WHERE
+    assigned_branch_id = ?
+    AND (
+      title = ?
+      OR title = ?
+    )
+)
+UNION
+(
+  SELECT DISTINCT
+    open_emp_id
+  FROM
+    account
+  WHERE
+    open_branch_id = ?
+)
+`,
+			[]interface{}{
+				2,
+				"Teller",
+				"Head Teller",
+				2,
+			},
+		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
 			sql, values := q.Build(c.statement)

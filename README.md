@@ -34,7 +34,7 @@ Type supported SQL query builder.
 
 - [x] `{OPERATION} AND {OPERATION}`
 - [x] `{OPERATION} OR {OPERATION}`
-- [x] `NOT {OPERATION}`
+- [x] `NOT ({OPERATION})`
 
 ### Comparison Operators
 
@@ -71,12 +71,12 @@ Type supported SQL query builder.
 
 ### Sets
 
-- [x] `{STATEMENT} UNION {STATEMENT}`
-- [ ] `{STATEMENT} UNION ALL {STATEMENT}`
-- [ ] `{STATEMENT} INTERSECT {STATEMENT}`
-- [ ] `{STATEMENT} INTERSECT ALL {STATEMENT}`
-- [ ] `{STATEMENT} EXCEPT {STATEMENT}`
-- [ ] `{STATEMENT} EXCEPT ALL {STATEMENT}`
+- [x] `({STATEMENT}) UNION ({STATEMENT})`
+- [x] `({STATEMENT}) UNION ALL ({STATEMENT})`
+- [x] `({STATEMENT}) INTERSECT ({STATEMENT})`
+- [x] `({STATEMENT}) INTERSECT ALL ({STATEMENT})`
+- [x] `({STATEMENT}) EXCEPT ({STATEMENT})`
+- [x] `({STATEMENT}) EXCEPT ALL ({STATEMENT})`
 
 ### Table Definitions
 
