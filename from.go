@@ -42,14 +42,20 @@ func (f from) Where(op comparisonOrLogicalOperation) where {
 	return w
 }
 
+func (f from) GroupBy(col column, columns ...column) groupBy {
+	g := newGroupBy(col, columns...)
+	g.prev = f
+	return g
+}
+
 func (f from) OrderBy(orders ...order) orderBy {
 	o := newOrderBy(orders...)
 	o.prev = f
 	return o
 }
 
-func (f from) GroupBy(col column, columns ...column) groupBy {
-	g := newGroupBy(col, columns...)
-	g.prev = f
-	return g
+func (f from) Limit(offset, lim int) limit {
+	l := newLimit(offset, lim)
+	l.prev = f
+	return l
 }

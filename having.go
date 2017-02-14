@@ -16,8 +16,8 @@ func newHaving(operation comparisonOrLogicalOperation) having {
 	}
 }
 
-func (w having) node() generator.Node {
-	cs := clauseNodes(w)
+func (h having) node() generator.Node {
+	cs := clauseNodes(h)
 	ns := make([]generator.Node, len(cs))
 	for i, c := range cs {
 		ns[i] = c.myNode()
@@ -25,13 +25,25 @@ func (w having) node() generator.Node {
 	return generator.NewNodes(ns...)
 }
 
-func (w having) myNode() generator.Node {
+func (h having) myNode() generator.Node {
 	return generator.NewContainer(
 		generator.NewExpression(string(keyword.Having)),
-		w.operation.node(),
+		h.operation.node(),
 	)
 }
 
-func (c having) previous() clause {
-	return c.prev
+func (h having) previous() clause {
+	return h.prev
+}
+
+func (h having) OrderBy(orders ...order) orderBy {
+	o := newOrderBy(orders...)
+	o.prev = h
+	return o
+}
+
+func (h having) Limit(offset, lim int) limit {
+	l := newLimit(offset, lim)
+	l.prev = h
+	return l
 }

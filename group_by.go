@@ -46,6 +46,12 @@ func (g groupBy) Having(operation comparisonOrLogicalOperation) having {
 	return l
 }
 
+func (g groupBy) OrderBy(orders ...order) orderBy {
+	o := newOrderBy(orders...)
+	o.prev = g
+	return o
+}
+
 func (g groupBy) Limit(offset, lim int) limit {
 	l := newLimit(offset, lim)
 	l.prev = g

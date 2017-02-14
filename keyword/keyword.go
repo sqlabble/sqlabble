@@ -15,6 +15,7 @@ const (
 	Set         = "SET"
 	Delete      = "DELETE"
 	CreateTable = "CREATE TABLE"
+	IfNotExists = "IF NOT EXISTS"
 
 	Join      = "JOIN"
 	InnerJoin = "INNER JOIN"

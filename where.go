@@ -36,8 +36,20 @@ func (w where) previous() clause {
 	return w.prev
 }
 
-func (w where) OrderBy(os ...order) orderBy {
-	o := newOrderBy(os...)
+func (w where) GroupBy(col column, columns ...column) groupBy {
+	g := newGroupBy(col, columns...)
+	g.prev = w
+	return g
+}
+
+func (w where) OrderBy(orders ...order) orderBy {
+	o := newOrderBy(orders...)
 	o.prev = w
 	return o
+}
+
+func (w where) Limit(offset, lim int) limit {
+	l := newLimit(offset, lim)
+	l.prev = w
+	return l
 }
