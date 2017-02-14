@@ -24,19 +24,19 @@ func newSelectDistinct(columns ...columnOrColumnAs) selec {
 	}
 }
 
-func (s selec) generator() generator.Generator {
+func (s selec) node() generator.Node {
 	cs := clauseNodes(s)
-	fs := make([]generator.Generator, len(cs))
+	fs := make([]generator.Node, len(cs))
 	for i, c := range cs {
-		fs[i] = c.clauseGenerator()
+		fs[i] = c.nodeMine()
 	}
-	return generator.NewGenerators(fs...)
+	return generator.NewNodes(fs...)
 }
 
-func (s selec) clauseGenerator() generator.Generator {
-	fs := make([]generator.Generator, len(s.columns))
+func (s selec) nodeMine() generator.Node {
+	fs := make([]generator.Node, len(s.columns))
 	for i, c := range s.columns {
-		fs[i] = c.generator()
+		fs[i] = c.node()
 	}
 	k := generator.NewExpression(keyword.Select)
 	if s.distinct {

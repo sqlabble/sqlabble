@@ -16,7 +16,7 @@ func newColumnAs(alias string) columnAs {
 	}
 }
 
-func (c columnAs) generator() generator.Generator {
+func (c columnAs) node() generator.Node {
 	return c.expression()
 }
 

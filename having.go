@@ -16,19 +16,19 @@ func newHaving(operation comparisonOrLogicalOperation) having {
 	}
 }
 
-func (w having) generator() generator.Generator {
+func (w having) node() generator.Node {
 	cs := clauseNodes(w)
-	fs := make([]generator.Generator, len(cs))
+	fs := make([]generator.Node, len(cs))
 	for i, c := range cs {
-		fs[i] = c.clauseGenerator()
+		fs[i] = c.nodeMine()
 	}
-	return generator.NewGenerators(fs...)
+	return generator.NewNodes(fs...)
 }
 
-func (w having) clauseGenerator() generator.Generator {
+func (w having) nodeMine() generator.Node {
 	return generator.NewContainer(
 		generator.NewExpression(string(keyword.Having)),
-		w.operation.generator(),
+		w.operation.node(),
 	)
 }
 

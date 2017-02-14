@@ -16,17 +16,17 @@ func newSet(assigns ...assign) set {
 	}
 }
 
-func (s set) generator() generator.Generator {
+func (s set) node() generator.Node {
 	cs := clauseNodes(s)
-	gs := make([]generator.Generator, len(cs))
+	gs := make([]generator.Node, len(cs))
 	for i, c := range cs {
-		gs[i] = c.clauseGenerator()
+		gs[i] = c.nodeMine()
 	}
-	return generator.NewGenerators(gs...)
+	return generator.NewNodes(gs...)
 }
 
-func (s set) clauseGenerator() generator.Generator {
-	gs := make([]generator.Generator, len(s.assigns))
+func (s set) nodeMine() generator.Node {
+	gs := make([]generator.Node, len(s.assigns))
 	for i, a := range s.assigns {
 		gs[i] = a.expression()
 	}

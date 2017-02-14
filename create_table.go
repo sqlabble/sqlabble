@@ -15,7 +15,7 @@ func newCreateTable(table tableOrTableAs) createTable {
 	}
 }
 
-func (c createTable) generator() generator.Generator {
+func (c createTable) node() generator.Node {
 	return c.container()
 }
 

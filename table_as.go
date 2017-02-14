@@ -11,13 +11,13 @@ type tableAs struct {
 	alias string
 }
 
-func (t tableAs) generator() generator.Generator {
+func (t tableAs) node() generator.Node {
 	ts := tableNodes(t)
-	fs := make([]generator.Generator, len(ts))
+	fs := make([]generator.Node, len(ts))
 	for i, t := range ts {
 		fs[i] = t.expression()
 	}
-	return generator.NewGenerators(fs...)
+	return generator.NewNodes(fs...)
 }
 
 func (t tableAs) expression() generator.Expression {

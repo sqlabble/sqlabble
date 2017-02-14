@@ -25,7 +25,7 @@ func TestUnionSQL(t *testing.T) {
 	builderMySQL4 := sqlabble.NewBuilderForMySQL4("", "")
 	builderIndentMySQL4 := sqlabble.NewBuilderForMySQL4("> ", "  ")
 	for i, c := range []struct {
-		statement         sqlabble.Node
+		statement         sqlabble.Statement
 		sql               string
 		sqlIndent         string
 		sqlForMySQL       string
@@ -148,7 +148,7 @@ func TestUnionAllSQL(t *testing.T) {
 	builderMySQL4 := sqlabble.NewBuilderForMySQL4("", "")
 	builderIndentMySQL4 := sqlabble.NewBuilderForMySQL4("> ", "  ")
 	for i, c := range []struct {
-		statement         sqlabble.Node
+		statement         sqlabble.Statement
 		sql               string
 		sqlIndent         string
 		sqlForMySQL       string
@@ -271,7 +271,7 @@ func TestIntersectSQL(t *testing.T) {
 	builderMySQL4 := sqlabble.NewBuilderForMySQL4("", "")
 	builderIndentMySQL4 := sqlabble.NewBuilderForMySQL4("> ", "  ")
 	for i, c := range []struct {
-		statement         sqlabble.Node
+		statement         sqlabble.Statement
 		sql               string
 		sqlIndent         string
 		sqlForMySQL       string
@@ -394,7 +394,7 @@ func TestIntersectAllSQL(t *testing.T) {
 	builderMySQL4 := sqlabble.NewBuilderForMySQL4("", "")
 	builderIndentMySQL4 := sqlabble.NewBuilderForMySQL4("> ", "  ")
 	for i, c := range []struct {
-		statement         sqlabble.Node
+		statement         sqlabble.Statement
 		sql               string
 		sqlIndent         string
 		sqlForMySQL       string
@@ -517,7 +517,7 @@ func TestExceptSQL(t *testing.T) {
 	builderMySQL4 := sqlabble.NewBuilderForMySQL4("", "")
 	builderIndentMySQL4 := sqlabble.NewBuilderForMySQL4("> ", "  ")
 	for i, c := range []struct {
-		statement         sqlabble.Node
+		statement         sqlabble.Statement
 		sql               string
 		sqlIndent         string
 		sqlForMySQL       string
@@ -640,7 +640,7 @@ func TestExceptAllSQL(t *testing.T) {
 	builderMySQL4 := sqlabble.NewBuilderForMySQL4("", "")
 	builderIndentMySQL4 := sqlabble.NewBuilderForMySQL4("> ", "  ")
 	for i, c := range []struct {
-		statement         sqlabble.Node
+		statement         sqlabble.Statement
 		sql               string
 		sqlIndent         string
 		sqlForMySQL       string

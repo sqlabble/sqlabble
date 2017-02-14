@@ -18,13 +18,13 @@ func newOn(column1, column2 column) on {
 	}
 }
 
-func (o on) generator() generator.Generator {
+func (o on) node() generator.Node {
 	ts := tableNodes(o)
-	fs := make([]generator.Generator, len(ts))
+	fs := make([]generator.Node, len(ts))
 	for i, t := range ts {
 		fs[i] = t.expression()
 	}
-	return generator.NewGenerators(fs...)
+	return generator.NewNodes(fs...)
 }
 
 func (o on) expression() generator.Expression {

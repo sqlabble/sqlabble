@@ -16,19 +16,19 @@ func newFrom(table tableOrTableAs) from {
 	}
 }
 
-func (f from) generator() generator.Generator {
+func (f from) node() generator.Node {
 	cs := clauseNodes(f)
-	fs := make([]generator.Generator, len(cs))
+	fs := make([]generator.Node, len(cs))
 	for i, c := range cs {
-		fs[i] = c.clauseGenerator()
+		fs[i] = c.nodeMine()
 	}
-	return generator.NewGenerators(fs...)
+	return generator.NewNodes(fs...)
 }
 
-func (f from) clauseGenerator() generator.Generator {
+func (f from) nodeMine() generator.Node {
 	return generator.NewContainer(
 		generator.NewExpression(string(keyword.From)),
-		f.table.generator(),
+		f.table.node(),
 	)
 }
 

@@ -15,7 +15,7 @@ func newColumn(name string) column {
 	}
 }
 
-func (c column) generator() generator.Generator {
+func (c column) node() generator.Node {
 	return c.expression()
 }
 

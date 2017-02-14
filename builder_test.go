@@ -14,7 +14,7 @@ func TestBuild(t *testing.T) {
 	q.Select(q.Column("foo")).From(q.T("bar")).Where(q.Column("baz").Eq(100)).OrderBy(q.C("quz").Asc()).Limit(0, 20)
 
 	for i, c := range []struct {
-		statement q.Node
+		statement q.Statement
 		sql       string
 		sqlIndent string
 		values    []interface{}

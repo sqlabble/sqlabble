@@ -13,7 +13,7 @@ func newDefinition(def string) definition {
 	}
 }
 
-func (d definition) generator() generator.Generator {
+func (d definition) node() generator.Node {
 	return d.col.expression().
 		Append(generator.NewExpression(d.def))
 }
@@ -29,11 +29,11 @@ func newDefinitions(defs ...definition) definitions {
 	}
 }
 
-func (ds definitions) generator() generator.Generator {
+func (ds definitions) node() generator.Node {
 	p := ds.createTable.container()
-	gs := make([]generator.Generator, len(ds.defs))
+	gs := make([]generator.Node, len(ds.defs))
 	for i, d := range ds.defs {
-		gs[i] = d.generator()
+		gs[i] = d.node()
 	}
 	return p.AddChild(
 		generator.NewBracket(

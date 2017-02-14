@@ -23,7 +23,7 @@ import (
 
 func TestJoin(t *testing.T) {
 	for i, c := range []struct {
-		statement sqlabble.Node
+		statement sqlabble.Statement
 		sql       string
 		sqlIndent string
 		values    []interface{}
@@ -116,7 +116,7 @@ func TestJoin(t *testing.T) {
 
 func TestInnerJoin(t *testing.T) {
 	for i, c := range []struct {
-		statement sqlabble.Node
+		statement sqlabble.Statement
 		sql       string
 		sqlIndent string
 		values    []interface{}
@@ -209,7 +209,7 @@ func TestInnerJoin(t *testing.T) {
 
 func TestLeftJoin(t *testing.T) {
 	for i, c := range []struct {
-		statement sqlabble.Node
+		statement sqlabble.Statement
 		sql       string
 		sqlIndent string
 		values    []interface{}
@@ -302,7 +302,7 @@ func TestLeftJoin(t *testing.T) {
 
 func TestRightJoin(t *testing.T) {
 	for i, c := range []struct {
-		statement sqlabble.Node
+		statement sqlabble.Statement
 		sql       string
 		sqlIndent string
 		values    []interface{}

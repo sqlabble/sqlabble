@@ -7,65 +7,65 @@ import (
 
 type setOperation struct {
 	operator   string
-	statements []Node
+	statements []Statement
 }
 
-func newUnion(statements ...Node) setOperation {
+func newUnion(statements ...Statement) setOperation {
 	return setOperation{
 		operator:   keyword.Union,
 		statements: statements,
 	}
 }
 
-func newUnionAll(statements ...Node) setOperation {
+func newUnionAll(statements ...Statement) setOperation {
 	return setOperation{
 		operator:   keyword.UnionAll,
 		statements: statements,
 	}
 }
 
-func newIntersect(statements ...Node) setOperation {
+func newIntersect(statements ...Statement) setOperation {
 	return setOperation{
 		operator:   keyword.Intersect,
 		statements: statements,
 	}
 }
 
-func newIntersectAll(statements ...Node) setOperation {
+func newIntersectAll(statements ...Statement) setOperation {
 	return setOperation{
 		operator:   keyword.IntersectAll,
 		statements: statements,
 	}
 }
 
-func newExcept(statements ...Node) setOperation {
+func newExcept(statements ...Statement) setOperation {
 	return setOperation{
 		operator:   keyword.Except,
 		statements: statements,
 	}
 }
 
-func newExceptAll(statements ...Node) setOperation {
+func newExceptAll(statements ...Statement) setOperation {
 	return setOperation{
 		operator:   keyword.ExceptAll,
 		statements: statements,
 	}
 }
 
-func (u setOperation) generator() generator.Generator {
+func (u setOperation) node() generator.Node {
 	cs := clauseNodes(u)
-	gs := make([]generator.Generator, len(cs))
+	gs := make([]generator.Node, len(cs))
 	for i, c := range cs {
-		gs[i] = c.clauseGenerator()
+		gs[i] = c.nodeMine()
 	}
-	return generator.NewGenerators(gs...)
+	return generator.NewNodes(gs...)
 }
 
-func (u setOperation) clauseGenerator() generator.Generator {
+func (u setOperation) nodeMine() generator.Node {
 	sep := generator.NewExpression(u.operator)
-	gs := make([]generator.Generator, len(u.statements))
+	gs := make([]generator.Node, len(u.statements))
 	for i, s := range u.statements {
-		gs[i] = s.generator()
+		gs[i] = s.node()
 	}
 	return generator.NewUnions(sep, gs...)
 }

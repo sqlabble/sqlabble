@@ -15,10 +15,10 @@ func newAnd(cs ...comparisonOrLogicalOperation) and {
 	return and{ops: cs}
 }
 
-func (a and) generator() generator.Generator {
-	fs := make([]generator.Generator, len(a.ops))
+func (a and) node() generator.Node {
+	fs := make([]generator.Node, len(a.ops))
 	for i, o := range a.ops {
-		fs[i] = o.generator()
+		fs[i] = o.node()
 	}
 	return generator.NewOperator(a.operator(), fs...)
 }
@@ -39,10 +39,10 @@ func newOr(conditions ...comparisonOrLogicalOperation) or {
 	return or{ops: conditions}
 }
 
-func (a or) generator() generator.Generator {
-	fs := make([]generator.Generator, len(a.ops))
+func (a or) node() generator.Node {
+	fs := make([]generator.Node, len(a.ops))
 	for i, o := range a.ops {
-		fs[i] = o.generator()
+		fs[i] = o.node()
 	}
 	return generator.NewOperator(a.operator(), fs...)
 }
@@ -63,8 +63,8 @@ func newNot(operation comparisonOrLogicalOperation) not {
 	return not{operation: operation}
 }
 
-func (n not) generator() generator.Generator {
-	return generator.NewNot(n.operation.generator())
+func (n not) node() generator.Node {
+	return generator.NewNot(n.operation.node())
 }
 
 func (n not) operator() operator.Operator {
@@ -87,7 +87,7 @@ func newEq(col column, value interface{}) eq {
 	}
 }
 
-func (c eq) generator() generator.Generator {
+func (c eq) node() generator.Node {
 	return generator.NewExpression(
 		fmt.Sprintf("%s %s ?", c.col.name, c.operator()),
 		c.value,
@@ -110,7 +110,7 @@ func newNotEq(col column, value interface{}) notEq {
 	}
 }
 
-func (c notEq) generator() generator.Generator {
+func (c notEq) node() generator.Node {
 	return generator.NewExpression(
 		fmt.Sprintf("%s %s ?", c.col.name, c.operator()),
 		c.value,
@@ -133,7 +133,7 @@ func newGt(col column, value interface{}) gt {
 	}
 }
 
-func (c gt) generator() generator.Generator {
+func (c gt) node() generator.Node {
 	return generator.NewExpression(
 		fmt.Sprintf("%s %s ?", c.col.name, c.operator()),
 		c.value,
@@ -156,7 +156,7 @@ func newGte(col column, value interface{}) gte {
 	}
 }
 
-func (c gte) generator() generator.Generator {
+func (c gte) node() generator.Node {
 	return generator.NewExpression(
 		fmt.Sprintf("%s %s ?", c.col.name, c.operator()),
 		c.value,
@@ -179,7 +179,7 @@ func newLt(col column, value interface{}) lt {
 	}
 }
 
-func (c lt) generator() generator.Generator {
+func (c lt) node() generator.Node {
 	return generator.NewExpression(
 		fmt.Sprintf("%s %s ?", c.col.name, c.operator()),
 		c.value,
@@ -202,7 +202,7 @@ func newLte(col column, value interface{}) lte {
 	}
 }
 
-func (c lte) generator() generator.Generator {
+func (c lte) node() generator.Node {
 	return generator.NewExpression(
 		fmt.Sprintf("%s %s ?", c.col.name, c.operator()),
 		c.value,
@@ -226,7 +226,7 @@ func newBetween(col column, from, to interface{}) between {
 	}
 }
 
-func (c between) generator() generator.Generator {
+func (c between) node() generator.Node {
 	return generator.NewExpression(
 		fmt.Sprintf("%s %s ? %s ?", c.col.name, c.operator(), operator.And),
 		c.from, c.to,
@@ -249,7 +249,7 @@ func newIn(col column, values ...interface{}) in {
 	}
 }
 
-func (c in) generator() generator.Generator {
+func (c in) node() generator.Node {
 	return generator.NewExpression(
 		fmt.Sprintf(
 			"%s %s (%s)",
@@ -277,7 +277,7 @@ func newNotIn(col column, values ...interface{}) notIn {
 	}
 }
 
-func (c notIn) generator() generator.Generator {
+func (c notIn) node() generator.Node {
 	return generator.NewExpression(
 		fmt.Sprintf(
 			"%s %s (%s)",
@@ -305,7 +305,7 @@ func newLike(col column, lik string) like {
 	}
 }
 
-func (l like) generator() generator.Generator {
+func (l like) node() generator.Node {
 	return generator.NewExpression(
 		fmt.Sprintf("%s %s ?", l.col.name, l.operator()),
 		l.lik,
@@ -328,7 +328,7 @@ func newRegExp(col column, regexp string) regExp {
 	}
 }
 
-func (l regExp) generator() generator.Generator {
+func (l regExp) node() generator.Node {
 	return generator.NewExpression(
 		fmt.Sprintf("%s %s ?", l.col.name, l.operator()),
 		l.regexp,
@@ -349,7 +349,7 @@ func newIsNull(col column) isNull {
 	}
 }
 
-func (l isNull) generator() generator.Generator {
+func (l isNull) node() generator.Node {
 	return generator.NewExpression(
 		fmt.Sprintf("%s %s", l.col.name, l.Operator()),
 	)
@@ -369,7 +369,7 @@ func newIsNotNull(col column) isNotNull {
 	}
 }
 
-func (l isNotNull) generator() generator.Generator {
+func (l isNotNull) node() generator.Node {
 	return generator.NewExpression(
 		fmt.Sprintf("%s %s", l.col.name, l.Operator()),
 	)

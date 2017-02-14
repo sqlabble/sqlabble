@@ -14,19 +14,19 @@ func newOrderBy(os ...order) orderBy {
 	return orderBy{orders: os}
 }
 
-func (o orderBy) generator() generator.Generator {
+func (o orderBy) node() generator.Node {
 	cs := clauseNodes(o)
-	fs := make([]generator.Generator, len(cs))
+	fs := make([]generator.Node, len(cs))
 	for i, c := range cs {
-		fs[i] = c.clauseGenerator()
+		fs[i] = c.nodeMine()
 	}
-	return generator.NewGenerators(fs...)
+	return generator.NewNodes(fs...)
 }
 
-func (o orderBy) clauseGenerator() generator.Generator {
-	fs := make([]generator.Generator, len(o.orders))
+func (o orderBy) nodeMine() generator.Node {
+	fs := make([]generator.Node, len(o.orders))
 	for i, c := range o.orders {
-		fs[i] = c.generator()
+		fs[i] = c.node()
 	}
 	return generator.NewContainer(
 		generator.NewExpression(string(keyword.OrderBy)),

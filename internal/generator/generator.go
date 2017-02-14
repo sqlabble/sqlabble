@@ -9,18 +9,18 @@ import (
 
 type Unions struct {
 	separator  Expression
-	generators []Generator
+	generators []Node
 }
 
-func NewUnions(separator Expression, generators ...Generator) Unions {
+func NewUnions(separator Expression, generators ...Node) Unions {
 	return Unions{
 		separator:  separator,
 		generators: generators,
 	}
 }
 
-func (us Unions) Generate(ctx Context) (string, []interface{}) {
-	res := []Generator{}
+func (us Unions) ToSQL(ctx Context) (string, []interface{}) {
+	res := []Node{}
 	for i, g := range us.generators {
 		if needsBracket(ctx, g) {
 			g = NewBracket(g)
@@ -31,15 +31,15 @@ func (us Unions) Generate(ctx Context) (string, []interface{}) {
 		}
 		res = append(res, us.separator, g)
 	}
-	return NewGenerators(res...).Generate(ctx)
+	return NewNodes(res...).ToSQL(ctx)
 }
 
-func needsBracket(ctx Context, generator Generator) bool {
+func needsBracket(ctx Context, generator Node) bool {
 	if !ctx.flatSetOperation {
 		return true
 	}
 
-	gs, ok := generator.(Generators)
+	gs, ok := generator.(Nodes)
 	if !ok {
 		return true
 	}
@@ -53,26 +53,26 @@ func needsBracket(ctx Context, generator Generator) bool {
 	return false
 }
 
-type Generator interface {
-	Generate(Context) (string, []interface{})
+type Node interface {
+	ToSQL(Context) (string, []interface{})
 }
 
-type Generators []Generator
+type Nodes []Node
 
-func NewGenerators(generators ...Generator) Generators {
-	return Generators(generators)
+func NewNodes(generators ...Node) Nodes {
+	return Nodes(generators)
 }
 
-func (fs Generators) Generate(ctx Context) (string, []interface{}) {
-	sqls := make([]string, len(fs))
+func (ns Nodes) ToSQL(ctx Context) (string, []interface{}) {
+	sqls := make([]string, len(ns))
 	values := []interface{}{}
-	for i, e := range fs {
+	for i, e := range ns {
 		var vs []interface{}
 		if i == 0 {
-			sqls[i], vs = e.Generate(ctx)
+			sqls[i], vs = e.ToSQL(ctx)
 			values = append(values, vs...)
 		} else {
-			sqls[i], vs = e.Generate(ctx.ClearHead())
+			sqls[i], vs = e.ToSQL(ctx.ClearHead())
 			values = append(values, vs...)
 		}
 	}
@@ -85,7 +85,7 @@ func NewExpressions(es ...Expression) Expressions {
 	return es
 }
 
-func (es Expressions) Generate(ctx Context) (string, []interface{}) {
+func (es Expressions) ToSQL(ctx Context) (string, []interface{}) {
 	if len(es) == 0 {
 		return "", nil
 	}
@@ -94,7 +94,7 @@ func (es Expressions) Generate(ctx Context) (string, []interface{}) {
 		e := es[i]
 		exp = exp.Append(e)
 	}
-	return exp.Generate(ctx)
+	return exp.ToSQL(ctx)
 }
 
 type Expression struct {
@@ -112,7 +112,7 @@ func NewExpression(sql string, values ...interface{}) Expression {
 	}
 }
 
-func (e Expression) Generate(ctx Context) (string, []interface{}) {
+func (e Expression) ToSQL(ctx Context) (string, []interface{}) {
 	h := ctx.Head()
 	ctx = ctx.ClearHead()
 	if ctx.Breaking() {
@@ -168,72 +168,72 @@ func placeholders(i int) string {
 
 type Container struct {
 	self     Expression
-	children Generators
+	children Nodes
 }
 
-func NewContainer(self Expression, children ...Generator) Container {
+func NewContainer(self Expression, children ...Node) Container {
 	return Container{
 		self:     self,
 		children: children,
 	}
 }
 
-func (c Container) Generate(ctx Context) (string, []interface{}) {
-	ps, pvs := c.self.Generate(ctx)
+func (c Container) ToSQL(ctx Context) (string, []interface{}) {
+	ps, pvs := c.self.ToSQL(ctx)
 	ctx = ctx.ClearHead()
-	cs, cvs := c.children.Generate(ctx.IncDepth())
+	cs, cvs := c.children.ToSQL(ctx.IncDepth())
 	return ctx.Join(ps, cs), append(pvs, cvs...)
 }
 
-func (c Container) AddChild(children ...Generator) Container {
+func (c Container) AddChild(children ...Node) Container {
 	c.children = append(c.children, children...)
 	return c
 }
 
 type Join struct {
 	sep        string
-	generators []Generator
+	generators []Node
 }
 
-func NewJoin(sep string, generators ...Generator) Join {
-	return Join{
-		sep:        sep,
-		generators: generators,
-	}
-}
-
-func (j Join) Generate(ctx Context) (string, []interface{}) {
-	sqls := make([]string, len(j.generators))
-	values := []interface{}{}
-	for i, g := range j.generators {
-		var vs []interface{}
-		sqls[i], vs = g.Generate(ctx)
-		values = append(values, vs...)
-	}
-	return NewExpression(strings.Join(sqls, j.sep), values...).Generate(ctx)
-}
+// func NewJoin(sep string, generators ...Node) Join {
+// 	return Join{
+// 		sep:        sep,
+// 		generators: generators,
+// 	}
+// }
+//
+// func (j Join) ToSQL(ctx Context) (string, []interface{}) {
+// 	sqls := make([]string, len(j.generators))
+// 	values := []interface{}{}
+// 	for i, g := range j.generators {
+// 		var vs []interface{}
+// 		sqls[i], vs = g.ToSQL(ctx)
+// 		values = append(values, vs...)
+// 	}
+// 	return NewExpression(strings.Join(sqls, j.sep), values...).ToSQL(ctx)
+// }
 
 type Comma struct {
-	generators []Generator
+	generators []Node
 }
 
-func NewComma(generators ...Generator) Comma {
+func NewComma(generators ...Node) Comma {
 	return Comma{
 		generators: generators,
 	}
 }
 
-func (c Comma) Generate(ctx Context) (string, []interface{}) {
+func (c Comma) ToSQL(ctx Context) (string, []interface{}) {
 	sqls := make([]string, len(c.generators))
 	values := []interface{}{}
 	for i, t := range c.generators {
 		var vs []interface{}
 		if i == 0 {
-			sqls[i], vs = t.Generate(ctx)
+			sqls[i], vs = t.ToSQL(ctx)
 			values = append(values, vs...)
 			continue
 		}
-		sqls[i], vs = t.Generate(ctx.SetHead(", "))
+		sqls[i], vs = t.ToSQL(ctx.SetHead(", "))
 		values = append(values, vs...)
 	}
 	return strings.Join(sqls, ""), values
@@ -241,17 +241,17 @@ func (c Comma) Generate(ctx Context) (string, []interface{}) {
 
 type Operator struct {
 	operator   operator.Operator
-	generators []Generator
+	generators []Node
 }
 
-func NewOperator(operator operator.Operator, generators ...Generator) Operator {
+func NewOperator(operator operator.Operator, generators ...Node) Operator {
 	return Operator{
 		operator:   operator,
 		generators: generators,
 	}
 }
 
-func (o Operator) Generate(ctx Context) (string, []interface{}) {
+func (o Operator) ToSQL(ctx Context) (string, []interface{}) {
 	for {
 		if len(o.generators) != 1 {
 			break
@@ -277,11 +277,11 @@ func (o Operator) Generate(ctx Context) (string, []interface{}) {
 	for i, f := range o.generators {
 		var vs []interface{}
 		if i == 0 {
-			sqls[i], vs = f.Generate(c1.ClearHead())
+			sqls[i], vs = f.ToSQL(c1.ClearHead())
 			values = append(values, vs...)
 			continue
 		}
-		sqls[i], vs = f.Generate(c1.SetHead(fmt.Sprintf("%s ", o.operator)))
+		sqls[i], vs = f.ToSQL(c1.SetHead(fmt.Sprintf("%s ", o.operator)))
 		values = append(values, vs...)
 	}
 	sql := ctx.Join(sqls...)
@@ -297,16 +297,16 @@ func (o Operator) Generate(ctx Context) (string, []interface{}) {
 }
 
 type Not struct {
-	generator Generator
+	generator Node
 }
 
-func NewNot(generator Generator) Not {
+func NewNot(generator Node) Not {
 	return Not{
 		generator: generator,
 	}
 }
 
-func (n Not) Generate(ctx Context) (string, []interface{}) {
+func (n Not) ToSQL(ctx Context) (string, []interface{}) {
 	// This is a code to delete duplicate NOTs,
 	// but optimizing is not a task of SQL builder,
 	// so comment it out.
@@ -319,7 +319,7 @@ func (n Not) Generate(ctx Context) (string, []interface{}) {
 	head := ctx.Head()
 	ctx = ctx.ClearBracketDepth()
 
-	sql, values := n.generator.Generate(ctx.IncDepth().ClearHead())
+	sql, values := n.generator.ToSQL(ctx.IncDepth().ClearHead())
 
 	if ctx.Breaking() {
 		p := ctx.Prefix()
@@ -330,20 +330,20 @@ func (n Not) Generate(ctx Context) (string, []interface{}) {
 }
 
 type Bracket struct {
-	generator Generator
+	generator Node
 }
 
-func NewBracket(g Generator) Bracket {
+func NewBracket(g Node) Bracket {
 	return Bracket{
 		generator: g,
 	}
 }
 
-func (b Bracket) Generate(ctx Context) (string, []interface{}) {
+func (b Bracket) ToSQL(ctx Context) (string, []interface{}) {
 	head := ctx.Head()
 	ctx = ctx.ClearBracketDepth()
 
-	sql, values := b.generator.Generate(ctx.IncDepth().ClearHead())
+	sql, values := b.generator.ToSQL(ctx.IncDepth().ClearHead())
 
 	if ctx.Breaking() {
 		p := ctx.Prefix()

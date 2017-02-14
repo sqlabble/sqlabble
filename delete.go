@@ -11,16 +11,16 @@ func newDelete() del {
 	return del{}
 }
 
-func (d del) generator() generator.Generator {
+func (d del) node() generator.Node {
 	cs := clauseNodes(d)
-	fs := make([]generator.Generator, len(cs))
+	fs := make([]generator.Node, len(cs))
 	for i, c := range cs {
-		fs[i] = c.clauseGenerator()
+		fs[i] = c.nodeMine()
 	}
-	return generator.NewGenerators(fs...)
+	return generator.NewNodes(fs...)
 }
 
-func (d del) clauseGenerator() generator.Generator {
+func (d del) nodeMine() generator.Node {
 	return generator.NewContainer(
 		generator.NewExpression(keyword.Delete),
 	)

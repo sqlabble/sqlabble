@@ -17,16 +17,16 @@ func newInsertInto(table tableOrTableAs, columns ...column) insertInto {
 	}
 }
 
-func (s insertInto) generator() generator.Generator {
+func (s insertInto) node() generator.Node {
 	cs := clauseNodes(s)
-	gs := make([]generator.Generator, len(cs))
+	gs := make([]generator.Node, len(cs))
 	for i, c := range cs {
-		gs[i] = c.clauseGenerator()
+		gs[i] = c.nodeMine()
 	}
-	return generator.NewGenerators(gs...)
+	return generator.NewNodes(gs...)
 }
 
-func (s insertInto) clauseGenerator() generator.Generator {
+func (s insertInto) nodeMine() generator.Node {
 	es := make([]generator.Expression, len(s.columns))
 	for i, c := range s.columns {
 		es[i] = c.expression()

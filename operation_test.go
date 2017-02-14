@@ -59,7 +59,7 @@ import (
 
 func TestAnd(t *testing.T) {
 	for i, c := range []struct {
-		statement sqlabble.Node
+		statement sqlabble.Statement
 		sql       string
 		sqlIndent string
 		values    []interface{}
@@ -230,7 +230,7 @@ AND foo > ?
 
 func TestOr(t *testing.T) {
 	for _, c := range []struct {
-		statement sqlabble.Node
+		statement sqlabble.Statement
 		sql       string
 		sqlIndent string
 		values    []interface{}
@@ -394,7 +394,7 @@ OR foo > ?
 
 func TestNot(t *testing.T) {
 	for i, c := range []struct {
-		statement sqlabble.Node
+		statement sqlabble.Statement
 		sql       string
 		sqlIndent string
 		values    []interface{}
@@ -572,7 +572,7 @@ func TestNot(t *testing.T) {
 
 func TestEq(t *testing.T) {
 	for _, c := range []struct {
-		eq            sqlabble.Node
+		eq            sqlabble.Statement
 		wantSQL       string
 		wantIndentSQL string
 		wantValues    []interface{}
@@ -610,7 +610,7 @@ func TestEq(t *testing.T) {
 
 func TestComplexOperation(t *testing.T) {
 	for i, c := range []struct {
-		statement sqlabble.Node
+		statement sqlabble.Statement
 		sql       string
 		sqlIndent string
 		values    []interface{}

@@ -39,13 +39,13 @@ func newRightJoin(table tableOrTableAs) join {
 	}
 }
 
-func (t join) generator() generator.Generator {
+func (t join) node() generator.Node {
 	ts := tableNodes(t)
-	es := make([]generator.Generator, len(ts))
+	es := make([]generator.Node, len(ts))
 	for i, t := range ts {
 		es[i] = t.expression()
 	}
-	return generator.NewGenerators(es...)
+	return generator.NewNodes(es...)
 }
 
 func (t join) expression() generator.Expression {

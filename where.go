@@ -16,19 +16,19 @@ func newWhere(operation comparisonOrLogicalOperation) where {
 	}
 }
 
-func (w where) generator() generator.Generator {
+func (w where) node() generator.Node {
 	cs := clauseNodes(w)
-	gs := make([]generator.Generator, len(cs))
+	gs := make([]generator.Node, len(cs))
 	for i, c := range cs {
-		gs[i] = c.clauseGenerator()
+		gs[i] = c.nodeMine()
 	}
-	return generator.NewGenerators(gs...)
+	return generator.NewNodes(gs...)
 }
 
-func (w where) clauseGenerator() generator.Generator {
+func (w where) nodeMine() generator.Node {
 	return generator.NewContainer(
 		generator.NewExpression(keyword.Where),
-		w.operation.generator(),
+		w.operation.node(),
 	)
 }
 

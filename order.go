@@ -12,7 +12,7 @@ type order struct {
 	dir direction.Direction
 }
 
-func (o order) generator() generator.Generator {
+func (o order) node() generator.Node {
 	return generator.NewExpression(
 		fmt.Sprintf("%s %s", o.col.name, o.dir),
 	)

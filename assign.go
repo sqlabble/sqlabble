@@ -17,7 +17,7 @@ func newAssign(col column, value interface{}) assign {
 	}
 }
 
-func (a assign) generator() generator.Generator {
+func (a assign) node() generator.Node {
 	return a.expression()
 }
 

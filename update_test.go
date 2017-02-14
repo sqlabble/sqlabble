@@ -23,7 +23,7 @@ import (
 
 func TestUpdate(t *testing.T) {
 	for i, c := range []struct {
-		statement sqlabble.Node
+		statement sqlabble.Statement
 		sql       string
 		sqlIndent string
 		values    []interface{}

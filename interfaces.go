@@ -5,28 +5,28 @@ import (
 	"github.com/minodisk/sqlabble/internal/operator"
 )
 
-type Node interface {
-	generator() generator.Generator
+type Statement interface {
+	node() generator.Node
 }
 
-type expression interface {
-	Node
+type expressor interface {
+	Statement
 	expression() generator.Expression
 }
 
 type clause interface {
-	Node
-	clauseGenerator() generator.Generator
+	Statement
+	nodeMine() generator.Node
 	previous() clause
 }
 
 type columnOrColumnAs interface {
-	expression
+	expressor
 	columnName() string
 }
 
 type tableOrTableAs interface {
-	expression
+	expressor
 	Join(tableOrTableAs) tableOrTableAs
 	InnerJoin(tableOrTableAs) tableOrTableAs
 	LeftJoin(tableOrTableAs) tableOrTableAs
@@ -35,21 +35,21 @@ type tableOrTableAs interface {
 }
 
 type comparisonOrLogicalOperation interface {
-	Node
+	Statement
 	operator() operator.Operator
 }
 
-type comparisonOperation interface {
-	comparisonOrLogicalOperation
-}
-
-type logicalOperation interface {
-	comparisonOrLogicalOperation
-	operations() []comparisonOrLogicalOperation
-}
+// type comparisonOperation interface {
+// 	comparisonOrLogicalOperation
+// }
+//
+// type logicalOperation interface {
+// 	comparisonOrLogicalOperation
+// 	operations() []comparisonOrLogicalOperation
+// }
 
 type vals interface {
-	expression
+	expressor
 	clause() clause
 	previous() vals
 }

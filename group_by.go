@@ -16,19 +16,19 @@ func newGroupBy(col column, columns ...column) groupBy {
 	}
 }
 
-func (g groupBy) generator() generator.Generator {
+func (g groupBy) node() generator.Node {
 	cs := clauseNodes(g)
-	gs := make([]generator.Generator, len(cs))
+	gs := make([]generator.Node, len(cs))
 	for i, c := range cs {
-		gs[i] = c.clauseGenerator()
+		gs[i] = c.nodeMine()
 	}
-	return generator.NewGenerators(gs...)
+	return generator.NewNodes(gs...)
 }
 
-func (g groupBy) clauseGenerator() generator.Generator {
-	gs := make([]generator.Generator, len(g.columns))
+func (g groupBy) nodeMine() generator.Node {
+	gs := make([]generator.Node, len(g.columns))
 	for i, c := range g.columns {
-		gs[i] = c.generator()
+		gs[i] = c.node()
 	}
 	return generator.NewContainer(
 		generator.NewExpression(string(keyword.GroupBy)),

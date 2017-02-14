@@ -27,11 +27,18 @@ var (
 	ExceptAll    = newExceptAll
 )
 
-func Build(n Node) (string, []interface{}) {
+var (
+	Standard         = Builder{generator.NewContext("", "")}
+	IndentedStandard = Builder{generator.NewContext("", "    ")}
+	MySQL4           = Builder{generator.NewContext("", "")}
+	IndentedMySQL4   = Builder{generator.NewContext("", "    ")}
+)
+
+func Build(n Statement) (string, []interface{}) {
 	return NewBuilder("", "").Build(n)
 }
 
-func BuildIndent(n Node, prefix, indent string) (string, []interface{}) {
+func BuildIndent(n Statement, prefix, indent string) (string, []interface{}) {
 	return NewBuilder(prefix, indent).Build(n)
 }
 
@@ -53,6 +60,6 @@ func NewBuilderForMySQL4(prefix, indent string) Builder {
 	}
 }
 
-func (b Builder) Build(n Node) (string, []interface{}) {
-	return n.generator().Generate(b.context)
+func (b Builder) Build(n Statement) (string, []interface{}) {
+	return n.node().ToSQL(b.context)
 }

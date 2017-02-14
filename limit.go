@@ -18,16 +18,16 @@ func newLimit(offset, lim int) limit {
 	}
 }
 
-func (l limit) generator() generator.Generator {
+func (l limit) node() generator.Node {
 	cs := clauseNodes(l)
-	fs := make([]generator.Generator, len(cs))
+	fs := make([]generator.Node, len(cs))
 	for i, c := range cs {
-		fs[i] = c.clauseGenerator()
+		fs[i] = c.nodeMine()
 	}
-	return generator.NewGenerators(fs...)
+	return generator.NewNodes(fs...)
 }
 
-func (l limit) clauseGenerator() generator.Generator {
+func (l limit) nodeMine() generator.Node {
 	var p generator.Expression
 	if l.offset == 0 {
 		p = generator.NewPlaceholders(l.lim)

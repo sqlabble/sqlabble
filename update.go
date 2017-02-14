@@ -16,14 +16,14 @@ func newUpdate(tbl table) update {
 	}
 }
 
-func (u update) generator() generator.Generator {
-	return u.clauseGenerator()
+func (u update) node() generator.Node {
+	return u.nodeMine()
 }
 
-func (u update) clauseGenerator() generator.Generator {
+func (u update) nodeMine() generator.Node {
 	return generator.NewContainer(
 		generator.NewExpression(keyword.Update),
-		u.tbl.generator(),
+		u.tbl.node(),
 	)
 }
 

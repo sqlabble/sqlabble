@@ -19,9 +19,9 @@ func newValues(vals ...interface{}) values {
 	}
 }
 
-func (v values) generator() generator.Generator {
+func (v values) node() generator.Node {
 	vs := valuesNodes(v)
-	es := make([]generator.Generator, len(vs))
+	es := make([]generator.Node, len(vs))
 	for i, v := range vs {
 		es[i] = v.expression()
 	}
@@ -32,8 +32,8 @@ func (v values) generator() generator.Generator {
 
 	if len(vs) > 0 {
 		if c := vs[0].clause(); c != nil {
-			return generator.NewGenerators(
-				c.generator(),
+			return generator.NewNodes(
+				c.node(),
 				g,
 			)
 		}
