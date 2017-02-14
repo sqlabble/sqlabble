@@ -24,6 +24,11 @@ Type supported SQL query builder.
 - [x] `CREATE TABLE {TABLE}`
 - [x] `CREATE TABLE IF NOT EXISTS {TABLE}`
 
+#### With Sub Queries
+
+- [ ] `SELECT ({SUBQUERY})`
+- [ ] `FROM ({SUBQUERY})`
+
 ### Aliases
 
 - [x] `{TABLE} AS {ALIAS}`
@@ -33,13 +38,23 @@ Type supported SQL query builder.
 
 - [x] `{COLUMN} = {VALUE}`
 
-### Logical Operators
+### Conditional Logics
+
+- [ ] `CASE`
+- [ ] `WHEN`
+- [ ] `ELSE`
+- [ ] `THEN`
+- [ ] `END`
+
+### Operators
+
+#### Logical Operators
 
 - [x] `{OPERATION} AND {OPERATION}`
 - [x] `{OPERATION} OR {OPERATION}`
 - [x] `NOT ({OPERATION})`
 
-### Comparison Operators
+#### Comparison Operators
 
 - [x] `{COLUMN} = {VALUE}`
 - [x] `{COLUMN} != {VALUE}`
@@ -51,9 +66,33 @@ Type supported SQL query builder.
 - [x] `{COLUMN} IN {VALUE}`
 - [x] `{COLUMN} NOT IN {VALUE}`
 - [x] `{COLUMN} LIKE {VALUE}`
-- [x] `{COLUMN} BETWEEN {VALUE}`
+- [x] `{COLUMN} REGEXP {VALUE}`
 - [x] `{COLUMN} IS NULL {VALUE}`
 - [x] `{COLUMN} IS NOT NULL {VALUE}`
+
+##### With Sub Queries
+
+- [ ] `{COLUMN} = ({SUBQUERY})`
+- [ ] `{COLUMN} != ({SUBQUERY})`
+- [ ] `{COLUMN} > ({SUBQUERY})`
+- [ ] `{COLUMN} >= ({SUBQUERY})`
+- [ ] `{COLUMN} < ({SUBQUERY})`
+- [ ] `{COLUMN} <= ({SUBQUERY})`
+- [ ] `{COLUMN} IN ({SUBQUERY})`
+- [ ] `{COLUMN} NOT IN ({SUBQUERY})`
+- [ ] `({SUBQUERY}) = {VALUE}`
+- [ ] `({SUBQUERY}) != {VALUE}`
+- [ ] `({SUBQUERY}) > {VALUE}`
+- [ ] `({SUBQUERY}) >= {VALUE}`
+- [ ] `({SUBQUERY}) < {VALUE}`
+- [ ] `({SUBQUERY}) <= {VALUE}`
+- [ ] `({SUBQUERY}) BETWEEN {VALUE}`
+- [ ] `({SUBQUERY}) IN {VALUE}`
+- [ ] `({SUBQUERY}) NOT IN {VALUE}`
+- [ ] `({SUBQUERY}) LIKE {VALUE}`
+- [ ] `({SUBQUERY}) REGEXP {VALUE}`
+- [ ] `({SUBQUERY}) IS NULL {VALUE}`
+- [ ] `({SUBQUERY}) IS NOT NULL {VALUE}`
 
 ### Joins
 
@@ -66,6 +105,13 @@ Type supported SQL query builder.
 
 - [x] `ON {COLUMN} = {COLUMN}`
 - [x] `USING {COLUMN}`
+
+#### With Sub Queries
+
+- [ ] `{TABLE} JOIN ({SUBQUERY})`
+- [ ] `{TABLE} INNER JOIN ({SUBQUERY})`
+- [ ] `{TABLE} LEFT JOIN ({SUBQUERY})`
+- [ ] `{TABLE} RIGHT JOIN ({SUBQUERY})`
 
 ### Orders
 
@@ -84,7 +130,3 @@ Type supported SQL query builder.
 ### Table Definitions
 
 - [x] `({COLUMN} {DEFINITION})`
-
-### Subqueries
-
-N/A
