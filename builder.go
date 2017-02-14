@@ -27,12 +27,12 @@ var (
 	ExceptAll    = newExceptAll
 )
 
-func Build(s Node) (string, []interface{}) {
-	return NewBuilder("", "").Build(s)
+func Build(n Node) (string, []interface{}) {
+	return NewBuilder("", "").Build(n)
 }
 
-func BuildIndent(s Node, prefix, indent string) (string, []interface{}) {
-	return NewBuilder(prefix, indent).Build(s)
+func BuildIndent(n Node, prefix, indent string) (string, []interface{}) {
+	return NewBuilder(prefix, indent).Build(n)
 }
 
 type Builder struct {
@@ -53,6 +53,6 @@ func NewBuilderForMySQL4(prefix, indent string) Builder {
 	}
 }
 
-func (b Builder) Build(c Node) (string, []interface{}) {
-	return c.generator().Generate(b.context)
+func (b Builder) Build(n Node) (string, []interface{}) {
+	return n.generator().Generate(b.context)
 }

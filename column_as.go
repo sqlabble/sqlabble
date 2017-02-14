@@ -2,7 +2,7 @@ package sqlabble
 
 import (
 	"github.com/minodisk/sqlabble/internal/generator"
-	"github.com/minodisk/sqlabble/internal/grammar/operator"
+	"github.com/minodisk/sqlabble/internal/operator"
 )
 
 type columnAs struct {

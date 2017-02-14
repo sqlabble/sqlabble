@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/minodisk/sqlabble/internal/generator"
-	"github.com/minodisk/sqlabble/internal/grammar/keyword"
+	"github.com/minodisk/sqlabble/internal/keyword"
 )
 
 type values struct {

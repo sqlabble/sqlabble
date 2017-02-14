@@ -1,9 +1,9 @@
 package sqlabble
 
 import (
+	"github.com/minodisk/sqlabble/internal/direction"
 	"github.com/minodisk/sqlabble/internal/generator"
-	"github.com/minodisk/sqlabble/internal/grammar/direction"
-	"github.com/minodisk/sqlabble/internal/grammar/operator"
+	"github.com/minodisk/sqlabble/internal/operator"
 )
 
 type Node interface {

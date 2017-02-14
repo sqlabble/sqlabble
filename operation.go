@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/minodisk/sqlabble/internal/generator"
-	"github.com/minodisk/sqlabble/internal/grammar/operator"
+	"github.com/minodisk/sqlabble/internal/operator"
 )
 
 type and struct {

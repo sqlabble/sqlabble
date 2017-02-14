@@ -2,8 +2,8 @@ package sqlabble
 
 import (
 	"github.com/minodisk/sqlabble/internal/generator"
-	"github.com/minodisk/sqlabble/internal/grammar/keyword"
-	"github.com/minodisk/sqlabble/internal/grammar/operator"
+	"github.com/minodisk/sqlabble/internal/keyword"
+	"github.com/minodisk/sqlabble/internal/operator"
 )
 
 type on struct {

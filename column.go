@@ -1,8 +1,8 @@
 package sqlabble
 
 import (
+	"github.com/minodisk/sqlabble/internal/direction"
 	"github.com/minodisk/sqlabble/internal/generator"
-	"github.com/minodisk/sqlabble/internal/grammar/direction"
 )
 
 type column struct {
