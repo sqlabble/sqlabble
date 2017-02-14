@@ -20,10 +20,6 @@ import (
 // }
 
 func TestUnionSQL(t *testing.T) {
-	builder := sqlabble.NewBuilder("", "")
-	builderIndent := sqlabble.NewBuilder("> ", "  ")
-	builderMySQL4 := sqlabble.NewBuilderForMySQL4("", "")
-	builderIndentMySQL4 := sqlabble.NewBuilderForMySQL4("> ", "  ")
 	for i, c := range []struct {
 		statement         sqlabble.Statement
 		sql               string
@@ -143,10 +139,6 @@ func TestUnionSQL(t *testing.T) {
 }
 
 func TestUnionAllSQL(t *testing.T) {
-	builder := sqlabble.NewBuilder("", "")
-	builderIndent := sqlabble.NewBuilder("> ", "  ")
-	builderMySQL4 := sqlabble.NewBuilderForMySQL4("", "")
-	builderIndentMySQL4 := sqlabble.NewBuilderForMySQL4("> ", "  ")
 	for i, c := range []struct {
 		statement         sqlabble.Statement
 		sql               string
@@ -266,10 +258,6 @@ func TestUnionAllSQL(t *testing.T) {
 }
 
 func TestIntersectSQL(t *testing.T) {
-	builder := sqlabble.NewBuilder("", "")
-	builderIndent := sqlabble.NewBuilder("> ", "  ")
-	builderMySQL4 := sqlabble.NewBuilderForMySQL4("", "")
-	builderIndentMySQL4 := sqlabble.NewBuilderForMySQL4("> ", "  ")
 	for i, c := range []struct {
 		statement         sqlabble.Statement
 		sql               string
@@ -389,10 +377,6 @@ func TestIntersectSQL(t *testing.T) {
 }
 
 func TestIntersectAllSQL(t *testing.T) {
-	builder := sqlabble.NewBuilder("", "")
-	builderIndent := sqlabble.NewBuilder("> ", "  ")
-	builderMySQL4 := sqlabble.NewBuilderForMySQL4("", "")
-	builderIndentMySQL4 := sqlabble.NewBuilderForMySQL4("> ", "  ")
 	for i, c := range []struct {
 		statement         sqlabble.Statement
 		sql               string
@@ -512,10 +496,6 @@ func TestIntersectAllSQL(t *testing.T) {
 }
 
 func TestExceptSQL(t *testing.T) {
-	builder := sqlabble.NewBuilder("", "")
-	builderIndent := sqlabble.NewBuilder("> ", "  ")
-	builderMySQL4 := sqlabble.NewBuilderForMySQL4("", "")
-	builderIndentMySQL4 := sqlabble.NewBuilderForMySQL4("> ", "  ")
 	for i, c := range []struct {
 		statement         sqlabble.Statement
 		sql               string
@@ -635,10 +615,6 @@ func TestExceptSQL(t *testing.T) {
 }
 
 func TestExceptAllSQL(t *testing.T) {
-	builder := sqlabble.NewBuilder("", "")
-	builderIndent := sqlabble.NewBuilder("> ", "  ")
-	builderMySQL4 := sqlabble.NewBuilderForMySQL4("", "")
-	builderIndentMySQL4 := sqlabble.NewBuilderForMySQL4("> ", "  ")
 	for i, c := range []struct {
 		statement         sqlabble.Statement
 		sql               string

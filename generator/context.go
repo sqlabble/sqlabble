@@ -3,21 +3,21 @@ package generator
 import "strings"
 
 type Context struct {
-	breaking             bool
-	prefix, indent, head string
-	depth, bracketDepth  int
-	flatSetOperation     bool
+	prefix, indent      string
+	breaking, flatSets  bool
+	head                string
+	depth, bracketDepth int
 }
 
-func NewContext(prefix, indent string) Context {
+func newContext(o Options) Context {
 	return Context{
-		breaking:         prefix != "" || indent != "",
-		prefix:           prefix,
-		indent:           indent,
-		head:             "",
-		depth:            0,
-		bracketDepth:     0,
-		flatSetOperation: false,
+		prefix:       o.Prefix,
+		indent:       o.Indent,
+		breaking:     o.Prefix != "" || o.Indent != "",
+		flatSets:     o.FlatSets,
+		head:         "",
+		depth:        0,
+		bracketDepth: 0,
 	}
 }
 
@@ -63,7 +63,7 @@ func (f Context) TopParentheses() bool {
 }
 
 func (c Context) SetFlatSetOperation(flat bool) Context {
-	c.flatSetOperation = flat
+	c.flatSets = flat
 	return c
 }
 

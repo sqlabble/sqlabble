@@ -89,7 +89,7 @@ func TestOn(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
-			sql, values := sqlabble.BuildIndent(c.statement, "> ", "  ")
+			sql, values := builderIndent.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
 			}

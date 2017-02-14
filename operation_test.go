@@ -66,44 +66,44 @@ func TestAnd(t *testing.T) {
 	}{
 		// 0
 		{
-			statement: sqlabble.NewAnd(
+			sqlabble.NewAnd(
 				sqlabble.NewNotEq(sqlabble.C("foo"), 100),
 			),
-			sql: "foo != ?",
-			sqlIndent: `foo != ?
+			"foo != ?",
+			`> foo != ?
 `,
-			values: []interface{}{
+			[]interface{}{
 				100,
 			},
 		},
 		// 1
 		{
-			statement: sqlabble.NewAnd(
+			sqlabble.NewAnd(
 				sqlabble.NewNotEq(sqlabble.C("foo"), 100),
 				sqlabble.NewEq(sqlabble.C("bar"), 200),
 			),
-			sql: "foo != ? AND bar = ?",
-			sqlIndent: `foo != ?
-AND bar = ?
+			"foo != ? AND bar = ?",
+			`> foo != ?
+> AND bar = ?
 `,
-			values: []interface{}{
+			[]interface{}{
 				100,
 				200,
 			},
 		},
 		// 2
 		{
-			statement: sqlabble.NewAnd(
+			sqlabble.NewAnd(
 				sqlabble.NewNotEq(sqlabble.C("foo"), 100),
 				sqlabble.NewEq(sqlabble.C("bar"), 200),
 				sqlabble.NewLike(sqlabble.C("baz"), "abc"),
 			),
-			sql: "foo != ? AND bar = ? AND baz LIKE ?",
-			sqlIndent: `foo != ?
-AND bar = ?
-AND baz LIKE ?
+			"foo != ? AND bar = ? AND baz LIKE ?",
+			`> foo != ?
+> AND bar = ?
+> AND baz LIKE ?
 `,
-			values: []interface{}{
+			[]interface{}{
 				100,
 				200,
 				"abc",
@@ -111,19 +111,19 @@ AND baz LIKE ?
 		},
 		// 3
 		{
-			statement: sqlabble.NewAnd(
+			sqlabble.NewAnd(
 				sqlabble.NewAnd(
 					sqlabble.NewNotEq(sqlabble.C("foo"), 100),
 					sqlabble.NewEq(sqlabble.C("bar"), 200),
 					sqlabble.NewLike(sqlabble.C("baz"), "abc"),
 				),
 			),
-			sql: "foo != ? AND bar = ? AND baz LIKE ?",
-			sqlIndent: `foo != ?
-AND bar = ?
-AND baz LIKE ?
+			"foo != ? AND bar = ? AND baz LIKE ?",
+			`> foo != ?
+> AND bar = ?
+> AND baz LIKE ?
 `,
-			values: []interface{}{
+			[]interface{}{
 				100,
 				200,
 				"abc",
@@ -131,7 +131,7 @@ AND baz LIKE ?
 		},
 		// 4
 		{
-			statement: sqlabble.NewAnd(
+			sqlabble.NewAnd(
 				sqlabble.NewAnd(
 					sqlabble.NewAnd(
 						sqlabble.NewNotEq(sqlabble.C("foo"), 100),
@@ -140,12 +140,12 @@ AND baz LIKE ?
 					),
 				),
 			),
-			sql: "foo != ? AND bar = ? AND baz LIKE ?",
-			sqlIndent: `foo != ?
-AND bar = ?
-AND baz LIKE ?
+			"foo != ? AND bar = ? AND baz LIKE ?",
+			`> foo != ?
+> AND bar = ?
+> AND baz LIKE ?
 `,
-			values: []interface{}{
+			[]interface{}{
 				100,
 				200,
 				"abc",
@@ -153,7 +153,7 @@ AND baz LIKE ?
 		},
 		// 5
 		{
-			statement: sqlabble.NewAnd(
+			sqlabble.NewAnd(
 				sqlabble.NewAnd(
 					sqlabble.NewAnd(
 						sqlabble.NewNotEq(sqlabble.C("foo"), 100),
@@ -163,15 +163,15 @@ AND baz LIKE ?
 				),
 				sqlabble.NewGt(sqlabble.C("foo"), 300),
 			),
-			sql: "(foo != ? AND bar = ? AND baz LIKE ?) AND foo > ?",
-			sqlIndent: `(
-  foo != ?
-  AND bar = ?
-  AND baz LIKE ?
-)
-AND foo > ?
+			"(foo != ? AND bar = ? AND baz LIKE ?) AND foo > ?",
+			`> (
+>   foo != ?
+>   AND bar = ?
+>   AND baz LIKE ?
+> )
+> AND foo > ?
 `,
-			values: []interface{}{
+			[]interface{}{
 				100,
 				200,
 				"abc",
@@ -180,7 +180,7 @@ AND foo > ?
 		},
 		// 6
 		{
-			statement: sqlabble.NewAnd(
+			sqlabble.NewAnd(
 				sqlabble.NewAnd(
 					sqlabble.NewAnd(
 						sqlabble.NewNotEq(sqlabble.C("foo"), 100),
@@ -190,15 +190,15 @@ AND foo > ?
 					sqlabble.NewGt(sqlabble.C("foo"), 300),
 				),
 			),
-			sql: "(foo != ? AND bar = ? AND baz LIKE ?) AND foo > ?",
-			sqlIndent: `(
-  foo != ?
-  AND bar = ?
-  AND baz LIKE ?
-)
-AND foo > ?
+			"(foo != ? AND bar = ? AND baz LIKE ?) AND foo > ?",
+			`> (
+>   foo != ?
+>   AND bar = ?
+>   AND baz LIKE ?
+> )
+> AND foo > ?
 `,
-			values: []interface{}{
+			[]interface{}{
 				100,
 				200,
 				"abc",
@@ -217,7 +217,7 @@ AND foo > ?
 		})
 
 		t.Run(fmt.Sprintf("%d BuildIndent %+v", i, c.statement), func(t *testing.T) {
-			sql, values := sqlabble.BuildIndent(c.statement, "", "  ")
+			sql, values := builderIndent.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
 			}
@@ -236,68 +236,68 @@ func TestOr(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			statement: sqlabble.NewOr(
+			sqlabble.NewOr(
 				sqlabble.NewNotEq(sqlabble.C("foo"), 100),
 			),
-			sql: "foo != ?",
-			sqlIndent: `foo != ?
+			"foo != ?",
+			`> foo != ?
 `,
-			values: []interface{}{
+			[]interface{}{
 				100,
 			},
 		},
 		{
-			statement: sqlabble.NewOr(
+			sqlabble.NewOr(
 				sqlabble.NewNotEq(sqlabble.C("foo"), 100),
 				sqlabble.NewEq(sqlabble.C("bar"), 200),
 			),
-			sql: "foo != ? OR bar = ?",
-			sqlIndent: `foo != ?
-OR bar = ?
+			"foo != ? OR bar = ?",
+			`> foo != ?
+> OR bar = ?
 `,
-			values: []interface{}{
+			[]interface{}{
 				100,
 				200,
 			},
 		},
 		{
-			statement: sqlabble.NewOr(
+			sqlabble.NewOr(
 				sqlabble.NewNotEq(sqlabble.C("foo"), 100),
 				sqlabble.NewEq(sqlabble.C("bar"), 200),
 				sqlabble.NewLike(sqlabble.C("baz"), "abc"),
 			),
-			sql: "foo != ? OR bar = ? OR baz LIKE ?",
-			sqlIndent: `foo != ?
-OR bar = ?
-OR baz LIKE ?
+			"foo != ? OR bar = ? OR baz LIKE ?",
+			`> foo != ?
+> OR bar = ?
+> OR baz LIKE ?
 `,
-			values: []interface{}{
+			[]interface{}{
 				100,
 				200,
 				"abc",
 			},
 		},
 		{
-			statement: sqlabble.NewOr(
+			sqlabble.NewOr(
 				sqlabble.NewOr(
 					sqlabble.NewNotEq(sqlabble.C("foo"), 100),
 					sqlabble.NewEq(sqlabble.C("bar"), 200),
 					sqlabble.NewLike(sqlabble.C("baz"), "abc"),
 				),
 			),
-			sql: "foo != ? OR bar = ? OR baz LIKE ?",
-			sqlIndent: `foo != ?
-OR bar = ?
-OR baz LIKE ?
+			"foo != ? OR bar = ? OR baz LIKE ?",
+			`> foo != ?
+> OR bar = ?
+> OR baz LIKE ?
 `,
-			values: []interface{}{
+			[]interface{}{
 				100,
 				200,
 				"abc",
 			},
 		},
 		{
-			statement: sqlabble.NewOr(
+			sqlabble.NewOr(
 				sqlabble.NewOr(
 					sqlabble.NewOr(
 						sqlabble.NewNotEq(sqlabble.C("foo"), 100),
@@ -306,19 +306,19 @@ OR baz LIKE ?
 					),
 				),
 			),
-			sql: "foo != ? OR bar = ? OR baz LIKE ?",
-			sqlIndent: `foo != ?
-OR bar = ?
-OR baz LIKE ?
+			"foo != ? OR bar = ? OR baz LIKE ?",
+			`> foo != ?
+> OR bar = ?
+> OR baz LIKE ?
 `,
-			values: []interface{}{
+			[]interface{}{
 				100,
 				200,
 				"abc",
 			},
 		},
 		{
-			statement: sqlabble.NewOr(
+			sqlabble.NewOr(
 				sqlabble.NewOr(
 					sqlabble.NewOr(
 						sqlabble.NewNotEq(sqlabble.C("foo"), 100),
@@ -328,15 +328,15 @@ OR baz LIKE ?
 				),
 				sqlabble.NewGt(sqlabble.C("foo"), 300),
 			),
-			sql: "(foo != ? OR bar = ? OR baz LIKE ?) OR foo > ?",
-			sqlIndent: `(
-  foo != ?
-  OR bar = ?
-  OR baz LIKE ?
-)
-OR foo > ?
+			"(foo != ? OR bar = ? OR baz LIKE ?) OR foo > ?",
+			`> (
+>   foo != ?
+>   OR bar = ?
+>   OR baz LIKE ?
+> )
+> OR foo > ?
 `,
-			values: []interface{}{
+			[]interface{}{
 				100,
 				200,
 				"abc",
@@ -344,7 +344,7 @@ OR foo > ?
 			},
 		},
 		{
-			statement: sqlabble.NewOr(
+			sqlabble.NewOr(
 				sqlabble.NewOr(
 					sqlabble.NewOr(
 						sqlabble.NewNotEq(sqlabble.C("foo"), 100),
@@ -354,15 +354,15 @@ OR foo > ?
 					sqlabble.NewGt(sqlabble.C("foo"), 300),
 				),
 			),
-			sql: "(foo != ? OR bar = ? OR baz LIKE ?) OR foo > ?",
-			sqlIndent: `(
-  foo != ?
-  OR bar = ?
-  OR baz LIKE ?
-)
-OR foo > ?
+			"(foo != ? OR bar = ? OR baz LIKE ?) OR foo > ?",
+			`> (
+>   foo != ?
+>   OR bar = ?
+>   OR baz LIKE ?
+> )
+> OR foo > ?
 `,
-			values: []interface{}{
+			[]interface{}{
 				100,
 				200,
 				"abc",
@@ -381,7 +381,7 @@ OR foo > ?
 		})
 
 		t.Run(fmt.Sprintf("BuildIndent %+v", c.statement), func(t *testing.T) {
-			sql, values := sqlabble.BuildIndent(c.statement, "", "  ")
+			sql, values := builderIndent.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
 			}
@@ -401,91 +401,89 @@ func TestNot(t *testing.T) {
 	}{
 		// 0
 		{
-			statement: sqlabble.NewNot(
+			sqlabble.NewNot(
 				sqlabble.NewNotEq(sqlabble.C("foo"), 100),
 			),
-			sql: "NOT (foo != ?)",
-			sqlIndent: `NOT (
-  foo != ?
-)
+			"NOT (foo != ?)",
+			`> NOT (
+>   foo != ?
+> )
 `,
-			values: []interface{}{
+			[]interface{}{
 				100,
 			},
 		},
 		// 1
 		{
-			statement: sqlabble.NewNot(
-				sqlabble.NewNot(
-					sqlabble.NewNotEq(sqlabble.C("foo"), 100),
-				),
+			sqlabble.NewNot(
+				sqlabble.NewNot(sqlabble.NewNotEq(sqlabble.C("foo"), 100)),
 			),
-			sql: "NOT (NOT (foo != ?))",
-			sqlIndent: `NOT (
-  NOT (
-    foo != ?
-  )
-)
+			"NOT (NOT (foo != ?))",
+			`> NOT (
+>   NOT (
+>     foo != ?
+>   )
+> )
 `,
-			values: []interface{}{
+			[]interface{}{
 				100,
 			},
 		},
 		// 3
 		{
-			statement: sqlabble.NewNot(
+			sqlabble.NewNot(
 				sqlabble.NewNot(
 					sqlabble.NewNot(
 						sqlabble.NewNotEq(sqlabble.C("foo"), 100),
 					),
 				),
 			),
-			sql: "NOT (NOT (NOT (foo != ?)))",
-			sqlIndent: `NOT (
-  NOT (
-    NOT (
-      foo != ?
-    )
-  )
-)
+			"NOT (NOT (NOT (foo != ?)))",
+			`> NOT (
+>   NOT (
+>     NOT (
+>       foo != ?
+>     )
+>   )
+> )
 `,
-			values: []interface{}{
+			[]interface{}{
 				100,
 			},
 		},
 		// 4
 		{
-			statement: sqlabble.NewNot(
+			sqlabble.NewNot(
 				sqlabble.NewOr(
 					sqlabble.NewNotEq(sqlabble.C("foo"), 100),
 				),
 			),
-			sql: "NOT (foo != ?)",
-			sqlIndent: `NOT (
-  foo != ?
-)
+			"NOT (foo != ?)",
+			`> NOT (
+>   foo != ?
+> )
 `,
-			values: []interface{}{
+			[]interface{}{
 				100,
 			},
 		},
 		// 5
 		{
-			statement: sqlabble.NewNot(
+			sqlabble.NewNot(
 				sqlabble.NewOr(
 					sqlabble.NewNotEq(sqlabble.C("foo"), 100),
 					sqlabble.NewEq(sqlabble.C("bar"), 200),
 					sqlabble.NewLike(sqlabble.C("baz"), "abc"),
 				),
 			),
-			sql: "NOT (foo != ? OR bar = ? OR baz LIKE ?)",
-			sqlIndent: `NOT (
-  foo != ?
-  OR bar = ?
-  OR baz LIKE ?
-)
+			"NOT (foo != ? OR bar = ? OR baz LIKE ?)",
+			`> NOT (
+>   foo != ?
+>   OR bar = ?
+>   OR baz LIKE ?
+> )
 `,
-			values: []interface{}{
+			[]interface{}{
 				100,
 				200,
 				"abc",
@@ -493,7 +491,7 @@ func TestNot(t *testing.T) {
 		},
 		// 6
 		{
-			statement: sqlabble.NewNot(
+			sqlabble.NewNot(
 				sqlabble.NewNot(
 					sqlabble.NewOr(
 						sqlabble.NewNotEq(sqlabble.C("foo"), 100),
@@ -502,16 +500,16 @@ func TestNot(t *testing.T) {
 					),
 				),
 			),
-			sql: "NOT (NOT (foo != ? OR bar = ? OR baz LIKE ?))",
-			sqlIndent: `NOT (
-  NOT (
-    foo != ?
-    OR bar = ?
-    OR baz LIKE ?
-  )
-)
+			"NOT (NOT (foo != ? OR bar = ? OR baz LIKE ?))",
+			`> NOT (
+>   NOT (
+>     foo != ?
+>     OR bar = ?
+>     OR baz LIKE ?
+>   )
+> )
 `,
-			values: []interface{}{
+			[]interface{}{
 				100,
 				200,
 				"abc",
@@ -519,7 +517,7 @@ func TestNot(t *testing.T) {
 		},
 		// 7
 		{
-			statement: sqlabble.NewNot(
+			sqlabble.NewNot(
 				sqlabble.NewNot(
 					sqlabble.NewNot(
 						sqlabble.NewOr(
@@ -530,18 +528,18 @@ func TestNot(t *testing.T) {
 					),
 				),
 			),
-			sql: "NOT (NOT (NOT (foo != ? OR bar = ? OR baz LIKE ?)))",
-			sqlIndent: `NOT (
-  NOT (
-    NOT (
-      foo != ?
-      OR bar = ?
-      OR baz LIKE ?
-    )
-  )
-)
+			"NOT (NOT (NOT (foo != ? OR bar = ? OR baz LIKE ?)))",
+			`> NOT (
+>   NOT (
+>     NOT (
+>       foo != ?
+>       OR bar = ?
+>       OR baz LIKE ?
+>     )
+>   )
+> )
 `,
-			values: []interface{}{
+			[]interface{}{
 				100,
 				200,
 				"abc",
@@ -559,7 +557,7 @@ func TestNot(t *testing.T) {
 		})
 
 		t.Run(fmt.Sprintf("%d BuildIndent %+v", i, c.statement), func(t *testing.T) {
-			sql, values := sqlabble.BuildIndent(c.statement, "", "  ")
+			sql, values := builderIndent.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
 			}
@@ -572,23 +570,23 @@ func TestNot(t *testing.T) {
 
 func TestEq(t *testing.T) {
 	for _, c := range []struct {
-		eq            sqlabble.Statement
+		statement     sqlabble.Statement
 		wantSQL       string
 		wantIndentSQL string
 		wantValues    []interface{}
 	}{
 		{
-			eq:      sqlabble.NewEq(sqlabble.NewColumn("foo"), 100),
-			wantSQL: "foo = ?",
-			wantIndentSQL: `foo = ?
+			sqlabble.NewEq(sqlabble.NewColumn("foo"), 100),
+			"foo = ?",
+			`> foo = ?
 `,
-			wantValues: []interface{}{
+			[]interface{}{
 				100,
 			},
 		},
 	} {
-		t.Run(fmt.Sprintf("Build %+v", c.eq), func(t *testing.T) {
-			sql, values := sqlabble.Build(c.eq)
+		t.Run(fmt.Sprintf("Build %+v", c.statement), func(t *testing.T) {
+			sql, values := sqlabble.Build(c.statement)
 			if sql != c.wantSQL {
 				t.Error(diff.SQL(sql, c.wantSQL))
 			}
@@ -596,8 +594,8 @@ func TestEq(t *testing.T) {
 				t.Error(diff.Values(values, c.wantValues))
 			}
 		})
-		t.Run(fmt.Sprintf("BuildIndent %+v", c.eq), func(t *testing.T) {
-			sql, values := sqlabble.BuildIndent(c.eq, "", "  ")
+		t.Run(fmt.Sprintf("BuildIndent %+v", c.statement), func(t *testing.T) {
+			sql, values := builderIndent.Build(c.statement)
 			if sql != c.wantIndentSQL {
 				t.Error(diff.SQL(sql, c.wantIndentSQL))
 			}
@@ -616,7 +614,7 @@ func TestComplexOperation(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			statement: sqlabble.NewAnd(
+			sqlabble.NewAnd(
 				sqlabble.NewOr(
 					sqlabble.NewNot(
 						sqlabble.NewAnd(
@@ -629,19 +627,19 @@ func TestComplexOperation(t *testing.T) {
 					),
 				),
 			),
-			sql: "NOT (NOT (foo = ?))",
-			sqlIndent: `NOT (
-  NOT (
-    foo = ?
-  )
-)
+			"NOT (NOT (foo = ?))",
+			`> NOT (
+>   NOT (
+>     foo = ?
+>   )
+> )
 `,
-			values: []interface{}{
+			[]interface{}{
 				100,
 			},
 		},
 		{
-			statement: sqlabble.NewOr(
+			sqlabble.NewOr(
 				sqlabble.NewNot(
 					sqlabble.NewRegExp(sqlabble.C("baz"), "def"),
 				),
@@ -665,25 +663,25 @@ func TestComplexOperation(t *testing.T) {
 					),
 				),
 			),
-			sql: "NOT (baz REGEXP ?) OR (qux BETWEEN ? AND ? AND NOT (foo != ? OR bar = ? OR baz LIKE ? OR (baz IN (?, ?, ?) OR qux NOT IN (?, ?, ?))) AND foo > ?)",
-			sqlIndent: `NOT (
-  baz REGEXP ?
-)
-OR (
-  qux BETWEEN ? AND ?
-  AND NOT (
-    foo != ?
-    OR bar = ?
-    OR baz LIKE ?
-    OR (
-      baz IN (?, ?, ?)
-      OR qux NOT IN (?, ?, ?)
-    )
-  )
-  AND foo > ?
-)
+			"NOT (baz REGEXP ?) OR (qux BETWEEN ? AND ? AND NOT (foo != ? OR bar = ? OR baz LIKE ? OR (baz IN (?, ?, ?) OR qux NOT IN (?, ?, ?))) AND foo > ?)",
+			`> NOT (
+>   baz REGEXP ?
+> )
+> OR (
+>   qux BETWEEN ? AND ?
+>   AND NOT (
+>     foo != ?
+>     OR bar = ?
+>     OR baz LIKE ?
+>     OR (
+>       baz IN (?, ?, ?)
+>       OR qux NOT IN (?, ?, ?)
+>     )
+>   )
+>   AND foo > ?
+> )
 `,
-			values: []interface{}{
+			[]interface{}{
 				"def",
 				400,
 				500,
@@ -711,7 +709,7 @@ OR (
 		})
 
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
-			sql, values := sqlabble.BuildIndent(c.statement, "", "  ")
+			sql, values := builderIndent.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
 			}

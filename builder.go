@@ -28,35 +28,34 @@ var (
 )
 
 var (
-	Standard         = Builder{generator.NewContext("", "")}
-	IndentedStandard = Builder{generator.NewContext("", "    ")}
-	MySQL4           = Builder{generator.NewContext("", "")}
-	IndentedMySQL4   = Builder{generator.NewContext("", "    ")}
+	Standard         = NewBuilder(generator.Options{})
+	IndentedStandard = NewBuilder(generator.Options{
+		Indent: "    ",
+	})
+	MySQL4 = NewBuilder(generator.Options{
+		FlatSets: true,
+	})
+	IndentedMySQL4 = NewBuilder(generator.Options{
+		Indent:   "    ",
+		FlatSets: true,
+	})
 )
 
-func Build(n Statement) (string, []interface{}) {
-	return NewBuilder("", "").Build(n)
+func Build(s Statement) (string, []interface{}) {
+	return Standard.Build(s)
 }
 
-func BuildIndent(n Statement, prefix, indent string) (string, []interface{}) {
-	return NewBuilder(prefix, indent).Build(n)
+func BuildIndent(s Statement) (string, []interface{}) {
+	return IndentedStandard.Build(s)
 }
 
 type Builder struct {
 	context generator.Context
 }
 
-func NewBuilder(prefix, indent string) Builder {
+func NewBuilder(o generator.Options) Builder {
 	return Builder{
-		context: generator.NewContext(prefix, indent),
-	}
-}
-
-func NewBuilderForMySQL4(prefix, indent string) Builder {
-	return Builder{
-		context: generator.
-			NewContext(prefix, indent).
-			SetFlatSetOperation(true),
+		context: o.ToContext(),
 	}
 }
 

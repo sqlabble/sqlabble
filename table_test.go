@@ -32,7 +32,7 @@ func TestTable(t *testing.T) {
 		{
 			sqlabble.NewTable("foo"),
 			"foo",
-			`foo
+			`> foo
 `,
 			[]interface{}{},
 		},
@@ -40,8 +40,8 @@ func TestTable(t *testing.T) {
 			sqlabble.NewTable("foo").
 				Join(sqlabble.NewTable("bar")),
 			"foo JOIN bar",
-			`foo
-JOIN bar
+			`> foo
+> JOIN bar
 `,
 			[]interface{}{},
 		},
@@ -49,8 +49,8 @@ JOIN bar
 			sqlabble.NewTable("foo").
 				InnerJoin(sqlabble.NewTable("bar")),
 			"foo INNER JOIN bar",
-			`foo
-INNER JOIN bar
+			`> foo
+> INNER JOIN bar
 `,
 			[]interface{}{},
 		},
@@ -58,8 +58,8 @@ INNER JOIN bar
 			sqlabble.NewTable("foo").
 				LeftJoin(sqlabble.NewTable("bar")),
 			"foo LEFT JOIN bar",
-			`foo
-LEFT JOIN bar
+			`> foo
+> LEFT JOIN bar
 `,
 			[]interface{}{},
 		},
@@ -67,8 +67,8 @@ LEFT JOIN bar
 			sqlabble.NewTable("foo").
 				RightJoin(sqlabble.NewTable("bar")),
 			"foo RIGHT JOIN bar",
-			`foo
-RIGHT JOIN bar
+			`> foo
+> RIGHT JOIN bar
 `,
 			[]interface{}{},
 		},
@@ -83,7 +83,7 @@ RIGHT JOIN bar
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
-			sql, values := sqlabble.BuildIndent(c.statement, "", "  ")
+			sql, values := builderIndent.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
 			}
@@ -104,7 +104,7 @@ func TestAs(t *testing.T) {
 		{
 			sqlabble.NewTable("foo").As("f"),
 			"foo AS f",
-			`foo AS f
+			`> foo AS f
 `,
 			[]interface{}{},
 		},
@@ -112,8 +112,8 @@ func TestAs(t *testing.T) {
 			sqlabble.NewTable("foo").As("f").
 				Join(sqlabble.NewTable("bar")),
 			"foo AS f JOIN bar",
-			`foo AS f
-JOIN bar
+			`> foo AS f
+> JOIN bar
 `,
 			[]interface{}{},
 		},
@@ -121,8 +121,8 @@ JOIN bar
 			sqlabble.NewTable("foo").As("f").
 				InnerJoin(sqlabble.NewTable("bar")),
 			"foo AS f INNER JOIN bar",
-			`foo AS f
-INNER JOIN bar
+			`> foo AS f
+> INNER JOIN bar
 `,
 			[]interface{}{},
 		},
@@ -130,8 +130,8 @@ INNER JOIN bar
 			sqlabble.NewTable("foo").As("f").
 				LeftJoin(sqlabble.NewTable("bar")),
 			"foo AS f LEFT JOIN bar",
-			`foo AS f
-LEFT JOIN bar
+			`> foo AS f
+> LEFT JOIN bar
 `,
 			[]interface{}{},
 		},
@@ -139,8 +139,8 @@ LEFT JOIN bar
 			sqlabble.NewTable("foo").As("f").
 				RightJoin(sqlabble.NewTable("bar")),
 			"foo AS f RIGHT JOIN bar",
-			`foo AS f
-RIGHT JOIN bar
+			`> foo AS f
+> RIGHT JOIN bar
 `,
 			[]interface{}{},
 		},
@@ -155,7 +155,7 @@ RIGHT JOIN bar
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
-			sql, values := sqlabble.BuildIndent(c.statement, "", "  ")
+			sql, values := builderIndent.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
 			}

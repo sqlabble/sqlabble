@@ -35,7 +35,7 @@ func (us Unions) ToSQL(ctx Context) (string, []interface{}) {
 }
 
 func needsBracket(ctx Context, generator Node) bool {
-	if !ctx.flatSetOperation {
+	if !ctx.flatSets {
 		return true
 	}
 
