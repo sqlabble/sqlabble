@@ -48,8 +48,8 @@ func (w where) OrderBy(orders ...order) orderBy {
 	return o
 }
 
-func (w where) Limit(offset, lim int) limit {
-	l := newLimit(offset, lim)
+func (w where) Limit(count int) limit {
+	l := newLimit(count)
 	l.prev = w
 	return l
 }

@@ -23,23 +23,12 @@ func TestLimitSQL(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			sqlabble.NewLimit(0, 3),
+			sqlabble.NewLimit(3),
 			"LIMIT ?",
 			`> LIMIT
 >   ?
 `,
 			[]interface{}{
-				3,
-			},
-		},
-		{
-			sqlabble.NewLimit(10, 3),
-			"LIMIT ?, ?",
-			`> LIMIT
->   ?, ?
-`,
-			[]interface{}{
-				10,
 				3,
 			},
 		},

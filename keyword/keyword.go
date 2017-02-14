@@ -9,6 +9,7 @@ const (
 	GroupBy       = "GROUP BY"
 	Having        = "HAVING"
 	Limit         = "LIMIT"
+	Offset        = "OFFSET"
 	InsertInto    = "INSERT INTO"
 	Values        = "VALUES"
 	DefaultValues = "DEFAULT VALUES"

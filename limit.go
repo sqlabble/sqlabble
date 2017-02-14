@@ -6,15 +6,13 @@ import (
 )
 
 type limit struct {
-	prev   clause
-	offset int
-	lim    int
+	prev  clause
+	count int
 }
 
-func newLimit(offset, lim int) limit {
+func newLimit(count int) limit {
 	return limit{
-		offset: offset,
-		lim:    lim,
+		count: count,
 	}
 }
 
@@ -28,18 +26,18 @@ func (l limit) node() generator.Node {
 }
 
 func (l limit) myNode() generator.Node {
-	var p generator.Expression
-	if l.offset == 0 {
-		p = generator.ValuesToExpression(l.lim)
-	} else {
-		p = generator.ValuesToExpression(l.offset, l.lim)
-	}
 	return generator.NewContainer(
 		generator.NewExpression(keyword.Limit),
-		p,
+		generator.ValuesToExpression(l.count),
 	)
 }
 
 func (l limit) previous() clause {
 	return l.prev
+}
+
+func (l limit) Offset(count int) offset {
+	o := newOffset(count)
+	o.prev = l
+	return o
 }

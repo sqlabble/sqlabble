@@ -38,8 +38,8 @@ func (o orderBy) previous() clause {
 	return o.prev
 }
 
-func (o orderBy) Limit(offset, lim int) limit {
-	l := newLimit(offset, lim)
+func (o orderBy) Limit(count int) limit {
+	l := newLimit(count)
 	l.prev = o
 	return l
 }

@@ -13,7 +13,8 @@ Type supported SQL query builder.
 - [x] `GROUP BY {COLUMN}`
 - [x] `HAVING`
 - [x] `ORDER BY {ORDER}`
-- [x] `LIMIT`
+- [x] `LIMIT {COUNT}`
+- [x] `OFFSET {COUNT}`
 - [x] `INSERT INTO {TABLE} ({COLUMN})`
 - [x] `VALUES ({VALUE})`
 - [x] `DEFAULT VALUES`

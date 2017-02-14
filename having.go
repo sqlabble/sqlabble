@@ -42,8 +42,8 @@ func (h having) OrderBy(orders ...order) orderBy {
 	return o
 }
 
-func (h having) Limit(offset, lim int) limit {
-	l := newLimit(offset, lim)
+func (h having) Limit(count int) limit {
+	l := newLimit(count)
 	l.prev = h
 	return l
 }

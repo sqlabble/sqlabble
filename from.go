@@ -54,8 +54,8 @@ func (f from) OrderBy(orders ...order) orderBy {
 	return o
 }
 
-func (f from) Limit(offset, lim int) limit {
-	l := newLimit(offset, lim)
+func (f from) Limit(count int) limit {
+	l := newLimit(count)
 	l.prev = f
 	return l
 }

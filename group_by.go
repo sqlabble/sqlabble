@@ -52,8 +52,8 @@ func (g groupBy) OrderBy(orders ...order) orderBy {
 	return o
 }
 
-func (g groupBy) Limit(offset, lim int) limit {
-	l := newLimit(offset, lim)
+func (g groupBy) Limit(count int) limit {
+	l := newLimit(count)
 	l.prev = g
 	return l
 }
