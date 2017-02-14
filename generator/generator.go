@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/minodisk/sqlabble/internal/operator"
+	"github.com/minodisk/sqlabble/operator"
 )
 
 type Unions struct {

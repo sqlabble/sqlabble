@@ -3,8 +3,8 @@ package sqlabble
 import (
 	"fmt"
 
-	"github.com/minodisk/sqlabble/internal/generator"
-	"github.com/minodisk/sqlabble/internal/keyword"
+	"github.com/minodisk/sqlabble/generator"
+	"github.com/minodisk/sqlabble/keyword"
 )
 
 type values struct {
