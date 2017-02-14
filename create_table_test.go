@@ -30,6 +30,16 @@ func TestCreateTableSQL(t *testing.T) {
 			[]interface{}{},
 		},
 		{
+			sqlabble.NewCreateTableIfNotExists(
+				sqlabble.NewTable("foo"),
+			),
+			"CREATE TABLE IF NOT EXISTS foo",
+			`> CREATE TABLE IF NOT EXISTS
+>   foo
+`,
+			[]interface{}{},
+		},
+		{
 			sqlabble.NewCreateTable(
 				sqlabble.NewTable("foo"),
 			).Definitions(),

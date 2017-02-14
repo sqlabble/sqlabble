@@ -20,6 +20,7 @@ Type supported SQL query builder.
 - [x] `SET ({ASSIGNMENT})`
 - [x] `DELETE`
 - [x] `CREATE TABLE {TABLE}`
+- [x] `CREATE TABLE IF NOT EXISTS {TABLE}`
 
 ### Aliases
 

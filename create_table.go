@@ -6,12 +6,21 @@ import (
 )
 
 type createTable struct {
-	table tableOrTableAs
+	ifNotExists bool
+	table       tableOrTableAs
 }
 
 func newCreateTable(table tableOrTableAs) createTable {
 	return createTable{
-		table: table,
+		ifNotExists: false,
+		table:       table,
+	}
+}
+
+func newCreateTableIfNotExists(table tableOrTableAs) createTable {
+	return createTable{
+		ifNotExists: true,
+		table:       table,
 	}
 }
 
@@ -20,8 +29,12 @@ func (c createTable) node() generator.Node {
 }
 
 func (c createTable) container() generator.Container {
+	k := generator.NewExpression(keyword.CreateTable)
+	if c.ifNotExists {
+		k = k.Append(generator.NewExpression(keyword.IfNotExists))
+	}
 	return generator.NewContainer(
-		generator.NewExpression(keyword.CreateTable),
+		k,
 		c.table.expression(),
 	)
 }
