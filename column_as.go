@@ -6,13 +6,13 @@ import (
 )
 
 type columnAs struct {
-	col   columnNode
-	alias string
+	col  columnNode
+	alia string
 }
 
 func newColumnAs(alias string) columnAs {
 	return columnAs{
-		alias: alias,
+		alia: alias,
 	}
 }
 
@@ -22,7 +22,7 @@ func (c columnAs) generator() generator.Generator {
 
 func (c columnAs) expression() generator.Expression {
 	a := generator.NewExpression(operator.As).
-		Append(generator.NewExpression(c.Alias()))
+		Append(generator.NewExpression(c.alias()))
 	if c.col == nil {
 		return a
 	}
@@ -34,6 +34,6 @@ func (c columnAs) columnName() string {
 	return c.col.columnName()
 }
 
-func (c columnAs) Alias() string {
-	return c.alias
+func (c columnAs) alias() string {
+	return c.alia
 }

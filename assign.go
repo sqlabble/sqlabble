@@ -18,10 +18,10 @@ func newAssign(col column, value interface{}) assign {
 }
 
 func (a assign) generator() generator.Generator {
-	return a.Expression()
+	return a.expression()
 }
 
-func (a assign) Expression() generator.Expression {
+func (a assign) expression() generator.Expression {
 	return a.col.expression().
 		Append(generator.NewExpression(string(operator.Equal))).
 		Append(generator.NewPlaceholders(a.value))

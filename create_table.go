@@ -16,10 +16,10 @@ func newCreateTable(table tableNode) createTable {
 }
 
 func (c createTable) generator() generator.Generator {
-	return c.Container()
+	return c.container()
 }
 
-func (c createTable) Container() generator.Container {
+func (c createTable) container() generator.Container {
 	return generator.NewContainer(
 		generator.NewExpression(string(keyword.CreateTable)),
 		c.table.expression(),

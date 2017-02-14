@@ -10,6 +10,8 @@ import (
 )
 
 func TestBuild(t *testing.T) {
+	// q.C("created_at").Assign(300)
+
 	for i, c := range []struct {
 		statement q.Node
 		sql       string

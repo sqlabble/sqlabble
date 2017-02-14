@@ -30,7 +30,7 @@ func newDefinitions(defs ...definition) definitions {
 }
 
 func (ds definitions) generator() generator.Generator {
-	p := ds.createTable.Container()
+	p := ds.createTable.container()
 	gs := make([]generator.Generator, len(ds.defs))
 	for i, d := range ds.defs {
 		gs[i] = d.generator()

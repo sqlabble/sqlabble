@@ -28,7 +28,7 @@ func (s set) generator() generator.Generator {
 func (s set) clauseGenerator() generator.Generator {
 	gs := make([]generator.Generator, len(s.assigns))
 	for i, a := range s.assigns {
-		gs[i] = a.Expression()
+		gs[i] = a.expression()
 	}
 	c := generator.NewContainer(
 		generator.NewExpression(keyword.Set),

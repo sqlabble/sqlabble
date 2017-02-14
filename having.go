@@ -32,10 +32,6 @@ func (w having) clauseGenerator() generator.Generator {
 	)
 }
 
-func (c having) Child() Node {
-	return c.operation
-}
-
 func (c having) previous() clauseNode {
 	return c.prev
 }
