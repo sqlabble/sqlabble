@@ -36,7 +36,7 @@ func (ds definitions) node() generator.Node {
 		gs[i] = d.node()
 	}
 	return p.AddChild(
-		generator.NewBracket(
+		generator.NewParentheses(
 			generator.NewComma(
 				gs...,
 			),

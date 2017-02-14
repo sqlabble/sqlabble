@@ -48,17 +48,17 @@ func (f Context) IncDepth() Context {
 	return f
 }
 
-func (f Context) ClearBracketDepth() Context {
+func (f Context) ClearParenthesesDepth() Context {
 	f.bracketDepth = 0
 	return f
 }
 
-func (f Context) IncBracketDepth() Context {
+func (f Context) IncParenthesesDepth() Context {
 	f.bracketDepth++
 	return f
 }
 
-func (f Context) TopBracket() bool {
+func (f Context) TopParentheses() bool {
 	return f.bracketDepth == 0
 }
 

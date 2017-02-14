@@ -23,7 +23,7 @@ func (us Unions) ToSQL(ctx Context) (string, []interface{}) {
 	res := []Node{}
 	for i, g := range us.generators {
 		if needsBracket(ctx, g) {
-			g = NewBracket(g)
+			g = NewParentheses(g)
 		}
 		if i == 0 {
 			res = append(res, g)
@@ -265,10 +265,10 @@ func (o Operator) ToSQL(ctx Context) (string, []interface{}) {
 	}
 
 	head := ctx.Head()
-	hasBracket := head != "" || !ctx.TopBracket()
+	hasParentheses := head != "" || !ctx.TopParentheses()
 	ctx = ctx.ClearHead()
-	c1 := ctx.IncBracketDepth()
-	if hasBracket {
+	c1 := ctx.IncParenthesesDepth()
+	if hasParentheses {
 		c1 = c1.IncDepth()
 	}
 
@@ -286,7 +286,7 @@ func (o Operator) ToSQL(ctx Context) (string, []interface{}) {
 	}
 	sql := ctx.Join(sqls...)
 
-	if !hasBracket {
+	if !hasParentheses {
 		return sql, values
 	}
 	if ctx.Breaking() {
@@ -317,7 +317,7 @@ func (n Not) ToSQL(ctx Context) (string, []interface{}) {
 	op := "NOT "
 
 	head := ctx.Head()
-	ctx = ctx.ClearBracketDepth()
+	ctx = ctx.ClearParenthesesDepth()
 
 	sql, values := n.generator.ToSQL(ctx.IncDepth().ClearHead())
 
@@ -329,19 +329,19 @@ func (n Not) ToSQL(ctx Context) (string, []interface{}) {
 	return fmt.Sprintf("%s%s(%s)", head, op, sql), values
 }
 
-type Bracket struct {
+type Parentheses struct {
 	generator Node
 }
 
-func NewBracket(g Node) Bracket {
-	return Bracket{
+func NewParentheses(g Node) Parentheses {
+	return Parentheses{
 		generator: g,
 	}
 }
 
-func (b Bracket) ToSQL(ctx Context) (string, []interface{}) {
+func (b Parentheses) ToSQL(ctx Context) (string, []interface{}) {
 	head := ctx.Head()
-	ctx = ctx.ClearBracketDepth()
+	ctx = ctx.ClearParenthesesDepth()
 
 	sql, values := b.generator.ToSQL(ctx.IncDepth().ClearHead())
 
