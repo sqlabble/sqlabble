@@ -56,12 +56,12 @@ func (u setOperation) node() generator.Node {
 	cs := clauseNodes(u)
 	gs := make([]generator.Node, len(cs))
 	for i, c := range cs {
-		gs[i] = c.nodeMine()
+		gs[i] = c.myNode()
 	}
 	return generator.NewNodes(gs...)
 }
 
-func (u setOperation) nodeMine() generator.Node {
+func (u setOperation) myNode() generator.Node {
 	sep := generator.NewExpression(u.operator)
 	gs := make([]generator.Node, len(u.statements))
 	for i, s := range u.statements {

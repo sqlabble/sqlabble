@@ -21,7 +21,7 @@ func (c createTable) node() generator.Node {
 
 func (c createTable) container() generator.Container {
 	return generator.NewContainer(
-		generator.NewExpression(string(keyword.CreateTable)),
+		generator.NewExpression(keyword.CreateTable),
 		c.table.expression(),
 	)
 }

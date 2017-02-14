@@ -18,11 +18,11 @@ func newUsing(col column) using {
 
 func (t using) node() generator.Node {
 	ts := tableNodes(t)
-	fs := make([]generator.Node, len(ts))
+	us := make([]generator.Node, len(ts))
 	for i, t := range ts {
-		fs[i] = t.expression()
+		us[i] = t.expression()
 	}
-	return generator.NewNodes(fs...)
+	return generator.NewNodes(us...)
 }
 
 func (t using) expression() generator.Expression {

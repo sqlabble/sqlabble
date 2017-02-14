@@ -25,11 +25,11 @@ var (
 	NewGte            = newGte
 	NewLt             = newLt
 	NewLte            = newLte
+	NewLike           = newLike
+	NewRegExp         = newRegExp
 	NewBetween        = newBetween
 	NewIn             = newIn
 	NewNotIn          = newNotIn
-	NewLike           = newLike
-	NewRegExp         = newRegExp
 	NewIsNull         = newIsNull
 	NewIsNotNull      = newIsNotNull
 	NewOrderBy        = newOrderBy

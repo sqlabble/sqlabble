@@ -20,19 +20,19 @@ func newLimit(offset, lim int) limit {
 
 func (l limit) node() generator.Node {
 	cs := clauseNodes(l)
-	fs := make([]generator.Node, len(cs))
+	ns := make([]generator.Node, len(cs))
 	for i, c := range cs {
-		fs[i] = c.nodeMine()
+		ns[i] = c.myNode()
 	}
-	return generator.NewNodes(fs...)
+	return generator.NewNodes(ns...)
 }
 
-func (l limit) nodeMine() generator.Node {
+func (l limit) myNode() generator.Node {
 	var p generator.Expression
 	if l.offset == 0 {
-		p = generator.NewPlaceholders(l.lim)
+		p = generator.ValuesToExpression(l.lim)
 	} else {
-		p = generator.NewPlaceholders(l.offset, l.lim)
+		p = generator.ValuesToExpression(l.offset, l.lim)
 	}
 	return generator.NewContainer(
 		generator.NewExpression(keyword.Limit),

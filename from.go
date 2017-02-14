@@ -18,14 +18,14 @@ func newFrom(table tableOrTableAs) from {
 
 func (f from) node() generator.Node {
 	cs := clauseNodes(f)
-	fs := make([]generator.Node, len(cs))
+	ns := make([]generator.Node, len(cs))
 	for i, c := range cs {
-		fs[i] = c.nodeMine()
+		ns[i] = c.myNode()
 	}
-	return generator.NewNodes(fs...)
+	return generator.NewNodes(ns...)
 }
 
-func (f from) nodeMine() generator.Node {
+func (f from) myNode() generator.Node {
 	return generator.NewContainer(
 		generator.NewExpression(string(keyword.From)),
 		f.table.node(),

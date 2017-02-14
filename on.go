@@ -20,17 +20,17 @@ func newOn(column1, column2 column) on {
 
 func (o on) node() generator.Node {
 	ts := tableNodes(o)
-	fs := make([]generator.Node, len(ts))
+	ns := make([]generator.Node, len(ts))
 	for i, t := range ts {
-		fs[i] = t.expression()
+		ns[i] = t.expression()
 	}
-	return generator.NewNodes(fs...)
+	return generator.NewNodes(ns...)
 }
 
 func (o on) expression() generator.Expression {
 	e := generator.NewExpression(keyword.On).
 		Append(o.column1.expression()).
-		Append(generator.NewExpression(string(operator.Equal))).
+		Append(generator.NewExpression(string(operator.Eq))).
 		Append(o.column2.expression())
 	if o.join == nil {
 		return e

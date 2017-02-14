@@ -1,58 +1,46 @@
 package sqlabble
 
 import (
-	"fmt"
-
 	"github.com/minodisk/sqlabble/generator"
 	"github.com/minodisk/sqlabble/operator"
 )
 
-type and struct {
+type joinOperation struct {
+	op  operator.Operator
 	ops []comparisonOrLogicalOperation
 }
 
-func newAnd(cs ...comparisonOrLogicalOperation) and {
-	return and{ops: cs}
-}
-
-func (a and) node() generator.Node {
-	fs := make([]generator.Node, len(a.ops))
-	for i, o := range a.ops {
-		fs[i] = o.node()
+func newAnd(ops ...comparisonOrLogicalOperation) joinOperation {
+	return joinOperation{
+		op:  operator.And,
+		ops: ops,
 	}
-	return generator.NewOperator(a.operator(), fs...)
 }
 
-func (a and) operator() operator.Operator {
-	return operator.And
+func newOr(ops ...comparisonOrLogicalOperation) joinOperation {
+	return joinOperation{
+		op:  operator.Or,
+		ops: ops,
+	}
 }
 
-func (a and) operations() []comparisonOrLogicalOperation {
+func (a joinOperation) node() generator.Node {
+	ns := make([]generator.Node, len(a.ops))
+	for i, op := range a.ops {
+		ns[i] = op.node()
+	}
+	return generator.NewOperator(
+		a.operator(),
+		ns...,
+	)
+}
+
+func (a joinOperation) operator() operator.Operator {
+	return a.op
+}
+
+func (a joinOperation) operations() []comparisonOrLogicalOperation {
 	return a.ops
-}
-
-type or struct {
-	ops []comparisonOrLogicalOperation
-}
-
-func newOr(conditions ...comparisonOrLogicalOperation) or {
-	return or{ops: conditions}
-}
-
-func (a or) node() generator.Node {
-	fs := make([]generator.Node, len(a.ops))
-	for i, o := range a.ops {
-		fs[i] = o.node()
-	}
-	return generator.NewOperator(a.operator(), fs...)
-}
-
-func (o or) operator() operator.Operator {
-	return operator.Or
-}
-
-func (o or) operations() []comparisonOrLogicalOperation {
-	return o.ops
 }
 
 type not struct {
@@ -75,142 +63,86 @@ func (n not) operations() []comparisonOrLogicalOperation {
 	return []comparisonOrLogicalOperation{n.operation}
 }
 
-type eq struct {
-	col   column
-	value interface{}
+type comparisonOperation struct {
+	op  operator.Operator
+	col column
+	val interface{}
 }
 
-func newEq(col column, value interface{}) eq {
-	return eq{
-		col:   col,
-		value: value,
+func newEq(col column, val interface{}) comparisonOperation {
+	return comparisonOperation{
+		op:  operator.Eq,
+		col: col,
+		val: val,
 	}
 }
 
-func (c eq) node() generator.Node {
-	return generator.NewExpression(
-		fmt.Sprintf("%s %s ?", c.col.name, c.operator()),
-		c.value,
-	)
-}
-
-func (c eq) operator() operator.Operator {
-	return operator.Equal
-}
-
-type notEq struct {
-	col   column
-	value interface{}
-}
-
-func newNotEq(col column, value interface{}) notEq {
-	return notEq{
-		col:   col,
-		value: value,
+func newNotEq(col column, val interface{}) comparisonOperation {
+	return comparisonOperation{
+		op:  operator.NotEq,
+		col: col,
+		val: val,
 	}
 }
 
-func (c notEq) node() generator.Node {
-	return generator.NewExpression(
-		fmt.Sprintf("%s %s ?", c.col.name, c.operator()),
-		c.value,
-	)
-}
-
-func (c notEq) operator() operator.Operator {
-	return operator.NotEqual
-}
-
-type gt struct {
-	col   column
-	value interface{}
-}
-
-func newGt(col column, value interface{}) gt {
-	return gt{
-		col:   col,
-		value: value,
+func newGt(col column, val interface{}) comparisonOperation {
+	return comparisonOperation{
+		op:  operator.Gt,
+		col: col,
+		val: val,
 	}
 }
 
-func (c gt) node() generator.Node {
-	return generator.NewExpression(
-		fmt.Sprintf("%s %s ?", c.col.name, c.operator()),
-		c.value,
-	)
-}
-
-func (c gt) operator() operator.Operator {
-	return operator.Gt
-}
-
-type gte struct {
-	col   column
-	value interface{}
-}
-
-func newGte(col column, value interface{}) gte {
-	return gte{
-		col:   col,
-		value: value,
+func newGte(col column, val interface{}) comparisonOperation {
+	return comparisonOperation{
+		op:  operator.Gte,
+		col: col,
+		val: val,
 	}
 }
 
-func (c gte) node() generator.Node {
-	return generator.NewExpression(
-		fmt.Sprintf("%s %s ?", c.col.name, c.operator()),
-		c.value,
-	)
-}
-
-func (c gte) operator() operator.Operator {
-	return operator.Gte
-}
-
-type lt struct {
-	col   column
-	value interface{}
-}
-
-func newLt(col column, value interface{}) lt {
-	return lt{
-		col:   col,
-		value: value,
+func newLt(col column, val interface{}) comparisonOperation {
+	return comparisonOperation{
+		op:  operator.Lt,
+		col: col,
+		val: val,
 	}
 }
 
-func (c lt) node() generator.Node {
-	return generator.NewExpression(
-		fmt.Sprintf("%s %s ?", c.col.name, c.operator()),
-		c.value,
-	)
-}
-
-func (c lt) operator() operator.Operator {
-	return operator.Lt
-}
-
-type lte struct {
-	col   column
-	value interface{}
-}
-
-func newLte(col column, value interface{}) lte {
-	return lte{
-		col:   col,
-		value: value,
+func newLte(col column, val interface{}) comparisonOperation {
+	return comparisonOperation{
+		op:  operator.Lte,
+		col: col,
+		val: val,
 	}
 }
 
-func (c lte) node() generator.Node {
-	return generator.NewExpression(
-		fmt.Sprintf("%s %s ?", c.col.name, c.operator()),
-		c.value,
+func newLike(col column, val interface{}) comparisonOperation {
+	return comparisonOperation{
+		op:  operator.Like,
+		col: col,
+		val: val,
+	}
+}
+
+func newRegExp(col column, val interface{}) comparisonOperation {
+	return comparisonOperation{
+		op:  operator.RegExp,
+		col: col,
+		val: val,
+	}
+}
+
+func (c comparisonOperation) node() generator.Node {
+	return generator.JoinExpressions(
+		generator.NewExpression(c.col.name),
+		generator.NewExpression(string(c.operator())),
+		generator.ValuesToExpression(c.val),
 	)
 }
 
-func (c lte) operator() operator.Operator {
-	return operator.Lte
+func (c comparisonOperation) operator() operator.Operator {
+	return c.op
 }
 
 type between struct {
@@ -226,155 +158,81 @@ func newBetween(col column, from, to interface{}) between {
 	}
 }
 
-func (c between) node() generator.Node {
-	return generator.NewExpression(
-		fmt.Sprintf("%s %s ? %s ?", c.col.name, c.operator(), operator.And),
-		c.from, c.to,
+func (b between) node() generator.Node {
+	return generator.JoinExpressions(
+		generator.NewExpression(b.col.name),
+		generator.NewExpression(string(b.operator())),
+		generator.ValuesToExpression(b.from),
+		generator.NewExpression(string(operator.And)),
+		generator.ValuesToExpression(b.to),
 	)
 }
 
-func (c between) operator() operator.Operator {
+func (b between) operator() operator.Operator {
 	return operator.Between
 }
 
-type in struct {
-	col    column
-	values []interface{}
+type containingOperation struct {
+	op   operator.Operator
+	col  column
+	vals []interface{}
 }
 
-func newIn(col column, values ...interface{}) in {
-	return in{
-		col:    col,
-		values: values,
+func newIn(col column, vals ...interface{}) containingOperation {
+	return containingOperation{
+		op:   operator.In,
+		col:  col,
+		vals: vals,
 	}
 }
 
-func (c in) node() generator.Node {
-	return generator.NewExpression(
-		fmt.Sprintf(
-			"%s %s (%s)",
-			c.col.name,
-			c.operator(),
-			placeholders(len(c.values)),
-		),
-		c.values...,
-	)
-}
-
-func (c in) operator() operator.Operator {
-	return operator.In
-}
-
-type notIn struct {
-	col    column
-	values []interface{}
-}
-
-func newNotIn(col column, values ...interface{}) notIn {
-	return notIn{
-		col:    col,
-		values: values,
+func newNotIn(col column, vals ...interface{}) containingOperation {
+	return containingOperation{
+		op:   operator.NotIn,
+		col:  col,
+		vals: vals,
 	}
 }
 
-func (c notIn) node() generator.Node {
-	return generator.NewExpression(
-		fmt.Sprintf(
-			"%s %s (%s)",
-			c.col.name,
-			c.operator(),
-			placeholders(len(c.values)),
-		),
-		c.values...,
+func (o containingOperation) node() generator.Node {
+	return generator.JoinExpressions(
+		o.col.expression(),
+		generator.NewExpression(string(o.operator())),
+		generator.ValuesToExpression(o.vals...).
+			Wrap("(", ")"),
 	)
 }
 
-func (c notIn) operator() operator.Operator {
-	return operator.NotIn
+func (o containingOperation) operator() operator.Operator {
+	return o.op
 }
 
-type like struct {
-	col column
-	lik string
-}
-
-func newLike(col column, lik string) like {
-	return like{
-		col: col,
-		lik: lik,
-	}
-}
-
-func (l like) node() generator.Node {
-	return generator.NewExpression(
-		fmt.Sprintf("%s %s ?", l.col.name, l.operator()),
-		l.lik,
-	)
-}
-
-func (l like) operator() operator.Operator {
-	return operator.Like
-}
-
-type regExp struct {
-	col    column
-	regexp string
-}
-
-func newRegExp(col column, regexp string) regExp {
-	return regExp{
-		col:    col,
-		regexp: regexp,
-	}
-}
-
-func (l regExp) node() generator.Node {
-	return generator.NewExpression(
-		fmt.Sprintf("%s %s ?", l.col.name, l.operator()),
-		l.regexp,
-	)
-}
-
-func (l regExp) operator() operator.Operator {
-	return operator.RegExp
-}
-
-type isNull struct {
+type nullyOperation struct {
+	op  operator.Operator
 	col column
 }
 
-func newIsNull(col column) isNull {
-	return isNull{
+func newIsNull(col column) nullyOperation {
+	return nullyOperation{
+		op:  operator.IsNull,
 		col: col,
 	}
 }
 
-func (l isNull) node() generator.Node {
-	return generator.NewExpression(
-		fmt.Sprintf("%s %s", l.col.name, l.Operator()),
-	)
-}
-
-func (l isNull) Operator() operator.Operator {
-	return operator.IsNull
-}
-
-type isNotNull struct {
-	col column
-}
-
-func newIsNotNull(col column) isNotNull {
-	return isNotNull{
+func newIsNotNull(col column) nullyOperation {
+	return nullyOperation{
+		op:  operator.IsNotNull,
 		col: col,
 	}
 }
 
-func (l isNotNull) node() generator.Node {
-	return generator.NewExpression(
-		fmt.Sprintf("%s %s", l.col.name, l.Operator()),
+func (o nullyOperation) node() generator.Node {
+	return generator.JoinExpressions(
+		o.col.expression(),
+		generator.NewExpression(string(o.operator())),
 	)
 }
 
-func (l isNotNull) Operator() operator.Operator {
-	return operator.IsNotNull
+func (o nullyOperation) operator() operator.Operator {
+	return o.op
 }

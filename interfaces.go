@@ -16,7 +16,7 @@ type expressor interface {
 
 type clause interface {
 	Statement
-	nodeMine() generator.Node
+	myNode() generator.Node
 	previous() clause
 }
 
@@ -38,15 +38,6 @@ type comparisonOrLogicalOperation interface {
 	Statement
 	operator() operator.Operator
 }
-
-// type comparisonOperation interface {
-// 	comparisonOrLogicalOperation
-// }
-//
-// type logicalOperation interface {
-// 	comparisonOrLogicalOperation
-// 	operations() []comparisonOrLogicalOperation
-// }
 
 type vals interface {
 	expressor

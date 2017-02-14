@@ -19,23 +19,23 @@ func newInsertInto(table tableOrTableAs, columns ...column) insertInto {
 
 func (s insertInto) node() generator.Node {
 	cs := clauseNodes(s)
-	gs := make([]generator.Node, len(cs))
+	ns := make([]generator.Node, len(cs))
 	for i, c := range cs {
-		gs[i] = c.nodeMine()
+		ns[i] = c.myNode()
 	}
-	return generator.NewNodes(gs...)
+	return generator.NewNodes(ns...)
 }
 
-func (s insertInto) nodeMine() generator.Node {
+func (s insertInto) myNode() generator.Node {
 	es := make([]generator.Expression, len(s.columns))
 	for i, c := range s.columns {
 		es[i] = c.expression()
 	}
 	return generator.NewContainer(
 		generator.NewExpression(string(keyword.InsertInto)),
-		generator.NewExpressions(
+		generator.JoinExpressions(
 			s.table.expression(),
-			generator.NewArray(es...),
+			generator.ArrayToExpression(es...),
 		),
 	)
 }

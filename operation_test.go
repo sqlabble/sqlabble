@@ -568,12 +568,12 @@ func TestNot(t *testing.T) {
 	}
 }
 
-func TestEq(t *testing.T) {
+func TestComparisonOperators(t *testing.T) {
 	for _, c := range []struct {
-		statement     sqlabble.Statement
-		wantSQL       string
-		wantIndentSQL string
-		wantValues    []interface{}
+		statement sqlabble.Statement
+		sql       string
+		sqlIndent string
+		values    []interface{}
 	}{
 		{
 			sqlabble.NewEq(sqlabble.NewColumn("foo"), 100),
@@ -584,23 +584,228 @@ func TestEq(t *testing.T) {
 				100,
 			},
 		},
+		{
+			sqlabble.NewLt(sqlabble.NewColumn("foo"), 100),
+			"foo < ?",
+			`> foo < ?
+`,
+			[]interface{}{
+				100,
+			},
+		},
+		{
+			sqlabble.NewLte(sqlabble.NewColumn("foo"), 100),
+			"foo <= ?",
+			`> foo <= ?
+`,
+			[]interface{}{
+				100,
+			},
+		},
+		{
+			sqlabble.NewGt(sqlabble.NewColumn("foo"), 100),
+			"foo > ?",
+			`> foo > ?
+`,
+			[]interface{}{
+				100,
+			},
+		},
+		{
+			sqlabble.NewGte(sqlabble.NewColumn("foo"), 100),
+			"foo >= ?",
+			`> foo >= ?
+`,
+			[]interface{}{
+				100,
+			},
+		},
+		{
+			sqlabble.NewLike(sqlabble.NewColumn("foo"), 100),
+			"foo LIKE ?",
+			`> foo LIKE ?
+`,
+			[]interface{}{
+				100,
+			},
+		},
+		{
+			sqlabble.NewRegExp(sqlabble.NewColumn("foo"), 100),
+			"foo REGEXP ?",
+			`> foo REGEXP ?
+`,
+			[]interface{}{
+				100,
+			},
+		},
 	} {
 		t.Run(fmt.Sprintf("Build %+v", c.statement), func(t *testing.T) {
 			sql, values := sqlabble.Build(c.statement)
-			if sql != c.wantSQL {
-				t.Error(diff.SQL(sql, c.wantSQL))
+			if sql != c.sql {
+				t.Error(diff.SQL(sql, c.sql))
 			}
-			if !reflect.DeepEqual(values, c.wantValues) {
-				t.Error(diff.Values(values, c.wantValues))
+			if !reflect.DeepEqual(values, c.values) {
+				t.Error(diff.Values(values, c.values))
 			}
 		})
 		t.Run(fmt.Sprintf("BuildIndent %+v", c.statement), func(t *testing.T) {
 			sql, values := builderIndent.Build(c.statement)
-			if sql != c.wantIndentSQL {
-				t.Error(diff.SQL(sql, c.wantIndentSQL))
+			if sql != c.sqlIndent {
+				t.Error(diff.SQL(sql, c.sqlIndent))
 			}
-			if !reflect.DeepEqual(values, c.wantValues) {
-				t.Error(diff.Values(values, c.wantValues))
+			if !reflect.DeepEqual(values, c.values) {
+				t.Error(diff.Values(values, c.values))
+			}
+		})
+	}
+}
+
+func TestBetween(t *testing.T) {
+	for _, c := range []struct {
+		statement sqlabble.Statement
+		sql       string
+		sqlIndent string
+		values    []interface{}
+	}{
+		{
+			sqlabble.NewBetween(
+				sqlabble.NewColumn("foo"),
+				100,
+				200,
+			),
+			"foo BETWEEN ? AND ?",
+			`> foo BETWEEN ? AND ?
+`,
+			[]interface{}{
+				100,
+				200,
+			},
+		},
+	} {
+		t.Run(fmt.Sprintf("Build %+v", c.statement), func(t *testing.T) {
+			sql, values := sqlabble.Build(c.statement)
+			if sql != c.sql {
+				t.Error(diff.SQL(sql, c.sql))
+			}
+			if !reflect.DeepEqual(values, c.values) {
+				t.Error(diff.Values(values, c.values))
+			}
+		})
+		t.Run(fmt.Sprintf("BuildIndent %+v", c.statement), func(t *testing.T) {
+			sql, values := builderIndent.Build(c.statement)
+			if sql != c.sqlIndent {
+				t.Error(diff.SQL(sql, c.sqlIndent))
+			}
+			if !reflect.DeepEqual(values, c.values) {
+				t.Error(diff.Values(values, c.values))
+			}
+		})
+	}
+}
+
+func TestContainingOperators(t *testing.T) {
+	for _, c := range []struct {
+		statement sqlabble.Statement
+		sql       string
+		sqlIndent string
+		values    []interface{}
+	}{
+		{
+			sqlabble.NewIn(
+				sqlabble.NewColumn("foo"),
+				100,
+				200,
+				300,
+			),
+			"foo IN (?, ?, ?)",
+			`> foo IN (?, ?, ?)
+`,
+			[]interface{}{
+				100,
+				200,
+				300,
+			},
+		},
+		{
+			sqlabble.NewNotIn(
+				sqlabble.NewColumn("foo"),
+				100,
+				200,
+				300,
+			),
+			"foo NOT IN (?, ?, ?)",
+			`> foo NOT IN (?, ?, ?)
+`,
+			[]interface{}{
+				100,
+				200,
+				300,
+			},
+		},
+	} {
+		t.Run(fmt.Sprintf("Build %+v", c.statement), func(t *testing.T) {
+			sql, values := sqlabble.Build(c.statement)
+			if sql != c.sql {
+				t.Error(diff.SQL(sql, c.sql))
+			}
+			if !reflect.DeepEqual(values, c.values) {
+				t.Error(diff.Values(values, c.values))
+			}
+		})
+		t.Run(fmt.Sprintf("BuildIndent %+v", c.statement), func(t *testing.T) {
+			sql, values := builderIndent.Build(c.statement)
+			if sql != c.sqlIndent {
+				t.Error(diff.SQL(sql, c.sqlIndent))
+			}
+			if !reflect.DeepEqual(values, c.values) {
+				t.Error(diff.Values(values, c.values))
+			}
+		})
+	}
+}
+
+func TestKeywordOperators(t *testing.T) {
+	for _, c := range []struct {
+		statement sqlabble.Statement
+		sql       string
+		sqlIndent string
+		values    []interface{}
+	}{
+		{
+			sqlabble.NewIsNull(
+				sqlabble.NewColumn("foo"),
+			),
+			"foo IS NULL",
+			`> foo IS NULL
+`,
+			[]interface{}{},
+		},
+		{
+			sqlabble.NewIsNotNull(
+				sqlabble.NewColumn("foo"),
+			),
+			"foo IS NOT NULL",
+			`> foo IS NOT NULL
+`,
+			[]interface{}{},
+		},
+	} {
+		t.Run(fmt.Sprintf("Build %+v", c.statement), func(t *testing.T) {
+			sql, values := sqlabble.Build(c.statement)
+			if sql != c.sql {
+				t.Error(diff.SQL(sql, c.sql))
+			}
+			if !reflect.DeepEqual(values, c.values) {
+				t.Error(diff.Values(values, c.values))
+			}
+		})
+		t.Run(fmt.Sprintf("BuildIndent %+v", c.statement), func(t *testing.T) {
+			sql, values := builderIndent.Build(c.statement)
+			if sql != c.sqlIndent {
+				t.Error(diff.SQL(sql, c.sqlIndent))
+			}
+			if !reflect.DeepEqual(values, c.values) {
+				t.Error(diff.Values(values, c.values))
 			}
 		})
 	}

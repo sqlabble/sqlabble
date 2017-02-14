@@ -6,14 +6,14 @@ import (
 )
 
 type assign struct {
-	col   column
-	value interface{}
+	col column
+	val interface{}
 }
 
-func newAssign(col column, value interface{}) assign {
+func newAssign(col column, val interface{}) assign {
 	return assign{
-		col:   col,
-		value: value,
+		col: col,
+		val: val,
 	}
 }
 
@@ -23,6 +23,6 @@ func (a assign) node() generator.Node {
 
 func (a assign) expression() generator.Expression {
 	return a.col.expression().
-		Append(generator.NewExpression(string(operator.Equal))).
-		Append(generator.NewPlaceholders(a.value))
+		Append(generator.NewExpression(string(operator.Eq))).
+		Append(generator.ValuesToExpression(a.val))
 }

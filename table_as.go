@@ -13,11 +13,11 @@ type tableAs struct {
 
 func (t tableAs) node() generator.Node {
 	ts := tableNodes(t)
-	fs := make([]generator.Node, len(ts))
+	ns := make([]generator.Node, len(ts))
 	for i, t := range ts {
-		fs[i] = t.expression()
+		ns[i] = t.expression()
 	}
-	return generator.NewNodes(fs...)
+	return generator.NewNodes(ns...)
 }
 
 func (t tableAs) expression() generator.Expression {

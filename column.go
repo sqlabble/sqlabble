@@ -45,55 +45,55 @@ func (c column) Assign(value interface{}) assign {
 	return newAssign(c, value)
 }
 
-func (c column) Eq(value interface{}) eq {
+func (c column) Eq(value interface{}) comparisonOperation {
 	return newEq(c, value)
 }
 
-func (c column) NotEq(value interface{}) notEq {
+func (c column) NotEq(value interface{}) comparisonOperation {
 	return newNotEq(c, value)
 }
 
-func (c column) Gt(value interface{}) gt {
+func (c column) Gt(value interface{}) comparisonOperation {
 	return newGt(c, value)
 }
 
-func (c column) Gte(value interface{}) gte {
+func (c column) Gte(value interface{}) comparisonOperation {
 	return newGte(c, value)
 }
 
-func (c column) Lt(value interface{}) lt {
+func (c column) Lt(value interface{}) comparisonOperation {
 	return newLt(c, value)
 }
 
-func (c column) Lte(value interface{}) lte {
+func (c column) Lte(value interface{}) comparisonOperation {
 	return newLte(c, value)
+}
+
+func (c column) Like(value string) comparisonOperation {
+	return newLike(c, value)
+}
+
+func (c column) RegExp(value string) comparisonOperation {
+	return newRegExp(c, value)
 }
 
 func (c column) Between(from, to interface{}) between {
 	return newBetween(c, from, to)
 }
 
-func (c column) In(values ...interface{}) in {
+func (c column) In(values ...interface{}) containingOperation {
 	return newIn(c, values...)
 }
 
-func (c column) NotIn(values ...interface{}) notIn {
+func (c column) NotIn(values ...interface{}) containingOperation {
 	return newNotIn(c, values...)
 }
 
-func (c column) Like(value string) like {
-	return newLike(c, value)
-}
-
-func (c column) RegExp(value string) regExp {
-	return newRegExp(c, value)
-}
-
-func (c column) IsNull() isNull {
+func (c column) IsNull() nullyOperation {
 	return newIsNull(c)
 }
 
-func (c column) IsNotNull() isNotNull {
+func (c column) IsNotNull() nullyOperation {
 	return newIsNotNull(c)
 }
 

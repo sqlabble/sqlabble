@@ -15,12 +15,12 @@ func (d del) node() generator.Node {
 	cs := clauseNodes(d)
 	fs := make([]generator.Node, len(cs))
 	for i, c := range cs {
-		fs[i] = c.nodeMine()
+		fs[i] = c.myNode()
 	}
 	return generator.NewNodes(fs...)
 }
 
-func (d del) nodeMine() generator.Node {
+func (d del) myNode() generator.Node {
 	return generator.NewContainer(
 		generator.NewExpression(keyword.Delete),
 	)

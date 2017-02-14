@@ -17,10 +17,10 @@ func newUpdate(tbl table) update {
 }
 
 func (u update) node() generator.Node {
-	return u.nodeMine()
+	return u.myNode()
 }
 
-func (u update) nodeMine() generator.Node {
+func (u update) myNode() generator.Node {
 	return generator.NewContainer(
 		generator.NewExpression(keyword.Update),
 		u.tbl.node(),

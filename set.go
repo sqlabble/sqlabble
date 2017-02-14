@@ -20,12 +20,12 @@ func (s set) node() generator.Node {
 	cs := clauseNodes(s)
 	gs := make([]generator.Node, len(cs))
 	for i, c := range cs {
-		gs[i] = c.nodeMine()
+		gs[i] = c.myNode()
 	}
 	return generator.NewNodes(gs...)
 }
 
-func (s set) nodeMine() generator.Node {
+func (s set) myNode() generator.Node {
 	gs := make([]generator.Node, len(s.assigns))
 	for i, a := range s.assigns {
 		gs[i] = a.expression()

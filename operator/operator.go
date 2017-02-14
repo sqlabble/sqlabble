@@ -7,22 +7,22 @@ const (
 	Or  Operator = "OR"
 	Not Operator = "NOT"
 
-	Equal    Operator = "="
-	NotEqual Operator = "!="
-	Gt       Operator = ">"
-	Gte      Operator = ">="
-	Lt       Operator = "<"
-	Lte      Operator = "<="
-	Between  Operator = "BETWEEN"
+	Eq     Operator = "="
+	NotEq  Operator = "!="
+	Gt     Operator = ">"
+	Gte    Operator = ">="
+	Lt     Operator = "<"
+	Lte    Operator = "<="
+	Like   Operator = "LIKE"
+	RegExp Operator = "REGEXP"
+
+	Between Operator = "BETWEEN"
 
 	In    Operator = "IN"
 	NotIn Operator = "NOT IN"
 
-	Like   Operator = "LIKE"
-	RegExp Operator = "REGEXP"
-
 	IsNull    Operator = "IS NULL"
 	IsNotNull Operator = "IS NOT NULL"
 
-	As = "AS"
+	As Operator = "AS"
 )

@@ -21,13 +21,13 @@ func newValues(vals ...interface{}) values {
 
 func (v values) node() generator.Node {
 	vs := valuesNodes(v)
-	es := make([]generator.Node, len(vs))
+	ns := make([]generator.Node, len(vs))
 	for i, v := range vs {
-		es[i] = v.expression()
+		ns[i] = v.expression()
 	}
 	g := generator.NewContainer(
 		generator.NewExpression(keyword.Values),
-		generator.NewComma(es...),
+		generator.NewComma(ns...),
 	)
 
 	if len(vs) > 0 {

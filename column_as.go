@@ -21,7 +21,7 @@ func (c columnAs) node() generator.Node {
 }
 
 func (c columnAs) expression() generator.Expression {
-	a := generator.NewExpression(operator.As).
+	a := generator.NewExpression(string(operator.As)).
 		Append(generator.NewExpression(c.alias()))
 	if c.col == nil {
 		return a

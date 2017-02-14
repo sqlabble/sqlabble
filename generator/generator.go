@@ -22,7 +22,7 @@ func NewUnions(separator Expression, generators ...Node) Unions {
 func (us Unions) ToSQL(ctx Context) (string, []interface{}) {
 	res := []Node{}
 	for i, g := range us.generators {
-		if needsBracket(ctx, g) {
+		if needsParentheses(ctx, g) {
 			g = NewParentheses(g)
 		}
 		if i == 0 {
@@ -34,7 +34,7 @@ func (us Unions) ToSQL(ctx Context) (string, []interface{}) {
 	return NewNodes(res...).ToSQL(ctx)
 }
 
-func needsBracket(ctx Context, generator Node) bool {
+func needsParentheses(ctx Context, generator Node) bool {
 	if !ctx.flatSets {
 		return true
 	}
@@ -79,22 +79,16 @@ func (ns Nodes) ToSQL(ctx Context) (string, []interface{}) {
 	return ctx.Join(sqls...), values
 }
 
-type Expressions []Expression
-
-func NewExpressions(es ...Expression) Expressions {
-	return es
-}
-
-func (es Expressions) ToSQL(ctx Context) (string, []interface{}) {
-	if len(es) == 0 {
-		return "", nil
-	}
-	exp := es[0]
-	for i := 1; i < len(es); i++ {
-		e := es[i]
+func JoinExpressions(es ...Expression) Expression {
+	var exp Expression
+	for i, e := range es {
+		if i == 0 {
+			exp = e
+			continue
+		}
 		exp = exp.Append(e)
 	}
-	return exp.ToSQL(ctx)
+	return exp
 }
 
 type Expression struct {
@@ -134,7 +128,12 @@ func (e Expression) Append(exp Expression) Expression {
 	return e
 }
 
-func NewArray(es ...Expression) Expression {
+func (e Expression) Wrap(pre, post string) Expression {
+	e.sql = pre + e.sql + post
+	return e
+}
+
+func ArrayToExpression(es ...Expression) Expression {
 	sqls := make([]string, len(es))
 	values := []interface{}{}
 	for i, e := range es {
@@ -142,12 +141,12 @@ func NewArray(es ...Expression) Expression {
 		values = append(values, e.values...)
 	}
 	return NewExpression(
-		fmt.Sprintf("(%s)", strings.Join(sqls, ", ")),
+		strings.Join(sqls, ", "),
 		values...,
-	)
+	).Wrap("(", ")")
 }
 
-func NewPlaceholders(values ...interface{}) Expression {
+func ValuesToExpression(values ...interface{}) Expression {
 	return NewExpression(
 		placeholders(len(values)),
 		values...,
@@ -189,29 +188,6 @@ func (c Container) AddChild(children ...Node) Container {
 	c.children = append(c.children, children...)
 	return c
 }
-
-type Join struct {
-	sep        string
-	generators []Node
-}
-
-// func NewJoin(sep string, generators ...Node) Join {
-// 	return Join{
-// 		sep:        sep,
-// 		generators: generators,
-// 	}
-// }
-//
-// func (j Join) ToSQL(ctx Context) (string, []interface{}) {
-// 	sqls := make([]string, len(j.generators))
-// 	values := []interface{}{}
-// 	for i, g := range j.generators {
-// 		var vs []interface{}
-// 		sqls[i], vs = g.ToSQL(ctx)
-// 		values = append(values, vs...)
-// 	}
-// 	return NewExpression(strings.Join(sqls, j.sep), values...).ToSQL(ctx)
-// }
 
 type Comma struct {
 	generators []Node

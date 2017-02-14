@@ -18,12 +18,12 @@ func (o orderBy) node() generator.Node {
 	cs := clauseNodes(o)
 	fs := make([]generator.Node, len(cs))
 	for i, c := range cs {
-		fs[i] = c.nodeMine()
+		fs[i] = c.myNode()
 	}
 	return generator.NewNodes(fs...)
 }
 
-func (o orderBy) nodeMine() generator.Node {
+func (o orderBy) myNode() generator.Node {
 	fs := make([]generator.Node, len(o.orders))
 	for i, c := range o.orders {
 		fs[i] = c.node()

@@ -1,8 +1,6 @@
 package sqlabble
 
 import (
-	"fmt"
-
 	"github.com/minodisk/sqlabble/direction"
 	"github.com/minodisk/sqlabble/generator"
 )
@@ -13,8 +11,9 @@ type order struct {
 }
 
 func (o order) node() generator.Node {
-	return generator.NewExpression(
-		fmt.Sprintf("%s %s", o.col.name, o.dir),
+	return generator.JoinExpressions(
+		o.col.expression(),
+		generator.NewExpression(string(o.dir)),
 	)
 }
 

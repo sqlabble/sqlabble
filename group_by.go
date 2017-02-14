@@ -18,14 +18,14 @@ func newGroupBy(col column, columns ...column) groupBy {
 
 func (g groupBy) node() generator.Node {
 	cs := clauseNodes(g)
-	gs := make([]generator.Node, len(cs))
+	ns := make([]generator.Node, len(cs))
 	for i, c := range cs {
-		gs[i] = c.nodeMine()
+		ns[i] = c.myNode()
 	}
-	return generator.NewNodes(gs...)
+	return generator.NewNodes(ns...)
 }
 
-func (g groupBy) nodeMine() generator.Node {
+func (g groupBy) myNode() generator.Node {
 	gs := make([]generator.Node, len(g.columns))
 	for i, c := range g.columns {
 		gs[i] = c.node()

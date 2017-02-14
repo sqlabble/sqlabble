@@ -18,14 +18,14 @@ func newHaving(operation comparisonOrLogicalOperation) having {
 
 func (w having) node() generator.Node {
 	cs := clauseNodes(w)
-	fs := make([]generator.Node, len(cs))
+	ns := make([]generator.Node, len(cs))
 	for i, c := range cs {
-		fs[i] = c.nodeMine()
+		ns[i] = c.myNode()
 	}
-	return generator.NewNodes(fs...)
+	return generator.NewNodes(ns...)
 }
 
-func (w having) nodeMine() generator.Node {
+func (w having) myNode() generator.Node {
 	return generator.NewContainer(
 		generator.NewExpression(string(keyword.Having)),
 		w.operation.node(),
