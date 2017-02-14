@@ -6,13 +6,32 @@ import (
 	"testing"
 
 	q "github.com/minodisk/sqlabble"
+	"github.com/minodisk/sqlabble/generator"
 	"github.com/minodisk/sqlabble/internal/diff"
-	"github.com/minodisk/sqlabble/internal/grammar"
+)
+
+var (
+	builder       = q.Standard
+	builderIndent = q.NewBuilder(
+		generator.Options{
+			Prefix: "> ",
+			Indent: "  ",
+		})
+	builderMySQL4       = q.MySQL4
+	builderIndentMySQL4 = q.NewBuilder(
+		generator.Options{
+			Prefix:   "> ",
+			Indent:   "  ",
+			FlatSets: true,
+		})
 )
 
 func TestBuild(t *testing.T) {
+	q.C("created_at").Assign(300)
+	q.Select(q.Column("foo")).From(q.T("bar")).Where(q.Column("baz").Eq(100)).OrderBy(q.C("quz").Asc()).Limit(0, 20)
+
 	for i, c := range []struct {
-		statement grammar.Statement
+		statement q.Statement
 		sql       string
 		sqlIndent string
 		values    []interface{}
@@ -42,26 +61,26 @@ func TestBuild(t *testing.T) {
 				20*5, 20,
 			),
 			"SELECT created_at, name AS n, gender AS g, age FROM users WHERE g = ? AND (age < ? OR age = ? OR age >= ?) AND created_at BETWEEN ? AND ? ORDER BY created_at DESC, id ASC LIMIT ?, ?",
-			`SELECT
-  created_at
-  , name AS n
-  , gender AS g
-  , age
-FROM
-  users
-WHERE
-  g = ?
-  AND (
-    age < ?
-    OR age = ?
-    OR age >= ?
-  )
-  AND created_at BETWEEN ? AND ?
-ORDER BY
-  created_at DESC
-  , id ASC
-LIMIT
-  ?, ?
+			`> SELECT
+>   created_at
+>   , name AS n
+>   , gender AS g
+>   , age
+> FROM
+>   users
+> WHERE
+>   g = ?
+>   AND (
+>     age < ?
+>     OR age = ?
+>     OR age >= ?
+>   )
+>   AND created_at BETWEEN ? AND ?
+> ORDER BY
+>   created_at DESC
+>   , id ASC
+> LIMIT
+>   ?, ?
 `,
 			[]interface{}{
 				"male",
@@ -87,11 +106,11 @@ LIMIT
 				19,
 			),
 			"INSERT INTO foo (name, age) VALUES (?, ?), (?, ?)",
-			`INSERT INTO
-  foo (name, age)
-VALUES
-  (?, ?)
-  , (?, ?)
+			`> INSERT INTO
+>   foo (name, age)
+> VALUES
+>   (?, ?)
+>   , (?, ?)
 `,
 			[]interface{}{
 				"Obi-Wan Kenobi",
@@ -107,11 +126,11 @@ VALUES
 				q.C("login_date").Lt("2004-07-02 09:00:00"),
 			),
 			"DELETE FROM login_history WHERE login_date < ?",
-			`DELETE
-FROM
-  login_history
-WHERE
-  login_date < ?
+			`> DELETE
+> FROM
+>   login_history
+> WHERE
+>   login_date < ?
 `,
 			[]interface{}{
 				"2004-07-02 09:00:00",
@@ -141,27 +160,27 @@ WHERE
 				),
 			),
 			"(SELECT emp_id FROM employee WHERE assigned_branch_id = ? AND (title = ? OR title = ?)) UNION (SELECT DISTINCT open_emp_id FROM account WHERE open_branch_id = ?)",
-			`(
-  SELECT
-    emp_id
-  FROM
-    employee
-  WHERE
-    assigned_branch_id = ?
-    AND (
-      title = ?
-      OR title = ?
-    )
-)
-UNION
-(
-  SELECT DISTINCT
-    open_emp_id
-  FROM
-    account
-  WHERE
-    open_branch_id = ?
-)
+			`> (
+>   SELECT
+>     emp_id
+>   FROM
+>     employee
+>   WHERE
+>     assigned_branch_id = ?
+>     AND (
+>       title = ?
+>       OR title = ?
+>     )
+> )
+> UNION
+> (
+>   SELECT DISTINCT
+>     open_emp_id
+>   FROM
+>     account
+>   WHERE
+>     open_branch_id = ?
+> )
 `,
 			[]interface{}{
 				2,
@@ -182,7 +201,7 @@ UNION
 		})
 
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
-			sql, values := q.BuildIndent(c.statement, "", "  ")
+			sql, values := builderIndent.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
 			}
