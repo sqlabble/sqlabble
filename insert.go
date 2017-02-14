@@ -6,11 +6,11 @@ import (
 )
 
 type insertInto struct {
-	table   tableNode
+	table   tableOrTableAs
 	columns []column
 }
 
-func newInsertInto(table tableNode, columns ...column) insertInto {
+func newInsertInto(table tableOrTableAs, columns ...column) insertInto {
 	return insertInto{
 		table:   table,
 		columns: columns,
@@ -40,7 +40,7 @@ func (s insertInto) clauseGenerator() generator.Generator {
 	)
 }
 
-func (c insertInto) previous() clauseNode {
+func (c insertInto) previous() clause {
 	return nil
 }
 

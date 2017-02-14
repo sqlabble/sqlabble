@@ -6,7 +6,7 @@ import (
 )
 
 type limit struct {
-	prev   clauseNode
+	prev   clause
 	offset int
 	lim    int
 }
@@ -40,6 +40,6 @@ func (l limit) clauseGenerator() generator.Generator {
 	)
 }
 
-func (l limit) previous() clauseNode {
+func (l limit) previous() clause {
 	return l.prev
 }

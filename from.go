@@ -6,11 +6,11 @@ import (
 )
 
 type from struct {
-	prev  clauseNode
-	table tableNode
+	prev  clause
+	table tableOrTableAs
 }
 
-func newFrom(table tableNode) from {
+func newFrom(table tableOrTableAs) from {
 	return from{
 		table: table,
 	}
@@ -32,17 +32,17 @@ func (f from) clauseGenerator() generator.Generator {
 	)
 }
 
-func (f from) previous() clauseNode {
+func (f from) previous() clause {
 	return f.prev
 }
 
-func (f from) Where(operation operationNode) where {
-	w := newWhere(operation)
+func (f from) Where(op comparisonOrLogicalOperation) where {
+	w := newWhere(op)
 	w.prev = f
 	return w
 }
 
-func (f from) OrderBy(orders ...orderNode) orderBy {
+func (f from) OrderBy(orders ...order) orderBy {
 	o := newOrderBy(orders...)
 	o.prev = f
 	return o

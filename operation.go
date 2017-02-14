@@ -8,10 +8,10 @@ import (
 )
 
 type and struct {
-	ops []operationNode
+	ops []comparisonOrLogicalOperation
 }
 
-func newAnd(cs ...operationNode) and {
+func newAnd(cs ...comparisonOrLogicalOperation) and {
 	return and{ops: cs}
 }
 
@@ -27,15 +27,15 @@ func (a and) operator() operator.Operator {
 	return operator.And
 }
 
-func (a and) operations() []operationNode {
+func (a and) operations() []comparisonOrLogicalOperation {
 	return a.ops
 }
 
 type or struct {
-	ops []operationNode
+	ops []comparisonOrLogicalOperation
 }
 
-func newOr(conditions ...operationNode) or {
+func newOr(conditions ...comparisonOrLogicalOperation) or {
 	return or{ops: conditions}
 }
 
@@ -51,15 +51,15 @@ func (o or) operator() operator.Operator {
 	return operator.Or
 }
 
-func (o or) operations() []operationNode {
+func (o or) operations() []comparisonOrLogicalOperation {
 	return o.ops
 }
 
 type not struct {
-	operation operationNode
+	operation comparisonOrLogicalOperation
 }
 
-func newNot(operation operationNode) not {
+func newNot(operation comparisonOrLogicalOperation) not {
 	return not{operation: operation}
 }
 
@@ -71,8 +71,8 @@ func (n not) operator() operator.Operator {
 	return operator.Not
 }
 
-func (n not) operations() []operationNode {
-	return []operationNode{n.operation}
+func (n not) operations() []comparisonOrLogicalOperation {
+	return []comparisonOrLogicalOperation{n.operation}
 }
 
 type eq struct {

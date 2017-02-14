@@ -6,7 +6,7 @@ import (
 )
 
 type update struct {
-	prev clauseNode
+	prev clause
 	tbl  table
 }
 
@@ -27,7 +27,7 @@ func (u update) clauseGenerator() generator.Generator {
 	)
 }
 
-func (u update) previous() clauseNode {
+func (u update) previous() clause {
 	return u.prev
 }
 

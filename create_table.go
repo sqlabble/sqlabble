@@ -6,10 +6,10 @@ import (
 )
 
 type createTable struct {
-	table tableNode
+	table tableOrTableAs
 }
 
-func newCreateTable(table tableNode) createTable {
+func newCreateTable(table tableOrTableAs) createTable {
 	return createTable{
 		table: table,
 	}

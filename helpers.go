@@ -12,28 +12,28 @@ func placeholders(i int) string {
 	return s
 }
 
-func valuesNodes(p valuesNode) []valuesNode {
-	ts := []valuesNode{}
+func valuesNodes(p vals) []vals {
+	ts := []vals{}
 	for p != nil {
-		ts = append([]valuesNode{p}, ts...)
+		ts = append([]vals{p}, ts...)
 		p = p.previous()
 	}
 	return ts
 }
 
-func clauseNodes(c clauseNode) []clauseNode {
-	cs := []clauseNode{}
+func clauseNodes(c clause) []clause {
+	cs := []clause{}
 	for c != nil {
-		cs = append([]clauseNode{c}, cs...)
+		cs = append([]clause{c}, cs...)
 		c = c.previous()
 	}
 	return cs
 }
 
-func tableNodes(c tableNode) []tableNode {
-	cs := []tableNode{}
+func tableNodes(c tableOrTableAs) []tableOrTableAs {
+	cs := []tableOrTableAs{}
 	for c != nil {
-		cs = append([]tableNode{c}, cs...)
+		cs = append([]tableOrTableAs{c}, cs...)
 		c = c.previous()
 	}
 	return cs

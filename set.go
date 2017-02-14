@@ -6,7 +6,7 @@ import (
 )
 
 type set struct {
-	prev    clauseNode
+	prev    clause
 	assigns []assign
 }
 
@@ -37,11 +37,11 @@ func (s set) clauseGenerator() generator.Generator {
 	return c
 }
 
-func (s set) previous() clauseNode {
+func (s set) previous() clause {
 	return s.prev
 }
 
-func (s set) Where(operation operationNode) where {
+func (s set) Where(operation comparisonOrLogicalOperation) where {
 	w := newWhere(operation)
 	w.prev = s
 	return w

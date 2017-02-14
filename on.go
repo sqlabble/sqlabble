@@ -7,7 +7,7 @@ import (
 )
 
 type on struct {
-	join             tableNode
+	join             tableOrTableAs
 	column1, column2 column
 }
 
@@ -39,32 +39,32 @@ func (o on) expression() generator.Expression {
 		Append(e)
 }
 
-func (o on) previous() tableNode {
+func (o on) previous() tableOrTableAs {
 	if o.join == nil {
 		return nil
 	}
 	return o.join.previous()
 }
 
-func (o on) Join(table tableNode) tableNode {
+func (o on) Join(table tableOrTableAs) tableOrTableAs {
 	j := newJoin(table)
 	j.prev = o
 	return j
 }
 
-func (o on) InnerJoin(table tableNode) tableNode {
+func (o on) InnerJoin(table tableOrTableAs) tableOrTableAs {
 	ij := newInnerJoin(table)
 	ij.prev = o
 	return ij
 }
 
-func (o on) LeftJoin(table tableNode) tableNode {
+func (o on) LeftJoin(table tableOrTableAs) tableOrTableAs {
 	lj := newLeftJoin(table)
 	lj.prev = o
 	return lj
 }
 
-func (o on) RightJoin(table tableNode) tableNode {
+func (o on) RightJoin(table tableOrTableAs) tableOrTableAs {
 	rj := newRightJoin(table)
 	rj.prev = o
 	return rj

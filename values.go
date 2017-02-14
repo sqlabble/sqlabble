@@ -8,8 +8,8 @@ import (
 )
 
 type values struct {
-	prevClause clauseNode
-	prev       valuesNode
+	prevClause clause
+	prev       vals
 	vals       []interface{}
 }
 
@@ -49,11 +49,11 @@ func (v values) expression() generator.Expression {
 	)
 }
 
-func (v values) clause() clauseNode {
+func (v values) clause() clause {
 	return v.prevClause
 }
 
-func (v values) previous() valuesNode {
+func (v values) previous() vals {
 	return v.prev
 }
 

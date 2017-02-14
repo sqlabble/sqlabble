@@ -26,7 +26,7 @@ func (d del) clauseGenerator() generator.Generator {
 	)
 }
 
-func (d del) previous() clauseNode {
+func (d del) previous() clause {
 	return nil
 }
 

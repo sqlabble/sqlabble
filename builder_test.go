@@ -10,7 +10,8 @@ import (
 )
 
 func TestBuild(t *testing.T) {
-	// q.C("created_at").Assign(300)
+	q.C("created_at").Assign(300)
+	q.Select(q.Column("foo")).From(q.T("bar")).Where(q.Column("baz").Eq(100)).OrderBy(q.C("quz").Asc()).Limit(0, 20)
 
 	for i, c := range []struct {
 		statement q.Node

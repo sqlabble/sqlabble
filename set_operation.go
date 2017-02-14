@@ -70,11 +70,11 @@ func (u setOperation) clauseGenerator() generator.Generator {
 	return generator.NewUnions(sep, gs...)
 }
 
-func (u setOperation) previous() clauseNode {
+func (u setOperation) previous() clause {
 	return nil
 }
 
-func (u setOperation) OrderBy(os ...orderNode) orderBy {
+func (u setOperation) OrderBy(os ...order) orderBy {
 	o := newOrderBy(os...)
 	o.prev = u
 	return o

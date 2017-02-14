@@ -7,17 +7,17 @@ import (
 
 type selec struct {
 	distinct bool
-	columns  []columnNode
+	columns  []columnOrColumnAs
 }
 
-func newSelect(columns ...columnNode) selec {
+func newSelect(columns ...columnOrColumnAs) selec {
 	return selec{
 		distinct: false,
 		columns:  columns,
 	}
 }
 
-func newSelectDistinct(columns ...columnNode) selec {
+func newSelectDistinct(columns ...columnOrColumnAs) selec {
 	return selec{
 		distinct: true,
 		columns:  columns,
@@ -48,11 +48,11 @@ func (s selec) clauseGenerator() generator.Generator {
 	)
 }
 
-func (c selec) previous() clauseNode {
+func (c selec) previous() clause {
 	return nil
 }
 
-func (c selec) From(t tableNode) from {
+func (c selec) From(t tableOrTableAs) from {
 	f := newFrom(t)
 	f.prev = c
 	return f

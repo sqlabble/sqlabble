@@ -1,7 +1,6 @@
 package sqlabble
 
 import (
-	"github.com/minodisk/sqlabble/internal/direction"
 	"github.com/minodisk/sqlabble/internal/generator"
 	"github.com/minodisk/sqlabble/internal/operator"
 )
@@ -10,52 +9,47 @@ type Node interface {
 	generator() generator.Generator
 }
 
-type expressionNode interface {
+type expression interface {
 	Node
 	expression() generator.Expression
 }
 
-type clauseNode interface {
+type clause interface {
 	Node
 	clauseGenerator() generator.Generator
-	previous() clauseNode
+	previous() clause
 }
 
-type columnNode interface {
-	expressionNode
+type columnOrColumnAs interface {
+	expression
 	columnName() string
 }
 
-type tableNode interface {
-	expressionNode
-	previous() tableNode
-	Join(tableNode) tableNode
-	InnerJoin(tableNode) tableNode
-	LeftJoin(tableNode) tableNode
-	RightJoin(tableNode) tableNode
+type tableOrTableAs interface {
+	expression
+	Join(tableOrTableAs) tableOrTableAs
+	InnerJoin(tableOrTableAs) tableOrTableAs
+	LeftJoin(tableOrTableAs) tableOrTableAs
+	RightJoin(tableOrTableAs) tableOrTableAs
+	previous() tableOrTableAs
 }
 
-type operationNode interface {
+type comparisonOrLogicalOperation interface {
 	Node
 	operator() operator.Operator
 }
 
-type comparisonOperationNode interface {
-	operationNode
+type comparisonOperation interface {
+	comparisonOrLogicalOperation
 }
 
-type logicalOperationNode interface {
-	operationNode
-	operations() []operationNode
+type logicalOperation interface {
+	comparisonOrLogicalOperation
+	operations() []comparisonOrLogicalOperation
 }
 
-type orderNode interface {
-	Node
-	direction() direction.Direction
-}
-
-type valuesNode interface {
-	expressionNode
-	clause() clauseNode
-	previous() valuesNode
+type vals interface {
+	expression
+	clause() clause
+	previous() vals
 }

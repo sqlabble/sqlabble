@@ -7,32 +7,32 @@ import (
 
 type join struct {
 	joinType string
-	table    tableNode
-	prev     tableNode
+	table    tableOrTableAs
+	prev     tableOrTableAs
 }
 
-func newJoin(table tableNode) join {
+func newJoin(table tableOrTableAs) join {
 	return join{
 		joinType: keyword.Join,
 		table:    table,
 	}
 }
 
-func newInnerJoin(table tableNode) join {
+func newInnerJoin(table tableOrTableAs) join {
 	return join{
 		joinType: keyword.InnerJoin,
 		table:    table,
 	}
 }
 
-func newLeftJoin(table tableNode) join {
+func newLeftJoin(table tableOrTableAs) join {
 	return join{
 		joinType: keyword.LeftJoin,
 		table:    table,
 	}
 }
 
-func newRightJoin(table tableNode) join {
+func newRightJoin(table tableOrTableAs) join {
 	return join{
 		joinType: keyword.RightJoin,
 		table:    table,
@@ -53,32 +53,32 @@ func (t join) expression() generator.Expression {
 		Append(t.table.expression())
 }
 
-func (j join) previous() tableNode {
+func (j join) previous() tableOrTableAs {
 	if j.prev == nil {
 		return nil
 	}
 	return j.prev
 }
 
-func (j join) Join(table tableNode) tableNode {
+func (j join) Join(table tableOrTableAs) tableOrTableAs {
 	nj := newJoin(table)
 	nj.prev = j
 	return nj
 }
 
-func (j join) InnerJoin(table tableNode) tableNode {
+func (j join) InnerJoin(table tableOrTableAs) tableOrTableAs {
 	ij := newInnerJoin(table)
 	ij.prev = j
 	return ij
 }
 
-func (j join) LeftJoin(table tableNode) tableNode {
+func (j join) LeftJoin(table tableOrTableAs) tableOrTableAs {
 	lj := newLeftJoin(table)
 	lj.prev = j
 	return lj
 }
 
-func (j join) RightJoin(table tableNode) tableNode {
+func (j join) RightJoin(table tableOrTableAs) tableOrTableAs {
 	rj := newRightJoin(table)
 	rj.prev = j
 	return rj

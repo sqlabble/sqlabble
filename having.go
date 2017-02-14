@@ -6,11 +6,11 @@ import (
 )
 
 type having struct {
-	prev      clauseNode
-	operation operationNode
+	prev      clause
+	operation comparisonOrLogicalOperation
 }
 
-func newHaving(operation operationNode) having {
+func newHaving(operation comparisonOrLogicalOperation) having {
 	return having{
 		operation: operation,
 	}
@@ -32,6 +32,6 @@ func (w having) clauseGenerator() generator.Generator {
 	)
 }
 
-func (c having) previous() clauseNode {
+func (c having) previous() clause {
 	return c.prev
 }

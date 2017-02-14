@@ -6,11 +6,11 @@ import (
 )
 
 type where struct {
-	prev      clauseNode
-	operation operationNode
+	prev      clause
+	operation comparisonOrLogicalOperation
 }
 
-func newWhere(operation operationNode) where {
+func newWhere(operation comparisonOrLogicalOperation) where {
 	return where{
 		operation: operation,
 	}
@@ -32,11 +32,11 @@ func (w where) clauseGenerator() generator.Generator {
 	)
 }
 
-func (w where) previous() clauseNode {
+func (w where) previous() clause {
 	return w.prev
 }
 
-func (w where) OrderBy(os ...orderNode) orderBy {
+func (w where) OrderBy(os ...order) orderBy {
 	o := newOrderBy(os...)
 	o.prev = w
 	return o

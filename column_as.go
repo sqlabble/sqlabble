@@ -6,7 +6,7 @@ import (
 )
 
 type columnAs struct {
-	col  columnNode
+	col  columnOrColumnAs
 	alia string
 }
 

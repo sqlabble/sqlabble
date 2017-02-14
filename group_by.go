@@ -6,7 +6,7 @@ import (
 )
 
 type groupBy struct {
-	prev    clauseNode
+	prev    clause
 	columns []column
 }
 
@@ -36,11 +36,11 @@ func (g groupBy) clauseGenerator() generator.Generator {
 	)
 }
 
-func (g groupBy) previous() clauseNode {
+func (g groupBy) previous() clause {
 	return g.prev
 }
 
-func (g groupBy) Having(operation operationNode) having {
+func (g groupBy) Having(operation comparisonOrLogicalOperation) having {
 	l := newHaving(operation)
 	l.prev = g
 	return l

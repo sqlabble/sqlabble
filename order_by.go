@@ -6,11 +6,11 @@ import (
 )
 
 type orderBy struct {
-	prev   clauseNode
-	orders []orderNode
+	prev   clause
+	orders []order
 }
 
-func newOrderBy(os ...orderNode) orderBy {
+func newOrderBy(os ...order) orderBy {
 	return orderBy{orders: os}
 }
 
@@ -34,7 +34,7 @@ func (o orderBy) clauseGenerator() generator.Generator {
 	)
 }
 
-func (o orderBy) previous() clauseNode {
+func (o orderBy) previous() clause {
 	return o.prev
 }
 
