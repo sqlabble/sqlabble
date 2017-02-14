@@ -62,3 +62,28 @@ func (v values) Values(vals ...interface{}) values {
 	f.prev = v
 	return f
 }
+
+type defaultValues struct {
+	prev clause
+}
+
+func newDefaultValues() defaultValues {
+	return defaultValues{}
+}
+
+func (v defaultValues) node() generator.Node {
+	cs := clauseNodes(v)
+	ns := make([]generator.Node, len(cs))
+	for i, c := range cs {
+		ns[i] = c.myNode()
+	}
+	return generator.NewNodes(ns...)
+}
+
+func (v defaultValues) myNode() generator.Node {
+	return generator.NewExpression(keyword.DefaultValues)
+}
+
+func (v defaultValues) previous() clause {
+	return v.prev
+}

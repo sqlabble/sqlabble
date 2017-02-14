@@ -7,6 +7,10 @@ import (
 	"github.com/minodisk/sqlabble/operator"
 )
 
+var (
+	EmptyExpression = NewExpression("")
+)
+
 type Unions struct {
 	separator  Expression
 	generators []Node
@@ -117,24 +121,44 @@ func (e Expression) ToSQL(ctx Context) (string, []interface{}) {
 }
 
 func (e Expression) Prepend(exp Expression) Expression {
+	if exp.Empty() {
+		return e
+	}
+	if e.Empty() {
+		return exp
+	}
 	e.sql = exp.sql + " " + e.sql
 	e.values = append(e.values, exp.values...)
 	return e
 }
 
 func (e Expression) Append(exp Expression) Expression {
+	if exp.Empty() {
+		return e
+	}
+	if e.Empty() {
+		return exp
+	}
 	e.sql = e.sql + " " + exp.sql
 	e.values = append(e.values, exp.values...)
 	return e
 }
 
-func (e Expression) Wrap(pre, post string) Expression {
+func (e Expression) WrapSQL(pre, post string) Expression {
 	e.sql = pre + e.sql + post
 	return e
 }
 
+func (e Expression) Empty() bool {
+	return e.sql == "" && len(e.values) == 0
+}
+
 func ArrayToExpression(es ...Expression) Expression {
-	sqls := make([]string, len(es))
+	l := len(es)
+	if l == 0 {
+		return EmptyExpression
+	}
+	sqls := make([]string, l)
 	values := []interface{}{}
 	for i, e := range es {
 		sqls[i] = e.sql
@@ -143,7 +167,7 @@ func ArrayToExpression(es ...Expression) Expression {
 	return NewExpression(
 		strings.Join(sqls, ", "),
 		values...,
-	).Wrap("(", ")")
+	).WrapSQL("(", ")")
 }
 
 func ValuesToExpression(values ...interface{}) Expression {

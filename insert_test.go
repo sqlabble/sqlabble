@@ -25,6 +25,16 @@ func TestInsertSQL(t *testing.T) {
 		{
 			sqlabble.NewInsertInto(
 				sqlabble.NewTable("foo"),
+			),
+			"INSERT INTO foo",
+			`> INSERT INTO
+>   foo
+`,
+			[]interface{}{},
+		},
+		{
+			sqlabble.NewInsertInto(
+				sqlabble.NewTable("foo"),
 				sqlabble.NewColumn("name"),
 				sqlabble.NewColumn("age"),
 			),
@@ -79,6 +89,19 @@ func TestInsertSQL(t *testing.T) {
 				"Luke Skywalker",
 				19,
 			},
+		},
+		{
+			sqlabble.NewInsertInto(
+				sqlabble.NewTable("foo"),
+				sqlabble.NewColumn("name"),
+				sqlabble.NewColumn("age"),
+			).DefaultValues(),
+			"INSERT INTO foo (name, age) DEFAULT VALUES",
+			`> INSERT INTO
+>   foo (name, age)
+> DEFAULT VALUES
+`,
+			[]interface{}{},
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {

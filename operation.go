@@ -199,7 +199,7 @@ func (o containingOperation) node() generator.Node {
 		o.col.expression(),
 		generator.NewExpression(string(o.operator())),
 		generator.ValuesToExpression(o.vals...).
-			Wrap("(", ")"),
+			WrapSQL("(", ")"),
 	)
 }
 

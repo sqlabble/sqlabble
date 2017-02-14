@@ -17,35 +17,41 @@ func newInsertInto(table tableOrTableAs, columns ...column) insertInto {
 	}
 }
 
-func (s insertInto) node() generator.Node {
-	cs := clauseNodes(s)
+func (i insertInto) node() generator.Node {
+	cs := clauseNodes(i)
 	ns := make([]generator.Node, len(cs))
-	for i, c := range cs {
-		ns[i] = c.myNode()
+	for j, c := range cs {
+		ns[j] = c.myNode()
 	}
 	return generator.NewNodes(ns...)
 }
 
-func (s insertInto) myNode() generator.Node {
-	es := make([]generator.Expression, len(s.columns))
-	for i, c := range s.columns {
-		es[i] = c.expression()
+func (i insertInto) myNode() generator.Node {
+	es := make([]generator.Expression, len(i.columns))
+	for j, c := range i.columns {
+		es[j] = c.expression()
 	}
 	return generator.NewContainer(
 		generator.NewExpression(string(keyword.InsertInto)),
 		generator.JoinExpressions(
-			s.table.expression(),
+			i.table.expression(),
 			generator.ArrayToExpression(es...),
 		),
 	)
 }
 
-func (c insertInto) previous() clause {
+func (i insertInto) previous() clause {
 	return nil
 }
 
-func (c insertInto) Values(vals ...interface{}) values {
-	f := newValues(vals...)
-	f.prevClause = c
-	return f
+func (i insertInto) Values(vals ...interface{}) values {
+	v := newValues(vals...)
+	v.prevClause = i
+	return v
+}
+
+func (i insertInto) DefaultValues() defaultValues {
+	v := newDefaultValues()
+	v.prev = i
+	return v
 }

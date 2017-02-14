@@ -11,6 +11,8 @@ var (
 	NewGroupBy                = newGroupBy
 	NewHaving                 = newHaving
 	NewInsertInto             = newInsertInto
+	NewValues                 = newValues
+	NewDefaultValues          = newDefaultValues
 	NewJoin                   = newJoin
 	NewInnerJoin              = newInnerJoin
 	NewLeftJoin               = newLeftJoin

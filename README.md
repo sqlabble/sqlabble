@@ -16,6 +16,7 @@ Type supported SQL query builder.
 - [x] `LIMIT`
 - [x] `INSERT INTO {TABLE} ({COLUMN})`
 - [x] `VALUES ({VALUE})`
+- [x] `DEFAULT VALUES`
 - [x] `UPDATE {TABLE}`
 - [x] `SET ({ASSIGNMENT})`
 - [x] `DELETE`
