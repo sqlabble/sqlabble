@@ -6,11 +6,11 @@ import (
 )
 
 type insertInto struct {
-	table   tableOrTableAs
+	table   joiner
 	columns []column
 }
 
-func newInsertInto(table tableOrTableAs, columns ...column) insertInto {
+func newInsertInto(table joiner, columns ...column) insertInto {
 	return insertInto{
 		table:   table,
 		columns: columns,

@@ -7,17 +7,17 @@ import (
 
 type createTable struct {
 	ifNotExists bool
-	table       tableOrTableAs
+	table       joiner
 }
 
-func newCreateTable(table tableOrTableAs) createTable {
+func newCreateTable(table joiner) createTable {
 	return createTable{
 		ifNotExists: false,
 		table:       table,
 	}
 }
 
-func newCreateTableIfNotExists(table tableOrTableAs) createTable {
+func newCreateTableIfNotExists(table joiner) createTable {
 	return createTable{
 		ifNotExists: true,
 		table:       table,

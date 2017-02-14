@@ -25,13 +25,13 @@ type columnOrColumnAs interface {
 	columnName() string
 }
 
-type tableOrTableAs interface {
+type joiner interface {
 	expressor
-	Join(tableOrTableAs) tableOrTableAs
-	InnerJoin(tableOrTableAs) tableOrTableAs
-	LeftJoin(tableOrTableAs) tableOrTableAs
-	RightJoin(tableOrTableAs) tableOrTableAs
-	previous() tableOrTableAs
+	Join(joiner) joiner
+	InnerJoin(joiner) joiner
+	LeftJoin(joiner) joiner
+	RightJoin(joiner) joiner
+	previous() joiner
 }
 
 type comparisonOrLogicalOperation interface {

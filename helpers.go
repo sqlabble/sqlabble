@@ -30,10 +30,10 @@ func clauseNodes(c clause) []clause {
 	return cs
 }
 
-func tableNodes(c tableOrTableAs) []tableOrTableAs {
-	cs := []tableOrTableAs{}
+func tableNodes(c joiner) []joiner {
+	cs := []joiner{}
 	for c != nil {
-		cs = append([]tableOrTableAs{c}, cs...)
+		cs = append([]joiner{c}, cs...)
 		c = c.previous()
 	}
 	return cs

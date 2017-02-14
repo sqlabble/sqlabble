@@ -30,29 +30,29 @@ func (t tableAs) TableName() string {
 	return t.table.name
 }
 
-func (t tableAs) previous() tableOrTableAs {
+func (t tableAs) previous() joiner {
 	return nil
 }
 
-func (t tableAs) Join(table tableOrTableAs) tableOrTableAs {
+func (t tableAs) Join(table joiner) joiner {
 	nj := newJoin(table)
 	nj.prev = t
 	return nj
 }
 
-func (t tableAs) InnerJoin(table tableOrTableAs) tableOrTableAs {
+func (t tableAs) InnerJoin(table joiner) joiner {
 	ij := newInnerJoin(table)
 	ij.prev = t
 	return ij
 }
 
-func (t tableAs) LeftJoin(table tableOrTableAs) tableOrTableAs {
+func (t tableAs) LeftJoin(table joiner) joiner {
 	lj := newLeftJoin(table)
 	lj.prev = t
 	return lj
 }
 
-func (t tableAs) RightJoin(table tableOrTableAs) tableOrTableAs {
+func (t tableAs) RightJoin(table joiner) joiner {
 	rj := newRightJoin(table)
 	rj.prev = t
 	return rj

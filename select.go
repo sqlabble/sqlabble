@@ -52,7 +52,7 @@ func (c selec) previous() clause {
 	return nil
 }
 
-func (c selec) From(t tableOrTableAs) from {
+func (c selec) From(t joiner) from {
 	f := newFrom(t)
 	f.prev = c
 	return f

@@ -7,10 +7,10 @@ import (
 
 type from struct {
 	prev  clause
-	table tableOrTableAs
+	table joiner
 }
 
-func newFrom(table tableOrTableAs) from {
+func newFrom(table joiner) from {
 	return from{
 		table: table,
 	}
