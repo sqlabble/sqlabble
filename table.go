@@ -20,7 +20,7 @@ func (t table) node() generator.Node {
 	for i, t := range ts {
 		ns[i] = t.expression()
 	}
-	return generator.NewNodes(ns...)
+	return generator.NewParallelNodes(ns...)
 }
 
 func (t table) expression() generator.Expression {

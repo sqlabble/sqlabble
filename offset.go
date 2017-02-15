@@ -22,7 +22,7 @@ func (o offset) node() generator.Node {
 	for i, c := range cs {
 		ns[i] = c.myNode()
 	}
-	return generator.NewNodes(ns...)
+	return generator.NewParallelNodes(ns...)
 }
 
 func (o offset) myNode() generator.Node {

@@ -29,6 +29,13 @@ func (c column) columnName() string {
 	return c.name
 }
 
+// isColumnOrSubquery always returns true.
+// This method exists only to implement the interface columnOrSubquery.
+// This is a shit of duck typing, but anyway it works.
+func (c column) isColumnOrSubquery() bool {
+	return true
+}
+
 func (c column) As(alias string) columnAs {
 	a := newColumnAs(alias)
 	a.col = c
@@ -69,16 +76,16 @@ func (c column) Lte(value interface{}) comparisonOperation {
 	return newLte(c, value)
 }
 
+func (c column) Between(from, to interface{}) between {
+	return newBetween(c, from, to)
+}
+
 func (c column) Like(value string) comparisonOperation {
 	return newLike(c, value)
 }
 
 func (c column) RegExp(value string) comparisonOperation {
 	return newRegExp(c, value)
-}
-
-func (c column) Between(from, to interface{}) between {
-	return newBetween(c, from, to)
 }
 
 func (c column) In(values ...interface{}) containingOperation {

@@ -24,11 +24,6 @@ Type supported SQL query builder.
 - [x] `CREATE TABLE {TABLE}`
 - [x] `CREATE TABLE IF NOT EXISTS {TABLE}`
 
-#### With Sub Queries
-
-- [ ] `SELECT ({SUBQUERY})`
-- [ ] `FROM ({SUBQUERY})`
-
 ### Aliases
 
 - [x] `{TABLE} AS {ALIAS}`
@@ -37,14 +32,6 @@ Type supported SQL query builder.
 ### Assignment
 
 - [x] `{COLUMN} = {VALUE}`
-
-### Conditional Logics
-
-- [ ] `CASE`
-- [ ] `WHEN`
-- [ ] `ELSE`
-- [ ] `THEN`
-- [ ] `END`
 
 ### Operators
 
@@ -70,48 +57,17 @@ Type supported SQL query builder.
 - [x] `{COLUMN} IS NULL {VALUE}`
 - [x] `{COLUMN} IS NOT NULL {VALUE}`
 
-##### With Sub Queries
-
-- [ ] `{COLUMN} = ({SUBQUERY})`
-- [ ] `{COLUMN} != ({SUBQUERY})`
-- [ ] `{COLUMN} > ({SUBQUERY})`
-- [ ] `{COLUMN} >= ({SUBQUERY})`
-- [ ] `{COLUMN} < ({SUBQUERY})`
-- [ ] `{COLUMN} <= ({SUBQUERY})`
-- [ ] `{COLUMN} IN ({SUBQUERY})`
-- [ ] `{COLUMN} NOT IN ({SUBQUERY})`
-- [ ] `({SUBQUERY}) = {VALUE}`
-- [ ] `({SUBQUERY}) != {VALUE}`
-- [ ] `({SUBQUERY}) > {VALUE}`
-- [ ] `({SUBQUERY}) >= {VALUE}`
-- [ ] `({SUBQUERY}) < {VALUE}`
-- [ ] `({SUBQUERY}) <= {VALUE}`
-- [ ] `({SUBQUERY}) BETWEEN {VALUE}`
-- [ ] `({SUBQUERY}) IN {VALUE}`
-- [ ] `({SUBQUERY}) NOT IN {VALUE}`
-- [ ] `({SUBQUERY}) LIKE {VALUE}`
-- [ ] `({SUBQUERY}) REGEXP {VALUE}`
-- [ ] `({SUBQUERY}) IS NULL {VALUE}`
-- [ ] `({SUBQUERY}) IS NOT NULL {VALUE}`
-
 ### Joins
 
-- [x] `{TABLE} JOIN {TABLE}`
-- [x] `{TABLE} INNER JOIN {TABLE}`
-- [x] `{TABLE} LEFT JOIN {TABLE}`
-- [x] `{TABLE} RIGHT JOIN {TABLE}`
+- [x] `JOIN {TABLE}`
+- [x] `INNER JOIN {TABLE}`
+- [x] `LEFT JOIN {TABLE}`
+- [x] `RIGHT JOIN {TABLE}`
 
 #### Join Conditions
 
 - [x] `ON {COLUMN} = {COLUMN}`
 - [x] `USING {COLUMN}`
-
-#### With Sub Queries
-
-- [ ] `{TABLE} JOIN ({SUBQUERY})`
-- [ ] `{TABLE} INNER JOIN ({SUBQUERY})`
-- [ ] `{TABLE} LEFT JOIN ({SUBQUERY})`
-- [ ] `{TABLE} RIGHT JOIN ({SUBQUERY})`
 
 ### Orders
 
@@ -130,3 +86,73 @@ Type supported SQL query builder.
 ### Table Definitions
 
 - [x] `({COLUMN} {DEFINITION})`
+
+### Conditional Logics
+
+- [ ] `CASE`
+- [ ] `WHEN`
+- [ ] `ELSE`
+- [ ] `THEN`
+- [ ] `END`
+
+### Subqueries
+
+- [ ] `SELECT ({SUBQUERY})`
+- [ ] `FROM ({SUBQUERY})`
+
+#### Scalar Operation
+
+- [x] `{COLUMN} = ({SUBQUERY})`
+- [x] `{COLUMN} != ({SUBQUERY})`
+- [x] `{COLUMN} > ({SUBQUERY})`
+- [x] `{COLUMN} >= ({SUBQUERY})`
+- [x] `{COLUMN} < ({SUBQUERY})`
+- [x] `{COLUMN} <= ({SUBQUERY})`
+- [x] `{COLUMN} LIKE ({SUBQUERY})`
+- [x] `{COLUMN} REGEXP ({SUBQUERY})`
+
+- [ ] `({SUBQUERY}) = {VALUE}`
+- [ ] `({SUBQUERY}) != {VALUE}`
+- [ ] `({SUBQUERY}) > {VALUE}`
+- [ ] `({SUBQUERY}) >= {VALUE}`
+- [ ] `({SUBQUERY}) < {VALUE}`
+- [ ] `({SUBQUERY}) <= {VALUE}`
+
+#### Nonscalar Operation
+
+- [ ] `{COLUMN} IN ({SUBQUERY})`
+- [ ] `{COLUMN} NOT IN ({SUBQUERY})`
+- [ ] `{COLUMN} = ALL ({SUBQUERY})`
+- [ ] `{COLUMN} != ALL ({SUBQUERY})`
+- [ ] `{COLUMN} > ALL ({SUBQUERY})`
+- [ ] `{COLUMN} >= ALL ({SUBQUERY})`
+- [ ] `{COLUMN} < ALL ({SUBQUERY})`
+- [ ] `{COLUMN} <= ALL ({SUBQUERY})`
+- [ ] `{COLUMN} = ANY ({SUBQUERY})`
+- [ ] `{COLUMN} != ANY ({SUBQUERY})`
+- [ ] `{COLUMN} > ANY ({SUBQUERY})`
+- [ ] `{COLUMN} >= ANY ({SUBQUERY})`
+- [ ] `{COLUMN} < ANY ({SUBQUERY})`
+- [ ] `{COLUMN} <= ANY ({SUBQUERY})`
+
+- [ ] `({SUBQUERY}) LIKE {VALUE}`
+- [ ] `({SUBQUERY}) REGEXP {VALUE}`
+- [ ] `({SUBQUERY}) IN {VALUE}`
+- [ ] `({SUBQUERY}) NOT IN {VALUE}`
+- [ ] `({SUBQUERY}) BETWEEN {VALUE}`
+- [ ] `({SUBQUERY}) IS NULL {VALUE}`
+- [ ] `({SUBQUERY}) IS NOT NULL {VALUE}`
+
+- [ ] `EXISTS ({SUBQUERY})`
+- [ ] `NOT EXISTS ({SUBQUERY})`
+
+#### Set
+
+- [ ] `SET {COLUMN} = ({SUBQUERY})`
+
+#### Joins
+
+- [ ] `JOIN ({SUBQUERY})`
+- [ ] `INNER JOIN ({SUBQUERY})`
+- [ ] `LEFT JOIN ({SUBQUERY})`
+- [ ] `RIGHT JOIN ({SUBQUERY})`

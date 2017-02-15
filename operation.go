@@ -52,7 +52,10 @@ func newNot(operation comparisonOrLogicalOperation) not {
 }
 
 func (n not) node() generator.Node {
-	return generator.NewNot(n.operation.node())
+	return generator.NewOpParenteses(
+		n.operator(),
+		generator.NewParentheses(n.operation.node()),
+	)
 }
 
 func (n not) operator() operator.Operator {
@@ -65,11 +68,11 @@ func (n not) operations() []comparisonOrLogicalOperation {
 
 type comparisonOperation struct {
 	op  operator.Operator
-	col column
+	col columnOrSubquery
 	val interface{}
 }
 
-func newEq(col column, val interface{}) comparisonOperation {
+func newEq(col columnOrSubquery, val interface{}) comparisonOperation {
 	return comparisonOperation{
 		op:  operator.Eq,
 		col: col,
@@ -77,7 +80,7 @@ func newEq(col column, val interface{}) comparisonOperation {
 	}
 }
 
-func newNotEq(col column, val interface{}) comparisonOperation {
+func newNotEq(col columnOrSubquery, val interface{}) comparisonOperation {
 	return comparisonOperation{
 		op:  operator.NotEq,
 		col: col,
@@ -85,7 +88,7 @@ func newNotEq(col column, val interface{}) comparisonOperation {
 	}
 }
 
-func newGt(col column, val interface{}) comparisonOperation {
+func newGt(col columnOrSubquery, val interface{}) comparisonOperation {
 	return comparisonOperation{
 		op:  operator.Gt,
 		col: col,
@@ -93,7 +96,7 @@ func newGt(col column, val interface{}) comparisonOperation {
 	}
 }
 
-func newGte(col column, val interface{}) comparisonOperation {
+func newGte(col columnOrSubquery, val interface{}) comparisonOperation {
 	return comparisonOperation{
 		op:  operator.Gte,
 		col: col,
@@ -101,7 +104,7 @@ func newGte(col column, val interface{}) comparisonOperation {
 	}
 }
 
-func newLt(col column, val interface{}) comparisonOperation {
+func newLt(col columnOrSubquery, val interface{}) comparisonOperation {
 	return comparisonOperation{
 		op:  operator.Lt,
 		col: col,
@@ -109,7 +112,7 @@ func newLt(col column, val interface{}) comparisonOperation {
 	}
 }
 
-func newLte(col column, val interface{}) comparisonOperation {
+func newLte(col columnOrSubquery, val interface{}) comparisonOperation {
 	return comparisonOperation{
 		op:  operator.Lte,
 		col: col,
@@ -117,7 +120,7 @@ func newLte(col column, val interface{}) comparisonOperation {
 	}
 }
 
-func newLike(col column, val interface{}) comparisonOperation {
+func newLike(col columnOrSubquery, val interface{}) comparisonOperation {
 	return comparisonOperation{
 		op:  operator.Like,
 		col: col,
@@ -125,7 +128,7 @@ func newLike(col column, val interface{}) comparisonOperation {
 	}
 }
 
-func newRegExp(col column, val interface{}) comparisonOperation {
+func newRegExp(col columnOrSubquery, val interface{}) comparisonOperation {
 	return comparisonOperation{
 		op:  operator.RegExp,
 		col: col,
@@ -134,11 +137,38 @@ func newRegExp(col column, val interface{}) comparisonOperation {
 }
 
 func (c comparisonOperation) node() generator.Node {
-	return generator.JoinExpressions(
-		generator.NewExpression(c.col.name),
-		generator.NewExpression(string(c.operator())),
-		generator.ValuesToExpression(c.val),
-	)
+	var n1, n2 generator.Node
+
+	switch col := c.col.(type) {
+	case column:
+		n1 = col.expression()
+	default:
+		n1 = c.col.node()
+	}
+
+	switch val := c.val.(type) {
+	case sub:
+		n2 = val.node()
+	case Statement:
+		n2 = newSub(val).node()
+	default:
+		n2 = generator.ValuesToExpression(val)
+	}
+
+	op := generator.NewExpression(string(c.operator()))
+
+	e1, ok1 := n1.(generator.Expression)
+	e2, ok2 := n2.(generator.Expression)
+	if ok1 && ok2 {
+		return generator.JoinExpressions(e1, op, e2)
+	}
+	if ok1 {
+		return generator.NewParallelNodes(e1.Append(op), n2)
+	}
+	if ok2 {
+		return generator.NewParallelNodes(n1, e2.Prepend(op))
+	}
+	return generator.NewParallelNodes(n1, op, n2)
 }
 
 func (c comparisonOperation) operator() operator.Operator {

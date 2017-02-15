@@ -24,7 +24,7 @@ func (o on) node() generator.Node {
 	for i, t := range ts {
 		ns[i] = t.expression()
 	}
-	return generator.NewNodes(ns...)
+	return generator.NewParallelNodes(ns...)
 }
 
 func (o on) expression() generator.Expression {

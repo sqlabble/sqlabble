@@ -22,7 +22,7 @@ func (s set) node() generator.Node {
 	for i, c := range cs {
 		gs[i] = c.myNode()
 	}
-	return generator.NewNodes(gs...)
+	return generator.NewParallelNodes(gs...)
 }
 
 func (s set) myNode() generator.Node {
