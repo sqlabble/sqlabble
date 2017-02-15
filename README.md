@@ -1,4 +1,4 @@
-# sqlabble
+# sqlabble [![GoDoc](https://godoc.org/github.com/minodisk/sqlabble?status.png)](https://godoc.org/github.com/minodisk/sqlabble) [![Go Report Card](https://goreportcard.com/badge/github.com/minodisk/sqlabble)](https://goreportcard.com/report/github.com/minodisk/sqlabble) [ ![Codeship Status for minodisk/sqlabble](https://app.codeship.com/projects/f3642650-d5ab-0134-3d76-0246ca48a45f/status?branch=master)](https://app.codeship.com/projects/202522)
 
 SQL query builder with type support.
 
