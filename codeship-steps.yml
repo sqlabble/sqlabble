@@ -1,0 +1,3 @@
+- name: test
+  service: sqlabble
+  command: go test -v ./...
