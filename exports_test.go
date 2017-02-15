@@ -49,4 +49,5 @@ var (
 	NewUpdate                 = newUpdate
 	NewUsing                  = newUsing
 	NewWhere                  = newWhere
+	NewSub                    = newSub
 )

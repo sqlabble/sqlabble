@@ -7,17 +7,19 @@ type Context struct {
 	breaking, flatSets  bool
 	head                string
 	depth, bracketDepth int
+	disablePrefix       bool
 }
 
 func newContext(o Options) Context {
 	return Context{
-		prefix:       o.Prefix,
-		indent:       o.Indent,
-		breaking:     o.Prefix != "" || o.Indent != "",
-		flatSets:     o.FlatSets,
-		head:         "",
-		depth:        0,
-		bracketDepth: 0,
+		prefix:        o.Prefix,
+		indent:        o.Indent,
+		breaking:      o.Prefix != "" || o.Indent != "",
+		flatSets:      o.FlatSets,
+		head:          "",
+		depth:         0,
+		bracketDepth:  0,
+		disablePrefix: false,
 	}
 }
 
@@ -39,8 +41,17 @@ func (f Context) Breaking() bool {
 	return f.breaking
 }
 
-func (f Context) Prefix() string {
-	return f.prefix + strings.Repeat(f.indent, f.depth)
+func (c Context) Prefix() string {
+	if c.disablePrefix {
+		c.disablePrefix = false
+		return ""
+	}
+	return c.prefix + strings.Repeat(c.indent, c.depth)
+}
+
+func (c Context) DisablePrefix(b bool) Context {
+	c.disablePrefix = b
+	return c
 }
 
 func (f Context) IncDepth() Context {

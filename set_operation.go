@@ -58,7 +58,7 @@ func (u setOperation) node() generator.Node {
 	for i, c := range cs {
 		gs[i] = c.myNode()
 	}
-	return generator.NewNodes(gs...)
+	return generator.NewParallelNodes(gs...)
 }
 
 func (u setOperation) myNode() generator.Node {

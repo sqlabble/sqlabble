@@ -67,7 +67,7 @@ func TestAnd(t *testing.T) {
 		// 0
 		{
 			sqlabble.NewAnd(
-				sqlabble.NewNotEq(sqlabble.C("foo"), 100),
+				sqlabble.C("foo").NotEq(100),
 			),
 			"foo != ?",
 			`> foo != ?
@@ -79,8 +79,8 @@ func TestAnd(t *testing.T) {
 		// 1
 		{
 			sqlabble.NewAnd(
-				sqlabble.NewNotEq(sqlabble.C("foo"), 100),
-				sqlabble.NewEq(sqlabble.C("bar"), 200),
+				sqlabble.C("foo").NotEq(100),
+				sqlabble.C("bar").Eq(200),
 			),
 			"foo != ? AND bar = ?",
 			`> foo != ?
@@ -94,9 +94,9 @@ func TestAnd(t *testing.T) {
 		// 2
 		{
 			sqlabble.NewAnd(
-				sqlabble.NewNotEq(sqlabble.C("foo"), 100),
-				sqlabble.NewEq(sqlabble.C("bar"), 200),
-				sqlabble.NewLike(sqlabble.C("baz"), "abc"),
+				sqlabble.C("foo").NotEq(100),
+				sqlabble.C("bar").Eq(200),
+				sqlabble.C("baz").Like("abc"),
 			),
 			"foo != ? AND bar = ? AND baz LIKE ?",
 			`> foo != ?
@@ -113,9 +113,9 @@ func TestAnd(t *testing.T) {
 		{
 			sqlabble.NewAnd(
 				sqlabble.NewAnd(
-					sqlabble.NewNotEq(sqlabble.C("foo"), 100),
-					sqlabble.NewEq(sqlabble.C("bar"), 200),
-					sqlabble.NewLike(sqlabble.C("baz"), "abc"),
+					sqlabble.C("foo").NotEq(100),
+					sqlabble.C("bar").Eq(200),
+					sqlabble.C("baz").Like("abc"),
 				),
 			),
 			"foo != ? AND bar = ? AND baz LIKE ?",
@@ -134,9 +134,9 @@ func TestAnd(t *testing.T) {
 			sqlabble.NewAnd(
 				sqlabble.NewAnd(
 					sqlabble.NewAnd(
-						sqlabble.NewNotEq(sqlabble.C("foo"), 100),
-						sqlabble.NewEq(sqlabble.C("bar"), 200),
-						sqlabble.NewLike(sqlabble.C("baz"), "abc"),
+						sqlabble.C("foo").NotEq(100),
+						sqlabble.C("bar").Eq(200),
+						sqlabble.C("baz").Like("abc"),
 					),
 				),
 			),
@@ -156,12 +156,12 @@ func TestAnd(t *testing.T) {
 			sqlabble.NewAnd(
 				sqlabble.NewAnd(
 					sqlabble.NewAnd(
-						sqlabble.NewNotEq(sqlabble.C("foo"), 100),
-						sqlabble.NewEq(sqlabble.C("bar"), 200),
-						sqlabble.NewLike(sqlabble.C("baz"), "abc"),
+						sqlabble.C("foo").NotEq(100),
+						sqlabble.C("bar").Eq(200),
+						sqlabble.C("baz").Like("abc"),
 					),
 				),
-				sqlabble.NewGt(sqlabble.C("foo"), 300),
+				sqlabble.C("foo").Gt(300),
 			),
 			"(foo != ? AND bar = ? AND baz LIKE ?) AND foo > ?",
 			`> (
@@ -183,11 +183,11 @@ func TestAnd(t *testing.T) {
 			sqlabble.NewAnd(
 				sqlabble.NewAnd(
 					sqlabble.NewAnd(
-						sqlabble.NewNotEq(sqlabble.C("foo"), 100),
-						sqlabble.NewEq(sqlabble.C("bar"), 200),
-						sqlabble.NewLike(sqlabble.C("baz"), "abc"),
+						sqlabble.C("foo").NotEq(100),
+						sqlabble.C("bar").Eq(200),
+						sqlabble.C("baz").Like("abc"),
 					),
-					sqlabble.NewGt(sqlabble.C("foo"), 300),
+					sqlabble.C("foo").Gt(300),
 				),
 			),
 			"(foo != ? AND bar = ? AND baz LIKE ?) AND foo > ?",
@@ -237,7 +237,7 @@ func TestOr(t *testing.T) {
 	}{
 		{
 			sqlabble.NewOr(
-				sqlabble.NewNotEq(sqlabble.C("foo"), 100),
+				sqlabble.C("foo").NotEq(100),
 			),
 			"foo != ?",
 			`> foo != ?
@@ -248,8 +248,8 @@ func TestOr(t *testing.T) {
 		},
 		{
 			sqlabble.NewOr(
-				sqlabble.NewNotEq(sqlabble.C("foo"), 100),
-				sqlabble.NewEq(sqlabble.C("bar"), 200),
+				sqlabble.C("foo").NotEq(100),
+				sqlabble.C("bar").Eq(200),
 			),
 			"foo != ? OR bar = ?",
 			`> foo != ?
@@ -262,9 +262,9 @@ func TestOr(t *testing.T) {
 		},
 		{
 			sqlabble.NewOr(
-				sqlabble.NewNotEq(sqlabble.C("foo"), 100),
-				sqlabble.NewEq(sqlabble.C("bar"), 200),
-				sqlabble.NewLike(sqlabble.C("baz"), "abc"),
+				sqlabble.C("foo").NotEq(100),
+				sqlabble.C("bar").Eq(200),
+				sqlabble.C("baz").Like("abc"),
 			),
 			"foo != ? OR bar = ? OR baz LIKE ?",
 			`> foo != ?
@@ -280,9 +280,9 @@ func TestOr(t *testing.T) {
 		{
 			sqlabble.NewOr(
 				sqlabble.NewOr(
-					sqlabble.NewNotEq(sqlabble.C("foo"), 100),
-					sqlabble.NewEq(sqlabble.C("bar"), 200),
-					sqlabble.NewLike(sqlabble.C("baz"), "abc"),
+					sqlabble.C("foo").NotEq(100),
+					sqlabble.C("bar").Eq(200),
+					sqlabble.C("baz").Like("abc"),
 				),
 			),
 			"foo != ? OR bar = ? OR baz LIKE ?",
@@ -300,9 +300,9 @@ func TestOr(t *testing.T) {
 			sqlabble.NewOr(
 				sqlabble.NewOr(
 					sqlabble.NewOr(
-						sqlabble.NewNotEq(sqlabble.C("foo"), 100),
-						sqlabble.NewEq(sqlabble.C("bar"), 200),
-						sqlabble.NewLike(sqlabble.C("baz"), "abc"),
+						sqlabble.C("foo").NotEq(100),
+						sqlabble.C("bar").Eq(200),
+						sqlabble.C("baz").Like("abc"),
 					),
 				),
 			),
@@ -321,12 +321,12 @@ func TestOr(t *testing.T) {
 			sqlabble.NewOr(
 				sqlabble.NewOr(
 					sqlabble.NewOr(
-						sqlabble.NewNotEq(sqlabble.C("foo"), 100),
-						sqlabble.NewEq(sqlabble.C("bar"), 200),
-						sqlabble.NewLike(sqlabble.C("baz"), "abc"),
+						sqlabble.C("foo").NotEq(100),
+						sqlabble.C("bar").Eq(200),
+						sqlabble.C("baz").Like("abc"),
 					),
 				),
-				sqlabble.NewGt(sqlabble.C("foo"), 300),
+				sqlabble.C("foo").Gt(300),
 			),
 			"(foo != ? OR bar = ? OR baz LIKE ?) OR foo > ?",
 			`> (
@@ -347,11 +347,11 @@ func TestOr(t *testing.T) {
 			sqlabble.NewOr(
 				sqlabble.NewOr(
 					sqlabble.NewOr(
-						sqlabble.NewNotEq(sqlabble.C("foo"), 100),
-						sqlabble.NewEq(sqlabble.C("bar"), 200),
-						sqlabble.NewLike(sqlabble.C("baz"), "abc"),
+						sqlabble.C("foo").NotEq(100),
+						sqlabble.C("bar").Eq(200),
+						sqlabble.C("baz").Like("abc"),
 					),
-					sqlabble.NewGt(sqlabble.C("foo"), 300),
+					sqlabble.C("foo").Gt(300),
 				),
 			),
 			"(foo != ? OR bar = ? OR baz LIKE ?) OR foo > ?",
@@ -402,7 +402,7 @@ func TestNot(t *testing.T) {
 		// 0
 		{
 			sqlabble.NewNot(
-				sqlabble.NewNotEq(sqlabble.C("foo"), 100),
+				sqlabble.C("foo").NotEq(100),
 			),
 			"NOT (foo != ?)",
 			`> NOT (
@@ -416,7 +416,9 @@ func TestNot(t *testing.T) {
 		// 1
 		{
 			sqlabble.NewNot(
-				sqlabble.NewNot(sqlabble.NewNotEq(sqlabble.C("foo"), 100)),
+				sqlabble.NewNot(
+					sqlabble.C("foo").NotEq(100),
+				),
 			),
 			"NOT (NOT (foo != ?))",
 			`> NOT (
@@ -434,7 +436,7 @@ func TestNot(t *testing.T) {
 			sqlabble.NewNot(
 				sqlabble.NewNot(
 					sqlabble.NewNot(
-						sqlabble.NewNotEq(sqlabble.C("foo"), 100),
+						sqlabble.C("foo").NotEq(100),
 					),
 				),
 			),
@@ -455,7 +457,7 @@ func TestNot(t *testing.T) {
 		{
 			sqlabble.NewNot(
 				sqlabble.NewOr(
-					sqlabble.NewNotEq(sqlabble.C("foo"), 100),
+					sqlabble.C("foo").NotEq(100),
 				),
 			),
 			"NOT (foo != ?)",
@@ -471,9 +473,9 @@ func TestNot(t *testing.T) {
 		{
 			sqlabble.NewNot(
 				sqlabble.NewOr(
-					sqlabble.NewNotEq(sqlabble.C("foo"), 100),
-					sqlabble.NewEq(sqlabble.C("bar"), 200),
-					sqlabble.NewLike(sqlabble.C("baz"), "abc"),
+					sqlabble.C("foo").NotEq(100),
+					sqlabble.C("bar").Eq(200),
+					sqlabble.C("baz").Like("abc"),
 				),
 			),
 			"NOT (foo != ? OR bar = ? OR baz LIKE ?)",
@@ -494,9 +496,9 @@ func TestNot(t *testing.T) {
 			sqlabble.NewNot(
 				sqlabble.NewNot(
 					sqlabble.NewOr(
-						sqlabble.NewNotEq(sqlabble.C("foo"), 100),
-						sqlabble.NewEq(sqlabble.C("bar"), 200),
-						sqlabble.NewLike(sqlabble.C("baz"), "abc"),
+						sqlabble.C("foo").NotEq(100),
+						sqlabble.C("bar").Eq(200),
+						sqlabble.C("baz").Like("abc"),
 					),
 				),
 			),
@@ -521,9 +523,9 @@ func TestNot(t *testing.T) {
 				sqlabble.NewNot(
 					sqlabble.NewNot(
 						sqlabble.NewOr(
-							sqlabble.NewNotEq(sqlabble.C("foo"), 100),
-							sqlabble.NewEq(sqlabble.C("bar"), 200),
-							sqlabble.NewLike(sqlabble.C("baz"), "abc"),
+							sqlabble.C("foo").NotEq(100),
+							sqlabble.C("bar").Eq(200),
+							sqlabble.C("baz").Like("abc"),
 						),
 					),
 				),
@@ -576,7 +578,7 @@ func TestComparisonOperators(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			sqlabble.NewEq(sqlabble.NewColumn("foo"), 100),
+			sqlabble.C("foo").Eq(100),
 			"foo = ?",
 			`> foo = ?
 `,
@@ -585,7 +587,7 @@ func TestComparisonOperators(t *testing.T) {
 			},
 		},
 		{
-			sqlabble.NewLt(sqlabble.NewColumn("foo"), 100),
+			sqlabble.C("foo").Lt(100),
 			"foo < ?",
 			`> foo < ?
 `,
@@ -594,7 +596,7 @@ func TestComparisonOperators(t *testing.T) {
 			},
 		},
 		{
-			sqlabble.NewLte(sqlabble.NewColumn("foo"), 100),
+			sqlabble.C("foo").Lte(100),
 			"foo <= ?",
 			`> foo <= ?
 `,
@@ -603,7 +605,7 @@ func TestComparisonOperators(t *testing.T) {
 			},
 		},
 		{
-			sqlabble.NewGt(sqlabble.NewColumn("foo"), 100),
+			sqlabble.C("foo").Gt(100),
 			"foo > ?",
 			`> foo > ?
 `,
@@ -612,7 +614,7 @@ func TestComparisonOperators(t *testing.T) {
 			},
 		},
 		{
-			sqlabble.NewGte(sqlabble.NewColumn("foo"), 100),
+			sqlabble.C("foo").Gte(100),
 			"foo >= ?",
 			`> foo >= ?
 `,
@@ -621,21 +623,21 @@ func TestComparisonOperators(t *testing.T) {
 			},
 		},
 		{
-			sqlabble.NewLike(sqlabble.NewColumn("foo"), 100),
+			sqlabble.C("foo").Like("bar"),
 			"foo LIKE ?",
 			`> foo LIKE ?
 `,
 			[]interface{}{
-				100,
+				"bar",
 			},
 		},
 		{
-			sqlabble.NewRegExp(sqlabble.NewColumn("foo"), 100),
+			sqlabble.C("foo").RegExp("bar"),
 			"foo REGEXP ?",
 			`> foo REGEXP ?
 `,
 			[]interface{}{
-				100,
+				"bar",
 			},
 		},
 	} {
@@ -668,8 +670,7 @@ func TestBetween(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			sqlabble.NewBetween(
-				sqlabble.NewColumn("foo"),
+			sqlabble.NewColumn("foo").Between(
 				100,
 				200,
 			),
@@ -711,8 +712,7 @@ func TestContainingOperators(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			sqlabble.NewIn(
-				sqlabble.NewColumn("foo"),
+			sqlabble.NewColumn("foo").In(
 				100,
 				200,
 				300,
@@ -727,8 +727,7 @@ func TestContainingOperators(t *testing.T) {
 			},
 		},
 		{
-			sqlabble.NewNotIn(
-				sqlabble.NewColumn("foo"),
+			sqlabble.NewColumn("foo").NotIn(
 				100,
 				200,
 				300,
@@ -772,18 +771,14 @@ func TestKeywordOperators(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			sqlabble.NewIsNull(
-				sqlabble.NewColumn("foo"),
-			),
+			sqlabble.NewColumn("foo").IsNull(),
 			"foo IS NULL",
 			`> foo IS NULL
 `,
 			[]interface{}{},
 		},
 		{
-			sqlabble.NewIsNotNull(
-				sqlabble.NewColumn("foo"),
-			),
+			sqlabble.NewColumn("foo").IsNotNull(),
 			"foo IS NOT NULL",
 			`> foo IS NOT NULL
 `,
@@ -846,25 +841,25 @@ func TestComplexOperation(t *testing.T) {
 		{
 			sqlabble.NewOr(
 				sqlabble.NewNot(
-					sqlabble.NewRegExp(sqlabble.C("baz"), "def"),
+					sqlabble.C("baz").RegExp("def"),
 				),
 				sqlabble.NewOr(
 					sqlabble.NewAnd(
-						sqlabble.NewBetween(sqlabble.C("qux"), 400, 500),
+						sqlabble.C("qux").Between(400, 500),
 						sqlabble.NewNot(
 							sqlabble.NewAnd(
 								sqlabble.NewOr(
-									sqlabble.NewNotEq(sqlabble.C("foo"), 100),
-									sqlabble.NewEq(sqlabble.C("bar"), 200),
-									sqlabble.NewLike(sqlabble.C("baz"), "abc"),
+									sqlabble.C("foo").NotEq(100),
+									sqlabble.C("bar").Eq(200),
+									sqlabble.C("baz").Like("abc"),
 									sqlabble.NewOr(
-										sqlabble.NewIn(sqlabble.C("baz"), "a", "b", "c"),
-										sqlabble.NewNotIn(sqlabble.C("qux"), 600, 700, 800),
+										sqlabble.C("baz").In("a", "b", "c"),
+										sqlabble.C("qux").NotIn(600, 700, 800),
 									),
 								),
 							),
 						),
-						sqlabble.NewGt(sqlabble.C("foo"), 300),
+						sqlabble.C("foo").Gt(300),
 					),
 				),
 			),

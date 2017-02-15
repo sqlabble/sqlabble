@@ -25,6 +25,11 @@ type columnOrColumnAs interface {
 	columnName() string
 }
 
+type columnOrSubquery interface {
+	Statement
+	isColumnOrSubquery() bool
+}
+
 type joiner interface {
 	expressor
 	Join(joiner) joiner

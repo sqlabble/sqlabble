@@ -29,6 +29,13 @@ func (c column) columnName() string {
 	return c.name
 }
 
+// isColumnOrSubquery always returns true.
+// This method exists only to implement the interface columnOrSubquery.
+// This is a shit of duck typing, but anyway it works.
+func (c column) isColumnOrSubquery() bool {
+	return true
+}
+
 func (c column) As(alias string) columnAs {
 	a := newColumnAs(alias)
 	a.col = c
@@ -46,55 +53,81 @@ func (c column) Assign(value interface{}) assign {
 }
 
 func (c column) Eq(value interface{}) comparisonOperation {
-	return newEq(c, value)
+	e := newEq(value)
+	e.col = c
+	return e
 }
 
 func (c column) NotEq(value interface{}) comparisonOperation {
-	return newNotEq(c, value)
+	n := newNotEq(value)
+	n.col = c
+	return n
 }
 
 func (c column) Gt(value interface{}) comparisonOperation {
-	return newGt(c, value)
+	g := newGt(value)
+	g.col = c
+	return g
 }
 
 func (c column) Gte(value interface{}) comparisonOperation {
-	return newGte(c, value)
+	g := newGte(value)
+	g.col = c
+	return g
 }
 
 func (c column) Lt(value interface{}) comparisonOperation {
-	return newLt(c, value)
+	l := newLt(value)
+	l.col = c
+	return l
 }
 
 func (c column) Lte(value interface{}) comparisonOperation {
-	return newLte(c, value)
+	l := newLte(value)
+	l.col = c
+	return l
 }
 
-func (c column) Like(value string) comparisonOperation {
-	return newLike(c, value)
+func (c column) Like(value interface{}) comparisonOperation {
+	l := newLike(value)
+	l.col = c
+	return l
 }
 
-func (c column) RegExp(value string) comparisonOperation {
-	return newRegExp(c, value)
+func (c column) RegExp(value interface{}) comparisonOperation {
+	r := newRegExp(value)
+	r.col = c
+	return r
 }
 
 func (c column) Between(from, to interface{}) between {
-	return newBetween(c, from, to)
+	b := newBetween(from, to)
+	b.col = c
+	return b
 }
 
 func (c column) In(values ...interface{}) containingOperation {
-	return newIn(c, values...)
+	i := newIn(values...)
+	i.col = c
+	return i
 }
 
 func (c column) NotIn(values ...interface{}) containingOperation {
-	return newNotIn(c, values...)
+	n := newNotIn(values...)
+	n.col = c
+	return n
 }
 
 func (c column) IsNull() nullyOperation {
-	return newIsNull(c)
+	i := newIsNull()
+	i.col = c
+	return i
 }
 
 func (c column) IsNotNull() nullyOperation {
-	return newIsNotNull(c)
+	i := newIsNotNull()
+	i.col = c
+	return i
 }
 
 func (c column) Asc() order {
