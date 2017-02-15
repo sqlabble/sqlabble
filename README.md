@@ -1,6 +1,6 @@
 # sqlabble
 
-Type supported SQL query builder.
+SQL query builder with type support.
 
 ## Supports
 
