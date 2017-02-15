@@ -24,23 +24,23 @@ func newOr(ops ...comparisonOrLogicalOperation) joinOperation {
 	}
 }
 
-func (a joinOperation) node() generator.Node {
-	ns := make([]generator.Node, len(a.ops))
-	for i, op := range a.ops {
+func (o joinOperation) node() generator.Node {
+	ns := make([]generator.Node, len(o.ops))
+	for i, op := range o.ops {
 		ns[i] = op.node()
 	}
 	return generator.NewOperator(
-		a.operator(),
+		o.operator(),
 		ns...,
 	)
 }
 
-func (a joinOperation) operator() operator.Operator {
-	return a.op
+func (o joinOperation) operator() operator.Operator {
+	return o.op
 }
 
-func (a joinOperation) operations() []comparisonOrLogicalOperation {
-	return a.ops
+func (o joinOperation) operations() []comparisonOrLogicalOperation {
+	return o.ops
 }
 
 type not struct {
@@ -51,19 +51,19 @@ func newNot(operation comparisonOrLogicalOperation) not {
 	return not{operation: operation}
 }
 
-func (n not) node() generator.Node {
+func (o not) node() generator.Node {
 	return generator.NewOpParenteses(
-		n.operator(),
-		generator.NewParentheses(n.operation.node()),
+		o.operator(),
+		generator.NewParentheses(o.operation.node()),
 	)
 }
 
-func (n not) operator() operator.Operator {
+func (o not) operator() operator.Operator {
 	return operator.Not
 }
 
-func (n not) operations() []comparisonOrLogicalOperation {
-	return []comparisonOrLogicalOperation{n.operation}
+func (o not) operations() []comparisonOrLogicalOperation {
+	return []comparisonOrLogicalOperation{o.operation}
 }
 
 type comparisonOperation struct {
@@ -128,20 +128,20 @@ func newRegExp(val interface{}) comparisonOperation {
 	}
 }
 
-func (c comparisonOperation) node() generator.Node {
+func (o comparisonOperation) node() generator.Node {
 	var n1, n2 generator.Node
 
-	if c.col != nil {
-		switch col := c.col.(type) {
+	if o.col != nil {
+		switch col := o.col.(type) {
 		case column:
 			n1 = col.expression()
 		default:
-			n1 = c.col.node()
+			n1 = o.col.node()
 		}
 	}
 
-	if c.val != nil {
-		switch val := c.val.(type) {
+	if o.val != nil {
+		switch val := o.val.(type) {
 		case sub:
 			n2 = val.node()
 		case Statement:
@@ -151,12 +151,12 @@ func (c comparisonOperation) node() generator.Node {
 		}
 	}
 
-	op := generator.NewExpression(string(c.operator()))
+	op := generator.NewExpression(string(o.operator()))
 	return joinExpressionLikes(n1, n2, op)
 }
 
-func (c comparisonOperation) operator() operator.Operator {
-	return c.op
+func (o comparisonOperation) operator() operator.Operator {
+	return o.op
 }
 
 type between struct {
@@ -171,17 +171,17 @@ func newBetween(from, to interface{}) between {
 	}
 }
 
-func (b between) node() generator.Node {
+func (o between) node() generator.Node {
 	post := generator.JoinExpressions(
-		generator.NewExpression(string(b.operator())),
-		generator.ValuesToExpression(b.from),
+		generator.NewExpression(string(o.operator())),
+		generator.ValuesToExpression(o.from),
 		generator.NewExpression(string(operator.And)),
-		generator.ValuesToExpression(b.to),
+		generator.ValuesToExpression(o.to),
 	)
-	if b.col == nil {
+	if o.col == nil {
 		return post
 	}
-	switch col := b.col.(type) {
+	switch col := o.col.(type) {
 	case column:
 		return generator.JoinExpressions(
 			col.expression(),
@@ -189,13 +189,13 @@ func (b between) node() generator.Node {
 		)
 	default:
 		return generator.NewParallelNodes(
-			b.col.node(),
+			o.col.node(),
 			post,
 		)
 	}
 }
 
-func (b between) operator() operator.Operator {
+func (o between) operator() operator.Operator {
 	return operator.Between
 }
 
@@ -219,20 +219,20 @@ func newNotIn(vals ...interface{}) containingOperation {
 	}
 }
 
-func (c containingOperation) node() generator.Node {
+func (o containingOperation) node() generator.Node {
 	var n1, n2 generator.Node
 
-	if c.col != nil {
-		switch col := c.col.(type) {
+	if o.col != nil {
+		switch col := o.col.(type) {
 		case column:
 			n1 = col.expression()
 		default:
-			n1 = c.col.node()
+			n1 = o.col.node()
 		}
 	}
 
-	if c.vals != nil && len(c.vals) == 1 {
-		switch val := c.vals[0].(type) {
+	if o.vals != nil && len(o.vals) == 1 {
+		switch val := o.vals[0].(type) {
 		case sub:
 			n2 = val.node()
 		case Statement:
@@ -241,13 +241,13 @@ func (c containingOperation) node() generator.Node {
 	}
 	if n2 == nil {
 		n2 = generator.JoinExpressions(
-			generator.ValuesToExpression(c.vals...).
+			generator.ValuesToExpression(o.vals...).
 				WrapSQL("(", ")"),
 		)
 
 	}
 
-	op := generator.NewExpression(string(c.operator()))
+	op := generator.NewExpression(string(o.operator()))
 	return joinExpressionLikes(n1, n2, op)
 }
 

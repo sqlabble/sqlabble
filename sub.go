@@ -23,80 +23,80 @@ func (s sub) isColumnOrSubquery() bool {
 	return true
 }
 
-func (c sub) Eq(value interface{}) comparisonOperation {
+func (s sub) Eq(value interface{}) comparisonOperation {
 	e := newEq(value)
-	e.col = c
+	e.col = s
 	return e
 }
 
-func (c sub) NotEq(value interface{}) comparisonOperation {
+func (s sub) NotEq(value interface{}) comparisonOperation {
 	n := newNotEq(value)
-	n.col = c
+	n.col = s
 	return n
 }
 
-func (c sub) Gt(value interface{}) comparisonOperation {
+func (s sub) Gt(value interface{}) comparisonOperation {
 	g := newGt(value)
-	g.col = c
+	g.col = s
 	return g
 }
 
-func (c sub) Gte(value interface{}) comparisonOperation {
+func (s sub) Gte(value interface{}) comparisonOperation {
 	g := newGte(value)
-	g.col = c
+	g.col = s
 	return g
 }
 
-func (c sub) Lt(value interface{}) comparisonOperation {
+func (s sub) Lt(value interface{}) comparisonOperation {
 	l := newLt(value)
-	l.col = c
+	l.col = s
 	return l
 }
 
-func (c sub) Lte(value interface{}) comparisonOperation {
+func (s sub) Lte(value interface{}) comparisonOperation {
 	l := newLte(value)
-	l.col = c
+	l.col = s
 	return l
 }
 
-func (c sub) Like(value interface{}) comparisonOperation {
+func (s sub) Like(value interface{}) comparisonOperation {
 	l := newLike(value)
-	l.col = c
+	l.col = s
 	return l
 }
 
-func (c sub) RegExp(value interface{}) comparisonOperation {
+func (s sub) RegExp(value interface{}) comparisonOperation {
 	r := newRegExp(value)
-	r.col = c
+	r.col = s
 	return r
 }
 
-func (c sub) Between(from, to interface{}) between {
+func (s sub) Between(from, to interface{}) between {
 	b := newBetween(from, to)
-	b.col = c
+	b.col = s
 	return b
 }
 
-func (c sub) In(values ...interface{}) containingOperation {
+func (s sub) In(values ...interface{}) containingOperation {
 	i := newIn(values...)
-	i.col = c
+	i.col = s
 	return i
 }
 
-func (c sub) NotIn(values ...interface{}) containingOperation {
+func (s sub) NotIn(values ...interface{}) containingOperation {
 	n := newNotIn(values...)
-	n.col = c
+	n.col = s
 	return n
 }
 
-func (c sub) IsNull() nullyOperation {
+func (s sub) IsNull() nullyOperation {
 	i := newIsNull()
-	i.col = c
+	i.col = s
 	return i
 }
 
-func (c sub) IsNotNull() nullyOperation {
+func (s sub) IsNotNull() nullyOperation {
 	i := newIsNotNull()
-	i.col = c
+	i.col = s
 	return i
 }

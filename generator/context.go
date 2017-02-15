@@ -23,22 +23,22 @@ func newContext(o Options) Context {
 	}
 }
 
-func (f Context) Head() string {
-	return f.head
+func (c Context) Head() string {
+	return c.head
 }
 
-func (f Context) ClearHead() Context {
-	f.head = ""
-	return f
+func (c Context) ClearHead() Context {
+	c.head = ""
+	return c
 }
 
-func (f Context) SetHead(head string) Context {
-	f.head = head
-	return f
+func (c Context) SetHead(head string) Context {
+	c.head = head
+	return c
 }
 
-func (f Context) Breaking() bool {
-	return f.breaking
+func (c Context) Breaking() bool {
+	return c.breaking
 }
 
 func (c Context) Prefix() string {
@@ -54,23 +54,23 @@ func (c Context) DisablePrefix(b bool) Context {
 	return c
 }
 
-func (f Context) IncDepth() Context {
-	f.depth++
-	return f
+func (c Context) IncDepth() Context {
+	c.depth++
+	return c
 }
 
-func (f Context) ClearParenthesesDepth() Context {
-	f.bracketDepth = 0
-	return f
+func (c Context) ClearParenthesesDepth() Context {
+	c.bracketDepth = 0
+	return c
 }
 
-func (f Context) IncParenthesesDepth() Context {
-	f.bracketDepth++
-	return f
+func (c Context) IncParenthesesDepth() Context {
+	c.bracketDepth++
+	return c
 }
 
-func (f Context) TopParentheses() bool {
-	return f.bracketDepth == 0
+func (c Context) TopParentheses() bool {
+	return c.bracketDepth == 0
 }
 
 func (c Context) SetFlatSetOperation(flat bool) Context {
@@ -78,7 +78,7 @@ func (c Context) SetFlatSetOperation(flat bool) Context {
 	return c
 }
 
-func (f Context) Join(sqls ...string) string {
+func (c Context) Join(sqls ...string) string {
 	ss := []string{}
 	for _, sql := range sqls {
 		if sql != "" {
@@ -86,7 +86,7 @@ func (f Context) Join(sqls ...string) string {
 		}
 	}
 
-	if f.Breaking() {
+	if c.Breaking() {
 		return strings.Join(ss, "")
 	}
 	return strings.Join(ss, " ")

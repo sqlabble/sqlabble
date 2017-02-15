@@ -48,12 +48,12 @@ func (s selec) myNode() generator.Node {
 	)
 }
 
-func (c selec) previous() clause {
+func (s selec) previous() clause {
 	return nil
 }
 
-func (c selec) From(t joiner) from {
+func (s selec) From(t joiner) from {
 	f := newFrom(t)
-	f.prev = c
+	f.prev = s
 	return f
 }

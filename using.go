@@ -16,8 +16,8 @@ func newUsing(col column) using {
 	}
 }
 
-func (t using) node() generator.Node {
-	ts := tableNodes(t)
+func (u using) node() generator.Node {
+	ts := tableNodes(u)
 	us := make([]generator.Node, len(ts))
 	for i, t := range ts {
 		us[i] = t.expression()
@@ -25,43 +25,43 @@ func (t using) node() generator.Node {
 	return generator.NewParallelNodes(us...)
 }
 
-func (t using) expression() generator.Expression {
+func (u using) expression() generator.Expression {
 	e := generator.NewExpression(keyword.Using).
-		Append(t.col.expression())
-	if t.join == nil {
+		Append(u.col.expression())
+	if u.join == nil {
 		return e
 	}
-	return t.join.expression().
+	return u.join.expression().
 		Append(e)
 }
 
-func (o using) previous() joiner {
-	if o.join == nil {
+func (u using) previous() joiner {
+	if u.join == nil {
 		return nil
 	}
-	return o.join.previous()
+	return u.join.previous()
 }
 
-func (o using) Join(table joiner) joiner {
+func (u using) Join(table joiner) joiner {
 	j := newJoin(table)
-	j.prev = o
+	j.prev = u
 	return j
 }
 
-func (o using) InnerJoin(table joiner) joiner {
+func (u using) InnerJoin(table joiner) joiner {
 	ij := newInnerJoin(table)
-	ij.prev = o
+	ij.prev = u
 	return ij
 }
 
-func (o using) LeftJoin(table joiner) joiner {
+func (u using) LeftJoin(table joiner) joiner {
 	lj := newLeftJoin(table)
-	lj.prev = o
+	lj.prev = u
 	return lj
 }
 
-func (o using) RightJoin(table joiner) joiner {
+func (u using) RightJoin(table joiner) joiner {
 	rj := newRightJoin(table)
-	rj.prev = o
+	rj.prev = u
 	return rj
 }

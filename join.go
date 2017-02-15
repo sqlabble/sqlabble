@@ -39,8 +39,8 @@ func newRightJoin(table joiner) join {
 	}
 }
 
-func (t join) node() generator.Node {
-	ts := tableNodes(t)
+func (j join) node() generator.Node {
+	ts := tableNodes(j)
 	es := make([]generator.Node, len(ts))
 	for i, t := range ts {
 		es[i] = t.expression()
@@ -48,9 +48,9 @@ func (t join) node() generator.Node {
 	return generator.NewParallelNodes(es...)
 }
 
-func (t join) expression() generator.Expression {
-	return generator.NewExpression(t.joinType).
-		Append(t.table.expression())
+func (j join) expression() generator.Expression {
+	return generator.NewExpression(j.joinType).
+		Append(j.table.expression())
 }
 
 func (j join) previous() joiner {
