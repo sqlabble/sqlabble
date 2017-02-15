@@ -3,7 +3,14 @@ package generator
 type ParallelNodes []Node
 
 func NewParallelNodes(nodes ...Node) ParallelNodes {
-	return ParallelNodes(nodes)
+	ns := []Node{}
+	for _, n := range nodes {
+		if n == nil {
+			continue
+		}
+		ns = append(ns, n)
+	}
+	return ParallelNodes(ns)
 }
 
 func (ns ParallelNodes) ToSQL(ctx Context) (string, []interface{}) {

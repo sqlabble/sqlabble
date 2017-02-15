@@ -72,66 +72,58 @@ type comparisonOperation struct {
 	val interface{}
 }
 
-func newEq(col columnOrSubquery, val interface{}) comparisonOperation {
+func newEq(val interface{}) comparisonOperation {
 	return comparisonOperation{
 		op:  operator.Eq,
-		col: col,
 		val: val,
 	}
 }
 
-func newNotEq(col columnOrSubquery, val interface{}) comparisonOperation {
+func newNotEq(val interface{}) comparisonOperation {
 	return comparisonOperation{
 		op:  operator.NotEq,
-		col: col,
 		val: val,
 	}
 }
 
-func newGt(col columnOrSubquery, val interface{}) comparisonOperation {
+func newGt(val interface{}) comparisonOperation {
 	return comparisonOperation{
 		op:  operator.Gt,
-		col: col,
 		val: val,
 	}
 }
 
-func newGte(col columnOrSubquery, val interface{}) comparisonOperation {
+func newGte(val interface{}) comparisonOperation {
 	return comparisonOperation{
 		op:  operator.Gte,
-		col: col,
 		val: val,
 	}
 }
 
-func newLt(col columnOrSubquery, val interface{}) comparisonOperation {
+func newLt(val interface{}) comparisonOperation {
 	return comparisonOperation{
 		op:  operator.Lt,
-		col: col,
 		val: val,
 	}
 }
 
-func newLte(col columnOrSubquery, val interface{}) comparisonOperation {
+func newLte(val interface{}) comparisonOperation {
 	return comparisonOperation{
 		op:  operator.Lte,
-		col: col,
 		val: val,
 	}
 }
 
-func newLike(col columnOrSubquery, val interface{}) comparisonOperation {
+func newLike(val interface{}) comparisonOperation {
 	return comparisonOperation{
 		op:  operator.Like,
-		col: col,
 		val: val,
 	}
 }
 
-func newRegExp(col columnOrSubquery, val interface{}) comparisonOperation {
+func newRegExp(val interface{}) comparisonOperation {
 	return comparisonOperation{
 		op:  operator.RegExp,
-		col: col,
 		val: val,
 	}
 }
@@ -139,24 +131,27 @@ func newRegExp(col columnOrSubquery, val interface{}) comparisonOperation {
 func (c comparisonOperation) node() generator.Node {
 	var n1, n2 generator.Node
 
-	switch col := c.col.(type) {
-	case column:
-		n1 = col.expression()
-	default:
-		n1 = c.col.node()
+	if c.col != nil {
+		switch col := c.col.(type) {
+		case column:
+			n1 = col.expression()
+		default:
+			n1 = c.col.node()
+		}
 	}
 
-	switch val := c.val.(type) {
-	case sub:
-		n2 = val.node()
-	case Statement:
-		n2 = newSub(val).node()
-	default:
-		n2 = generator.ValuesToExpression(val)
+	if c.val != nil {
+		switch val := c.val.(type) {
+		case sub:
+			n2 = val.node()
+		case Statement:
+			n2 = newSub(val).node()
+		default:
+			n2 = generator.ValuesToExpression(val)
+		}
 	}
 
 	op := generator.NewExpression(string(c.operator()))
-
 	e1, ok1 := n1.(generator.Expression)
 	e2, ok2 := n2.(generator.Expression)
 	if ok1 && ok2 {

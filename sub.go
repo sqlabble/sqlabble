@@ -23,36 +23,52 @@ func (s sub) isColumnOrSubquery() bool {
 	return true
 }
 
-func (s sub) Eq(value interface{}) comparisonOperation {
-	return newEq(s, value)
+func (c sub) Eq(value interface{}) comparisonOperation {
+	e := newEq(value)
+	e.col = c
+	return e
 }
 
-func (s sub) NotEq(value interface{}) comparisonOperation {
-	return newNotEq(s, value)
+func (c sub) NotEq(value interface{}) comparisonOperation {
+	n := newNotEq(value)
+	n.col = c
+	return n
 }
 
-func (s sub) Gt(value interface{}) comparisonOperation {
-	return newGt(s, value)
+func (c sub) Gt(value interface{}) comparisonOperation {
+	g := newGt(value)
+	g.col = c
+	return g
 }
 
-func (s sub) Gte(value interface{}) comparisonOperation {
-	return newGte(s, value)
+func (c sub) Gte(value interface{}) comparisonOperation {
+	g := newGte(value)
+	g.col = c
+	return g
 }
 
-func (s sub) Lt(value interface{}) comparisonOperation {
-	return newLt(s, value)
+func (c sub) Lt(value interface{}) comparisonOperation {
+	l := newLt(value)
+	l.col = c
+	return l
 }
 
-func (s sub) Lte(value interface{}) comparisonOperation {
-	return newLte(s, value)
+func (c sub) Lte(value interface{}) comparisonOperation {
+	l := newLte(value)
+	l.col = c
+	return l
 }
 
-func (s sub) Like(value string) comparisonOperation {
-	return newLike(s, value)
+func (c sub) Like(value string) comparisonOperation {
+	l := newLike(value)
+	l.col = c
+	return l
 }
 
-func (s sub) RegExp(value string) comparisonOperation {
-	return newRegExp(s, value)
+func (c sub) RegExp(value string) comparisonOperation {
+	r := newRegExp(value)
+	r.col = c
+	return r
 }
 
 // func (c sub) Between(from, to interface{}) between {
