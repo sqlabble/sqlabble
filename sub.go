@@ -59,34 +59,44 @@ func (c sub) Lte(value interface{}) comparisonOperation {
 	return l
 }
 
-func (c sub) Like(value string) comparisonOperation {
+func (c sub) Like(value interface{}) comparisonOperation {
 	l := newLike(value)
 	l.col = c
 	return l
 }
 
-func (c sub) RegExp(value string) comparisonOperation {
+func (c sub) RegExp(value interface{}) comparisonOperation {
 	r := newRegExp(value)
 	r.col = c
 	return r
 }
 
-// func (c sub) Between(from, to interface{}) between {
-// 	return newBetween(c, from, to)
-// }
-//
-// func (c sub) In(values ...interface{}) containingOperation {
-// 	return newIn(c, values...)
-// }
-//
-// func (c sub) NotIn(values ...interface{}) containingOperation {
-// 	return newNotIn(c, values...)
-// }
-//
-// func (c sub) IsNull() nullyOperation {
-// 	return newIsNull(c)
-// }
-//
-// func (c sub) IsNotNull() nullyOperation {
-// 	return newIsNotNull(c)
-// }
+func (c sub) Between(from, to interface{}) between {
+	b := newBetween(from, to)
+	b.col = c
+	return b
+}
+
+func (c sub) In(values ...interface{}) containingOperation {
+	i := newIn(values...)
+	i.col = c
+	return i
+}
+
+func (c sub) NotIn(values ...interface{}) containingOperation {
+	n := newNotIn(values...)
+	n.col = c
+	return n
+}
+
+func (c sub) IsNull() nullyOperation {
+	i := newIsNull()
+	i.col = c
+	return i
+}
+
+func (c sub) IsNotNull() nullyOperation {
+	i := newIsNotNull()
+	i.col = c
+	return i
+}

@@ -88,36 +88,46 @@ func (c column) Lte(value interface{}) comparisonOperation {
 	return l
 }
 
-func (c column) Like(value string) comparisonOperation {
+func (c column) Like(value interface{}) comparisonOperation {
 	l := newLike(value)
 	l.col = c
 	return l
 }
 
-func (c column) RegExp(value string) comparisonOperation {
+func (c column) RegExp(value interface{}) comparisonOperation {
 	r := newRegExp(value)
 	r.col = c
 	return r
 }
 
 func (c column) Between(from, to interface{}) between {
-	return newBetween(c, from, to)
+	b := newBetween(from, to)
+	b.col = c
+	return b
 }
 
 func (c column) In(values ...interface{}) containingOperation {
-	return newIn(c, values...)
+	i := newIn(values...)
+	i.col = c
+	return i
 }
 
 func (c column) NotIn(values ...interface{}) containingOperation {
-	return newNotIn(c, values...)
+	n := newNotIn(values...)
+	n.col = c
+	return n
 }
 
 func (c column) IsNull() nullyOperation {
-	return newIsNull(c)
+	i := newIsNull()
+	i.col = c
+	return i
 }
 
 func (c column) IsNotNull() nullyOperation {
-	return newIsNotNull(c)
+	i := newIsNotNull()
+	i.col = c
+	return i
 }
 
 func (c column) Asc() order {

@@ -21,6 +21,32 @@ func JoinExpressions(es ...Expression) Expression {
 	return exp
 }
 
+// type Expressions []Expression
+//
+// func (es Expressions) ToSQL(ctx Context) (string, []interface{}) {
+// 	sqls := make([]string, len(es))
+// 	values := []interface{}{}
+// 	var vals []interface{}
+// 	for i, e := range es {
+// 		sqls[i], vals = e.ToSQL(ctx)
+// 		values = append(values, vals...)
+// 	}
+// 	return ctx.Join(sqls...), values
+// }
+//
+// func (es Expressions) Joint(exps Expressions) Expressions {
+// 	if len(es) == 0 {
+// 		return exps
+// 	}
+// 	if len(exps) == 0 {
+// 		return es
+// 	}
+// 	lastIndex := len(es) - 1
+// 	last := es[lastIndex]
+// 	first := exps[0]
+// 	return append(append(es[0:lastIndex], last.Append(first)), exps[1:]...)
+// }
+
 type Expression struct {
 	sql    string
 	values []interface{}

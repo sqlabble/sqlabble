@@ -43,19 +43,19 @@ Type supported SQL query builder.
 
 #### Comparison Operators
 
-- [x] `{COLUMN} = {VALUE}`
-- [x] `{COLUMN} != {VALUE}`
-- [x] `{COLUMN} > {VALUE}`
-- [x] `{COLUMN} >= {VALUE}`
-- [x] `{COLUMN} < {VALUE}`
-- [x] `{COLUMN} <= {VALUE}`
-- [x] `{COLUMN} BETWEEN {VALUE}`
-- [x] `{COLUMN} IN {VALUE}`
-- [x] `{COLUMN} NOT IN {VALUE}`
-- [x] `{COLUMN} LIKE {VALUE}`
-- [x] `{COLUMN} REGEXP {VALUE}`
-- [x] `{COLUMN} IS NULL {VALUE}`
-- [x] `{COLUMN} IS NOT NULL {VALUE}`
+- [x] `{COLUMN|SUBQUERY} = {VALUE|SUBQUERY}`
+- [x] `{COLUMN|SUBQUERY} != {VALUE|SUBQUERY}`
+- [x] `{COLUMN|SUBQUERY} > {VALUE|SUBQUERY}`
+- [x] `{COLUMN|SUBQUERY} >= {VALUE|SUBQUERY}`
+- [x] `{COLUMN|SUBQUERY} < {VALUE|SUBQUERY}`
+- [x] `{COLUMN|SUBQUERY} <= {VALUE|SUBQUERY}`
+- [x] `{COLUMN|SUBQUERY} LIKE {VALUE|SUBQUERY}`
+- [x] `{COLUMN|SUBQUERY} REGEXP {VALUE|SUBQUERY}`
+- [x] `{COLUMN|SUBQUERY} BETWEEN {VALUE} AND {VALUE}`
+- [x] `{COLUMN|SUBQUERY} IN {VALUE|SUBQUERY}`
+- [x] `{COLUMN|SUBQUERY} NOT IN {VALUE|SUBQUERY}`
+- [x] `{COLUMN|SUBQUERY} IS NULL`
+- [x] `{COLUMN|SUBQUERY} IS NOT NULL`
 
 ### Joins
 
@@ -102,26 +102,10 @@ Type supported SQL query builder.
 
 #### Scalar Operation
 
-- [x] `{COLUMN} = ({SUBQUERY})`
-- [x] `{COLUMN} != ({SUBQUERY})`
-- [x] `{COLUMN} > ({SUBQUERY})`
-- [x] `{COLUMN} >= ({SUBQUERY})`
-- [x] `{COLUMN} < ({SUBQUERY})`
-- [x] `{COLUMN} <= ({SUBQUERY})`
-- [x] `{COLUMN} LIKE ({SUBQUERY})`
-- [x] `{COLUMN} REGEXP ({SUBQUERY})`
-
-- [ ] `({SUBQUERY}) = {VALUE}`
-- [ ] `({SUBQUERY}) != {VALUE}`
-- [ ] `({SUBQUERY}) > {VALUE}`
-- [ ] `({SUBQUERY}) >= {VALUE}`
-- [ ] `({SUBQUERY}) < {VALUE}`
-- [ ] `({SUBQUERY}) <= {VALUE}`
+- [ ] `{COLUMN} BETWEEN ({SUBQUERY}) AND ({SUBQUERY})`
 
 #### Nonscalar Operation
 
-- [ ] `{COLUMN} IN ({SUBQUERY})`
-- [ ] `{COLUMN} NOT IN ({SUBQUERY})`
 - [ ] `{COLUMN} = ALL ({SUBQUERY})`
 - [ ] `{COLUMN} != ALL ({SUBQUERY})`
 - [ ] `{COLUMN} > ALL ({SUBQUERY})`
@@ -134,15 +118,6 @@ Type supported SQL query builder.
 - [ ] `{COLUMN} >= ANY ({SUBQUERY})`
 - [ ] `{COLUMN} < ANY ({SUBQUERY})`
 - [ ] `{COLUMN} <= ANY ({SUBQUERY})`
-
-- [ ] `({SUBQUERY}) LIKE {VALUE}`
-- [ ] `({SUBQUERY}) REGEXP {VALUE}`
-- [ ] `({SUBQUERY}) IN {VALUE}`
-- [ ] `({SUBQUERY}) NOT IN {VALUE}`
-- [ ] `({SUBQUERY}) BETWEEN {VALUE}`
-- [ ] `({SUBQUERY}) IS NULL {VALUE}`
-- [ ] `({SUBQUERY}) IS NOT NULL {VALUE}`
-
 - [ ] `EXISTS ({SUBQUERY})`
 - [ ] `NOT EXISTS ({SUBQUERY})`
 

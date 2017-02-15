@@ -670,8 +670,7 @@ func TestBetween(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			sqlabble.NewBetween(
-				sqlabble.NewColumn("foo"),
+			sqlabble.NewColumn("foo").Between(
 				100,
 				200,
 			),
@@ -713,8 +712,7 @@ func TestContainingOperators(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			sqlabble.NewIn(
-				sqlabble.NewColumn("foo"),
+			sqlabble.NewColumn("foo").In(
 				100,
 				200,
 				300,
@@ -729,8 +727,7 @@ func TestContainingOperators(t *testing.T) {
 			},
 		},
 		{
-			sqlabble.NewNotIn(
-				sqlabble.NewColumn("foo"),
+			sqlabble.NewColumn("foo").NotIn(
 				100,
 				200,
 				300,
@@ -774,18 +771,14 @@ func TestKeywordOperators(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			sqlabble.NewIsNull(
-				sqlabble.NewColumn("foo"),
-			),
+			sqlabble.NewColumn("foo").IsNull(),
 			"foo IS NULL",
 			`> foo IS NULL
 `,
 			[]interface{}{},
 		},
 		{
-			sqlabble.NewIsNotNull(
-				sqlabble.NewColumn("foo"),
-			),
+			sqlabble.NewColumn("foo").IsNotNull(),
 			"foo IS NOT NULL",
 			`> foo IS NOT NULL
 `,
