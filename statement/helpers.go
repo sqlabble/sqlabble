@@ -1,5 +1,11 @@
 package statement
 
+import "github.com/minodisk/sqlabble/generator"
+
+func Node(stmt Statement) generator.Node {
+	return stmt.node()
+}
+
 func placeholders(i int) string {
 	s := ""
 	for ; i > 0; i-- {

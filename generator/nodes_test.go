@@ -10,11 +10,8 @@ import (
 )
 
 var (
-	ctx       = generator.Options{}.ToContext()
-	ctxIndent = generator.Options{
-		Prefix: "> ",
-		Indent: "  ",
-	}.ToContext()
+	ctx       = generator.NewContext("", "", false)
+	ctxIndent = generator.NewContext("> ", "  ", false)
 )
 
 func TestParallelNodes(t *testing.T) {

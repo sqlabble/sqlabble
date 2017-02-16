@@ -1,27 +1,27 @@
-package statement_test
+package builder_test
 
 import (
 	"fmt"
 	"reflect"
 	"testing"
 
-	"github.com/minodisk/sqlabble/generator"
+	"github.com/minodisk/sqlabble/builder"
 	"github.com/minodisk/sqlabble/internal/diff"
 	"github.com/minodisk/sqlabble/statement"
 )
 
 var (
-	builder       = statement.NewBuilder(generator.Options{})
-	builderIndent = statement.NewBuilder(
-		generator.Options{
+	b  = builder.NewBuilder(builder.Options{})
+	bi = builder.NewBuilder(
+		builder.Options{
 			Prefix: "> ",
 			Indent: "  ",
 		})
-	builderMySQL4 = statement.NewBuilder(generator.Options{
+	bMySQL4 = builder.NewBuilder(builder.Options{
 		FlatSets: true,
 	})
-	builderIndentMySQL4 = statement.NewBuilder(
-		generator.Options{
+	biMySQL4 = builder.NewBuilder(
+		builder.Options{
 			Prefix:   "> ",
 			Indent:   "  ",
 			FlatSets: true,
@@ -194,7 +194,7 @@ func TestBuild(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
-			sql, values := builder.Build(c.statement)
+			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
 			}
@@ -204,7 +204,7 @@ func TestBuild(t *testing.T) {
 		})
 
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
-			sql, values := builderIndent.Build(c.statement)
+			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
 			}

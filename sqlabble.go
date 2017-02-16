@@ -1,7 +1,7 @@
 package sqlabble
 
 import (
-	"github.com/minodisk/sqlabble/generator"
+	"github.com/minodisk/sqlabble/builder"
 	"github.com/minodisk/sqlabble/statement"
 )
 
@@ -33,14 +33,14 @@ var (
 
 // Typical builders commonly used to build queries.
 var (
-	Standard         = statement.NewBuilder(generator.Options{})
-	IndentedStandard = statement.NewBuilder(generator.Options{
+	Standard         = builder.NewBuilder(builder.Options{})
+	IndentedStandard = builder.NewBuilder(builder.Options{
 		Indent: "    ",
 	})
-	MySQL4 = statement.NewBuilder(generator.Options{
+	MySQL4 = builder.NewBuilder(builder.Options{
 		FlatSets: true,
 	})
-	IndentedMySQL4 = statement.NewBuilder(generator.Options{
+	IndentedMySQL4 = builder.NewBuilder(builder.Options{
 		Indent:   "    ",
 		FlatSets: true,
 	})

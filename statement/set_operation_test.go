@@ -100,7 +100,7 @@ func TestUnionSQL(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Builder", i), func(t *testing.T) {
-			sql, values := builder.Build(c.statement)
+			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
 			}
@@ -109,7 +109,7 @@ func TestUnionSQL(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
-			sql, values := builderIndent.Build(c.statement)
+			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
 			}
@@ -118,7 +118,7 @@ func TestUnionSQL(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildForMySQL4", i), func(t *testing.T) {
-			sql, values := builderMySQL4.Build(c.statement)
+			sql, values := bm4.Build(c.statement)
 			if sql != c.sqlForMySQL {
 				t.Error(diff.SQL(sql, c.sqlForMySQL))
 			}
@@ -127,7 +127,7 @@ func TestUnionSQL(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildIndentForMySQL4", i), func(t *testing.T) {
-			sql, values := builderIndentMySQL4.Build(c.statement)
+			sql, values := bim4.Build(c.statement)
 			if sql != c.sqlIndentForMySQL {
 				t.Error(diff.SQL(sql, c.sqlIndentForMySQL))
 			}
@@ -219,7 +219,7 @@ func TestUnionAllSQL(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Builder", i), func(t *testing.T) {
-			sql, values := builder.Build(c.statement)
+			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
 			}
@@ -228,7 +228,7 @@ func TestUnionAllSQL(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
-			sql, values := builderIndent.Build(c.statement)
+			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
 			}
@@ -237,7 +237,7 @@ func TestUnionAllSQL(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildForMySQL4", i), func(t *testing.T) {
-			sql, values := builderMySQL4.Build(c.statement)
+			sql, values := bm4.Build(c.statement)
 			if sql != c.sqlForMySQL {
 				t.Error(diff.SQL(sql, c.sqlForMySQL))
 			}
@@ -246,7 +246,7 @@ func TestUnionAllSQL(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildIndentForMySQL4", i), func(t *testing.T) {
-			sql, values := builderIndentMySQL4.Build(c.statement)
+			sql, values := bim4.Build(c.statement)
 			if sql != c.sqlIndentForMySQL {
 				t.Error(diff.SQL(sql, c.sqlIndentForMySQL))
 			}
@@ -338,7 +338,7 @@ func TestIntersectSQL(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Builder", i), func(t *testing.T) {
-			sql, values := builder.Build(c.statement)
+			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
 			}
@@ -347,7 +347,7 @@ func TestIntersectSQL(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
-			sql, values := builderIndent.Build(c.statement)
+			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
 			}
@@ -356,7 +356,7 @@ func TestIntersectSQL(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildForMySQL4", i), func(t *testing.T) {
-			sql, values := builderMySQL4.Build(c.statement)
+			sql, values := bm4.Build(c.statement)
 			if sql != c.sqlForMySQL {
 				t.Error(diff.SQL(sql, c.sqlForMySQL))
 			}
@@ -365,7 +365,7 @@ func TestIntersectSQL(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildIndentForMySQL4", i), func(t *testing.T) {
-			sql, values := builderIndentMySQL4.Build(c.statement)
+			sql, values := bim4.Build(c.statement)
 			if sql != c.sqlIndentForMySQL {
 				t.Error(diff.SQL(sql, c.sqlIndentForMySQL))
 			}
@@ -457,7 +457,7 @@ func TestIntersectAllSQL(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Builder", i), func(t *testing.T) {
-			sql, values := builder.Build(c.statement)
+			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
 			}
@@ -466,7 +466,7 @@ func TestIntersectAllSQL(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
-			sql, values := builderIndent.Build(c.statement)
+			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
 			}
@@ -475,7 +475,7 @@ func TestIntersectAllSQL(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildForMySQL4", i), func(t *testing.T) {
-			sql, values := builderMySQL4.Build(c.statement)
+			sql, values := bm4.Build(c.statement)
 			if sql != c.sqlForMySQL {
 				t.Error(diff.SQL(sql, c.sqlForMySQL))
 			}
@@ -484,7 +484,7 @@ func TestIntersectAllSQL(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildIndentForMySQL4", i), func(t *testing.T) {
-			sql, values := builderIndentMySQL4.Build(c.statement)
+			sql, values := bim4.Build(c.statement)
 			if sql != c.sqlIndentForMySQL {
 				t.Error(diff.SQL(sql, c.sqlIndentForMySQL))
 			}
@@ -576,7 +576,7 @@ func TestExceptSQL(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Builder", i), func(t *testing.T) {
-			sql, values := builder.Build(c.statement)
+			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
 			}
@@ -585,7 +585,7 @@ func TestExceptSQL(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
-			sql, values := builderIndent.Build(c.statement)
+			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
 			}
@@ -594,7 +594,7 @@ func TestExceptSQL(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildForMySQL4", i), func(t *testing.T) {
-			sql, values := builderMySQL4.Build(c.statement)
+			sql, values := bm4.Build(c.statement)
 			if sql != c.sqlForMySQL {
 				t.Error(diff.SQL(sql, c.sqlForMySQL))
 			}
@@ -603,7 +603,7 @@ func TestExceptSQL(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildIndentForMySQL4", i), func(t *testing.T) {
-			sql, values := builderIndentMySQL4.Build(c.statement)
+			sql, values := bim4.Build(c.statement)
 			if sql != c.sqlIndentForMySQL {
 				t.Error(diff.SQL(sql, c.sqlIndentForMySQL))
 			}
@@ -695,7 +695,7 @@ func TestExceptAllSQL(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Builder", i), func(t *testing.T) {
-			sql, values := builder.Build(c.statement)
+			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
 			}
@@ -704,7 +704,7 @@ func TestExceptAllSQL(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
-			sql, values := builderIndent.Build(c.statement)
+			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
 			}
@@ -713,7 +713,7 @@ func TestExceptAllSQL(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildForMySQL4", i), func(t *testing.T) {
-			sql, values := builderMySQL4.Build(c.statement)
+			sql, values := bm4.Build(c.statement)
 			if sql != c.sqlForMySQL {
 				t.Error(diff.SQL(sql, c.sqlForMySQL))
 			}
@@ -722,7 +722,7 @@ func TestExceptAllSQL(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildIndentForMySQL4", i), func(t *testing.T) {
-			sql, values := builderIndentMySQL4.Build(c.statement)
+			sql, values := bim4.Build(c.statement)
 			if sql != c.sqlIndentForMySQL {
 				t.Error(diff.SQL(sql, c.sqlIndentForMySQL))
 			}

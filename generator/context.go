@@ -11,12 +11,12 @@ type Context struct {
 	depth, bracketDepth int
 }
 
-func newContext(o Options) Context {
+func NewContext(prefix, indent string, flatSets bool) Context {
 	return Context{
-		prefix:       o.Prefix,
-		indent:       o.Indent,
-		breaking:     o.Prefix != "" || o.Indent != "",
-		flatSets:     o.FlatSets,
+		prefix:       prefix,
+		indent:       indent,
+		breaking:     prefix != "" || indent != "",
+		flatSets:     flatSets,
 		head:         "",
 		depth:        0,
 		bracketDepth: 0,

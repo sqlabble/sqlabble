@@ -207,7 +207,7 @@ func TestAnd(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build %+v", i, c.statement), func(t *testing.T) {
-			sql, values := builder.Build(c.statement)
+			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
 			}
@@ -217,7 +217,7 @@ func TestAnd(t *testing.T) {
 		})
 
 		t.Run(fmt.Sprintf("%d BuildIndent %+v", i, c.statement), func(t *testing.T) {
-			sql, values := builderIndent.Build(c.statement)
+			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
 			}
@@ -371,7 +371,7 @@ func TestOr(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("Build %+v", c.statement), func(t *testing.T) {
-			sql, values := builder.Build(c.statement)
+			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
 			}
@@ -381,7 +381,7 @@ func TestOr(t *testing.T) {
 		})
 
 		t.Run(fmt.Sprintf("BuildIndent %+v", c.statement), func(t *testing.T) {
-			sql, values := builderIndent.Build(c.statement)
+			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
 			}
@@ -549,7 +549,7 @@ func TestNot(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build %+v", i, c.statement), func(t *testing.T) {
-			sql, values := builder.Build(c.statement)
+			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
 			}
@@ -559,7 +559,7 @@ func TestNot(t *testing.T) {
 		})
 
 		t.Run(fmt.Sprintf("%d BuildIndent %+v", i, c.statement), func(t *testing.T) {
-			sql, values := builderIndent.Build(c.statement)
+			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
 			}
@@ -642,7 +642,7 @@ func TestComparisonOperators(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("Build %+v", c.statement), func(t *testing.T) {
-			sql, values := builder.Build(c.statement)
+			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
 			}
@@ -651,7 +651,7 @@ func TestComparisonOperators(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("BuildIndent %+v", c.statement), func(t *testing.T) {
-			sql, values := builderIndent.Build(c.statement)
+			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
 			}
@@ -684,7 +684,7 @@ func TestBetween(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("Build %+v", c.statement), func(t *testing.T) {
-			sql, values := builder.Build(c.statement)
+			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
 			}
@@ -693,7 +693,7 @@ func TestBetween(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("BuildIndent %+v", c.statement), func(t *testing.T) {
-			sql, values := builderIndent.Build(c.statement)
+			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
 			}
@@ -743,7 +743,7 @@ func TestContainingOperators(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("Build %+v", c.statement), func(t *testing.T) {
-			sql, values := builder.Build(c.statement)
+			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
 			}
@@ -752,7 +752,7 @@ func TestContainingOperators(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("BuildIndent %+v", c.statement), func(t *testing.T) {
-			sql, values := builderIndent.Build(c.statement)
+			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
 			}
@@ -786,7 +786,7 @@ func TestKeywordOperators(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("Build %+v", c.statement), func(t *testing.T) {
-			sql, values := builder.Build(c.statement)
+			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
 			}
@@ -795,7 +795,7 @@ func TestKeywordOperators(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("BuildIndent %+v", c.statement), func(t *testing.T) {
-			sql, values := builderIndent.Build(c.statement)
+			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
 			}
@@ -899,7 +899,7 @@ func TestComplexOperation(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
-			sql, values := builder.Build(c.statement)
+			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
 			}
@@ -909,7 +909,7 @@ func TestComplexOperation(t *testing.T) {
 		})
 
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
-			sql, values := builderIndent.Build(c.statement)
+			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
 			}
