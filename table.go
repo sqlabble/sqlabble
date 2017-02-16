@@ -1,7 +1,7 @@
 package sqlabble
 
 import (
-	"github.com/minodisk/sqlabble/generator"
+	"github.com/minodisk/sqlabble/internal/generator"
 )
 
 type table struct {

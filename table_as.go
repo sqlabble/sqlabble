@@ -3,7 +3,7 @@ package sqlabble
 import (
 	"fmt"
 
-	"github.com/minodisk/sqlabble/generator"
+	"github.com/minodisk/sqlabble/internal/generator"
 )
 
 type tableAs struct {

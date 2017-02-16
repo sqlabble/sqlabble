@@ -3,7 +3,7 @@ package generator
 import (
 	"fmt"
 
-	"github.com/minodisk/sqlabble/operator"
+	"github.com/minodisk/sqlabble/internal/operator"
 )
 
 type Operator struct {

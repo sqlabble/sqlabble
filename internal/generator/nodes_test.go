@@ -5,8 +5,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/minodisk/sqlabble/generator"
 	"github.com/minodisk/sqlabble/internal/diff"
+	"github.com/minodisk/sqlabble/internal/generator"
 )
 
 var (

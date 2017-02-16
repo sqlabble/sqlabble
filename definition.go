@@ -1,6 +1,6 @@
 package sqlabble
 
-import "github.com/minodisk/sqlabble/generator"
+import "github.com/minodisk/sqlabble/internal/generator"
 
 type definition struct {
 	col column

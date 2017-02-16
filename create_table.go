@@ -1,8 +1,8 @@
 package sqlabble
 
 import (
-	"github.com/minodisk/sqlabble/generator"
-	"github.com/minodisk/sqlabble/keyword"
+	"github.com/minodisk/sqlabble/internal/generator"
+	"github.com/minodisk/sqlabble/internal/keyword"
 )
 
 type createTable struct {
