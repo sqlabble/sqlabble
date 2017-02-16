@@ -22,7 +22,7 @@ func (u using) node() generator.Node {
 	for i, t := range ts {
 		us[i] = t.expression()
 	}
-	return generator.NewParallelNodes(us...)
+	return generator.NewNodes(us...)
 }
 
 func (u using) expression() generator.Expression {

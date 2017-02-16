@@ -17,7 +17,7 @@ func (d del) node() generator.Node {
 	for i, c := range cs {
 		fs[i] = c.myNode()
 	}
-	return generator.NewParallelNodes(fs...)
+	return generator.NewNodes(fs...)
 }
 
 func (d del) myNode() generator.Node {

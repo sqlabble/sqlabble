@@ -1,5 +1,6 @@
 package keyword
 
+// Keywords of SQL.
 const (
 	Select        = "SELECT"
 	Distinct      = "DISTINCT"

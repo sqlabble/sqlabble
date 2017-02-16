@@ -7,13 +7,15 @@ import (
 	"github.com/sergi/go-diff/diffmatchpatch"
 )
 
+// SQL returns the difference between two texts.
 func SQL(got, want string) string {
 	return fmt.Sprintf(
-		"SQL\n%s",
+		"SQL diffs:\n%s",
 		diff(got, want),
 	)
 }
 
+// Values aligns two slices in indentation.
 func Values(got, want []interface{}) string {
 	return fmt.Sprintf(
 		"values\n got: %+v\nwant: %+v",

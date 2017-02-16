@@ -58,7 +58,7 @@ func (u setOperation) node() generator.Node {
 	for i, c := range cs {
 		gs[i] = c.myNode()
 	}
-	return generator.NewParallelNodes(gs...)
+	return generator.NewNodes(gs...)
 }
 
 func (u setOperation) myNode() generator.Node {
@@ -67,7 +67,7 @@ func (u setOperation) myNode() generator.Node {
 	for i, s := range u.statements {
 		gs[i] = s.node()
 	}
-	return generator.NewUnions(sep, gs...)
+	return generator.NewSet(sep, gs...)
 }
 
 func (u setOperation) previous() clause {

@@ -2,6 +2,7 @@ package sqlabble
 
 import "github.com/minodisk/sqlabble/internal/generator"
 
+// Methods exported to make statements.
 var (
 	CreateTable    = newCreateTable
 	Select         = newSelect
@@ -27,6 +28,7 @@ var (
 	ExceptAll    = newExceptAll
 )
 
+// Typical builders commonly used to build queries.
 var (
 	Standard         = NewBuilder(generator.Options{})
 	IndentedStandard = NewBuilder(generator.Options{
@@ -41,24 +43,31 @@ var (
 	})
 )
 
+// Build builds a query.
 func Build(s Statement) (string, []interface{}) {
 	return Standard.Build(s)
 }
 
+// BuildIndent builds an indented query.
 func BuildIndent(s Statement) (string, []interface{}) {
 	return IndentedStandard.Build(s)
 }
 
+// Builder is a container for storing options
+// so that you can build a query with the same options
+// over and over again.
 type Builder struct {
 	context generator.Context
 }
 
-func NewBuilder(o generator.Options) Builder {
+// NewBuilder returns a Builder with a specified options.
+func NewBuilder(options generator.Options) Builder {
 	return Builder{
-		context: o.ToContext(),
+		context: options.ToContext(),
 	}
 }
 
-func (b Builder) Build(n Statement) (string, []interface{}) {
-	return n.node().ToSQL(b.context)
+// Build converts a statement into a query and a slice of values.
+func (b Builder) Build(statement Statement) (string, []interface{}) {
+	return statement.node().ToSQL(b.context)
 }

@@ -1,57 +1,20 @@
 package generator
 
-import (
-	"fmt"
-	"strings"
-)
+import "fmt"
 
 var (
+	// EmptyExpression is nully Expression.
 	EmptyExpression = NewExpression("")
 )
 
-func JoinExpressions(es ...Expression) Expression {
-	var exp Expression
-	for i, e := range es {
-		if i == 0 {
-			exp = e
-			continue
-		}
-		exp = exp.Append(e)
-	}
-	return exp
-}
-
-// type Expressions []Expression
-//
-// func (es Expressions) ToSQL(ctx Context) (string, []interface{}) {
-// 	sqls := make([]string, len(es))
-// 	values := []interface{}{}
-// 	var vals []interface{}
-// 	for i, e := range es {
-// 		sqls[i], vals = e.ToSQL(ctx)
-// 		values = append(values, vals...)
-// 	}
-// 	return ctx.Join(sqls...), values
-// }
-//
-// func (es Expressions) Joint(exps Expressions) Expressions {
-// 	if len(es) == 0 {
-// 		return exps
-// 	}
-// 	if len(exps) == 0 {
-// 		return es
-// 	}
-// 	lastIndex := len(es) - 1
-// 	last := es[lastIndex]
-// 	first := exps[0]
-// 	return append(append(es[0:lastIndex], last.Append(first)), exps[1:]...)
-// }
-
+// Expression is a Node that have a sql string and a slice of values.
+// It will be converted to a single line query.
 type Expression struct {
 	sql    string
 	values []interface{}
 }
 
+// NewExpression returns a new Expression.
 func NewExpression(sql string, values ...interface{}) Expression {
 	if len(values) == 0 {
 		values = []interface{}{}
@@ -62,21 +25,23 @@ func NewExpression(sql string, values ...interface{}) Expression {
 	}
 }
 
+// ToSQL returns a query and a slice of values.
 func (e Expression) ToSQL(ctx Context) (string, []interface{}) {
-	h := ctx.Head()
-	ctx = ctx.ClearHead()
-	if ctx.Breaking() {
-		p := ctx.Prefix()
+	h := ctx.currentHead()
+	ctx = ctx.clearHead()
+	if ctx.isBreaking() {
+		p := ctx.pre()
 		return fmt.Sprintf("%s%s%s\n", p, h, e.sql), e.values
 	}
 	return fmt.Sprintf("%s%s", h, e.sql), e.values
 }
 
+// Prepend adds exp to the beginning of e.
 func (e Expression) Prepend(exp Expression) Expression {
-	if exp.Empty() {
+	if exp.IsEmpty() {
 		return e
 	}
-	if e.Empty() {
+	if e.IsEmpty() {
 		return exp
 	}
 	e.sql = exp.sql + " " + e.sql
@@ -84,11 +49,12 @@ func (e Expression) Prepend(exp Expression) Expression {
 	return e
 }
 
+// Append adds exp to the end of e.
 func (e Expression) Append(exp Expression) Expression {
-	if exp.Empty() {
+	if exp.IsEmpty() {
 		return e
 	}
-	if e.Empty() {
+	if e.IsEmpty() {
 		return exp
 	}
 	e.sql = e.sql + " " + exp.sql
@@ -96,35 +62,13 @@ func (e Expression) Append(exp Expression) Expression {
 	return e
 }
 
+// WrapSQL adds the specified characters before and after sql.
 func (e Expression) WrapSQL(pre, post string) Expression {
 	e.sql = pre + e.sql + post
 	return e
 }
 
-func (e Expression) Empty() bool {
+// IsEmpty returns e is empty or not.
+func (e Expression) IsEmpty() bool {
 	return e.sql == "" && len(e.values) == 0
-}
-
-func ArrayToExpression(es ...Expression) Expression {
-	l := len(es)
-	if l == 0 {
-		return EmptyExpression
-	}
-	sqls := make([]string, l)
-	values := []interface{}{}
-	for i, e := range es {
-		sqls[i] = e.sql
-		values = append(values, e.values...)
-	}
-	return NewExpression(
-		strings.Join(sqls, ", "),
-		values...,
-	).WrapSQL("(", ")")
-}
-
-func ValuesToExpression(values ...interface{}) Expression {
-	return NewExpression(
-		placeholders(len(values)),
-		values...,
-	)
 }

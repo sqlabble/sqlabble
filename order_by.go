@@ -20,7 +20,7 @@ func (o orderBy) node() generator.Node {
 	for i, c := range cs {
 		fs[i] = c.myNode()
 	}
-	return generator.NewParallelNodes(fs...)
+	return generator.NewNodes(fs...)
 }
 
 func (o orderBy) myNode() generator.Node {

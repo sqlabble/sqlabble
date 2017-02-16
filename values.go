@@ -32,7 +32,7 @@ func (v values) node() generator.Node {
 
 	if len(vs) > 0 {
 		if c := vs[0].clause(); c != nil {
-			return generator.NewParallelNodes(
+			return generator.NewNodes(
 				c.node(),
 				g,
 			)
@@ -77,7 +77,7 @@ func (v defaultValues) node() generator.Node {
 	for i, c := range cs {
 		ns[i] = c.myNode()
 	}
-	return generator.NewParallelNodes(ns...)
+	return generator.NewNodes(ns...)
 }
 
 func (v defaultValues) myNode() generator.Node {

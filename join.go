@@ -45,7 +45,7 @@ func (j join) node() generator.Node {
 	for i, t := range ts {
 		es[i] = t.expression()
 	}
-	return generator.NewParallelNodes(es...)
+	return generator.NewNodes(es...)
 }
 
 func (j join) expression() generator.Expression {

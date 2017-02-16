@@ -19,13 +19,13 @@ var (
 
 func TestParallelNodes(t *testing.T) {
 	for i, c := range []struct {
-		nodes     generator.ParallelNodes
+		nodes     generator.Nodes
 		sql       string
 		sqlIndent string
 		values    []interface{}
 	}{
 		{
-			generator.NewParallelNodes(
+			generator.NewNodes(
 				generator.NewExpression("foo"),
 				generator.NewExpression("bar"),
 			),
@@ -36,7 +36,7 @@ func TestParallelNodes(t *testing.T) {
 			[]interface{}{},
 		},
 		{
-			generator.NewParallelNodes(
+			generator.NewNodes(
 				generator.NewParentheses(
 					generator.NewComma(
 						generator.NewExpression("foo-1"),

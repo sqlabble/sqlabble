@@ -29,7 +29,7 @@ func (o joinOperation) node() generator.Node {
 	for i, op := range o.ops {
 		ns[i] = op.node()
 	}
-	return generator.NewOperator(
+	return generator.NewJoinOperation(
 		o.operator(),
 		ns...,
 	)
@@ -188,7 +188,7 @@ func (o between) node() generator.Node {
 			post,
 		)
 	default:
-		return generator.NewParallelNodes(
+		return generator.NewNodes(
 			o.col.node(),
 			post,
 		)
@@ -258,12 +258,12 @@ func joinExpressionLikes(n1, n2 generator.Node, op generator.Expression) generat
 		return generator.JoinExpressions(e1, op, e2)
 	}
 	if ok1 {
-		return generator.NewParallelNodes(e1.Append(op), n2)
+		return generator.NewNodes(e1.Append(op), n2)
 	}
 	if ok2 {
-		return generator.NewParallelNodes(n1, e2.Prepend(op))
+		return generator.NewNodes(n1, e2.Prepend(op))
 	}
-	return generator.NewParallelNodes(n1, op, n2)
+	return generator.NewNodes(n1, op, n2)
 }
 
 func (o containingOperation) operator() operator.Operator {
@@ -299,7 +299,7 @@ func (o nullyOperation) node() generator.Node {
 			post,
 		)
 	default:
-		return generator.NewParallelNodes(
+		return generator.NewNodes(
 			o.col.node(),
 			post,
 		)

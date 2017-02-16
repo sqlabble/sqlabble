@@ -1,18 +1,21 @@
 package generator
 
-type Unions struct {
+// Set is a set of nodes like UNION.
+type Set struct {
 	separator  Expression
 	generators []Node
 }
 
-func NewUnions(separator Expression, generators ...Node) Unions {
-	return Unions{
+// NewSet returns Set.
+func NewSet(separator Expression, generators ...Node) Set {
+	return Set{
 		separator:  separator,
 		generators: generators,
 	}
 }
 
-func (us Unions) ToSQL(ctx Context) (string, []interface{}) {
+// ToSQL returns a query and a slice of values.
+func (us Set) ToSQL(ctx Context) (string, []interface{}) {
 	res := []Node{}
 	for i, g := range us.generators {
 		if needsParentheses(ctx, g) {
@@ -24,5 +27,5 @@ func (us Unions) ToSQL(ctx Context) (string, []interface{}) {
 		}
 		res = append(res, us.separator, g)
 	}
-	return NewParallelNodes(res...).ToSQL(ctx)
+	return NewNodes(res...).ToSQL(ctx)
 }

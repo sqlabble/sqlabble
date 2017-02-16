@@ -1,8 +1,10 @@
 package generator
 
-type ParallelNodes []Node
+// Nodes is list of Node.
+type Nodes []Node
 
-func NewParallelNodes(nodes ...Node) ParallelNodes {
+// NewNodes return a new Nodes excluding nil.
+func NewNodes(nodes ...Node) Nodes {
 	ns := []Node{}
 	for _, n := range nodes {
 		if n == nil {
@@ -10,10 +12,11 @@ func NewParallelNodes(nodes ...Node) ParallelNodes {
 		}
 		ns = append(ns, n)
 	}
-	return ParallelNodes(ns)
+	return Nodes(ns)
 }
 
-func (ns ParallelNodes) ToSQL(ctx Context) (string, []interface{}) {
+// ToSQL returns a query and a slice of values.
+func (ns Nodes) ToSQL(ctx Context) (string, []interface{}) {
 	sqls := make([]string, len(ns))
 	values := []interface{}{}
 	for i, e := range ns {
@@ -22,31 +25,9 @@ func (ns ParallelNodes) ToSQL(ctx Context) (string, []interface{}) {
 			sqls[i], vs = e.ToSQL(ctx)
 			values = append(values, vs...)
 		} else {
-			sqls[i], vs = e.ToSQL(ctx.ClearHead())
+			sqls[i], vs = e.ToSQL(ctx.clearHead())
 			values = append(values, vs...)
 		}
 	}
-	return ctx.Join(sqls...), values
+	return ctx.join(sqls...), values
 }
-
-// type SerialNodes []Node
-//
-// func NewSerialNodes(nodes ...Node) SerialNodes {
-// 	return SerialNodes(nodes)
-// }
-//
-// func (ns SerialNodes) ToSQL(ctx Context) (string, []interface{}) {
-// 	sqls := make([]string, len(ns))
-// 	values := []interface{}{}
-// 	for i, n := range ns {
-// 		var vs []interface{}
-// 		if i == 0 {
-// 			sqls[i], vs = n.ToSQL(ctx)
-// 			values = append(values, vs...)
-// 		} else {
-// 			sqls[i], vs = n.ToSQL(ctx.DisablePrefix(true))
-// 			values = append(values, vs...)
-// 		}
-// 	}
-// 	return strings.Join(sqls, " "), values
-// }
