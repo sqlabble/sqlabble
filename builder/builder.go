@@ -23,3 +23,28 @@ func NewBuilder(options Options) Builder {
 func (b Builder) Build(stmt statement.Statement) (string, []interface{}) {
 	return statement.Node(stmt).ToSQL(b.context)
 }
+
+// Typical builders commonly used to build queries.
+var (
+	Standard         = NewBuilder(Options{})
+	IndentedStandard = NewBuilder(Options{
+		Indent: "    ",
+	})
+	MySQL4 = NewBuilder(Options{
+		FlatSets: true,
+	})
+	IndentedMySQL4 = NewBuilder(Options{
+		Indent:   "    ",
+		FlatSets: true,
+	})
+)
+
+// Build builds a query.
+func Build(s statement.Statement) (string, []interface{}) {
+	return Standard.Build(s)
+}
+
+// BuildIndent builds an indented query.
+func BuildIndent(s statement.Statement) (string, []interface{}) {
+	return IndentedStandard.Build(s)
+}

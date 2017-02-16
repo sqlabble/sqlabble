@@ -5,49 +5,38 @@ import (
 	"github.com/minodisk/sqlabble/node"
 )
 
+// Column is a statement to indicate a column in a table.
 type Column struct {
 	name string
 }
 
+// NewColumn returns a new Column.
 func NewColumn(name string) Column {
 	return Column{
 		name: name,
 	}
 }
 
-func (c Column) node() node.Node {
-	return c.expression()
-}
-
-func (c Column) expression() node.Expression {
-	return node.NewExpression(
-		c.name,
-	)
-}
-
-func (c Column) columnName() string {
-	return c.name
-}
-
-// isColumnOrSubquery always returns true.
-// This method exists only to implement the interface columnOrSubquery.
-// This is a shit of duck typing, but anyway it works.
-func (c Column) isColumnOrSubquery() bool {
-	return true
-}
-
+// As is used to give an alias name to the column.
+// Returns a new ColumnAs.
 func (c Column) As(alias string) ColumnAs {
 	a := NewColumnAs(alias)
 	a.column = c
 	return a
 }
 
-func (c Column) Define(def string) Definition {
-	d := NewDefinition(def)
+// Define is used to specify a definition for the column.
+// This constitutes a part of the table creation.
+// Returns a new Definition.
+func (c Column) Define(definition string) Definition {
+	d := NewDefinition(definition)
 	d.column = c
 	return d
 }
 
+// Assign is used to assign a value to the column.
+// This constitutes a part of the record update statement.
+// Returns a new Assign.
 func (c Column) Assign(value interface{}) Assign {
 	return NewAssign(c, value)
 }
@@ -142,4 +131,25 @@ func (c Column) Desc() Order {
 		column: c,
 		dir:    direction.DESC,
 	}
+}
+
+func (c Column) node() node.Node {
+	return c.expression()
+}
+
+func (c Column) expression() node.Expression {
+	return node.NewExpression(
+		c.name,
+	)
+}
+
+func (c Column) columnName() string {
+	return c.name
+}
+
+// isColumnOrSubquery always returns true.
+// This method exists only to implement the interface ColumnOrSubquery.
+// This is a shit of duck typing, but anyway it works.
+func (c Column) isColumnOrSubquery() bool {
+	return true
 }
