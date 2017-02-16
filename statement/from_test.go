@@ -9,11 +9,12 @@ import (
 	"github.com/minodisk/sqlabble/statement"
 )
 
-// func TestFromType(t *testing.T) {
-// 	if _, ok := interface{}(statement.From{}).(statement.ClauseNode); !ok {
-// 		t.Errorf("statement.FromClause doesn't implement statement.Clause")
-// 	}
-// }
+func TestFromType(t *testing.T) {
+	f := statement.From{}
+	if _, ok := interface{}(f).(statement.Clause); !ok {
+		t.Errorf("%T should implement statement.Clause", f)
+	}
+}
 
 func TestFromSQL(t *testing.T) {
 	for i, c := range []struct {
@@ -79,6 +80,21 @@ func TestFromSQL(t *testing.T) {
 		{
 			statement.NewFrom(
 				statement.NewTable("foo"),
+			).GroupBy(
+				statement.NewColumn("id"),
+			),
+			"FROM foo GROUP BY id",
+			`> FROM
+>   foo
+> GROUP BY
+>   id
+`,
+			[]interface{}{},
+		},
+		// 5
+		{
+			statement.NewFrom(
+				statement.NewTable("foo"),
 			).OrderBy(
 				statement.NewColumn("age").Asc(),
 			),
@@ -90,20 +106,20 @@ func TestFromSQL(t *testing.T) {
 `,
 			[]interface{}{},
 		},
-		// 5
+		// 6
 		{
 			statement.NewFrom(
 				statement.NewTable("foo"),
-			).GroupBy(
-				statement.NewColumn("id"),
-			),
-			"FROM foo GROUP BY id",
+			).Limit(20),
+			"FROM foo LIMIT ?",
 			`> FROM
 >   foo
-> GROUP BY
->   id
+> LIMIT
+>   ?
 `,
-			[]interface{}{},
+			[]interface{}{
+				20,
+			},
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {

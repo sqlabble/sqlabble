@@ -9,15 +9,15 @@ import (
 	"github.com/minodisk/sqlabble/statement"
 )
 
-// func TestUnionType(t *testing.T) {
-// 	for _, s := range []statement.Node{
-// 		statement.SetOperation{},
-// 	} {
-// 		if _, ok := s.(statement.ClauseNode); !ok {
-// 			t.Errorf("%T should implement statement.Clause", s)
-// 		}
-// 	}
-// }
+func TestSetOperationType(t *testing.T) {
+	for _, s := range []interface{}{
+		statement.SetOperation{},
+	} {
+		if _, ok := s.(statement.Clause); !ok {
+			t.Errorf("%T should implement statement.Clause", s)
+		}
+	}
+}
 
 func TestUnionSQL(t *testing.T) {
 	for i, c := range []struct {
@@ -28,6 +28,41 @@ func TestUnionSQL(t *testing.T) {
 		sqlIndentForMySQL string
 		values            []interface{}
 	}{
+		{
+			statement.NewUnion(
+				statement.NewSelect(statement.NewColumn("a")),
+				statement.NewSelect(statement.NewColumn("b")),
+			).OrderBy(
+				statement.NewColumn("foo").Asc(),
+			),
+			"(SELECT a) UNION (SELECT b) ORDER BY foo ASC",
+			`> (
+>   SELECT
+>     a
+> )
+> UNION
+> (
+>   SELECT
+>     b
+> )
+> ORDER BY
+>   foo ASC
+`,
+			"(SELECT a) UNION (SELECT b) ORDER BY foo ASC",
+			`> (
+>   SELECT
+>     a
+> )
+> UNION
+> (
+>   SELECT
+>     b
+> )
+> ORDER BY
+>   foo ASC
+`,
+			[]interface{}{},
+		},
 		{
 			statement.NewUnion(
 				statement.NewSelect(statement.NewColumn("a")),

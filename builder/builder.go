@@ -28,13 +28,13 @@ func (b Builder) Build(stmt statement.Statement) (string, []interface{}) {
 var (
 	Standard         = NewBuilder(Options{})
 	IndentedStandard = NewBuilder(Options{
-		Indent: "    ",
+		Indent: "  ",
 	})
 	MySQL4 = NewBuilder(Options{
 		FlatSets: true,
 	})
 	IndentedMySQL4 = NewBuilder(Options{
-		Indent:   "    ",
+		Indent:   "  ",
 		FlatSets: true,
 	})
 )

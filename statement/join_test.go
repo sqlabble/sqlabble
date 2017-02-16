@@ -9,17 +9,17 @@ import (
 	"github.com/minodisk/sqlabble/statement"
 )
 
-// func TestJoinType(t *testing.T) {
-// 	for _, c := range []interface{}{
-// 		statement.Join{},
-// 	} {
-// 		t.Run(fmt.Sprintf("%T", c), func(t *testing.T) {
-// 			if _, ok := c.(statement.Node); !ok {
-// 				t.Errorf("%T doesn't implement statement.Table", c)
-// 			}
-// 		})
-// 	}
-// }
+func TestJoinType(t *testing.T) {
+	for _, c := range []interface{}{
+		statement.Join{},
+	} {
+		t.Run(fmt.Sprintf("%T", c), func(t *testing.T) {
+			if _, ok := c.(statement.Joiner); !ok {
+				t.Errorf("%T should implement statement.Joiner", c)
+			}
+		})
+	}
+}
 
 func TestJoin(t *testing.T) {
 	for i, c := range []struct {
@@ -43,6 +43,54 @@ func TestJoin(t *testing.T) {
 			),
 			"JOIN foo AS f",
 			`> JOIN foo AS f
+`,
+			[]interface{}{},
+		},
+		{
+			statement.NewJoin(
+				statement.NewTable("foo").As("f"),
+			).Join(
+				statement.NewTable("bar").As("b"),
+			),
+			"JOIN foo AS f JOIN bar AS b",
+			`> JOIN foo AS f
+> JOIN bar AS b
+`,
+			[]interface{}{},
+		},
+		{
+			statement.NewJoin(
+				statement.NewTable("foo").As("f"),
+			).InnerJoin(
+				statement.NewTable("bar").As("b"),
+			),
+			"JOIN foo AS f INNER JOIN bar AS b",
+			`> JOIN foo AS f
+> INNER JOIN bar AS b
+`,
+			[]interface{}{},
+		},
+		{
+			statement.NewJoin(
+				statement.NewTable("foo").As("f"),
+			).LeftJoin(
+				statement.NewTable("bar").As("b"),
+			),
+			"JOIN foo AS f LEFT JOIN bar AS b",
+			`> JOIN foo AS f
+> LEFT JOIN bar AS b
+`,
+			[]interface{}{},
+		},
+		{
+			statement.NewJoin(
+				statement.NewTable("foo").As("f"),
+			).RightJoin(
+				statement.NewTable("bar").As("b"),
+			),
+			"JOIN foo AS f RIGHT JOIN bar AS b",
+			`> JOIN foo AS f
+> RIGHT JOIN bar AS b
 `,
 			[]interface{}{},
 		},

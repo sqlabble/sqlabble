@@ -51,6 +51,22 @@ func TestContainer(t *testing.T) {
 `,
 			[]interface{}{},
 		},
+		{
+			node.NewContainer(
+				node.NewExpression("foo"),
+				node.NewExpression("bar"),
+			).AddChild(
+				node.NewExpression("baz"),
+				node.NewExpression("qux"),
+			),
+			"foo bar baz qux",
+			`> foo
+>   bar
+>   baz
+>   qux
+`,
+			[]interface{}{},
+		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
 			sql, values := c.nodes.ToSQL(ctx)

@@ -46,6 +46,20 @@ func TestOrderBySQL(t *testing.T) {
 `,
 			[]interface{}{},
 		},
+		{
+			statement.NewOrderBy(
+				statement.NewColumn("foo").Asc(),
+			).Limit(10),
+			"ORDER BY foo ASC LIMIT ?",
+			`> ORDER BY
+>   foo ASC
+> LIMIT
+>   ?
+`,
+			[]interface{}{
+				10,
+			},
+		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
 			sql, values := b.Build(c.statement)

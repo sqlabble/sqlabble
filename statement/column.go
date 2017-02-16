@@ -120,17 +120,15 @@ func (c Column) IsNotNull() NullOperation {
 }
 
 func (c Column) Asc() Order {
-	return Order{
-		column: c,
-		dir:    direction.ASC,
-	}
+	o := NewOrder(direction.ASC)
+	o.column = c
+	return o
 }
 
 func (c Column) Desc() Order {
-	return Order{
-		column: c,
-		dir:    direction.DESC,
-	}
+	o := NewOrder(direction.DESC)
+	o.column = c
+	return o
 }
 
 func (c Column) node() node.Node {

@@ -36,8 +36,8 @@ func (w Where) previous() Clause {
 	return w.prev
 }
 
-func (w Where) GroupBy(col Column, columns ...Column) GroupBy {
-	g := NewGroupBy(col, columns...)
+func (w Where) GroupBy(column Column, columns ...Column) GroupBy {
+	g := NewGroupBy(column, columns...)
 	g.prev = w
 	return g
 }

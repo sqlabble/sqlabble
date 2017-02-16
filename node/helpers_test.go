@@ -57,6 +57,12 @@ func TestArrayToExpression(t *testing.T) {
 		values    []interface{}
 	}{
 		{
+			node.ArrayToExpression(),
+			"",
+			"> \n",
+			[]interface{}{},
+		},
+		{
 			node.ArrayToExpression(
 				node.NewExpression("foo"),
 				node.NewExpression("bar"),

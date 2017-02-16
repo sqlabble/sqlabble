@@ -9,11 +9,12 @@ import (
 	"github.com/minodisk/sqlabble/statement"
 )
 
-// func TestWhereType(t *testing.T) {
-// 	if _, ok := interface{}(statement.Where{}).(statement.ClauseNode); !ok {
-// 		t.Errorf("statement.Where doesn't implement statement.Clause")
-// 	}
-// }
+func TestWhereType(t *testing.T) {
+	w := statement.Where{}
+	if _, ok := interface{}(w).(statement.Clause); !ok {
+		t.Errorf("%s should implement statement.Clause", w)
+	}
+}
 
 func TestWhereSQL(t *testing.T) {
 	for i, c := range []struct {
@@ -30,7 +31,9 @@ func TestWhereSQL(t *testing.T) {
 			`> WHERE
 >   foo = ?
 `,
-			[]interface{}{100},
+			[]interface{}{
+				100,
+			},
 		},
 		{
 			statement.NewWhere(
@@ -44,7 +47,72 @@ func TestWhereSQL(t *testing.T) {
 >   foo = ?
 >   AND bar = ?
 `,
-			[]interface{}{100, "abc"},
+			[]interface{}{
+				100,
+				"abc",
+			},
+		},
+		{
+			statement.NewWhere(
+				statement.NewAnd(
+					statement.NewColumn("foo").Eq(100),
+					statement.NewColumn("bar").Eq("abc"),
+				),
+			).GroupBy(
+				statement.NewColumn("baz"),
+			),
+			"WHERE foo = ? AND bar = ? GROUP BY baz",
+			`> WHERE
+>   foo = ?
+>   AND bar = ?
+> GROUP BY
+>   baz
+`,
+			[]interface{}{
+				100,
+				"abc",
+			},
+		},
+		{
+			statement.NewWhere(
+				statement.NewAnd(
+					statement.NewColumn("foo").Eq(100),
+					statement.NewColumn("bar").Eq("abc"),
+				),
+			).OrderBy(
+				statement.NewColumn("baz").Asc(),
+			),
+			"WHERE foo = ? AND bar = ? ORDER BY baz ASC",
+			`> WHERE
+>   foo = ?
+>   AND bar = ?
+> ORDER BY
+>   baz ASC
+`,
+			[]interface{}{
+				100,
+				"abc",
+			},
+		},
+		{
+			statement.NewWhere(
+				statement.NewAnd(
+					statement.NewColumn("foo").Eq(100),
+					statement.NewColumn("bar").Eq("abc"),
+				),
+			).Limit(20),
+			"WHERE foo = ? AND bar = ? LIMIT ?",
+			`> WHERE
+>   foo = ?
+>   AND bar = ?
+> LIMIT
+>   ?
+`,
+			[]interface{}{
+				100,
+				"abc",
+				20,
+			},
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {

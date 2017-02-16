@@ -9,11 +9,12 @@ import (
 	"github.com/minodisk/sqlabble/statement"
 )
 
-// func TestGroupByType(t *testing.T) {
-// 	if _, ok := interface{}(statement.GroupBy{}).(statement.ClauseNode); !ok {
-// 		t.Errorf("statement.GroupBy doesn't implement statement.Clause")
-// 	}
-// }
+func TestGroupByType(t *testing.T) {
+	g := statement.GroupBy{}
+	if _, ok := interface{}(g).(statement.Clause); !ok {
+		t.Errorf("%T doesn't implement statement.Clause", g)
+	}
+}
 
 func TestGroupBySQL(t *testing.T) {
 	for i, c := range []struct {
@@ -60,6 +61,34 @@ func TestGroupBySQL(t *testing.T) {
 `,
 			[]interface{}{
 				200,
+			},
+		},
+		{
+			statement.NewGroupBy(
+				statement.NewColumn("foo"),
+			).OrderBy(
+				statement.NewColumn("age").Asc(),
+			),
+			"GROUP BY foo ORDER BY age ASC",
+			`> GROUP BY
+>   foo
+> ORDER BY
+>   age ASC
+`,
+			[]interface{}{},
+		},
+		{
+			statement.NewGroupBy(
+				statement.NewColumn("foo"),
+			).Limit(20),
+			"GROUP BY foo LIMIT ?",
+			`> GROUP BY
+>   foo
+> LIMIT
+>   ?
+`,
+			[]interface{}{
+				20,
 			},
 		},
 	} {

@@ -40,7 +40,7 @@ type OpParentheses struct {
 }
 
 // NewOpParenteses returns a new OpParentheses.
-func NewOpParenteses(op operator.Operator, paren Parentheses) OpParentheses {
+func NewOpParentheses(op operator.Operator, paren Parentheses) OpParentheses {
 	return OpParentheses{
 		op:    op,
 		paren: paren,

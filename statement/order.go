@@ -10,10 +10,16 @@ type Order struct {
 	dir    direction.Direction
 }
 
+func NewOrder(dir direction.Direction) Order {
+	return Order{
+		dir: dir,
+	}
+}
+
 func (o Order) node() node.Node {
 	return node.JoinExpressions(
 		o.column.expression(),
-		node.NewExpression(string(o.dir)),
+		node.NewExpression(string(o.direction())),
 	)
 }
 

@@ -52,7 +52,7 @@ func NewNot(operation ComparisonOrLogicalOperation) Not {
 }
 
 func (o Not) node() node.Node {
-	return node.NewOpParenteses(
+	return node.NewOpParentheses(
 		o.operator(),
 		node.NewParentheses(o.operation.node()),
 	)

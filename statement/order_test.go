@@ -5,18 +5,19 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/minodisk/sqlabble/direction"
 	"github.com/minodisk/sqlabble/internal/diff"
 	"github.com/minodisk/sqlabble/statement"
 )
 
-func TestLimitType(t *testing.T) {
-	l := statement.Limit{}
-	if _, ok := interface{}(l).(statement.Clause); !ok {
-		t.Errorf("%T should implement statement.Clause", l)
+func TestOrderType(t *testing.T) {
+	o := statement.Order{}
+	if _, ok := interface{}(o).(statement.Statement); !ok {
+		t.Errorf("%T should implement statement.Statement", o)
 	}
 }
 
-func TestLimitSQL(t *testing.T) {
+func TestOrderSQL(t *testing.T) {
 	for i, c := range []struct {
 		statement statement.Statement
 		sql       string
@@ -24,27 +25,18 @@ func TestLimitSQL(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			statement.NewLimit(10),
-			"LIMIT ?",
-			`> LIMIT
->   ?
+			statement.NewOrder(direction.ASC),
+			"ASC",
+			`> ASC
 `,
-			[]interface{}{
-				10,
-			},
+			[]interface{}{},
 		},
 		{
-			statement.NewLimit(10).Offset(30),
-			"LIMIT ? OFFSET ?",
-			`> LIMIT
->   ?
-> OFFSET
->   ?
+			statement.NewOrder(direction.DESC),
+			"DESC",
+			`> DESC
 `,
-			[]interface{}{
-				10,
-				30,
-			},
+			[]interface{}{},
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {

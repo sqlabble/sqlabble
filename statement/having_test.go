@@ -9,11 +9,12 @@ import (
 	"github.com/minodisk/sqlabble/statement"
 )
 
-// func TestHavingType(t *testing.T) {
-// 	if _, ok := interface{}(statement.Having{}).(statement.ClauseNode); !ok {
-// 		t.Errorf("statement.Having doesn't implement statement.Clause")
-// 	}
-// }
+func TestHavingType(t *testing.T) {
+	h := statement.Having{}
+	if _, ok := interface{}(h).(statement.Clause); !ok {
+		t.Errorf("%T should implement statement.Clause", h)
+	}
+}
 
 func TestHavingSQL(t *testing.T) {
 	for i, c := range []struct {
@@ -45,6 +46,32 @@ func TestHavingSQL(t *testing.T) {
 >   AND bar = ?
 `,
 			[]interface{}{100, "abc"},
+		},
+		{
+			statement.NewHaving(
+				statement.NewColumn("foo").Eq(100),
+			).OrderBy(
+				statement.NewColumn("age").Asc(),
+			),
+			"HAVING foo = ? ORDER BY age ASC",
+			`> HAVING
+>   foo = ?
+> ORDER BY
+>   age ASC
+`,
+			[]interface{}{100},
+		},
+		{
+			statement.NewHaving(
+				statement.NewColumn("foo").Eq(100),
+			).Limit(20),
+			"HAVING foo = ? LIMIT ?",
+			`> HAVING
+>   foo = ?
+> LIMIT
+>   ?
+`,
+			[]interface{}{100, 20},
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
