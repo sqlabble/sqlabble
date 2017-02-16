@@ -9,50 +9,39 @@ import (
 	"github.com/minodisk/sqlabble/node"
 )
 
-func TestNodes(t *testing.T) {
+func TestExpression(t *testing.T) {
 	for i, c := range []struct {
-		nodes     node.Nodes
+		nodes     node.Expression
 		sql       string
 		sqlIndent string
 		values    []interface{}
 	}{
 		{
-			node.NewNodes(
-				node.NewExpression("foo"),
-				node.NewExpression("bar"),
-			),
-			"foo bar",
+			node.NewExpression("foo"),
+			"foo",
 			`> foo
-> bar
 `,
 			[]interface{}{},
 		},
 		{
-			node.NewNodes(
-				node.NewParentheses(
-					node.NewComma(
-						node.NewExpression("foo-1"),
-						node.NewExpression("foo-2"),
-					),
-				),
-				node.NewParentheses(
-					node.NewComma(
-						node.NewExpression("bar-1"),
-						node.NewExpression("bar-2"),
-					),
-				),
-			),
-			"(foo-1, foo-2) (bar-1, bar-2)",
-			`> (
->   foo-1
->   , foo-2
-> )
-> (
->   bar-1
->   , bar-2
-> )
+			node.NewExpression("foo", 100),
+			"foo",
+			`> foo
 `,
-			[]interface{}{},
+			[]interface{}{
+				100,
+			},
+		},
+		{
+			node.NewExpression("foo", 100, "bar", true),
+			"foo",
+			`> foo
+`,
+			[]interface{}{
+				100,
+				"bar",
+				true,
+			},
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {

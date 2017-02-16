@@ -9,48 +9,45 @@ import (
 	"github.com/minodisk/sqlabble/node"
 )
 
-func TestNodes(t *testing.T) {
+func TestContainer(t *testing.T) {
 	for i, c := range []struct {
-		nodes     node.Nodes
+		nodes     node.Container
 		sql       string
 		sqlIndent string
 		values    []interface{}
 	}{
 		{
-			node.NewNodes(
+			node.NewContainer(
+				node.NewExpression("foo"),
+			),
+			"foo",
+			`> foo
+`,
+			[]interface{}{},
+		},
+		{
+			node.NewContainer(
 				node.NewExpression("foo"),
 				node.NewExpression("bar"),
 			),
 			"foo bar",
 			`> foo
-> bar
+>   bar
 `,
 			[]interface{}{},
 		},
 		{
-			node.NewNodes(
-				node.NewParentheses(
-					node.NewComma(
-						node.NewExpression("foo-1"),
-						node.NewExpression("foo-2"),
-					),
-				),
-				node.NewParentheses(
-					node.NewComma(
-						node.NewExpression("bar-1"),
-						node.NewExpression("bar-2"),
-					),
-				),
+			node.NewContainer(
+				node.NewExpression("foo"),
+				node.NewExpression("bar"),
+				node.NewExpression("baz"),
+				node.NewExpression("qux"),
 			),
-			"(foo-1, foo-2) (bar-1, bar-2)",
-			`> (
->   foo-1
->   , foo-2
-> )
-> (
->   bar-1
->   , bar-2
-> )
+			"foo bar baz qux",
+			`> foo
+>   bar
+>   baz
+>   qux
 `,
 			[]interface{}{},
 		},

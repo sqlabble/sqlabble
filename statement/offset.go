@@ -5,12 +5,14 @@ import (
 	"github.com/minodisk/sqlabble/node"
 )
 
+// Offset skips specified rows before beginning to return rows.
 type Offset struct {
 	prev  Clause
 	count int
 }
 
-func newOffset(count int) Offset {
+// NewOffset return a new Offset.
+func NewOffset(count int) Offset {
 	return Offset{
 		count: count,
 	}

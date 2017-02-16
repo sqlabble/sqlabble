@@ -7,50 +7,49 @@ import (
 
 	"github.com/minodisk/sqlabble/internal/diff"
 	"github.com/minodisk/sqlabble/node"
+	"github.com/minodisk/sqlabble/operator"
 )
 
-func TestNodes(t *testing.T) {
+func TestJoinOperation(t *testing.T) {
 	for i, c := range []struct {
-		nodes     node.Nodes
+		nodes     node.JoinOperation
 		sql       string
 		sqlIndent string
 		values    []interface{}
 	}{
 		{
-			node.NewNodes(
+			node.NewJoinOperation(
+				operator.And,
 				node.NewExpression("foo"),
-				node.NewExpression("bar"),
 			),
-			"foo bar",
+			"foo",
 			`> foo
-> bar
 `,
 			[]interface{}{},
 		},
 		{
-			node.NewNodes(
-				node.NewParentheses(
-					node.NewComma(
-						node.NewExpression("foo-1"),
-						node.NewExpression("foo-2"),
-					),
-				),
-				node.NewParentheses(
-					node.NewComma(
-						node.NewExpression("bar-1"),
-						node.NewExpression("bar-2"),
-					),
-				),
+			node.NewJoinOperation(
+				operator.And,
+				node.NewExpression("foo"),
+				node.NewExpression("bar"),
 			),
-			"(foo-1, foo-2) (bar-1, bar-2)",
-			`> (
->   foo-1
->   , foo-2
-> )
-> (
->   bar-1
->   , bar-2
-> )
+			"foo AND bar",
+			`> foo
+> AND bar
+`,
+			[]interface{}{},
+		},
+		{
+			node.NewJoinOperation(
+				operator.Or,
+				node.NewExpression("foo"),
+				node.NewExpression("bar"),
+				node.NewExpression("baz"),
+			),
+			"foo OR bar OR baz",
+			`> foo
+> OR bar
+> OR baz
 `,
 			[]interface{}{},
 		},

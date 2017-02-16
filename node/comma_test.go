@@ -9,48 +9,38 @@ import (
 	"github.com/minodisk/sqlabble/node"
 )
 
-func TestNodes(t *testing.T) {
+func TestComma(t *testing.T) {
 	for i, c := range []struct {
-		nodes     node.Nodes
+		nodes     node.Comma
 		sql       string
 		sqlIndent string
 		values    []interface{}
 	}{
 		{
-			node.NewNodes(
+			node.NewComma(),
+			"",
+			``,
+			[]interface{}{},
+		},
+		{
+			node.NewComma(
 				node.NewExpression("foo"),
-				node.NewExpression("bar"),
 			),
-			"foo bar",
+			"foo",
 			`> foo
-> bar
 `,
 			[]interface{}{},
 		},
 		{
-			node.NewNodes(
-				node.NewParentheses(
-					node.NewComma(
-						node.NewExpression("foo-1"),
-						node.NewExpression("foo-2"),
-					),
-				),
-				node.NewParentheses(
-					node.NewComma(
-						node.NewExpression("bar-1"),
-						node.NewExpression("bar-2"),
-					),
-				),
+			node.NewComma(
+				node.NewExpression("foo"),
+				node.NewExpression("bar"),
+				node.NewExpression("baz"),
 			),
-			"(foo-1, foo-2) (bar-1, bar-2)",
-			`> (
->   foo-1
->   , foo-2
-> )
-> (
->   bar-1
->   , bar-2
-> )
+			"foo, bar, baz",
+			`> foo
+> , bar
+> , baz
 `,
 			[]interface{}{},
 		},

@@ -37,7 +37,7 @@ func (l Limit) previous() Clause {
 }
 
 func (l Limit) Offset(count int) Offset {
-	o := newOffset(count)
+	o := NewOffset(count)
 	o.prev = l
 	return o
 }
