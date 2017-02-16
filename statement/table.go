@@ -4,17 +4,17 @@ import (
 	"github.com/minodisk/sqlabble/generator"
 )
 
-type table struct {
+type Table struct {
 	name string
 }
 
-func NewTable(name string) table {
-	return table{
+func NewTable(name string) Table {
+	return Table{
 		name: name,
 	}
 }
 
-func (t table) node() generator.Node {
+func (t Table) node() generator.Node {
 	ts := tableNodes(t)
 	ns := make([]generator.Node, len(ts))
 	for i, t := range ts {
@@ -23,46 +23,46 @@ func (t table) node() generator.Node {
 	return generator.NewNodes(ns...)
 }
 
-func (t table) expression() generator.Expression {
+func (t Table) expression() generator.Expression {
 	return generator.NewExpression(
 		t.TableName(),
 	)
 }
 
-func (t table) TableName() string {
+func (t Table) TableName() string {
 	return t.name
 }
 
-func (t table) As(alias string) tableAs {
-	return tableAs{
+func (t Table) As(alias string) TableAs {
+	return TableAs{
 		table: t,
 		alias: alias,
 	}
 }
 
-func (t table) previous() joiner {
+func (t Table) previous() Joiner {
 	return nil
 }
 
-func (t table) Join(table joiner) joiner {
+func (t Table) Join(table Joiner) Joiner {
 	nj := NewJoin(table)
 	nj.prev = t
 	return nj
 }
 
-func (t table) InnerJoin(table joiner) joiner {
+func (t Table) InnerJoin(table Joiner) Joiner {
 	ij := NewInnerJoin(table)
 	ij.prev = t
 	return ij
 }
 
-func (t table) LeftJoin(table joiner) joiner {
+func (t Table) LeftJoin(table Joiner) Joiner {
 	lj := NewLeftJoin(table)
 	lj.prev = t
 	return lj
 }
 
-func (t table) RightJoin(table joiner) joiner {
+func (t Table) RightJoin(table Joiner) Joiner {
 	rj := NewRightJoin(table)
 	rj.prev = t
 	return rj

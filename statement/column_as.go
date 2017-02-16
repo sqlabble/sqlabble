@@ -5,35 +5,31 @@ import (
 	"github.com/minodisk/sqlabble/operator"
 )
 
-type columnAs struct {
-	col  columnOrColumnAs
-	alia string
+type ColumnAs struct {
+	column ColumnOrColumnAs
+	alias  string
 }
 
-func NewColumnAs(alias string) columnAs {
-	return columnAs{
-		alia: alias,
+func NewColumnAs(alias string) ColumnAs {
+	return ColumnAs{
+		alias: alias,
 	}
 }
 
-func (c columnAs) node() generator.Node {
+func (c ColumnAs) node() generator.Node {
 	return c.expression()
 }
 
-func (c columnAs) expression() generator.Expression {
+func (c ColumnAs) expression() generator.Expression {
 	a := generator.NewExpression(string(operator.As)).
-		Append(generator.NewExpression(c.alias()))
-	if c.col == nil {
+		Append(generator.NewExpression(c.alias))
+	if c.column == nil {
 		return a
 	}
-	return c.col.expression().
+	return c.column.expression().
 		Append(a)
 }
 
-func (c columnAs) columnName() string {
-	return c.col.columnName()
-}
-
-func (c columnAs) alias() string {
-	return c.alia
+func (c ColumnAs) columnName() string {
+	return c.column.columnName()
 }

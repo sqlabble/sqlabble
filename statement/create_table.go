@@ -5,30 +5,30 @@ import (
 	"github.com/minodisk/sqlabble/keyword"
 )
 
-type createTable struct {
+type CreateTable struct {
 	ifNotExists bool
-	table       joiner
+	table       Joiner
 }
 
-func NewCreateTable(table joiner) createTable {
-	return createTable{
+func NewCreateTable(table Joiner) CreateTable {
+	return CreateTable{
 		ifNotExists: false,
 		table:       table,
 	}
 }
 
-func NewCreateTableIfNotExists(table joiner) createTable {
-	return createTable{
+func NewCreateTableIfNotExists(table Joiner) CreateTable {
+	return CreateTable{
 		ifNotExists: true,
 		table:       table,
 	}
 }
 
-func (c createTable) node() generator.Node {
+func (c CreateTable) node() generator.Node {
 	return c.container()
 }
 
-func (c createTable) container() generator.Container {
+func (c CreateTable) container() generator.Container {
 	k := generator.NewExpression(keyword.CreateTable)
 	if c.ifNotExists {
 		k = k.Append(generator.NewExpression(keyword.IfNotExists))
@@ -39,8 +39,8 @@ func (c createTable) container() generator.Container {
 	)
 }
 
-func (c createTable) Definitions(defs ...definition) definitions {
-	ds := newDefinitions(defs...)
+func (c CreateTable) Definitions(defs ...Definition) Definitions {
+	ds := NewDefinitions(defs...)
 	ds.createTable = c
 	return ds
 }

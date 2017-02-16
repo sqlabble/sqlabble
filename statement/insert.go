@@ -5,19 +5,19 @@ import (
 	"github.com/minodisk/sqlabble/keyword"
 )
 
-type insertInto struct {
-	table   joiner
-	columns []column
+type InsertInto struct {
+	table   Joiner
+	columns []Column
 }
 
-func NewInsertInto(table joiner, columns ...column) insertInto {
-	return insertInto{
+func NewInsertInto(table Joiner, columns ...Column) InsertInto {
+	return InsertInto{
 		table:   table,
 		columns: columns,
 	}
 }
 
-func (i insertInto) node() generator.Node {
+func (i InsertInto) node() generator.Node {
 	cs := clauseNodes(i)
 	ns := make([]generator.Node, len(cs))
 	for j, c := range cs {
@@ -26,7 +26,7 @@ func (i insertInto) node() generator.Node {
 	return generator.NewNodes(ns...)
 }
 
-func (i insertInto) myNode() generator.Node {
+func (i InsertInto) myNode() generator.Node {
 	es := make([]generator.Expression, len(i.columns))
 	for j, c := range i.columns {
 		es[j] = c.expression()
@@ -40,17 +40,17 @@ func (i insertInto) myNode() generator.Node {
 	)
 }
 
-func (i insertInto) previous() clause {
+func (i InsertInto) previous() Clause {
 	return nil
 }
 
-func (i insertInto) Values(vals ...interface{}) values {
-	v := NewValues(vals...)
+func (i InsertInto) Values(values ...interface{}) Values {
+	v := NewValues(values...)
 	v.prevClause = i
 	return v
 }
 
-func (i insertInto) DefaultValues() defaultValues {
+func (i InsertInto) DefaultValues() DefaultValues {
 	v := NewDefaultValues()
 	v.prev = i
 	return v

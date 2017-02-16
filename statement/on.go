@@ -6,19 +6,19 @@ import (
 	"github.com/minodisk/sqlabble/operator"
 )
 
-type on struct {
-	join             joiner
-	column1, column2 column
+type On struct {
+	join             Joiner
+	column1, column2 Column
 }
 
-func NewOn(column1, column2 column) on {
-	return on{
+func NewOn(column1, column2 Column) On {
+	return On{
 		column1: column1,
 		column2: column2,
 	}
 }
 
-func (o on) node() generator.Node {
+func (o On) node() generator.Node {
 	ts := tableNodes(o)
 	ns := make([]generator.Node, len(ts))
 	for i, t := range ts {
@@ -27,7 +27,7 @@ func (o on) node() generator.Node {
 	return generator.NewNodes(ns...)
 }
 
-func (o on) expression() generator.Expression {
+func (o On) expression() generator.Expression {
 	e := generator.NewExpression(keyword.On).
 		Append(o.column1.expression()).
 		Append(generator.NewExpression(string(operator.Eq))).
@@ -39,32 +39,32 @@ func (o on) expression() generator.Expression {
 		Append(e)
 }
 
-func (o on) previous() joiner {
+func (o On) previous() Joiner {
 	if o.join == nil {
 		return nil
 	}
 	return o.join.previous()
 }
 
-func (o on) Join(table joiner) joiner {
+func (o On) Join(table Joiner) Joiner {
 	j := NewJoin(table)
 	j.prev = o
 	return j
 }
 
-func (o on) InnerJoin(table joiner) joiner {
+func (o On) InnerJoin(table Joiner) Joiner {
 	ij := NewInnerJoin(table)
 	ij.prev = o
 	return ij
 }
 
-func (o on) LeftJoin(table joiner) joiner {
+func (o On) LeftJoin(table Joiner) Joiner {
 	lj := NewLeftJoin(table)
 	lj.prev = o
 	return lj
 }
 
-func (o on) RightJoin(table joiner) joiner {
+func (o On) RightJoin(table Joiner) Joiner {
 	rj := NewRightJoin(table)
 	rj.prev = o
 	return rj

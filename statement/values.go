@@ -7,19 +7,19 @@ import (
 	"github.com/minodisk/sqlabble/keyword"
 )
 
-type values struct {
-	prevClause clause
-	prev       vals
-	vals       []interface{}
+type Values struct {
+	prevClause Clause
+	prev       Vals
+	values     []interface{}
 }
 
-func NewValues(vals ...interface{}) values {
-	return values{
-		vals: vals,
+func NewValues(values ...interface{}) Values {
+	return Values{
+		values: values,
 	}
 }
 
-func (v values) node() generator.Node {
+func (v Values) node() generator.Node {
 	vs := valuesNodes(v)
 	ns := make([]generator.Node, len(vs))
 	for i, v := range vs {
@@ -42,36 +42,36 @@ func (v values) node() generator.Node {
 	return g
 }
 
-func (v values) expression() generator.Expression {
+func (v Values) expression() generator.Expression {
 	return generator.NewExpression(
-		fmt.Sprintf("(%s)", placeholders(len(v.vals))),
-		v.vals...,
+		fmt.Sprintf("(%s)", placeholders(len(v.values))),
+		v.values...,
 	)
 }
 
-func (v values) clause() clause {
+func (v Values) clause() Clause {
 	return v.prevClause
 }
 
-func (v values) previous() vals {
+func (v Values) previous() Vals {
 	return v.prev
 }
 
-func (v values) Values(vals ...interface{}) values {
+func (v Values) Values(vals ...interface{}) Values {
 	f := NewValues(vals...)
 	f.prev = v
 	return f
 }
 
-type defaultValues struct {
-	prev clause
+type DefaultValues struct {
+	prev Clause
 }
 
-func NewDefaultValues() defaultValues {
-	return defaultValues{}
+func NewDefaultValues() DefaultValues {
+	return DefaultValues{}
 }
 
-func (v defaultValues) node() generator.Node {
+func (v DefaultValues) node() generator.Node {
 	cs := clauseNodes(v)
 	ns := make([]generator.Node, len(cs))
 	for i, c := range cs {
@@ -80,10 +80,10 @@ func (v defaultValues) node() generator.Node {
 	return generator.NewNodes(ns...)
 }
 
-func (v defaultValues) myNode() generator.Node {
+func (v DefaultValues) myNode() generator.Node {
 	return generator.NewExpression(keyword.DefaultValues)
 }
 
-func (v defaultValues) previous() clause {
+func (v DefaultValues) previous() Clause {
 	return v.prev
 }

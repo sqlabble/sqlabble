@@ -5,26 +5,26 @@ import (
 	"github.com/minodisk/sqlabble/keyword"
 )
 
-type selec struct {
+type Select struct {
 	distinct bool
-	columns  []columnOrColumnAs
+	columns  []ColumnOrColumnAs
 }
 
-func NewSelect(columns ...columnOrColumnAs) selec {
-	return selec{
+func NewSelect(columns ...ColumnOrColumnAs) Select {
+	return Select{
 		distinct: false,
 		columns:  columns,
 	}
 }
 
-func NewSelectDistinct(columns ...columnOrColumnAs) selec {
-	return selec{
+func NewSelectDistinct(columns ...ColumnOrColumnAs) Select {
+	return Select{
 		distinct: true,
 		columns:  columns,
 	}
 }
 
-func (s selec) node() generator.Node {
+func (s Select) node() generator.Node {
 	cs := clauseNodes(s)
 	fs := make([]generator.Node, len(cs))
 	for i, c := range cs {
@@ -33,7 +33,7 @@ func (s selec) node() generator.Node {
 	return generator.NewNodes(fs...)
 }
 
-func (s selec) myNode() generator.Node {
+func (s Select) myNode() generator.Node {
 	fs := make([]generator.Node, len(s.columns))
 	for i, c := range s.columns {
 		fs[i] = c.node()
@@ -48,11 +48,11 @@ func (s selec) myNode() generator.Node {
 	)
 }
 
-func (s selec) previous() clause {
+func (s Select) previous() Clause {
 	return nil
 }
 
-func (s selec) From(t joiner) from {
+func (s Select) From(t Joiner) From {
 	f := NewFrom(t)
 	f.prev = s
 	return f

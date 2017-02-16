@@ -5,18 +5,18 @@ import (
 	"github.com/minodisk/sqlabble/keyword"
 )
 
-type having struct {
-	prev      clause
-	operation comparisonOrLogicalOperation
+type Having struct {
+	prev      Clause
+	operation ComparisonOrLogicalOperation
 }
 
-func NewHaving(operation comparisonOrLogicalOperation) having {
-	return having{
+func NewHaving(operation ComparisonOrLogicalOperation) Having {
+	return Having{
 		operation: operation,
 	}
 }
 
-func (h having) node() generator.Node {
+func (h Having) node() generator.Node {
 	cs := clauseNodes(h)
 	ns := make([]generator.Node, len(cs))
 	for i, c := range cs {
@@ -25,24 +25,24 @@ func (h having) node() generator.Node {
 	return generator.NewNodes(ns...)
 }
 
-func (h having) myNode() generator.Node {
+func (h Having) myNode() generator.Node {
 	return generator.NewContainer(
 		generator.NewExpression(string(keyword.Having)),
 		h.operation.node(),
 	)
 }
 
-func (h having) previous() clause {
+func (h Having) previous() Clause {
 	return h.prev
 }
 
-func (h having) OrderBy(orders ...order) orderBy {
+func (h Having) OrderBy(orders ...Order) OrderBy {
 	o := NewOrderBy(orders...)
 	o.prev = h
 	return o
 }
 
-func (h having) Limit(count int) limit {
+func (h Having) Limit(count int) Limit {
 	l := NewLimit(count)
 	l.prev = h
 	return l

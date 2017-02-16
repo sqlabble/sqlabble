@@ -5,18 +5,18 @@ import (
 	"github.com/minodisk/sqlabble/keyword"
 )
 
-type set struct {
-	prev    clause
-	assigns []assign
+type Set struct {
+	prev    Clause
+	assigns []Assign
 }
 
-func NewSet(assigns ...assign) set {
-	return set{
+func NewSet(assigns ...Assign) Set {
+	return Set{
 		assigns: assigns,
 	}
 }
 
-func (s set) node() generator.Node {
+func (s Set) node() generator.Node {
 	cs := clauseNodes(s)
 	gs := make([]generator.Node, len(cs))
 	for i, c := range cs {
@@ -25,7 +25,7 @@ func (s set) node() generator.Node {
 	return generator.NewNodes(gs...)
 }
 
-func (s set) myNode() generator.Node {
+func (s Set) myNode() generator.Node {
 	gs := make([]generator.Node, len(s.assigns))
 	for i, a := range s.assigns {
 		gs[i] = a.expression()
@@ -37,11 +37,11 @@ func (s set) myNode() generator.Node {
 	return c
 }
 
-func (s set) previous() clause {
+func (s Set) previous() Clause {
 	return s.prev
 }
 
-func (s set) Where(operation comparisonOrLogicalOperation) where {
+func (s Set) Where(operation ComparisonOrLogicalOperation) Where {
 	w := NewWhere(operation)
 	w.prev = s
 	return w

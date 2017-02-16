@@ -5,18 +5,18 @@ import (
 	"github.com/minodisk/sqlabble/keyword"
 )
 
-type offset struct {
-	prev  clause
+type Offset struct {
+	prev  Clause
 	count int
 }
 
-func newOffset(count int) offset {
-	return offset{
+func newOffset(count int) Offset {
+	return Offset{
 		count: count,
 	}
 }
 
-func (o offset) node() generator.Node {
+func (o Offset) node() generator.Node {
 	cs := clauseNodes(o)
 	ns := make([]generator.Node, len(cs))
 	for i, c := range cs {
@@ -25,13 +25,13 @@ func (o offset) node() generator.Node {
 	return generator.NewNodes(ns...)
 }
 
-func (o offset) myNode() generator.Node {
+func (o Offset) myNode() generator.Node {
 	return generator.NewContainer(
 		generator.NewExpression(keyword.Offset),
 		generator.ValuesToExpression(o.count),
 	)
 }
 
-func (o offset) previous() clause {
+func (o Offset) previous() Clause {
 	return o.prev
 }

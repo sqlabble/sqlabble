@@ -5,18 +5,18 @@ import (
 	"github.com/minodisk/sqlabble/keyword"
 )
 
-type from struct {
-	prev  clause
-	table joiner
+type From struct {
+	prev  Clause
+	table Joiner
 }
 
-func NewFrom(table joiner) from {
-	return from{
+func NewFrom(table Joiner) From {
+	return From{
 		table: table,
 	}
 }
 
-func (f from) node() generator.Node {
+func (f From) node() generator.Node {
 	cs := clauseNodes(f)
 	ns := make([]generator.Node, len(cs))
 	for i, c := range cs {
@@ -25,36 +25,36 @@ func (f from) node() generator.Node {
 	return generator.NewNodes(ns...)
 }
 
-func (f from) myNode() generator.Node {
+func (f From) myNode() generator.Node {
 	return generator.NewContainer(
 		generator.NewExpression(string(keyword.From)),
 		f.table.node(),
 	)
 }
 
-func (f from) previous() clause {
+func (f From) previous() Clause {
 	return f.prev
 }
 
-func (f from) Where(op comparisonOrLogicalOperation) where {
+func (f From) Where(op ComparisonOrLogicalOperation) Where {
 	w := NewWhere(op)
 	w.prev = f
 	return w
 }
 
-func (f from) GroupBy(col column, columns ...column) groupBy {
+func (f From) GroupBy(col Column, columns ...Column) GroupBy {
 	g := NewGroupBy(col, columns...)
 	g.prev = f
 	return g
 }
 
-func (f from) OrderBy(orders ...order) orderBy {
+func (f From) OrderBy(orders ...Order) OrderBy {
 	o := NewOrderBy(orders...)
 	o.prev = f
 	return o
 }
 
-func (f from) Limit(count int) limit {
+func (f From) Limit(count int) Limit {
 	l := NewLimit(count)
 	l.prev = f
 	return l

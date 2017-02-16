@@ -17,7 +17,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			statement.NewSub(statement.NewSelect()),
+			statement.NewSubquery(statement.NewSelect()),
 			"(SELECT)",
 			`> (
 >   SELECT
@@ -26,7 +26,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 			[]interface{}{},
 		},
 		{
-			statement.NewSub(statement.NewSelect()).
+			statement.NewSubquery(statement.NewSelect()).
 				Eq(100),
 			"(SELECT) = ?",
 			`> (
@@ -39,7 +39,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 			},
 		},
 		{
-			statement.NewSub(statement.NewSelect()).
+			statement.NewSubquery(statement.NewSelect()).
 				NotEq(100),
 			"(SELECT) != ?",
 			`> (
@@ -52,7 +52,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 			},
 		},
 		{
-			statement.NewSub(statement.NewSelect()).
+			statement.NewSubquery(statement.NewSelect()).
 				Gt(100),
 			"(SELECT) > ?",
 			`> (
@@ -65,7 +65,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 			},
 		},
 		{
-			statement.NewSub(statement.NewSelect()).
+			statement.NewSubquery(statement.NewSelect()).
 				Gte(100),
 			"(SELECT) >= ?",
 			`> (
@@ -78,7 +78,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 			},
 		},
 		{
-			statement.NewSub(statement.NewSelect()).
+			statement.NewSubquery(statement.NewSelect()).
 				Lt(100),
 			"(SELECT) < ?",
 			`> (
@@ -91,7 +91,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 			},
 		},
 		{
-			statement.NewSub(statement.NewSelect()).
+			statement.NewSubquery(statement.NewSelect()).
 				Lte(100),
 			"(SELECT) <= ?",
 			`> (
@@ -104,7 +104,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 			},
 		},
 		{
-			statement.NewSub(statement.NewSelect()).
+			statement.NewSubquery(statement.NewSelect()).
 				Like("bar"),
 			"(SELECT) LIKE ?",
 			`> (
@@ -117,7 +117,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 			},
 		},
 		{
-			statement.NewSub(statement.NewSelect()).
+			statement.NewSubquery(statement.NewSelect()).
 				RegExp("bar"),
 			"(SELECT) REGEXP ?",
 			`> (
@@ -130,7 +130,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 			},
 		},
 		{
-			statement.NewSub(statement.NewSelect()).
+			statement.NewSubquery(statement.NewSelect()).
 				Between(100, 200),
 			"(SELECT) BETWEEN ? AND ?",
 			`> (
@@ -144,7 +144,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 			},
 		},
 		{
-			statement.NewSub(statement.NewSelect()).
+			statement.NewSubquery(statement.NewSelect()).
 				IsNull(),
 			"(SELECT) IS NULL",
 			`> (
@@ -155,7 +155,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 			[]interface{}{},
 		},
 		{
-			statement.NewSub(statement.NewSelect()).
+			statement.NewSubquery(statement.NewSelect()).
 				IsNotNull(),
 			"(SELECT) IS NOT NULL",
 			`> (
@@ -166,7 +166,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 			[]interface{}{},
 		},
 		{
-			statement.NewSub(statement.NewSelect()).
+			statement.NewSubquery(statement.NewSelect()).
 				In(100, 200, 300),
 			"(SELECT) IN (?, ?, ?)",
 			`> (
@@ -181,7 +181,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 			},
 		},
 		{
-			statement.NewSub(statement.NewSelect()).
+			statement.NewSubquery(statement.NewSelect()).
 				NotIn(100, 200, 300),
 			"(SELECT) NOT IN (?, ?, ?)",
 			`> (
@@ -384,10 +384,10 @@ func TestSubOperationBothSide(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			statement.NewSub(
+			statement.NewSubquery(
 				statement.NewSelect(statement.NewColumn("foo")),
 			).Eq(
-				statement.NewSub(
+				statement.NewSubquery(
 					statement.NewSelect(statement.NewColumn("bar")),
 				),
 			),

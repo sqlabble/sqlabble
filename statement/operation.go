@@ -5,26 +5,26 @@ import (
 	"github.com/minodisk/sqlabble/operator"
 )
 
-type joinOperation struct {
+type JoinOperation struct {
 	op  operator.Operator
-	ops []comparisonOrLogicalOperation
+	ops []ComparisonOrLogicalOperation
 }
 
-func NewAnd(ops ...comparisonOrLogicalOperation) joinOperation {
-	return joinOperation{
+func NewAnd(ops ...ComparisonOrLogicalOperation) JoinOperation {
+	return JoinOperation{
 		op:  operator.And,
 		ops: ops,
 	}
 }
 
-func NewOr(ops ...comparisonOrLogicalOperation) joinOperation {
-	return joinOperation{
+func NewOr(ops ...ComparisonOrLogicalOperation) JoinOperation {
+	return JoinOperation{
 		op:  operator.Or,
 		ops: ops,
 	}
 }
 
-func (o joinOperation) node() generator.Node {
+func (o JoinOperation) node() generator.Node {
 	ns := make([]generator.Node, len(o.ops))
 	for i, op := range o.ops {
 		ns[i] = op.node()
@@ -35,105 +35,105 @@ func (o joinOperation) node() generator.Node {
 	)
 }
 
-func (o joinOperation) operator() operator.Operator {
+func (o JoinOperation) operator() operator.Operator {
 	return o.op
 }
 
-func (o joinOperation) operations() []comparisonOrLogicalOperation {
+func (o JoinOperation) operations() []ComparisonOrLogicalOperation {
 	return o.ops
 }
 
-type not struct {
-	operation comparisonOrLogicalOperation
+type Not struct {
+	operation ComparisonOrLogicalOperation
 }
 
-func NewNot(operation comparisonOrLogicalOperation) not {
-	return not{operation: operation}
+func NewNot(operation ComparisonOrLogicalOperation) Not {
+	return Not{operation: operation}
 }
 
-func (o not) node() generator.Node {
+func (o Not) node() generator.Node {
 	return generator.NewOpParenteses(
 		o.operator(),
 		generator.NewParentheses(o.operation.node()),
 	)
 }
 
-func (o not) operator() operator.Operator {
+func (o Not) operator() operator.Operator {
 	return operator.Not
 }
 
-func (o not) operations() []comparisonOrLogicalOperation {
-	return []comparisonOrLogicalOperation{o.operation}
+func (o Not) operations() []ComparisonOrLogicalOperation {
+	return []ComparisonOrLogicalOperation{o.operation}
 }
 
-type comparisonOperation struct {
+type ComparisonOperation struct {
 	op  operator.Operator
 	col columnOrSubquery
 	val interface{}
 }
 
-func NewEq(val interface{}) comparisonOperation {
-	return comparisonOperation{
+func NewEq(val interface{}) ComparisonOperation {
+	return ComparisonOperation{
 		op:  operator.Eq,
 		val: val,
 	}
 }
 
-func NewNotEq(val interface{}) comparisonOperation {
-	return comparisonOperation{
+func NewNotEq(val interface{}) ComparisonOperation {
+	return ComparisonOperation{
 		op:  operator.NotEq,
 		val: val,
 	}
 }
 
-func NewGt(val interface{}) comparisonOperation {
-	return comparisonOperation{
+func NewGt(val interface{}) ComparisonOperation {
+	return ComparisonOperation{
 		op:  operator.Gt,
 		val: val,
 	}
 }
 
-func NewGte(val interface{}) comparisonOperation {
-	return comparisonOperation{
+func NewGte(val interface{}) ComparisonOperation {
+	return ComparisonOperation{
 		op:  operator.Gte,
 		val: val,
 	}
 }
 
-func NewLt(val interface{}) comparisonOperation {
-	return comparisonOperation{
+func NewLt(val interface{}) ComparisonOperation {
+	return ComparisonOperation{
 		op:  operator.Lt,
 		val: val,
 	}
 }
 
-func NewLte(val interface{}) comparisonOperation {
-	return comparisonOperation{
+func NewLte(val interface{}) ComparisonOperation {
+	return ComparisonOperation{
 		op:  operator.Lte,
 		val: val,
 	}
 }
 
-func NewLike(val interface{}) comparisonOperation {
-	return comparisonOperation{
+func NewLike(val interface{}) ComparisonOperation {
+	return ComparisonOperation{
 		op:  operator.Like,
 		val: val,
 	}
 }
 
-func NewRegExp(val interface{}) comparisonOperation {
-	return comparisonOperation{
+func NewRegExp(val interface{}) ComparisonOperation {
+	return ComparisonOperation{
 		op:  operator.RegExp,
 		val: val,
 	}
 }
 
-func (o comparisonOperation) node() generator.Node {
+func (o ComparisonOperation) node() generator.Node {
 	var n1, n2 generator.Node
 
 	if o.col != nil {
 		switch col := o.col.(type) {
-		case column:
+		case Column:
 			n1 = col.expression()
 		default:
 			n1 = o.col.node()
@@ -142,10 +142,10 @@ func (o comparisonOperation) node() generator.Node {
 
 	if o.val != nil {
 		switch val := o.val.(type) {
-		case sub:
+		case Subquery:
 			n2 = val.node()
 		case Statement:
-			n2 = NewSub(val).node()
+			n2 = NewSubquery(val).node()
 		default:
 			n2 = generator.ValuesToExpression(val)
 		}
@@ -155,23 +155,23 @@ func (o comparisonOperation) node() generator.Node {
 	return joinExpressionLikes(n1, n2, op)
 }
 
-func (o comparisonOperation) operator() operator.Operator {
+func (o ComparisonOperation) operator() operator.Operator {
 	return o.op
 }
 
-type between struct {
+type Between struct {
 	col      columnOrSubquery
 	from, to interface{}
 }
 
-func NewBetween(from, to interface{}) between {
-	return between{
+func NewBetween(from, to interface{}) Between {
+	return Between{
 		from: from,
 		to:   to,
 	}
 }
 
-func (o between) node() generator.Node {
+func (o Between) node() generator.Node {
 	post := generator.JoinExpressions(
 		generator.NewExpression(string(o.operator())),
 		generator.ValuesToExpression(o.from),
@@ -182,7 +182,7 @@ func (o between) node() generator.Node {
 		return post
 	}
 	switch col := o.col.(type) {
-	case column:
+	case Column:
 		return generator.JoinExpressions(
 			col.expression(),
 			post,
@@ -195,36 +195,36 @@ func (o between) node() generator.Node {
 	}
 }
 
-func (o between) operator() operator.Operator {
+func (o Between) operator() operator.Operator {
 	return operator.Between
 }
 
-type containingOperation struct {
+type ContainingOperation struct {
 	op   operator.Operator
 	col  columnOrSubquery
 	vals []interface{}
 }
 
-func NewIn(vals ...interface{}) containingOperation {
-	return containingOperation{
+func NewIn(vals ...interface{}) ContainingOperation {
+	return ContainingOperation{
 		op:   operator.In,
 		vals: vals,
 	}
 }
 
-func NewNotIn(vals ...interface{}) containingOperation {
-	return containingOperation{
+func NewNotIn(vals ...interface{}) ContainingOperation {
+	return ContainingOperation{
 		op:   operator.NotIn,
 		vals: vals,
 	}
 }
 
-func (o containingOperation) node() generator.Node {
+func (o ContainingOperation) node() generator.Node {
 	var n1, n2 generator.Node
 
 	if o.col != nil {
 		switch col := o.col.(type) {
-		case column:
+		case Column:
 			n1 = col.expression()
 		default:
 			n1 = o.col.node()
@@ -233,10 +233,10 @@ func (o containingOperation) node() generator.Node {
 
 	if o.vals != nil && len(o.vals) == 1 {
 		switch val := o.vals[0].(type) {
-		case sub:
+		case Subquery:
 			n2 = val.node()
 		case Statement:
-			n2 = NewSub(val).node()
+			n2 = NewSubquery(val).node()
 		}
 	}
 	if n2 == nil {
@@ -266,34 +266,34 @@ func joinExpressionLikes(n1, n2 generator.Node, op generator.Expression) generat
 	return generator.NewNodes(n1, op, n2)
 }
 
-func (o containingOperation) operator() operator.Operator {
+func (o ContainingOperation) operator() operator.Operator {
 	return o.op
 }
 
-type nullyOperation struct {
+type NullOperation struct {
 	op  operator.Operator
 	col columnOrSubquery
 }
 
-func NewIsNull() nullyOperation {
-	return nullyOperation{
+func NewIsNull() NullOperation {
+	return NullOperation{
 		op: operator.IsNull,
 	}
 }
 
-func NewIsNotNull() nullyOperation {
-	return nullyOperation{
+func NewIsNotNull() NullOperation {
+	return NullOperation{
 		op: operator.IsNotNull,
 	}
 }
 
-func (o nullyOperation) node() generator.Node {
+func (o NullOperation) node() generator.Node {
 	post := generator.NewExpression(string(o.operator()))
 	if o.col == nil {
 		return post
 	}
 	switch col := o.col.(type) {
-	case column:
+	case Column:
 		return generator.JoinExpressions(
 			col.expression(),
 			post,
@@ -306,6 +306,6 @@ func (o nullyOperation) node() generator.Node {
 	}
 }
 
-func (o nullyOperation) operator() operator.Operator {
+func (o NullOperation) operator() operator.Operator {
 	return o.op
 }

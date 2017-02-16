@@ -2,37 +2,37 @@ package statement
 
 import "github.com/minodisk/sqlabble/generator"
 
-type definition struct {
-	col column
-	def string
+type Definition struct {
+	column     Column
+	definition string
 }
 
-func NewDefinition(def string) definition {
-	return definition{
-		def: def,
+func NewDefinition(definition string) Definition {
+	return Definition{
+		definition: definition,
 	}
 }
 
-func (d definition) node() generator.Node {
-	return d.col.expression().
-		Append(generator.NewExpression(d.def))
+func (d Definition) node() generator.Node {
+	return d.column.expression().
+		Append(generator.NewExpression(d.definition))
 }
 
-type definitions struct {
-	createTable createTable
-	defs        []definition
+type Definitions struct {
+	createTable CreateTable
+	definitions []Definition
 }
 
-func newDefinitions(defs ...definition) definitions {
-	return definitions{
-		defs: defs,
+func NewDefinitions(definitions ...Definition) Definitions {
+	return Definitions{
+		definitions: definitions,
 	}
 }
 
-func (ds definitions) node() generator.Node {
+func (ds Definitions) node() generator.Node {
 	p := ds.createTable.container()
-	gs := make([]generator.Node, len(ds.defs))
-	for i, d := range ds.defs {
+	gs := make([]generator.Node, len(ds.definitions))
+	for i, d := range ds.definitions {
 		gs[i] = d.node()
 	}
 	return p.AddChild(

@@ -5,16 +5,16 @@ import (
 	"github.com/minodisk/sqlabble/keyword"
 )
 
-type orderBy struct {
-	prev   clause
-	orders []order
+type OrderBy struct {
+	prev   Clause
+	orders []Order
 }
 
-func NewOrderBy(os ...order) orderBy {
-	return orderBy{orders: os}
+func NewOrderBy(os ...Order) OrderBy {
+	return OrderBy{orders: os}
 }
 
-func (o orderBy) node() generator.Node {
+func (o OrderBy) node() generator.Node {
 	cs := clauseNodes(o)
 	fs := make([]generator.Node, len(cs))
 	for i, c := range cs {
@@ -23,7 +23,7 @@ func (o orderBy) node() generator.Node {
 	return generator.NewNodes(fs...)
 }
 
-func (o orderBy) myNode() generator.Node {
+func (o OrderBy) myNode() generator.Node {
 	fs := make([]generator.Node, len(o.orders))
 	for i, c := range o.orders {
 		fs[i] = c.node()
@@ -34,11 +34,11 @@ func (o orderBy) myNode() generator.Node {
 	)
 }
 
-func (o orderBy) previous() clause {
+func (o OrderBy) previous() Clause {
 	return o.prev
 }
 
-func (o orderBy) Limit(count int) limit {
+func (o OrderBy) Limit(count int) Limit {
 	l := NewLimit(count)
 	l.prev = o
 	return l

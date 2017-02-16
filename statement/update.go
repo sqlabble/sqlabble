@@ -5,33 +5,33 @@ import (
 	"github.com/minodisk/sqlabble/keyword"
 )
 
-type update struct {
-	prev clause
-	tbl  table
+type Update struct {
+	prev  Clause
+	table Table
 }
 
-func NewUpdate(tbl table) update {
-	return update{
-		tbl: tbl,
+func NewUpdate(table Table) Update {
+	return Update{
+		table: table,
 	}
 }
 
-func (u update) node() generator.Node {
+func (u Update) node() generator.Node {
 	return u.myNode()
 }
 
-func (u update) myNode() generator.Node {
+func (u Update) myNode() generator.Node {
 	return generator.NewContainer(
 		generator.NewExpression(keyword.Update),
-		u.tbl.node(),
+		u.table.node(),
 	)
 }
 
-func (u update) previous() clause {
+func (u Update) previous() Clause {
 	return u.prev
 }
 
-func (u update) Set(assigns ...assign) set {
+func (u Update) Set(assigns ...Assign) Set {
 	s := NewSet(assigns...)
 	s.prev = u
 	return s

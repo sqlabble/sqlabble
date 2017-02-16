@@ -5,18 +5,18 @@ import (
 	"github.com/minodisk/sqlabble/keyword"
 )
 
-type groupBy struct {
-	prev    clause
-	columns []column
+type GroupBy struct {
+	prev    Clause
+	columns []Column
 }
 
-func NewGroupBy(col column, columns ...column) groupBy {
-	return groupBy{
-		columns: append([]column{col}, columns...),
+func NewGroupBy(column Column, columns ...Column) GroupBy {
+	return GroupBy{
+		columns: append([]Column{column}, columns...),
 	}
 }
 
-func (g groupBy) node() generator.Node {
+func (g GroupBy) node() generator.Node {
 	cs := clauseNodes(g)
 	ns := make([]generator.Node, len(cs))
 	for i, c := range cs {
@@ -25,7 +25,7 @@ func (g groupBy) node() generator.Node {
 	return generator.NewNodes(ns...)
 }
 
-func (g groupBy) myNode() generator.Node {
+func (g GroupBy) myNode() generator.Node {
 	gs := make([]generator.Node, len(g.columns))
 	for i, c := range g.columns {
 		gs[i] = c.node()
@@ -36,23 +36,23 @@ func (g groupBy) myNode() generator.Node {
 	)
 }
 
-func (g groupBy) previous() clause {
+func (g GroupBy) previous() Clause {
 	return g.prev
 }
 
-func (g groupBy) Having(operation comparisonOrLogicalOperation) having {
+func (g GroupBy) Having(operation ComparisonOrLogicalOperation) Having {
 	l := NewHaving(operation)
 	l.prev = g
 	return l
 }
 
-func (g groupBy) OrderBy(orders ...order) orderBy {
+func (g GroupBy) OrderBy(orders ...Order) OrderBy {
 	o := NewOrderBy(orders...)
 	o.prev = g
 	return o
 }
 
-func (g groupBy) Limit(count int) limit {
+func (g GroupBy) Limit(count int) Limit {
 	l := NewLimit(count)
 	l.prev = g
 	return l

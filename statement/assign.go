@@ -5,24 +5,24 @@ import (
 	"github.com/minodisk/sqlabble/operator"
 )
 
-type assign struct {
-	col column
-	val interface{}
+type Assign struct {
+	column Column
+	value  interface{}
 }
 
-func NewAssign(col column, val interface{}) assign {
-	return assign{
-		col: col,
-		val: val,
+func NewAssign(column Column, value interface{}) Assign {
+	return Assign{
+		column: column,
+		value:  value,
 	}
 }
 
-func (a assign) node() generator.Node {
+func (a Assign) node() generator.Node {
 	return a.expression()
 }
 
-func (a assign) expression() generator.Expression {
-	return a.col.expression().
+func (a Assign) expression() generator.Expression {
+	return a.column.expression().
 		Append(generator.NewExpression(string(operator.Eq))).
-		Append(generator.ValuesToExpression(a.val))
+		Append(generator.ValuesToExpression(a.value))
 }

@@ -13,19 +13,19 @@ type Statement interface {
 	node() generator.Node
 }
 
-type expressor interface {
+type Expressor interface {
 	Statement
 	expression() generator.Expression
 }
 
-type clause interface {
+type Clause interface {
 	Statement
 	myNode() generator.Node
-	previous() clause
+	previous() Clause
 }
 
-type columnOrColumnAs interface {
-	expressor
+type ColumnOrColumnAs interface {
+	Expressor
 	columnName() string
 }
 
@@ -34,22 +34,22 @@ type columnOrSubquery interface {
 	isColumnOrSubquery() bool
 }
 
-type joiner interface {
-	expressor
-	Join(joiner) joiner
-	InnerJoin(joiner) joiner
-	LeftJoin(joiner) joiner
-	RightJoin(joiner) joiner
-	previous() joiner
+type Joiner interface {
+	Expressor
+	Join(Joiner) Joiner
+	InnerJoin(Joiner) Joiner
+	LeftJoin(Joiner) Joiner
+	RightJoin(Joiner) Joiner
+	previous() Joiner
 }
 
-type comparisonOrLogicalOperation interface {
+type ComparisonOrLogicalOperation interface {
 	Statement
 	operator() operator.Operator
 }
 
-type vals interface {
-	expressor
-	clause() clause
-	previous() vals
+type Vals interface {
+	Expressor
+	clause() Clause
+	previous() Vals
 }

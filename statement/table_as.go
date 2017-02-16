@@ -6,12 +6,12 @@ import (
 	"github.com/minodisk/sqlabble/generator"
 )
 
-type tableAs struct {
-	table table
+type TableAs struct {
+	table Table
 	alias string
 }
 
-func (t tableAs) node() generator.Node {
+func (t TableAs) node() generator.Node {
 	ts := tableNodes(t)
 	ns := make([]generator.Node, len(ts))
 	for i, t := range ts {
@@ -20,39 +20,39 @@ func (t tableAs) node() generator.Node {
 	return generator.NewNodes(ns...)
 }
 
-func (t tableAs) expression() generator.Expression {
+func (t TableAs) expression() generator.Expression {
 	return generator.NewExpression(
 		fmt.Sprintf("%s AS %s", t.TableName(), t.alias),
 	)
 }
 
-func (t tableAs) TableName() string {
+func (t TableAs) TableName() string {
 	return t.table.name
 }
 
-func (t tableAs) previous() joiner {
+func (t TableAs) previous() Joiner {
 	return nil
 }
 
-func (t tableAs) Join(table joiner) joiner {
+func (t TableAs) Join(table Joiner) Joiner {
 	nj := NewJoin(table)
 	nj.prev = t
 	return nj
 }
 
-func (t tableAs) InnerJoin(table joiner) joiner {
+func (t TableAs) InnerJoin(table Joiner) Joiner {
 	ij := NewInnerJoin(table)
 	ij.prev = t
 	return ij
 }
 
-func (t tableAs) LeftJoin(table joiner) joiner {
+func (t TableAs) LeftJoin(table Joiner) Joiner {
 	lj := NewLeftJoin(table)
 	lj.prev = t
 	return lj
 }
 
-func (t tableAs) RightJoin(table joiner) joiner {
+func (t TableAs) RightJoin(table Joiner) Joiner {
 	rj := NewRightJoin(table)
 	rj.prev = t
 	return rj

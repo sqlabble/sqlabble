@@ -5,18 +5,18 @@ import (
 	"github.com/minodisk/sqlabble/keyword"
 )
 
-type limit struct {
-	prev  clause
+type Limit struct {
+	prev  Clause
 	count int
 }
 
-func NewLimit(count int) limit {
-	return limit{
+func NewLimit(count int) Limit {
+	return Limit{
 		count: count,
 	}
 }
 
-func (l limit) node() generator.Node {
+func (l Limit) node() generator.Node {
 	cs := clauseNodes(l)
 	ns := make([]generator.Node, len(cs))
 	for i, c := range cs {
@@ -25,18 +25,18 @@ func (l limit) node() generator.Node {
 	return generator.NewNodes(ns...)
 }
 
-func (l limit) myNode() generator.Node {
+func (l Limit) myNode() generator.Node {
 	return generator.NewContainer(
 		generator.NewExpression(keyword.Limit),
 		generator.ValuesToExpression(l.count),
 	)
 }
 
-func (l limit) previous() clause {
+func (l Limit) previous() Clause {
 	return l.prev
 }
 
-func (l limit) Offset(count int) offset {
+func (l Limit) Offset(count int) Offset {
 	o := newOffset(count)
 	o.prev = l
 	return o

@@ -5,18 +5,18 @@ import (
 	"github.com/minodisk/sqlabble/generator"
 )
 
-type order struct {
-	col column
-	dir direction.Direction
+type Order struct {
+	column Column
+	dir    direction.Direction
 }
 
-func (o order) node() generator.Node {
+func (o Order) node() generator.Node {
 	return generator.JoinExpressions(
-		o.col.expression(),
+		o.column.expression(),
 		generator.NewExpression(string(o.dir)),
 	)
 }
 
-func (o order) direction() direction.Direction {
+func (o Order) direction() direction.Direction {
 	return o.dir
 }
