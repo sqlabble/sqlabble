@@ -1,6 +1,6 @@
 package statement
 
-import "github.com/minodisk/sqlabble/generator"
+import "github.com/minodisk/sqlabble/node"
 
 type Subquery struct {
 	statement Statement
@@ -12,8 +12,8 @@ func NewSubquery(statement Statement) Subquery {
 	}
 }
 
-func (s Subquery) node() generator.Node {
-	return generator.NewParentheses(s.statement.node())
+func (s Subquery) node() node.Node {
+	return node.NewParentheses(s.statement.node())
 }
 
 // isColumnOrSubquery always returns true.

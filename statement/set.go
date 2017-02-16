@@ -1,8 +1,8 @@
 package statement
 
 import (
-	"github.com/minodisk/sqlabble/generator"
 	"github.com/minodisk/sqlabble/keyword"
+	"github.com/minodisk/sqlabble/node"
 )
 
 type Set struct {
@@ -16,23 +16,23 @@ func NewSet(assigns ...Assign) Set {
 	}
 }
 
-func (s Set) node() generator.Node {
+func (s Set) node() node.Node {
 	cs := clauseNodes(s)
-	gs := make([]generator.Node, len(cs))
+	gs := make([]node.Node, len(cs))
 	for i, c := range cs {
 		gs[i] = c.myNode()
 	}
-	return generator.NewNodes(gs...)
+	return node.NewNodes(gs...)
 }
 
-func (s Set) myNode() generator.Node {
-	gs := make([]generator.Node, len(s.assigns))
+func (s Set) myNode() node.Node {
+	gs := make([]node.Node, len(s.assigns))
 	for i, a := range s.assigns {
 		gs[i] = a.expression()
 	}
-	c := generator.NewContainer(
-		generator.NewExpression(keyword.Set),
-		generator.NewComma(gs...),
+	c := node.NewContainer(
+		node.NewExpression(keyword.Set),
+		node.NewComma(gs...),
 	)
 	return c
 }

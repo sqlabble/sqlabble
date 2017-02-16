@@ -1,8 +1,6 @@
 package statement
 
-import (
-	"github.com/minodisk/sqlabble/generator"
-)
+import "github.com/minodisk/sqlabble/node"
 
 type Table struct {
 	name string
@@ -14,17 +12,17 @@ func NewTable(name string) Table {
 	}
 }
 
-func (t Table) node() generator.Node {
+func (t Table) node() node.Node {
 	ts := tableNodes(t)
-	ns := make([]generator.Node, len(ts))
+	ns := make([]node.Node, len(ts))
 	for i, t := range ts {
 		ns[i] = t.expression()
 	}
-	return generator.NewNodes(ns...)
+	return node.NewNodes(ns...)
 }
 
-func (t Table) expression() generator.Expression {
-	return generator.NewExpression(
+func (t Table) expression() node.Expression {
+	return node.NewExpression(
 		t.TableName(),
 	)
 }

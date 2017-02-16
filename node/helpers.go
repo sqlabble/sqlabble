@@ -1,4 +1,4 @@
-package generator
+package node
 
 import "strings"
 
@@ -54,12 +54,12 @@ func placeholders(i int) string {
 	return s
 }
 
-func needsParentheses(ctx Context, generator Node) bool {
+func needsParentheses(ctx Context, node Node) bool {
 	if !ctx.flatSets {
 		return true
 	}
 
-	gs, ok := generator.(Nodes)
+	gs, ok := node.(Nodes)
 	if !ok {
 		return true
 	}

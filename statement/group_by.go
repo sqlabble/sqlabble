@@ -1,8 +1,8 @@
 package statement
 
 import (
-	"github.com/minodisk/sqlabble/generator"
 	"github.com/minodisk/sqlabble/keyword"
+	"github.com/minodisk/sqlabble/node"
 )
 
 type GroupBy struct {
@@ -16,23 +16,23 @@ func NewGroupBy(column Column, columns ...Column) GroupBy {
 	}
 }
 
-func (g GroupBy) node() generator.Node {
+func (g GroupBy) node() node.Node {
 	cs := clauseNodes(g)
-	ns := make([]generator.Node, len(cs))
+	ns := make([]node.Node, len(cs))
 	for i, c := range cs {
 		ns[i] = c.myNode()
 	}
-	return generator.NewNodes(ns...)
+	return node.NewNodes(ns...)
 }
 
-func (g GroupBy) myNode() generator.Node {
-	gs := make([]generator.Node, len(g.columns))
+func (g GroupBy) myNode() node.Node {
+	gs := make([]node.Node, len(g.columns))
 	for i, c := range g.columns {
 		gs[i] = c.node()
 	}
-	return generator.NewContainer(
-		generator.NewExpression(string(keyword.GroupBy)),
-		generator.NewComma(gs...),
+	return node.NewContainer(
+		node.NewExpression(string(keyword.GroupBy)),
+		node.NewComma(gs...),
 	)
 }
 

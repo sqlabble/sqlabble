@@ -1,6 +1,6 @@
 package builder
 
-import "github.com/minodisk/sqlabble/generator"
+import "github.com/minodisk/sqlabble/node"
 
 // Options is an option on how to build the query.
 // It includes format settings and settings to
@@ -10,9 +10,9 @@ type Options struct {
 	FlatSets       bool
 }
 
-// ToContext converts Options to generator.Context.
-func (o Options) ToContext() generator.Context {
-	return generator.NewContext(
+// ToContext converts Options to node.Context.
+func (o Options) ToContext() node.Context {
+	return node.NewContext(
 		o.Prefix,
 		o.Indent,
 		o.FlatSets,

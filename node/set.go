@@ -1,4 +1,4 @@
-package generator
+package node
 
 // Set is a set of nodes like UNION.
 type Set struct {

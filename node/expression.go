@@ -1,4 +1,4 @@
-package generator
+package node
 
 import "fmt"
 

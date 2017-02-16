@@ -1,8 +1,8 @@
 package statement
 
 import (
-	"github.com/minodisk/sqlabble/generator"
 	"github.com/minodisk/sqlabble/keyword"
+	"github.com/minodisk/sqlabble/node"
 )
 
 type Limit struct {
@@ -16,19 +16,19 @@ func NewLimit(count int) Limit {
 	}
 }
 
-func (l Limit) node() generator.Node {
+func (l Limit) node() node.Node {
 	cs := clauseNodes(l)
-	ns := make([]generator.Node, len(cs))
+	ns := make([]node.Node, len(cs))
 	for i, c := range cs {
 		ns[i] = c.myNode()
 	}
-	return generator.NewNodes(ns...)
+	return node.NewNodes(ns...)
 }
 
-func (l Limit) myNode() generator.Node {
-	return generator.NewContainer(
-		generator.NewExpression(keyword.Limit),
-		generator.ValuesToExpression(l.count),
+func (l Limit) myNode() node.Node {
+	return node.NewContainer(
+		node.NewExpression(keyword.Limit),
+		node.ValuesToExpression(l.count),
 	)
 }
 

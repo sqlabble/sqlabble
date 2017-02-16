@@ -1,8 +1,8 @@
 package statement
 
 import (
-	"github.com/minodisk/sqlabble/generator"
 	"github.com/minodisk/sqlabble/keyword"
+	"github.com/minodisk/sqlabble/node"
 )
 
 type SetOperation struct {
@@ -52,22 +52,22 @@ func NewExceptAll(statements ...Statement) SetOperation {
 	}
 }
 
-func (u SetOperation) node() generator.Node {
+func (u SetOperation) node() node.Node {
 	cs := clauseNodes(u)
-	gs := make([]generator.Node, len(cs))
+	gs := make([]node.Node, len(cs))
 	for i, c := range cs {
 		gs[i] = c.myNode()
 	}
-	return generator.NewNodes(gs...)
+	return node.NewNodes(gs...)
 }
 
-func (u SetOperation) myNode() generator.Node {
-	sep := generator.NewExpression(u.operator)
-	gs := make([]generator.Node, len(u.statements))
+func (u SetOperation) myNode() node.Node {
+	sep := node.NewExpression(u.operator)
+	gs := make([]node.Node, len(u.statements))
 	for i, s := range u.statements {
 		gs[i] = s.node()
 	}
-	return generator.NewSet(sep, gs...)
+	return node.NewSet(sep, gs...)
 }
 
 func (u SetOperation) previous() Clause {

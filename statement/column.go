@@ -2,7 +2,7 @@ package statement
 
 import (
 	"github.com/minodisk/sqlabble/direction"
-	"github.com/minodisk/sqlabble/generator"
+	"github.com/minodisk/sqlabble/node"
 )
 
 type Column struct {
@@ -15,12 +15,12 @@ func NewColumn(name string) Column {
 	}
 }
 
-func (c Column) node() generator.Node {
+func (c Column) node() node.Node {
 	return c.expression()
 }
 
-func (c Column) expression() generator.Expression {
-	return generator.NewExpression(
+func (c Column) expression() node.Expression {
+	return node.NewExpression(
 		c.name,
 	)
 }

@@ -1,8 +1,8 @@
 package statement
 
 import (
-	"github.com/minodisk/sqlabble/generator"
 	"github.com/minodisk/sqlabble/keyword"
+	"github.com/minodisk/sqlabble/node"
 )
 
 type Offset struct {
@@ -16,19 +16,19 @@ func newOffset(count int) Offset {
 	}
 }
 
-func (o Offset) node() generator.Node {
+func (o Offset) node() node.Node {
 	cs := clauseNodes(o)
-	ns := make([]generator.Node, len(cs))
+	ns := make([]node.Node, len(cs))
 	for i, c := range cs {
 		ns[i] = c.myNode()
 	}
-	return generator.NewNodes(ns...)
+	return node.NewNodes(ns...)
 }
 
-func (o Offset) myNode() generator.Node {
-	return generator.NewContainer(
-		generator.NewExpression(keyword.Offset),
-		generator.ValuesToExpression(o.count),
+func (o Offset) myNode() node.Node {
+	return node.NewContainer(
+		node.NewExpression(keyword.Offset),
+		node.ValuesToExpression(o.count),
 	)
 }
 

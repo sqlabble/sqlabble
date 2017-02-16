@@ -1,30 +1,30 @@
-package generator_test
+package node_test
 
 import (
 	"fmt"
 	"reflect"
 	"testing"
 
-	"github.com/minodisk/sqlabble/generator"
 	"github.com/minodisk/sqlabble/internal/diff"
+	"github.com/minodisk/sqlabble/node"
 )
 
 var (
-	ctx       = generator.NewContext("", "", false)
-	ctxIndent = generator.NewContext("> ", "  ", false)
+	ctx       = node.NewContext("", "", false)
+	ctxIndent = node.NewContext("> ", "  ", false)
 )
 
 func TestParallelNodes(t *testing.T) {
 	for i, c := range []struct {
-		nodes     generator.Nodes
+		nodes     node.Nodes
 		sql       string
 		sqlIndent string
 		values    []interface{}
 	}{
 		{
-			generator.NewNodes(
-				generator.NewExpression("foo"),
-				generator.NewExpression("bar"),
+			node.NewNodes(
+				node.NewExpression("foo"),
+				node.NewExpression("bar"),
 			),
 			"foo bar",
 			`> foo
@@ -33,17 +33,17 @@ func TestParallelNodes(t *testing.T) {
 			[]interface{}{},
 		},
 		{
-			generator.NewNodes(
-				generator.NewParentheses(
-					generator.NewComma(
-						generator.NewExpression("foo-1"),
-						generator.NewExpression("foo-2"),
+			node.NewNodes(
+				node.NewParentheses(
+					node.NewComma(
+						node.NewExpression("foo-1"),
+						node.NewExpression("foo-2"),
 					),
 				),
-				generator.NewParentheses(
-					generator.NewComma(
-						generator.NewExpression("bar-1"),
-						generator.NewExpression("bar-2"),
+				node.NewParentheses(
+					node.NewComma(
+						node.NewExpression("bar-1"),
+						node.NewExpression("bar-2"),
 					),
 				),
 			),
@@ -83,15 +83,15 @@ func TestParallelNodes(t *testing.T) {
 
 // func TestSerialNodes(t *testing.T) {
 // 	for i, c := range []struct {
-// 		nodes     generator.SerialNodes
+// 		nodes     node.SerialNodes
 // 		sql       string
 // 		sqlIndent string
 // 		values    []interface{}
 // 	}{
 // 		{
-// 			generator.NewSerialNodes(
-// 				generator.NewExpression("foo"),
-// 				generator.NewExpression("bar"),
+// 			node.NewSerialNodes(
+// 				node.NewExpression("foo"),
+// 				node.NewExpression("bar"),
 // 			),
 // 			"foo bar",
 // 			`> foo bar
@@ -99,17 +99,17 @@ func TestParallelNodes(t *testing.T) {
 // 			[]interface{}{},
 // 		},
 // 		{
-// 			generator.NewSerialNodes(
-// 				generator.NewParentheses(
-// 					generator.NewComma(
-// 						generator.NewExpression("foo-1"),
-// 						generator.NewExpression("foo-2"),
+// 			node.NewSerialNodes(
+// 				node.NewParentheses(
+// 					node.NewComma(
+// 						node.NewExpression("foo-1"),
+// 						node.NewExpression("foo-2"),
 // 					),
 // 				),
-// 				generator.NewParentheses(
-// 					generator.NewComma(
-// 						generator.NewExpression("bar-1"),
-// 						generator.NewExpression("bar-2"),
+// 				node.NewParentheses(
+// 					node.NewComma(
+// 						node.NewExpression("bar-1"),
+// 						node.NewExpression("bar-2"),
 // 					),
 // 				),
 // 			),

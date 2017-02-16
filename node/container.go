@@ -1,4 +1,4 @@
-package generator
+package node
 
 // Container is a Node that contains a parental Node and children Nodes.
 type Container struct {

@@ -1,8 +1,8 @@
 package statement
 
 import (
-	"github.com/minodisk/sqlabble/generator"
 	"github.com/minodisk/sqlabble/keyword"
+	"github.com/minodisk/sqlabble/node"
 )
 
 type Using struct {
@@ -16,17 +16,17 @@ func NewUsing(column Column) Using {
 	}
 }
 
-func (u Using) node() generator.Node {
+func (u Using) node() node.Node {
 	ts := tableNodes(u)
-	us := make([]generator.Node, len(ts))
+	us := make([]node.Node, len(ts))
 	for i, t := range ts {
 		us[i] = t.expression()
 	}
-	return generator.NewNodes(us...)
+	return node.NewNodes(us...)
 }
 
-func (u Using) expression() generator.Expression {
-	e := generator.NewExpression(keyword.Using).
+func (u Using) expression() node.Expression {
+	e := node.NewExpression(keyword.Using).
 		Append(u.column.expression())
 	if u.joiner == nil {
 		return e

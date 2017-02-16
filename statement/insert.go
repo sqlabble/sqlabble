@@ -1,8 +1,8 @@
 package statement
 
 import (
-	"github.com/minodisk/sqlabble/generator"
 	"github.com/minodisk/sqlabble/keyword"
+	"github.com/minodisk/sqlabble/node"
 )
 
 type InsertInto struct {
@@ -17,25 +17,25 @@ func NewInsertInto(table Joiner, columns ...Column) InsertInto {
 	}
 }
 
-func (i InsertInto) node() generator.Node {
+func (i InsertInto) node() node.Node {
 	cs := clauseNodes(i)
-	ns := make([]generator.Node, len(cs))
+	ns := make([]node.Node, len(cs))
 	for j, c := range cs {
 		ns[j] = c.myNode()
 	}
-	return generator.NewNodes(ns...)
+	return node.NewNodes(ns...)
 }
 
-func (i InsertInto) myNode() generator.Node {
-	es := make([]generator.Expression, len(i.columns))
+func (i InsertInto) myNode() node.Node {
+	es := make([]node.Expression, len(i.columns))
 	for j, c := range i.columns {
 		es[j] = c.expression()
 	}
-	return generator.NewContainer(
-		generator.NewExpression(string(keyword.InsertInto)),
-		generator.JoinExpressions(
+	return node.NewContainer(
+		node.NewExpression(string(keyword.InsertInto)),
+		node.JoinExpressions(
 			i.table.expression(),
-			generator.ArrayToExpression(es...),
+			node.ArrayToExpression(es...),
 		),
 	)
 }

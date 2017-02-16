@@ -1,6 +1,6 @@
 package statement
 
-import "github.com/minodisk/sqlabble/generator"
+import "github.com/minodisk/sqlabble/node"
 
 type Definition struct {
 	column     Column
@@ -13,9 +13,9 @@ func NewDefinition(definition string) Definition {
 	}
 }
 
-func (d Definition) node() generator.Node {
+func (d Definition) node() node.Node {
 	return d.column.expression().
-		Append(generator.NewExpression(d.definition))
+		Append(node.NewExpression(d.definition))
 }
 
 type Definitions struct {
@@ -29,15 +29,15 @@ func NewDefinitions(definitions ...Definition) Definitions {
 	}
 }
 
-func (ds Definitions) node() generator.Node {
+func (ds Definitions) node() node.Node {
 	p := ds.createTable.container()
-	gs := make([]generator.Node, len(ds.definitions))
+	gs := make([]node.Node, len(ds.definitions))
 	for i, d := range ds.definitions {
 		gs[i] = d.node()
 	}
 	return p.AddChild(
-		generator.NewParentheses(
-			generator.NewComma(
+		node.NewParentheses(
+			node.NewComma(
 				gs...,
 			),
 		),

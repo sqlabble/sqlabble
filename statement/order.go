@@ -2,7 +2,7 @@ package statement
 
 import (
 	"github.com/minodisk/sqlabble/direction"
-	"github.com/minodisk/sqlabble/generator"
+	"github.com/minodisk/sqlabble/node"
 )
 
 type Order struct {
@@ -10,10 +10,10 @@ type Order struct {
 	dir    direction.Direction
 }
 
-func (o Order) node() generator.Node {
-	return generator.JoinExpressions(
+func (o Order) node() node.Node {
+	return node.JoinExpressions(
 		o.column.expression(),
-		generator.NewExpression(string(o.dir)),
+		node.NewExpression(string(o.dir)),
 	)
 }
 

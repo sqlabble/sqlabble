@@ -1,7 +1,7 @@
 package statement
 
 import (
-	"github.com/minodisk/sqlabble/generator"
+	"github.com/minodisk/sqlabble/node"
 	"github.com/minodisk/sqlabble/operator"
 )
 
@@ -16,13 +16,13 @@ func NewColumnAs(alias string) ColumnAs {
 	}
 }
 
-func (c ColumnAs) node() generator.Node {
+func (c ColumnAs) node() node.Node {
 	return c.expression()
 }
 
-func (c ColumnAs) expression() generator.Expression {
-	a := generator.NewExpression(string(operator.As)).
-		Append(generator.NewExpression(c.alias))
+func (c ColumnAs) expression() node.Expression {
+	a := node.NewExpression(string(operator.As)).
+		Append(node.NewExpression(c.alias))
 	if c.column == nil {
 		return a
 	}

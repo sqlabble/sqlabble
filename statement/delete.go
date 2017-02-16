@@ -1,8 +1,8 @@
 package statement
 
 import (
-	"github.com/minodisk/sqlabble/generator"
 	"github.com/minodisk/sqlabble/keyword"
+	"github.com/minodisk/sqlabble/node"
 )
 
 type Delete struct{}
@@ -11,18 +11,18 @@ func NewDelete() Delete {
 	return Delete{}
 }
 
-func (d Delete) node() generator.Node {
+func (d Delete) node() node.Node {
 	cs := clauseNodes(d)
-	fs := make([]generator.Node, len(cs))
+	fs := make([]node.Node, len(cs))
 	for i, c := range cs {
 		fs[i] = c.myNode()
 	}
-	return generator.NewNodes(fs...)
+	return node.NewNodes(fs...)
 }
 
-func (d Delete) myNode() generator.Node {
-	return generator.NewContainer(
-		generator.NewExpression(keyword.Delete),
+func (d Delete) myNode() node.Node {
+	return node.NewContainer(
+		node.NewExpression(keyword.Delete),
 	)
 }
 

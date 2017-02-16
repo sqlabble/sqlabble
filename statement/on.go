@@ -1,8 +1,8 @@
 package statement
 
 import (
-	"github.com/minodisk/sqlabble/generator"
 	"github.com/minodisk/sqlabble/keyword"
+	"github.com/minodisk/sqlabble/node"
 	"github.com/minodisk/sqlabble/operator"
 )
 
@@ -18,19 +18,19 @@ func NewOn(column1, column2 Column) On {
 	}
 }
 
-func (o On) node() generator.Node {
+func (o On) node() node.Node {
 	ts := tableNodes(o)
-	ns := make([]generator.Node, len(ts))
+	ns := make([]node.Node, len(ts))
 	for i, t := range ts {
 		ns[i] = t.expression()
 	}
-	return generator.NewNodes(ns...)
+	return node.NewNodes(ns...)
 }
 
-func (o On) expression() generator.Expression {
-	e := generator.NewExpression(keyword.On).
+func (o On) expression() node.Expression {
+	e := node.NewExpression(keyword.On).
 		Append(o.column1.expression()).
-		Append(generator.NewExpression(string(operator.Eq))).
+		Append(node.NewExpression(string(operator.Eq))).
 		Append(o.column2.expression())
 	if o.join == nil {
 		return e

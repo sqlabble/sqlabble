@@ -1,8 +1,8 @@
 package statement
 
 import (
-	"github.com/minodisk/sqlabble/generator"
 	"github.com/minodisk/sqlabble/keyword"
+	"github.com/minodisk/sqlabble/node"
 )
 
 type Update struct {
@@ -16,13 +16,13 @@ func NewUpdate(table Table) Update {
 	}
 }
 
-func (u Update) node() generator.Node {
+func (u Update) node() node.Node {
 	return u.myNode()
 }
 
-func (u Update) myNode() generator.Node {
-	return generator.NewContainer(
-		generator.NewExpression(keyword.Update),
+func (u Update) myNode() node.Node {
+	return node.NewContainer(
+		node.NewExpression(keyword.Update),
 		u.table.node(),
 	)
 }

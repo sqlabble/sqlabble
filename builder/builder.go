@@ -1,7 +1,7 @@
 package builder
 
 import (
-	"github.com/minodisk/sqlabble/generator"
+	"github.com/minodisk/sqlabble/node"
 	"github.com/minodisk/sqlabble/statement"
 )
 
@@ -9,7 +9,7 @@ import (
 // so that you can build a query with the same options
 // over and over again.
 type Builder struct {
-	context generator.Context
+	context node.Context
 }
 
 // NewBuilder returns a Builder with a specified options.

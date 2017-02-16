@@ -1,8 +1,8 @@
 package statement
 
-import "github.com/minodisk/sqlabble/generator"
+import "github.com/minodisk/sqlabble/node"
 
-func Node(stmt Statement) generator.Node {
+func Node(stmt Statement) node.Node {
 	return stmt.node()
 }
 

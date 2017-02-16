@@ -1,8 +1,8 @@
 package statement
 
 import (
-	"github.com/minodisk/sqlabble/generator"
 	"github.com/minodisk/sqlabble/keyword"
+	"github.com/minodisk/sqlabble/node"
 )
 
 type Select struct {
@@ -24,27 +24,27 @@ func NewSelectDistinct(columns ...ColumnOrColumnAs) Select {
 	}
 }
 
-func (s Select) node() generator.Node {
+func (s Select) node() node.Node {
 	cs := clauseNodes(s)
-	fs := make([]generator.Node, len(cs))
+	fs := make([]node.Node, len(cs))
 	for i, c := range cs {
 		fs[i] = c.myNode()
 	}
-	return generator.NewNodes(fs...)
+	return node.NewNodes(fs...)
 }
 
-func (s Select) myNode() generator.Node {
-	fs := make([]generator.Node, len(s.columns))
+func (s Select) myNode() node.Node {
+	fs := make([]node.Node, len(s.columns))
 	for i, c := range s.columns {
 		fs[i] = c.node()
 	}
-	k := generator.NewExpression(keyword.Select)
+	k := node.NewExpression(keyword.Select)
 	if s.distinct {
-		k = k.Append(generator.NewExpression(keyword.Distinct))
+		k = k.Append(node.NewExpression(keyword.Distinct))
 	}
-	return generator.NewContainer(
+	return node.NewContainer(
 		k,
-		generator.NewComma(fs...),
+		node.NewComma(fs...),
 	)
 }
 

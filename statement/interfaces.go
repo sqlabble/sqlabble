@@ -1,7 +1,7 @@
 package statement
 
 import (
-	"github.com/minodisk/sqlabble/generator"
+	"github.com/minodisk/sqlabble/node"
 	"github.com/minodisk/sqlabble/operator"
 )
 
@@ -10,17 +10,17 @@ import (
 // All types that implement this interface
 // can be built as SQL.
 type Statement interface {
-	node() generator.Node
+	node() node.Node
 }
 
 type Expressor interface {
 	Statement
-	expression() generator.Expression
+	expression() node.Expression
 }
 
 type Clause interface {
 	Statement
-	myNode() generator.Node
+	myNode() node.Node
 	previous() Clause
 }
 
@@ -29,7 +29,7 @@ type ColumnOrColumnAs interface {
 	columnName() string
 }
 
-type columnOrSubquery interface {
+type ColumnOrSubquery interface {
 	Statement
 	isColumnOrSubquery() bool
 }

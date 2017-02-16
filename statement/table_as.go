@@ -3,7 +3,7 @@ package statement
 import (
 	"fmt"
 
-	"github.com/minodisk/sqlabble/generator"
+	"github.com/minodisk/sqlabble/node"
 )
 
 type TableAs struct {
@@ -11,17 +11,17 @@ type TableAs struct {
 	alias string
 }
 
-func (t TableAs) node() generator.Node {
+func (t TableAs) node() node.Node {
 	ts := tableNodes(t)
-	ns := make([]generator.Node, len(ts))
+	ns := make([]node.Node, len(ts))
 	for i, t := range ts {
 		ns[i] = t.expression()
 	}
-	return generator.NewNodes(ns...)
+	return node.NewNodes(ns...)
 }
 
-func (t TableAs) expression() generator.Expression {
-	return generator.NewExpression(
+func (t TableAs) expression() node.Expression {
+	return node.NewExpression(
 		fmt.Sprintf("%s AS %s", t.TableName(), t.alias),
 	)
 }

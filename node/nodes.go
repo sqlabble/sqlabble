@@ -1,4 +1,4 @@
-package generator
+package node
 
 // Nodes is list of Node.
 type Nodes []Node

@@ -1,8 +1,8 @@
 package statement
 
 import (
-	"github.com/minodisk/sqlabble/generator"
 	"github.com/minodisk/sqlabble/keyword"
+	"github.com/minodisk/sqlabble/node"
 )
 
 type CreateTable struct {
@@ -24,16 +24,16 @@ func NewCreateTableIfNotExists(table Joiner) CreateTable {
 	}
 }
 
-func (c CreateTable) node() generator.Node {
+func (c CreateTable) node() node.Node {
 	return c.container()
 }
 
-func (c CreateTable) container() generator.Container {
-	k := generator.NewExpression(keyword.CreateTable)
+func (c CreateTable) container() node.Container {
+	k := node.NewExpression(keyword.CreateTable)
 	if c.ifNotExists {
-		k = k.Append(generator.NewExpression(keyword.IfNotExists))
+		k = k.Append(node.NewExpression(keyword.IfNotExists))
 	}
-	return generator.NewContainer(
+	return node.NewContainer(
 		k,
 		c.table.expression(),
 	)

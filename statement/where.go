@@ -1,8 +1,8 @@
 package statement
 
 import (
-	"github.com/minodisk/sqlabble/generator"
 	"github.com/minodisk/sqlabble/keyword"
+	"github.com/minodisk/sqlabble/node"
 )
 
 type Where struct {
@@ -16,18 +16,18 @@ func NewWhere(operation ComparisonOrLogicalOperation) Where {
 	}
 }
 
-func (w Where) node() generator.Node {
+func (w Where) node() node.Node {
 	cs := clauseNodes(w)
-	ns := make([]generator.Node, len(cs))
+	ns := make([]node.Node, len(cs))
 	for i, c := range cs {
 		ns[i] = c.myNode()
 	}
-	return generator.NewNodes(ns...)
+	return node.NewNodes(ns...)
 }
 
-func (w Where) myNode() generator.Node {
-	return generator.NewContainer(
-		generator.NewExpression(keyword.Where),
+func (w Where) myNode() node.Node {
+	return node.NewContainer(
+		node.NewExpression(keyword.Where),
 		w.operation.node(),
 	)
 }

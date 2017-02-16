@@ -1,8 +1,8 @@
 package statement
 
 import (
-	"github.com/minodisk/sqlabble/generator"
 	"github.com/minodisk/sqlabble/keyword"
+	"github.com/minodisk/sqlabble/node"
 )
 
 type Join struct {
@@ -39,17 +39,17 @@ func NewRightJoin(table Joiner) Join {
 	}
 }
 
-func (j Join) node() generator.Node {
+func (j Join) node() node.Node {
 	ts := tableNodes(j)
-	es := make([]generator.Node, len(ts))
+	es := make([]node.Node, len(ts))
 	for i, t := range ts {
 		es[i] = t.expression()
 	}
-	return generator.NewNodes(es...)
+	return node.NewNodes(es...)
 }
 
-func (j Join) expression() generator.Expression {
-	return generator.NewExpression(j.joinType).
+func (j Join) expression() node.Expression {
+	return node.NewExpression(j.joinType).
 		Append(j.table.expression())
 }
 
