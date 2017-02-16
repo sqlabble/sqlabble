@@ -43,6 +43,76 @@ func TestExpression(t *testing.T) {
 				true,
 			},
 		},
+		{
+			node.NewExpression("foo", 100, 200).
+				Prepend(node.NewExpression("bar", 300, 400)),
+			"bar foo",
+			`> bar foo
+`,
+			[]interface{}{
+				300,
+				400,
+				100,
+				200,
+			},
+		},
+		{
+			node.NewExpression("").
+				Prepend(node.NewExpression("bar", 300, 400)),
+			"bar",
+			`> bar
+`,
+			[]interface{}{
+				300,
+				400,
+			},
+		},
+		{
+			node.NewExpression("foo", 100, 200).
+				Prepend(node.NewExpression("")),
+			"foo",
+			`> foo
+`,
+			[]interface{}{
+				100,
+				200,
+			},
+		},
+		{
+			node.NewExpression("foo", 100, 200).
+				Append(node.NewExpression("bar", 300, 400)),
+			"foo bar",
+			`> foo bar
+`,
+			[]interface{}{
+				100,
+				200,
+				300,
+				400,
+			},
+		},
+		{
+			node.NewExpression("").
+				Append(node.NewExpression("bar", 300, 400)),
+			"bar",
+			`> bar
+`,
+			[]interface{}{
+				300,
+				400,
+			},
+		},
+		{
+			node.NewExpression("foo", 100, 200).
+				Append(node.NewExpression("")),
+			"foo",
+			`> foo
+`,
+			[]interface{}{
+				100,
+				200,
+			},
+		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
 			sql, values := c.nodes.ToSQL(ctx)

@@ -45,7 +45,7 @@ func (e Expression) Prepend(exp Expression) Expression {
 		return exp
 	}
 	e.sql = exp.sql + " " + e.sql
-	e.values = append(e.values, exp.values...)
+	e.values = append(exp.values, e.values...)
 	return e
 }
 
