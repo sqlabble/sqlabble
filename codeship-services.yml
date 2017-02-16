@@ -4,3 +4,4 @@ services:
 
   sqlabble:
     build: .
+    encrypted_env_file: coveralls.env.encrypted

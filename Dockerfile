@@ -1,8 +1,8 @@
-FROM golang:alpine
+FROM golang:wheezy
 
 WORKDIR /go/src/github.com/minodisk/sqlabble
-RUN apk --update add git && \
-    go get -u \
+RUN go get -u \
+      github.com/mattn/goveralls \
       github.com/sergi/go-diff/diffmatchpatch
 
 COPY . .
