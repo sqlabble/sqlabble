@@ -26,17 +26,18 @@ func (b Builder) Build(stmt statement.Statement) (string, []interface{}) {
 
 // Typical builders commonly used to build queries.
 var (
-	Standard         = NewBuilder(Options{})
-	IndentedStandard = NewBuilder(Options{
-		Indent: "  ",
-	})
-	MySQL4 = NewBuilder(Options{
-		FlatSets: true,
-	})
-	IndentedMySQL4 = NewBuilder(Options{
-		Indent:   "  ",
-		FlatSets: true,
-	})
+	Standard = Builder{
+		context: node.Standard,
+	}
+	IndentedStandard = Builder{
+		context: node.IndentedStandard,
+	}
+	MySQL = Builder{
+		context: node.MySQL,
+	}
+	MySQL4 = Builder{
+		context: node.MySQL4,
+	}
 )
 
 // Build builds a query.

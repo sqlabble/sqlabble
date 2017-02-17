@@ -2,20 +2,31 @@ package node
 
 import "strings"
 
+var (
+	Standard         = NewContext("", "", `"`, false)
+	IndentedStandard = NewContext("", "  ", `"`, false)
+	MySQL            = NewContext("", "", "`", false)
+	MySQL4           = NewContext("", "", "`", true)
+)
+
 // Context is a container for storing the state to be output
 // in the process of building a query.
 type Context struct {
-	prefix, indent      string
-	breaking, flatSets  bool
-	head                string
-	depth, bracketDepth int
+	prefix, indent, Quote string
+	breaking, flatSets    bool
+	head                  string
+	depth, bracketDepth   int
 }
 
-func NewContext(prefix, indent string, flatSets bool) Context {
+func NewContext(prefix, indent, quote string, flatSets bool) Context {
+	if quote == "" {
+		quote = `"`
+	}
 	return Context{
 		prefix:       prefix,
 		indent:       indent,
 		breaking:     prefix != "" || indent != "",
+		Quote:        quote,
 		flatSets:     flatSets,
 		head:         "",
 		depth:        0,
@@ -23,11 +34,11 @@ func NewContext(prefix, indent string, flatSets bool) Context {
 	}
 }
 
-func (c Context) currentHead() string {
+func (c Context) CurrentHead() string {
 	return c.head
 }
 
-func (c Context) clearHead() Context {
+func (c Context) ClearHead() Context {
 	c.head = ""
 	return c
 }
@@ -37,11 +48,11 @@ func (c Context) setHead(head string) Context {
 	return c
 }
 
-func (c Context) isBreaking() bool {
+func (c Context) IsBreaking() bool {
 	return c.breaking
 }
 
-func (c Context) pre() string {
+func (c Context) Prefix() string {
 	return c.prefix + strings.Repeat(c.indent, c.depth)
 }
 
@@ -77,7 +88,7 @@ func (c Context) join(sqls ...string) string {
 		}
 	}
 
-	if c.isBreaking() {
+	if c.IsBreaking() {
 		return strings.Join(ss, "")
 	}
 	return strings.Join(ss, " ")

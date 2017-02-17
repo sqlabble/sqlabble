@@ -30,8 +30,8 @@ func TestColumnAsSQL(t *testing.T) {
 	}{
 		{
 			statement.NewColumnAs("foo"),
-			"AS `foo`",
-			`> AS ` + "`foo`" + `
+			`AS "foo"`,
+			`> AS "foo"
 `,
 			[]interface{}{},
 		},

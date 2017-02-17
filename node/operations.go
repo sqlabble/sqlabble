@@ -34,9 +34,9 @@ func (o JoinOperation) ToSQL(ctx Context) (string, []interface{}) {
 		o = t
 	}
 
-	head := ctx.currentHead()
+	head := ctx.CurrentHead()
 	hasParentheses := head != "" || !ctx.isTopParentheses()
-	ctx = ctx.clearHead()
+	ctx = ctx.ClearHead()
 	c1 := ctx.incParenthesesDepth()
 	if hasParentheses {
 		c1 = c1.incDepth()
@@ -47,7 +47,7 @@ func (o JoinOperation) ToSQL(ctx Context) (string, []interface{}) {
 	for i, f := range o.nodes {
 		var vs []interface{}
 		if i == 0 {
-			sqls[i], vs = f.ToSQL(c1.clearHead())
+			sqls[i], vs = f.ToSQL(c1.ClearHead())
 			values = append(values, vs...)
 			continue
 		}
@@ -59,8 +59,8 @@ func (o JoinOperation) ToSQL(ctx Context) (string, []interface{}) {
 	if !hasParentheses {
 		return sql, values
 	}
-	if ctx.isBreaking() {
-		p := ctx.pre()
+	if ctx.IsBreaking() {
+		p := ctx.Prefix()
 		return fmt.Sprintf("%s%s(\n%s%s)\n", p, head, sql, p), values
 	}
 	return fmt.Sprintf("%s(%s)", head, sql), values

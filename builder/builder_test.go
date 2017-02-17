@@ -61,11 +61,11 @@ func TestBuilder(t *testing.T) {
 			).Offset(
 				20 * 5,
 			),
-			"SELECT created_at, name AS `n`, gender AS `g`, age FROM users WHERE g = ? AND (age < ? OR age = ? OR age >= ?) AND created_at BETWEEN ? AND ? ORDER BY created_at DESC, id ASC LIMIT ? OFFSET ?",
+			`SELECT created_at, name AS "n", gender AS "g", age FROM users WHERE g = ? AND (age < ? OR age = ? OR age >= ?) AND created_at BETWEEN ? AND ? ORDER BY created_at DESC, id ASC LIMIT ? OFFSET ?`,
 			`> SELECT
 >   created_at
->   , name AS ` + "`n`" + `
->   , gender AS ` + "`g`" + `
+>   , name AS "n"
+>   , gender AS "g"
 >   , age
 > FROM
 >   users
@@ -86,12 +86,12 @@ func TestBuilder(t *testing.T) {
 >   ?
 `,
 			[]interface{}{
-				"male",
+				`male`,
 				20,
 				30,
 				50,
-				"2016-01-01",
-				"2016-12-31",
+				`2016-01-01`,
+				`2016-12-31`,
 				20,
 				100,
 			},
@@ -102,13 +102,13 @@ func TestBuilder(t *testing.T) {
 				statement.NewColumn("name"),
 				statement.NewColumn("age"),
 			).Values(
-				"Obi-Wan Kenobi",
+				`Obi-Wan Kenobi`,
 				63,
 			).Values(
-				"Luke Skywalker",
+				`Luke Skywalker`,
 				19,
 			),
-			"INSERT INTO foo (name, age) VALUES (?, ?), (?, ?)",
+			`INSERT INTO foo (name, age) VALUES (?, ?), (?, ?)`,
 			`> INSERT INTO
 >   foo (name, age)
 > VALUES
@@ -116,9 +116,9 @@ func TestBuilder(t *testing.T) {
 >   , (?, ?)
 `,
 			[]interface{}{
-				"Obi-Wan Kenobi",
+				`Obi-Wan Kenobi`,
 				63,
-				"Luke Skywalker",
+				`Luke Skywalker`,
 				19,
 			},
 		},
@@ -128,7 +128,7 @@ func TestBuilder(t *testing.T) {
 			).Where(
 				statement.NewColumn("login_date").Lt("2004-07-02 09:00:00"),
 			),
-			"DELETE FROM login_history WHERE login_date < ?",
+			`DELETE FROM login_history WHERE login_date < ?`,
 			`> DELETE
 > FROM
 >   login_history
@@ -136,7 +136,7 @@ func TestBuilder(t *testing.T) {
 >   login_date < ?
 `,
 			[]interface{}{
-				"2004-07-02 09:00:00",
+				`2004-07-02 09:00:00`,
 			},
 		},
 		{
@@ -162,7 +162,7 @@ func TestBuilder(t *testing.T) {
 					statement.NewColumn("open_branch_id").Eq(2),
 				),
 			),
-			"(SELECT emp_id FROM employee WHERE assigned_branch_id = ? AND (title = ? OR title = ?)) UNION (SELECT DISTINCT open_emp_id FROM account WHERE open_branch_id = ?)",
+			`(SELECT emp_id FROM employee WHERE assigned_branch_id = ? AND (title = ? OR title = ?)) UNION (SELECT DISTINCT open_emp_id FROM account WHERE open_branch_id = ?)`,
 			`> (
 >   SELECT
 >     emp_id
@@ -187,8 +187,8 @@ func TestBuilder(t *testing.T) {
 `,
 			[]interface{}{
 				2,
-				"Teller",
-				"Head Teller",
+				`Teller`,
+				`Head Teller`,
 				2,
 			},
 		},
@@ -248,11 +248,11 @@ func TestBuild(t *testing.T) {
 			).Offset(
 				20 * 5,
 			),
-			"SELECT created_at, name AS `n`, gender AS `g`, age FROM users WHERE g = ? AND (age < ? OR age = ? OR age >= ?) AND created_at BETWEEN ? AND ? ORDER BY created_at DESC, id ASC LIMIT ? OFFSET ?",
+			`SELECT created_at, name AS "n", gender AS "g", age FROM users WHERE g = ? AND (age < ? OR age = ? OR age >= ?) AND created_at BETWEEN ? AND ? ORDER BY created_at DESC, id ASC LIMIT ? OFFSET ?`,
 			`SELECT
   created_at
-  , name AS ` + "`n`" + `
-  , gender AS ` + "`g`" + `
+  , name AS "n"
+  , gender AS "g"
   , age
 FROM
   users
@@ -273,12 +273,12 @@ OFFSET
   ?
 `,
 			[]interface{}{
-				"male",
+				`male`,
 				20,
 				30,
 				50,
-				"2016-01-01",
-				"2016-12-31",
+				`2016-01-01`,
+				`2016-12-31`,
 				20,
 				100,
 			},

@@ -10,12 +10,14 @@ var (
 			Indent: "  ",
 		})
 	bm4 = builder.NewBuilder(builder.Options{
+		Quote:    "`",
 		FlatSets: true,
 	})
 	bim4 = builder.NewBuilder(
 		builder.Options{
 			Prefix:   "> ",
 			Indent:   "  ",
+			Quote:    "`",
 			FlatSets: true,
 		})
 )

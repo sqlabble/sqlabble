@@ -25,7 +25,7 @@ func (ns Nodes) ToSQL(ctx Context) (string, []interface{}) {
 			sqls[i], vs = e.ToSQL(ctx)
 			values = append(values, vs...)
 		} else {
-			sqls[i], vs = e.ToSQL(ctx.clearHead())
+			sqls[i], vs = e.ToSQL(ctx.ClearHead())
 			values = append(values, vs...)
 		}
 	}

@@ -2,6 +2,12 @@
 
 SQL query builder with type support.
 
+## Features
+
+- Quote the alias according to the specification of each SQL server.
+  - Standard: `"`
+  - MySQL: `\``
+
 ## Supports
 
 ### Clauses

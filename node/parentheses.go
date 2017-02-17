@@ -20,13 +20,13 @@ func NewParentheses(node Node) Parentheses {
 
 // ToSQL returns a query and a slice of values.
 func (b Parentheses) ToSQL(ctx Context) (string, []interface{}) {
-	head := ctx.currentHead()
+	head := ctx.CurrentHead()
 	ctx = ctx.clearParenthesesDepth()
 
-	sql, values := b.node.ToSQL(ctx.incDepth().clearHead())
+	sql, values := b.node.ToSQL(ctx.incDepth().ClearHead())
 
-	if ctx.isBreaking() {
-		p := ctx.pre()
+	if ctx.IsBreaking() {
+		p := ctx.Prefix()
 		return fmt.Sprintf("%s%s(\n%s%s)\n", p, head, sql, p), values
 	}
 
@@ -49,7 +49,7 @@ func NewOpParentheses(op operator.Operator, paren Parentheses) OpParentheses {
 
 // ToSQL returns a query and a slice of values.
 func (o OpParentheses) ToSQL(ctx Context) (string, []interface{}) {
-	head := ctx.currentHead()
+	head := ctx.CurrentHead()
 
 	return o.paren.ToSQL(ctx.setHead(head + string(o.op) + " "))
 }

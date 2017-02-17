@@ -27,10 +27,10 @@ func NewExpression(sql string, values ...interface{}) Expression {
 
 // ToSQL returns a query and a slice of values.
 func (e Expression) ToSQL(ctx Context) (string, []interface{}) {
-	h := ctx.currentHead()
-	ctx = ctx.clearHead()
-	if ctx.isBreaking() {
-		p := ctx.pre()
+	h := ctx.CurrentHead()
+	ctx = ctx.ClearHead()
+	if ctx.IsBreaking() {
+		p := ctx.Prefix()
 		return fmt.Sprintf("%s%s%s\n", p, h, e.sql), e.values
 	}
 	return fmt.Sprintf("%s%s", h, e.sql), e.values

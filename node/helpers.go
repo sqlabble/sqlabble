@@ -1,6 +1,39 @@
 package node
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
+
+type Line struct {
+	nodes []Node
+}
+
+func NewLine(nodes ...Node) Line {
+	return Line{
+		nodes: nodes,
+	}
+}
+
+func (l Line) ToSQL(ctx Context) (string, []interface{}) {
+	h := ctx.CurrentHead()
+	ctx = ctx.ClearHead()
+
+	sqls := make([]string, len(l.nodes))
+	values := []interface{}{}
+	for i, n := range l.nodes {
+		var vals []interface{}
+		sqls[i], vals = n.ToSQL(ctx)
+		values = append(values, vals...)
+	}
+	sql := strings.Join(sqls, " ")
+
+	if ctx.IsBreaking() {
+		p := ctx.Prefix()
+		return fmt.Sprintf("%s%s%s\n", p, h, sql), values
+	}
+	return fmt.Sprintf("%s%s", h, sql), values
+}
 
 // JoinExpressions joins expressions into a Expression.
 func JoinExpressions(expressions ...Expression) Expression {

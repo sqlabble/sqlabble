@@ -3,6 +3,7 @@ package statement
 import (
 	"github.com/minodisk/sqlabble/direction"
 	"github.com/minodisk/sqlabble/node"
+	"github.com/minodisk/sqlabble/token"
 )
 
 // Column is a statement to indicate a column in a table.
@@ -132,13 +133,24 @@ func (c Column) Desc() Order {
 }
 
 func (c Column) node() node.Node {
-	return c.expression()
+	return token.NewTokensNode(
+		c.tokenize(),
+	)
 }
 
 func (c Column) expression() node.Expression {
 	return node.NewExpression(
 		c.name,
 	)
+}
+
+func (c Column) tokenize() token.Tokens {
+	if c.name == "" {
+		return token.Tokens{}
+	}
+	return token.Tokens{
+		token.Word(c.name),
+	}
 }
 
 func (c Column) columnName() string {

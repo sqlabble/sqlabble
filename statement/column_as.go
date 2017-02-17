@@ -1,10 +1,9 @@
 package statement
 
 import (
-	"fmt"
-
 	"github.com/minodisk/sqlabble/node"
 	"github.com/minodisk/sqlabble/operator"
+	"github.com/minodisk/sqlabble/token"
 )
 
 type ColumnAs struct {
@@ -19,11 +18,18 @@ func NewColumnAs(alias string) ColumnAs {
 }
 
 func (c ColumnAs) node() node.Node {
-	return node.JoinExpressions(
-		c.column.expression(),
-		node.NewExpression(string(operator.As)),
-		node.NewExpression(fmt.Sprintf("`%s`", c.alias)),
+	return token.NewTokensNode(
+		c.tokenize(),
 	)
+}
+
+func (c ColumnAs) tokenize() token.Tokens {
+	return c.column.tokenize().
+		Append(token.Word(operator.As)).
+		Add(token.Wrap(
+			token.Word(c.alias),
+			token.Quote,
+		))
 }
 
 func (c ColumnAs) columnName() string {

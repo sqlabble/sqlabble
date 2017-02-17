@@ -17,7 +17,7 @@ func NewContainer(self Node, children ...Node) Container {
 // ToSQL returns a query and a slice of values.
 func (c Container) ToSQL(ctx Context) (string, []interface{}) {
 	ps, pvs := c.self.ToSQL(ctx)
-	ctx = ctx.clearHead()
+	ctx = ctx.ClearHead()
 	cs, cvs := c.children.ToSQL(ctx.incDepth())
 	return ctx.join(ps, cs), append(pvs, cvs...)
 }
