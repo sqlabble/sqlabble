@@ -32,7 +32,7 @@ func TestJoin(t *testing.T) {
 			statement.NewJoin(
 				statement.NewTable("foo"),
 			),
-			"JOIN foo",
+			`JOIN foo`,
 			`> JOIN foo
 `,
 			[]interface{}{},
@@ -41,8 +41,8 @@ func TestJoin(t *testing.T) {
 			statement.NewJoin(
 				statement.NewTable("foo").As("f"),
 			),
-			"JOIN foo AS f",
-			`> JOIN foo AS f
+			`JOIN foo AS "f"`,
+			`> JOIN foo AS "f"
 `,
 			[]interface{}{},
 		},
@@ -52,9 +52,9 @@ func TestJoin(t *testing.T) {
 			).Join(
 				statement.NewTable("bar").As("b"),
 			),
-			"JOIN foo AS f JOIN bar AS b",
-			`> JOIN foo AS f
-> JOIN bar AS b
+			`JOIN foo AS "f" JOIN bar AS "b"`,
+			`> JOIN foo AS "f"
+> JOIN bar AS "b"
 `,
 			[]interface{}{},
 		},
@@ -64,9 +64,9 @@ func TestJoin(t *testing.T) {
 			).InnerJoin(
 				statement.NewTable("bar").As("b"),
 			),
-			"JOIN foo AS f INNER JOIN bar AS b",
-			`> JOIN foo AS f
-> INNER JOIN bar AS b
+			`JOIN foo AS "f" INNER JOIN bar AS "b"`,
+			`> JOIN foo AS "f"
+> INNER JOIN bar AS "b"
 `,
 			[]interface{}{},
 		},
@@ -76,9 +76,9 @@ func TestJoin(t *testing.T) {
 			).LeftJoin(
 				statement.NewTable("bar").As("b"),
 			),
-			"JOIN foo AS f LEFT JOIN bar AS b",
-			`> JOIN foo AS f
-> LEFT JOIN bar AS b
+			`JOIN foo AS "f" LEFT JOIN bar AS "b"`,
+			`> JOIN foo AS "f"
+> LEFT JOIN bar AS "b"
 `,
 			[]interface{}{},
 		},
@@ -88,9 +88,9 @@ func TestJoin(t *testing.T) {
 			).RightJoin(
 				statement.NewTable("bar").As("b"),
 			),
-			"JOIN foo AS f RIGHT JOIN bar AS b",
-			`> JOIN foo AS f
-> RIGHT JOIN bar AS b
+			`JOIN foo AS "f" RIGHT JOIN bar AS "b"`,
+			`> JOIN foo AS "f"
+> RIGHT JOIN bar AS "b"
 `,
 			[]interface{}{},
 		},
@@ -101,7 +101,7 @@ func TestJoin(t *testing.T) {
 				statement.NewColumn("foo.id"),
 				statement.NewColumn("bar.id"),
 			),
-			"JOIN foo ON foo.id = bar.id",
+			`JOIN foo ON foo.id = bar.id`,
 			`> JOIN foo ON foo.id = bar.id
 `,
 			[]interface{}{},
@@ -113,8 +113,8 @@ func TestJoin(t *testing.T) {
 				statement.NewColumn("f.id"),
 				statement.NewColumn("b.id"),
 			),
-			"JOIN foo AS f ON f.id = b.id",
-			`> JOIN foo AS f ON f.id = b.id
+			`JOIN foo AS "f" ON f.id = b.id`,
+			`> JOIN foo AS "f" ON f.id = b.id
 `,
 			[]interface{}{},
 		},
@@ -124,7 +124,7 @@ func TestJoin(t *testing.T) {
 			).Using(
 				statement.NewColumn("id"),
 			),
-			"JOIN foo USING id",
+			`JOIN foo USING id`,
 			`> JOIN foo USING id
 `,
 			[]interface{}{},
@@ -135,8 +135,8 @@ func TestJoin(t *testing.T) {
 			).Using(
 				statement.NewColumn("id"),
 			),
-			"JOIN foo AS f USING id",
-			`> JOIN foo AS f USING id
+			`JOIN foo AS "f" USING id`,
+			`> JOIN foo AS "f" USING id
 `,
 			[]interface{}{},
 		},
@@ -169,24 +169,27 @@ func TestInnerJoin(t *testing.T) {
 		sqlIndent string
 		values    []interface{}
 	}{
+		// 0
 		{
 			statement.NewInnerJoin(
 				statement.NewTable("foo"),
 			),
-			"INNER JOIN foo",
+			`INNER JOIN foo`,
 			`> INNER JOIN foo
 `,
 			[]interface{}{},
 		},
+		// 1
 		{
 			statement.NewInnerJoin(
 				statement.NewTable("foo").As("f"),
 			),
-			"INNER JOIN foo AS f",
-			`> INNER JOIN foo AS f
+			`INNER JOIN foo AS "f"`,
+			`> INNER JOIN foo AS "f"
 `,
 			[]interface{}{},
 		},
+		// 2
 		{
 			statement.NewInnerJoin(
 				statement.NewTable("foo"),
@@ -194,11 +197,12 @@ func TestInnerJoin(t *testing.T) {
 				statement.NewColumn("foo.id"),
 				statement.NewColumn("bar.id"),
 			),
-			"INNER JOIN foo ON foo.id = bar.id",
+			`INNER JOIN foo ON foo.id = bar.id`,
 			`> INNER JOIN foo ON foo.id = bar.id
 `,
 			[]interface{}{},
 		},
+		// 3
 		{
 			statement.NewInnerJoin(
 				statement.NewTable("foo").As("f"),
@@ -206,30 +210,32 @@ func TestInnerJoin(t *testing.T) {
 				statement.NewColumn("f.id"),
 				statement.NewColumn("b.id"),
 			),
-			"INNER JOIN foo AS f ON f.id = b.id",
-			`> INNER JOIN foo AS f ON f.id = b.id
+			`INNER JOIN foo AS "f" ON f.id = b.id`,
+			`> INNER JOIN foo AS "f" ON f.id = b.id
 `,
 			[]interface{}{},
 		},
+		// 4
 		{
 			statement.NewInnerJoin(
 				statement.NewTable("foo"),
 			).Using(
 				statement.NewColumn("id"),
 			),
-			"INNER JOIN foo USING id",
+			`INNER JOIN foo USING id`,
 			`> INNER JOIN foo USING id
 `,
 			[]interface{}{},
 		},
+		// 5
 		{
 			statement.NewInnerJoin(
 				statement.NewTable("foo").As("f"),
 			).Using(
 				statement.NewColumn("id"),
 			),
-			"INNER JOIN foo AS f USING id",
-			`> INNER JOIN foo AS f USING id
+			`INNER JOIN foo AS "f" USING id`,
+			`> INNER JOIN foo AS "f" USING id
 `,
 			[]interface{}{},
 		},
@@ -266,7 +272,7 @@ func TestLeftJoin(t *testing.T) {
 			statement.NewLeftJoin(
 				statement.NewTable("foo"),
 			),
-			"LEFT JOIN foo",
+			`LEFT JOIN foo`,
 			`> LEFT JOIN foo
 `,
 			[]interface{}{},
@@ -275,8 +281,8 @@ func TestLeftJoin(t *testing.T) {
 			statement.NewLeftJoin(
 				statement.NewTable("foo").As("f"),
 			),
-			"LEFT JOIN foo AS f",
-			`> LEFT JOIN foo AS f
+			`LEFT JOIN foo AS "f"`,
+			`> LEFT JOIN foo AS "f"
 `,
 			[]interface{}{},
 		},
@@ -287,7 +293,7 @@ func TestLeftJoin(t *testing.T) {
 				statement.NewColumn("foo.id"),
 				statement.NewColumn("bar.id"),
 			),
-			"LEFT JOIN foo ON foo.id = bar.id",
+			`LEFT JOIN foo ON foo.id = bar.id`,
 			`> LEFT JOIN foo ON foo.id = bar.id
 `,
 			[]interface{}{},
@@ -299,8 +305,8 @@ func TestLeftJoin(t *testing.T) {
 				statement.NewColumn("f.id"),
 				statement.NewColumn("b.id"),
 			),
-			"LEFT JOIN foo AS f ON f.id = b.id",
-			`> LEFT JOIN foo AS f ON f.id = b.id
+			`LEFT JOIN foo AS "f" ON f.id = b.id`,
+			`> LEFT JOIN foo AS "f" ON f.id = b.id
 `,
 			[]interface{}{},
 		},
@@ -310,7 +316,7 @@ func TestLeftJoin(t *testing.T) {
 			).Using(
 				statement.NewColumn("id"),
 			),
-			"LEFT JOIN foo USING id",
+			`LEFT JOIN foo USING id`,
 			`> LEFT JOIN foo USING id
 `,
 			[]interface{}{},
@@ -321,8 +327,8 @@ func TestLeftJoin(t *testing.T) {
 			).Using(
 				statement.NewColumn("id"),
 			),
-			"LEFT JOIN foo AS f USING id",
-			`> LEFT JOIN foo AS f USING id
+			`LEFT JOIN foo AS "f" USING id`,
+			`> LEFT JOIN foo AS "f" USING id
 `,
 			[]interface{}{},
 		},
@@ -359,7 +365,7 @@ func TestRightJoin(t *testing.T) {
 			statement.NewRightJoin(
 				statement.NewTable("foo"),
 			),
-			"RIGHT JOIN foo",
+			`RIGHT JOIN foo`,
 			`> RIGHT JOIN foo
 `,
 			[]interface{}{},
@@ -368,8 +374,8 @@ func TestRightJoin(t *testing.T) {
 			statement.NewRightJoin(
 				statement.NewTable("foo").As("f"),
 			),
-			"RIGHT JOIN foo AS f",
-			`> RIGHT JOIN foo AS f
+			`RIGHT JOIN foo AS "f"`,
+			`> RIGHT JOIN foo AS "f"
 `,
 			[]interface{}{},
 		},
@@ -380,7 +386,7 @@ func TestRightJoin(t *testing.T) {
 				statement.NewColumn("foo.id"),
 				statement.NewColumn("bar.id"),
 			),
-			"RIGHT JOIN foo ON foo.id = bar.id",
+			`RIGHT JOIN foo ON foo.id = bar.id`,
 			`> RIGHT JOIN foo ON foo.id = bar.id
 `,
 			[]interface{}{},
@@ -392,8 +398,8 @@ func TestRightJoin(t *testing.T) {
 				statement.NewColumn("f.id"),
 				statement.NewColumn("b.id"),
 			),
-			"RIGHT JOIN foo AS f ON f.id = b.id",
-			`> RIGHT JOIN foo AS f ON f.id = b.id
+			`RIGHT JOIN foo AS "f" ON f.id = b.id`,
+			`> RIGHT JOIN foo AS "f" ON f.id = b.id
 `,
 			[]interface{}{},
 		},
@@ -403,7 +409,7 @@ func TestRightJoin(t *testing.T) {
 			).Using(
 				statement.NewColumn("id"),
 			),
-			"RIGHT JOIN foo USING id",
+			`RIGHT JOIN foo USING id`,
 			`> RIGHT JOIN foo USING id
 `,
 			[]interface{}{},
@@ -414,8 +420,8 @@ func TestRightJoin(t *testing.T) {
 			).Using(
 				statement.NewColumn("id"),
 			),
-			"RIGHT JOIN foo AS f USING id",
-			`> RIGHT JOIN foo AS f USING id
+			`RIGHT JOIN foo AS "f" USING id`,
+			`> RIGHT JOIN foo AS "f" USING id
 `,
 			[]interface{}{},
 		},

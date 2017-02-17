@@ -3,6 +3,7 @@ package statement
 import (
 	"github.com/minodisk/sqlabble/node"
 	"github.com/minodisk/sqlabble/operator"
+	"github.com/minodisk/sqlabble/token"
 )
 
 // Statement is the interface of the component
@@ -36,6 +37,7 @@ type ColumnOrSubquery interface {
 
 type Joiner interface {
 	Expressor
+	tokenize() token.Tokens
 	Join(Joiner) Joiner
 	InnerJoin(Joiner) Joiner
 	LeftJoin(Joiner) Joiner

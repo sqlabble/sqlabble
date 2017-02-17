@@ -4,10 +4,11 @@ import (
 	"github.com/minodisk/sqlabble/keyword"
 	"github.com/minodisk/sqlabble/node"
 	"github.com/minodisk/sqlabble/operator"
+	"github.com/minodisk/sqlabble/token"
 )
 
 type On struct {
-	join             Joiner
+	joiner           Joiner
 	column1, column2 Column
 }
 
@@ -22,7 +23,7 @@ func (o On) node() node.Node {
 	ts := tableNodes(o)
 	ns := make([]node.Node, len(ts))
 	for i, t := range ts {
-		ns[i] = t.expression()
+		ns[i] = token.NewTokensNode(t.tokenize())
 	}
 	return node.NewNodes(ns...)
 }
@@ -32,18 +33,30 @@ func (o On) expression() node.Expression {
 		Append(o.column1.expression()).
 		Append(node.NewExpression(string(operator.Eq))).
 		Append(o.column2.expression())
-	if o.join == nil {
+	if o.joiner == nil {
 		return e
 	}
-	return o.join.expression().
+	return o.joiner.expression().
 		Append(e)
 }
 
+func (o On) tokenize() token.Tokens {
+	var t token.Tokens
+	if o.joiner != nil {
+		t = o.joiner.tokenize()
+	}
+	return t.
+		Append(token.Word(keyword.On)).
+		Append(o.column1.tokenize()...).
+		Append(token.Word(operator.Eq)).
+		Append(o.column2.tokenize()...)
+}
+
 func (o On) previous() Joiner {
-	if o.join == nil {
+	if o.joiner == nil {
 		return nil
 	}
-	return o.join.previous()
+	return o.joiner.previous()
 }
 
 func (o On) Join(table Joiner) Joiner {

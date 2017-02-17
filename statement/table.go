@@ -1,6 +1,9 @@
 package statement
 
-import "github.com/minodisk/sqlabble/node"
+import (
+	"github.com/minodisk/sqlabble/node"
+	"github.com/minodisk/sqlabble/token"
+)
 
 type Table struct {
 	name string
@@ -16,9 +19,18 @@ func (t Table) node() node.Node {
 	ts := tableNodes(t)
 	ns := make([]node.Node, len(ts))
 	for i, t := range ts {
-		ns[i] = t.expression()
+		ns[i] = token.NewTokensNode(t.tokenize())
 	}
 	return node.NewNodes(ns...)
+}
+
+func (t Table) tokenize() token.Tokens {
+	if t.name == "" {
+		return token.Tokens{}
+	}
+	return token.Tokens{
+		token.Word(t.name),
+	}
 }
 
 func (t Table) expression() node.Expression {

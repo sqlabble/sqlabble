@@ -138,12 +138,6 @@ func (c Column) node() node.Node {
 	)
 }
 
-func (c Column) expression() node.Expression {
-	return node.NewExpression(
-		c.name,
-	)
-}
-
 func (c Column) tokenize() token.Tokens {
 	if c.name == "" {
 		return token.Tokens{}
@@ -151,6 +145,12 @@ func (c Column) tokenize() token.Tokens {
 	return token.Tokens{
 		token.Word(c.name),
 	}
+}
+
+func (c Column) expression() node.Expression {
+	return node.NewExpression(
+		c.name,
+	)
 }
 
 func (c Column) columnName() string {

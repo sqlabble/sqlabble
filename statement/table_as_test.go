@@ -9,9 +9,9 @@ import (
 	"github.com/minodisk/sqlabble/statement"
 )
 
-func TestTableType(t *testing.T) {
+func TestTableAsType(t *testing.T) {
 	for _, c := range []interface{}{
-		statement.Table{},
+		statement.TableAs{},
 	} {
 		t.Run(fmt.Sprintf("%T", c), func(t *testing.T) {
 			if _, ok := c.(statement.Joiner); !ok {
@@ -21,7 +21,7 @@ func TestTableType(t *testing.T) {
 	}
 }
 
-func TestTable(t *testing.T) {
+func TestTableAs(t *testing.T) {
 	for i, c := range []struct {
 		statement statement.Statement
 		sql       string
@@ -29,44 +29,44 @@ func TestTable(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			statement.NewTable("foo"),
-			`foo`,
-			`> foo
+			statement.NewTable("foo").As("f"),
+			`foo AS "f"`,
+			`> foo AS "f"
 `,
 			[]interface{}{},
 		},
 		{
-			statement.NewTable("foo").
+			statement.NewTable("foo").As("f").
 				Join(statement.NewTable("bar")),
-			`foo JOIN bar`,
-			`> foo
+			`foo AS "f" JOIN bar`,
+			`> foo AS "f"
 > JOIN bar
 `,
 			[]interface{}{},
 		},
 		{
-			statement.NewTable("foo").
+			statement.NewTable("foo").As("f").
 				InnerJoin(statement.NewTable("bar")),
-			`foo INNER JOIN bar`,
-			`> foo
+			`foo AS "f" INNER JOIN bar`,
+			`> foo AS "f"
 > INNER JOIN bar
 `,
 			[]interface{}{},
 		},
 		{
-			statement.NewTable("foo").
+			statement.NewTable("foo").As("f").
 				LeftJoin(statement.NewTable("bar")),
-			`foo LEFT JOIN bar`,
-			`> foo
+			`foo AS "f" LEFT JOIN bar`,
+			`> foo AS "f"
 > LEFT JOIN bar
 `,
 			[]interface{}{},
 		},
 		{
-			statement.NewTable("foo").
+			statement.NewTable("foo").As("f").
 				RightJoin(statement.NewTable("bar")),
-			`foo RIGHT JOIN bar`,
-			`> foo
+			`foo AS "f" RIGHT JOIN bar`,
+			`> foo AS "f"
 > RIGHT JOIN bar
 `,
 			[]interface{}{},

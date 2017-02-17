@@ -3,54 +3,60 @@ package statement
 import (
 	"github.com/minodisk/sqlabble/keyword"
 	"github.com/minodisk/sqlabble/node"
+	"github.com/minodisk/sqlabble/token"
 )
 
 type Join struct {
 	joinType string
-	table    Joiner
+	joiner   Joiner
 	prev     Joiner
 }
 
 func NewJoin(table Joiner) Join {
 	return Join{
 		joinType: keyword.Join,
-		table:    table,
+		joiner:   table,
 	}
 }
 
 func NewInnerJoin(table Joiner) Join {
 	return Join{
 		joinType: keyword.InnerJoin,
-		table:    table,
+		joiner:   table,
 	}
 }
 
 func NewLeftJoin(table Joiner) Join {
 	return Join{
 		joinType: keyword.LeftJoin,
-		table:    table,
+		joiner:   table,
 	}
 }
 
 func NewRightJoin(table Joiner) Join {
 	return Join{
 		joinType: keyword.RightJoin,
-		table:    table,
+		joiner:   table,
 	}
 }
 
 func (j Join) node() node.Node {
 	ts := tableNodes(j)
-	es := make([]node.Node, len(ts))
+	ns := make([]node.Node, len(ts))
 	for i, t := range ts {
-		es[i] = t.expression()
+		ns[i] = token.NewTokensNode(t.tokenize())
 	}
-	return node.NewNodes(es...)
+	return node.NewNodes(ns...)
+}
+
+func (j Join) tokenize() token.Tokens {
+	return token.Word(j.joinType).
+		Append(j.joiner.tokenize()...)
 }
 
 func (j Join) expression() node.Expression {
 	return node.NewExpression(j.joinType).
-		Append(j.table.expression())
+		Append(j.joiner.expression())
 }
 
 func (j Join) previous() Joiner {
@@ -86,7 +92,7 @@ func (j Join) RightJoin(table Joiner) Joiner {
 
 func (j Join) On(column1, column2 Column) On {
 	o := NewOn(column1, column2)
-	o.join = j
+	o.joiner = j
 	return o
 }
 

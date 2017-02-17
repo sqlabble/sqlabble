@@ -28,7 +28,7 @@ func TestFromSQL(t *testing.T) {
 			statement.NewFrom(
 				statement.NewTable("foo"),
 			),
-			"FROM foo",
+			`FROM foo`,
 			`> FROM
 >   foo
 `,
@@ -39,9 +39,9 @@ func TestFromSQL(t *testing.T) {
 			statement.NewFrom(
 				statement.NewTable("foo").As("a"),
 			),
-			"FROM foo AS a",
+			`FROM foo AS "a"`,
 			`> FROM
->   foo AS a
+>   foo AS "a"
 `,
 			[]interface{}{},
 		},
@@ -52,9 +52,9 @@ func TestFromSQL(t *testing.T) {
 					statement.NewTable("bar"),
 				),
 			),
-			"FROM foo AS a JOIN bar",
+			`FROM foo AS "a" JOIN bar`,
 			`> FROM
->   foo AS a
+>   foo AS "a"
 >   JOIN bar
 `,
 			[]interface{}{},
@@ -66,7 +66,7 @@ func TestFromSQL(t *testing.T) {
 			).Where(
 				statement.NewColumn("age").Gt(20),
 			),
-			"FROM foo WHERE age > ?",
+			`FROM foo WHERE age > ?`,
 			`> FROM
 >   foo
 > WHERE
@@ -83,7 +83,7 @@ func TestFromSQL(t *testing.T) {
 			).GroupBy(
 				statement.NewColumn("id"),
 			),
-			"FROM foo GROUP BY id",
+			`FROM foo GROUP BY id`,
 			`> FROM
 >   foo
 > GROUP BY
@@ -98,7 +98,7 @@ func TestFromSQL(t *testing.T) {
 			).OrderBy(
 				statement.NewColumn("age").Asc(),
 			),
-			"FROM foo ORDER BY age ASC",
+			`FROM foo ORDER BY age ASC`,
 			`> FROM
 >   foo
 > ORDER BY
@@ -111,7 +111,7 @@ func TestFromSQL(t *testing.T) {
 			statement.NewFrom(
 				statement.NewTable("foo"),
 			).Limit(20),
-			"FROM foo LIMIT ?",
+			`FROM foo LIMIT ?`,
 			`> FROM
 >   foo
 > LIMIT

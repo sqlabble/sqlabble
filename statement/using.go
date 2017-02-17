@@ -3,6 +3,7 @@ package statement
 import (
 	"github.com/minodisk/sqlabble/keyword"
 	"github.com/minodisk/sqlabble/node"
+	"github.com/minodisk/sqlabble/token"
 )
 
 type Using struct {
@@ -18,11 +19,11 @@ func NewUsing(column Column) Using {
 
 func (u Using) node() node.Node {
 	ts := tableNodes(u)
-	us := make([]node.Node, len(ts))
+	ns := make([]node.Node, len(ts))
 	for i, t := range ts {
-		us[i] = t.expression()
+		ns[i] = token.NewTokensNode(t.tokenize())
 	}
-	return node.NewNodes(us...)
+	return node.NewNodes(ns...)
 }
 
 func (u Using) expression() node.Expression {
@@ -33,6 +34,16 @@ func (u Using) expression() node.Expression {
 	}
 	return u.joiner.expression().
 		Append(e)
+}
+
+func (u Using) tokenize() token.Tokens {
+	var t token.Tokens
+	if u.joiner != nil {
+		t = u.joiner.tokenize()
+	}
+	return t.
+		Append(token.Word(keyword.Using)).
+		Append(u.column.tokenize()...)
 }
 
 func (u Using) previous() Joiner {

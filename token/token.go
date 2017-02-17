@@ -47,11 +47,11 @@ func (ts Tokens) String(ctx node.Context) string {
 	return sql
 }
 
-func (ts Tokens) Append(token Token) Tokens {
+func (ts Tokens) Append(tokens ...Token) Tokens {
 	if len(ts) == 0 {
-		return Tokens{token}
+		return tokens
 	}
-	return append(ts, Space, token)
+	return append(append(ts, Space), tokens...)
 }
 
 func (ts Tokens) Add(tokens Tokens) Tokens {
@@ -68,6 +68,10 @@ type Word string
 
 func (w Word) String(ctx node.Context) string {
 	return string(w)
+}
+
+func (w Word) Append(tokens ...Token) Tokens {
+	return append(append(Tokens{w}, Space), tokens...)
 }
 
 func Wrap(inner, outer Token) Tokens {
