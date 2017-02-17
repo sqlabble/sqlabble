@@ -45,9 +45,14 @@ func TestMain(m *testing.M) {
 		os.Exit(1)
 	}
 
-	for i := 0; i < 15; i++ {
+	for i := 0; ; i++ {
+		fmt.Println("ping")
 		if err := db.Ping(); err == nil {
 			break
+		}
+		if i == 60 {
+			fmt.Println("timeout")
+			os.Exit(1)
 		}
 		time.Sleep(time.Second)
 	}
