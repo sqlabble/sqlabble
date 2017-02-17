@@ -1,7 +1,11 @@
-version: '2'
+sqlabble:
+  build: .
+  links:
+    - mysql
+  encrypted_env_file: coveralls.env.encrypted
 
-services:
-
-  sqlabble:
-    build: .
-    encrypted_env_file: coveralls.env.encrypted
+mysql:
+  image: mysql:5.6
+  environment:
+    MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    MYSQL_DATABASE: 'sqlabble'
