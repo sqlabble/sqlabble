@@ -1,12 +1,14 @@
 package statement
 
 import (
+	"fmt"
+
 	"github.com/minodisk/sqlabble/node"
 	"github.com/minodisk/sqlabble/operator"
 )
 
 type ColumnAs struct {
-	column ColumnOrColumnAs
+	column Column
 	alias  string
 }
 
@@ -17,17 +19,11 @@ func NewColumnAs(alias string) ColumnAs {
 }
 
 func (c ColumnAs) node() node.Node {
-	return c.expression()
-}
-
-func (c ColumnAs) expression() node.Expression {
-	a := node.NewExpression(string(operator.As)).
-		Append(node.NewExpression(c.alias))
-	if c.column == nil {
-		return a
-	}
-	return c.column.expression().
-		Append(a)
+	return node.JoinExpressions(
+		c.column.expression(),
+		node.NewExpression(string(operator.As)),
+		node.NewExpression(fmt.Sprintf("`%s`", c.alias)),
+	)
 }
 
 func (c ColumnAs) columnName() string {

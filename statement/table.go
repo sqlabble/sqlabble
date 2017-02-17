@@ -22,13 +22,11 @@ func (t Table) node() node.Node {
 }
 
 func (t Table) expression() node.Expression {
-	return node.NewExpression(
-		t.TableName(),
-	)
+	return node.NewExpression(t.name)
 }
 
-func (t Table) TableName() string {
-	return t.name
+func (t Table) previous() Joiner {
+	return nil
 }
 
 func (t Table) As(alias string) TableAs {
@@ -36,10 +34,6 @@ func (t Table) As(alias string) TableAs {
 		table: t,
 		alias: alias,
 	}
-}
-
-func (t Table) previous() Joiner {
-	return nil
 }
 
 func (t Table) Join(table Joiner) Joiner {

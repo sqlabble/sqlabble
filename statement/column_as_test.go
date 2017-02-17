@@ -9,17 +9,17 @@ import (
 	"github.com/minodisk/sqlabble/statement"
 )
 
-// func TestColumnAsType(t *testing.T) {
-// 	for _, c := range []interface{}{
-// 		statement.ColumnAs{},
-// 	} {
-// 		t.Run(fmt.Sprintf("%T", c), func(t *testing.T) {
-// 			if _, ok := c.(statement.ColumnNode); !ok {
-// 				t.Errorf("%T should implement Column", c)
-// 			}
-// 		})
-// 	}
-// }
+func TestColumnAsType(t *testing.T) {
+	for _, c := range []interface{}{
+		statement.ColumnAs{},
+	} {
+		t.Run(fmt.Sprintf("%T", c), func(t *testing.T) {
+			if _, ok := c.(statement.ColumnOrColumnAs); !ok {
+				t.Errorf("%T should implement statement.ColumnOrColumnAs", c)
+			}
+		})
+	}
+}
 
 func TestColumnAsSQL(t *testing.T) {
 	for i, c := range []struct {
@@ -30,8 +30,8 @@ func TestColumnAsSQL(t *testing.T) {
 	}{
 		{
 			statement.NewColumnAs("foo"),
-			"AS foo",
-			`> AS foo
+			"AS `foo`",
+			`> AS ` + "`foo`" + `
 `,
 			[]interface{}{},
 		},

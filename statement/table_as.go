@@ -1,9 +1,8 @@
 package statement
 
 import (
-	"fmt"
-
 	"github.com/minodisk/sqlabble/node"
+	"github.com/minodisk/sqlabble/operator"
 )
 
 type TableAs struct {
@@ -21,13 +20,11 @@ func (t TableAs) node() node.Node {
 }
 
 func (t TableAs) expression() node.Expression {
-	return node.NewExpression(
-		fmt.Sprintf("%s AS %s", t.TableName(), t.alias),
+	return node.JoinExpressions(
+		t.table.expression(),
+		node.NewExpression(string(operator.As)),
+		node.NewExpression(t.alias),
 	)
-}
-
-func (t TableAs) TableName() string {
-	return t.table.name
 }
 
 func (t TableAs) previous() Joiner {

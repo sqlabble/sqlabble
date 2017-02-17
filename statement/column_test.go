@@ -37,8 +37,8 @@ func TestColumnSQL(t *testing.T) {
 		},
 		{
 			statement.NewColumn("foo").As("f"),
-			"foo AS f",
-			`> foo AS f
+			"foo AS `f`",
+			`> foo AS ` + "`f`" + `
 `,
 			[]interface{}{},
 		},

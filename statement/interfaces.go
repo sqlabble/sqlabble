@@ -25,7 +25,7 @@ type Clause interface {
 }
 
 type ColumnOrColumnAs interface {
-	Expressor
+	Statement
 	columnName() string
 }
 

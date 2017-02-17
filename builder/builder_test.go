@@ -61,11 +61,11 @@ func TestBuilder(t *testing.T) {
 			).Offset(
 				20 * 5,
 			),
-			"SELECT created_at, name AS n, gender AS g, age FROM users WHERE g = ? AND (age < ? OR age = ? OR age >= ?) AND created_at BETWEEN ? AND ? ORDER BY created_at DESC, id ASC LIMIT ? OFFSET ?",
+			"SELECT created_at, name AS `n`, gender AS `g`, age FROM users WHERE g = ? AND (age < ? OR age = ? OR age >= ?) AND created_at BETWEEN ? AND ? ORDER BY created_at DESC, id ASC LIMIT ? OFFSET ?",
 			`> SELECT
 >   created_at
->   , name AS n
->   , gender AS g
+>   , name AS ` + "`n`" + `
+>   , gender AS ` + "`g`" + `
 >   , age
 > FROM
 >   users
@@ -248,11 +248,11 @@ func TestBuild(t *testing.T) {
 			).Offset(
 				20 * 5,
 			),
-			"SELECT created_at, name AS n, gender AS g, age FROM users WHERE g = ? AND (age < ? OR age = ? OR age >= ?) AND created_at BETWEEN ? AND ? ORDER BY created_at DESC, id ASC LIMIT ? OFFSET ?",
+			"SELECT created_at, name AS `n`, gender AS `g`, age FROM users WHERE g = ? AND (age < ? OR age = ? OR age >= ?) AND created_at BETWEEN ? AND ? ORDER BY created_at DESC, id ASC LIMIT ? OFFSET ?",
 			`SELECT
   created_at
-  , name AS n
-  , gender AS g
+  , name AS ` + "`n`" + `
+  , gender AS ` + "`g`" + `
   , age
 FROM
   users

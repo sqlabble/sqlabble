@@ -54,9 +54,9 @@ func TestSelectSQL(t *testing.T) {
 			statement.NewSelect(
 				statement.NewColumn("foo").As("a"),
 			),
-			"SELECT foo AS a",
+			"SELECT foo AS `a`",
 			`> SELECT
->   foo AS a
+>   foo AS ` + "`a`" + `
 `,
 			[]interface{}{},
 		},
@@ -66,11 +66,11 @@ func TestSelectSQL(t *testing.T) {
 				statement.NewColumn("bar").As("b"),
 				statement.NewColumn("baz").As("c"),
 			),
-			"SELECT foo AS a, bar AS b, baz AS c",
+			"SELECT foo AS `a`, bar AS `b`, baz AS `c`",
 			`> SELECT
->   foo AS a
->   , bar AS b
->   , baz AS c
+>   foo AS ` + "`a`" + `
+>   , bar AS ` + "`b`" + `
+>   , baz AS ` + "`c`" + `
 `,
 			[]interface{}{},
 		},
@@ -80,11 +80,11 @@ func TestSelectSQL(t *testing.T) {
 				statement.NewColumn("bar").As("b"),
 				statement.NewColumn("baz").As("c"),
 			),
-			"SELECT DISTINCT foo AS a, bar AS b, baz AS c",
+			"SELECT DISTINCT foo AS `a`, bar AS `b`, baz AS `c`",
 			`> SELECT DISTINCT
->   foo AS a
->   , bar AS b
->   , baz AS c
+>   foo AS ` + "`a`" + `
+>   , bar AS ` + "`b`" + `
+>   , baz AS ` + "`c`" + `
 `,
 			[]interface{}{},
 		},

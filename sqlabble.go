@@ -4,12 +4,13 @@ import "github.com/minodisk/sqlabble/statement"
 
 // Methods exported to make statements.
 var (
-	CreateTable    = statement.NewCreateTable
-	Select         = statement.NewSelect
-	SelectDistinct = statement.NewSelectDistinct
-	InsertInto     = statement.NewInsertInto
-	Update         = statement.NewUpdate
-	Delete         = statement.NewDelete
+	CreateTable            = statement.NewCreateTable
+	CreateTableIfNotExists = statement.NewCreateTableIfNotExists
+	Select                 = statement.NewSelect
+	SelectDistinct         = statement.NewSelectDistinct
+	InsertInto             = statement.NewInsertInto
+	Update                 = statement.NewUpdate
+	Delete                 = statement.NewDelete
 
 	Column = statement.NewColumn
 	C      = statement.NewColumn
