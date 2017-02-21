@@ -25,7 +25,7 @@ SQL query builder with type support.
 - [x] `VALUES ({VALUE})`
 - [x] `DEFAULT VALUES`
 - [x] `UPDATE {TABLE}`
-- [x] `SET ({ASSIGNMENT})`
+- [x] `SET ({COLUMN} = {VALUE|SUBQUERY})`
 - [x] `DELETE`
 - [x] `CREATE TABLE {TABLE}`
 - [x] `CREATE TABLE IF NOT EXISTS {TABLE}`
@@ -57,7 +57,7 @@ SQL query builder with type support.
 - [x] `{COLUMN|SUBQUERY} <= {VALUE|SUBQUERY}`
 - [x] `{COLUMN|SUBQUERY} LIKE {VALUE|SUBQUERY}`
 - [x] `{COLUMN|SUBQUERY} REGEXP {VALUE|SUBQUERY}`
-- [x] `{COLUMN|SUBQUERY} BETWEEN {VALUE} AND {VALUE}`
+- [x] `{COLUMN|SUBQUERY} BETWEEN {VALUE|SUBQUERY} AND {VALUE|SUBQUERY}`
 - [x] `{COLUMN|SUBQUERY} IN {VALUE|SUBQUERY}`
 - [x] `{COLUMN|SUBQUERY} NOT IN {VALUE|SUBQUERY}`
 - [x] `{COLUMN|SUBQUERY} IS NULL`
@@ -106,10 +106,6 @@ SQL query builder with type support.
 - [ ] `SELECT ({SUBQUERY})`
 - [ ] `FROM ({SUBQUERY})`
 
-#### Scalar Operation
-
-- [ ] `{COLUMN} BETWEEN ({SUBQUERY}) AND ({SUBQUERY})`
-
 #### Nonscalar Operation
 
 - [ ] `{COLUMN} = ALL ({SUBQUERY})`
@@ -126,10 +122,6 @@ SQL query builder with type support.
 - [ ] `{COLUMN} <= ANY ({SUBQUERY})`
 - [ ] `EXISTS ({SUBQUERY})`
 - [ ] `NOT EXISTS ({SUBQUERY})`
-
-#### Set
-
-- [ ] `SET {COLUMN} = ({SUBQUERY})`
 
 #### Joins
 

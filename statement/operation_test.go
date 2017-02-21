@@ -547,6 +547,72 @@ func TestBetween(t *testing.T) {
 				200,
 			},
 		},
+		{
+			statement.NewColumn("joined_users").Between(
+				statement.NewParam(100),
+				statement.NewSubquery(
+					statement.NewSelect(statement.NewColumn("count(*)")).
+						From(statement.NewTable("users")),
+				),
+			),
+			"joined_users BETWEEN ? AND (SELECT count(*) FROM users)",
+			`> joined_users BETWEEN ? AND (
+>   SELECT
+>     count(*)
+>   FROM
+>     users
+> )
+`,
+			[]interface{}{
+				100,
+			},
+		},
+		{
+			statement.NewColumn("joined_users").Between(
+				statement.NewSubquery(
+					statement.NewSelect(statement.NewColumn("count(*)")).
+						From(statement.NewTable("users")),
+				),
+				statement.NewParam(500),
+			),
+			"joined_users BETWEEN (SELECT count(*) FROM users) AND ?",
+			`> joined_users BETWEEN (
+>   SELECT
+>     count(*)
+>   FROM
+>     users
+> ) AND ?
+`,
+			[]interface{}{
+				500,
+			},
+		},
+		{
+			statement.NewColumn("joined_users").Between(
+				statement.NewSubquery(
+					statement.NewSelect(statement.NewColumn("count(*)")).
+						From(statement.NewTable("super_users")),
+				),
+				statement.NewSubquery(
+					statement.NewSelect(statement.NewColumn("count(*)")).
+						From(statement.NewTable("users")),
+				),
+			),
+			"joined_users BETWEEN (SELECT count(*) FROM super_users) AND (SELECT count(*) FROM users)",
+			`> joined_users BETWEEN (
+>   SELECT
+>     count(*)
+>   FROM
+>     super_users
+> ) AND (
+>   SELECT
+>     count(*)
+>   FROM
+>     users
+> )
+`,
+			nil,
+		},
 	} {
 		t.Run(fmt.Sprintf("Build %+v", c.statement), func(t *testing.T) {
 			sql, values := b.Build(c.statement)

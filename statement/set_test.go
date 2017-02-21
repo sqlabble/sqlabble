@@ -42,6 +42,25 @@ func TestSet(t *testing.T) {
 		},
 		{
 			statement.NewSet(
+				statement.NewColumn("foo").Assign(
+					statement.NewSubquery(
+						statement.NewSelect(
+							statement.NewColumn("count(*)"),
+						),
+					),
+				),
+			),
+			"SET foo = (SELECT count(*))",
+			`> SET
+>   foo = (
+>     SELECT
+>       count(*)
+>   )
+`,
+			nil,
+		},
+		{
+			statement.NewSet(
 				statement.NewColumn("foo").Assign(statement.NewParam(100)),
 				statement.NewColumn("bar").Assign(statement.NewParam(200)),
 			),
