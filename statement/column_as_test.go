@@ -14,7 +14,7 @@ func TestColumnAsType(t *testing.T) {
 		statement.ColumnAs{},
 	} {
 		t.Run(fmt.Sprintf("%T", c), func(t *testing.T) {
-			if _, ok := c.(statement.ColumnOrColumnAs); !ok {
+			if _, ok := c.(statement.ColumnOrColumnAsOrSubquery); !ok {
 				t.Errorf("%T should implement statement.ColumnOrColumnAs", c)
 			}
 		})
@@ -33,7 +33,7 @@ func TestColumnAsSQL(t *testing.T) {
 			`AS "foo"`,
 			`> AS "foo"
 `,
-			[]interface{}{},
+			nil,
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {

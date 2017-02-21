@@ -17,29 +17,23 @@ func NewSet(assigns ...Assign) Set {
 }
 
 func (s Set) nodeize() (token.Tokenizer, []interface{}) {
-	clauses := clauseNodes(s)
-	cs := make(token.Containers, len(clauses))
-	values := []interface{}{}
-	for i, c := range clauses {
-		var vals []interface{}
-		cs[i], vals = c.container()
-		values = append(values, vals...)
-	}
-	return cs, values
+	return nodeizeClauses(s)
 }
 
-func (s Set) container() (token.Container, []interface{}) {
-	lines := make(token.Lines, len(s.assigns))
+func (s Set) self() (token.Tokenizer, []interface{}) {
+	tokenizers := make(token.Tokenizers, len(s.assigns))
 	values := []interface{}{}
 	for i, a := range s.assigns {
 		var vals []interface{}
-		lines[i], vals = a.line()
+		tokenizers[i], vals = a.nodeize()
 		values = append(values, vals...)
 	}
 	return token.NewContainer(
-		token.NewLine(token.Word(keyword.Set)),
+		token.NewLine(
+			token.Word(keyword.Set),
+		),
 	).SetMiddle(
-		lines,
+		tokenizers.Prefix(token.Comma, token.Space),
 	), values
 }
 

@@ -17,10 +17,10 @@ func NewUpdate(table Table) Update {
 }
 
 func (u Update) nodeize() (token.Tokenizer, []interface{}) {
-	return u.container()
+	return nodeizeClauses(u)
 }
 
-func (u Update) container() (token.Container, []interface{}) {
+func (u Update) self() (token.Tokenizer, []interface{}) {
 	middle, values := u.table.nodeize()
 	return token.NewContainer(
 		token.NewLine(token.Word(keyword.Update)),

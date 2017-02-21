@@ -123,7 +123,10 @@ func TestSubOperationLeftSide(t *testing.T) {
 		},
 		{
 			statement.NewSubquery(statement.NewSelect()).
-				Between(100, 200),
+				Between(
+					statement.NewParam(100),
+					statement.NewParam(200),
+				),
 			"(SELECT) BETWEEN ? AND ?",
 			`> (
 >   SELECT

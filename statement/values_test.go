@@ -18,8 +18,7 @@ func TestValuesSQL(t *testing.T) {
 	}{
 		{
 			statement.NewValues(
-				"Obi-Wan Kenobi",
-				53,
+				statement.NewParams("Obi-Wan Kenobi", 53),
 			),
 			"VALUES (?, ?)",
 			`> VALUES
@@ -32,11 +31,8 @@ func TestValuesSQL(t *testing.T) {
 		},
 		{
 			statement.NewValues(
-				"Obi-Wan Kenobi",
-				63,
-			).Values(
-				"Luke Skywalker",
-				19,
+				statement.NewParams("Obi-Wan Kenobi", 63),
+				statement.NewParams("Luke Skywalker", 19),
 			),
 			"VALUES (?, ?), (?, ?)",
 			`> VALUES
@@ -55,7 +51,7 @@ func TestValuesSQL(t *testing.T) {
 			"DEFAULT VALUES",
 			`> DEFAULT VALUES
 `,
-			[]interface{}{},
+			nil,
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {

@@ -26,11 +26,12 @@ func TestInsertSQL(t *testing.T) {
 			statement.NewInsertInto(
 				statement.NewTable("foo"),
 			),
-			"INSERT INTO foo",
+			"INSERT INTO foo ()",
 			`> INSERT INTO
->   foo
+>   foo (
+>   )
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewInsertInto(
@@ -40,9 +41,12 @@ func TestInsertSQL(t *testing.T) {
 			),
 			"INSERT INTO foo (name, age)",
 			`> INSERT INTO
->   foo (name, age)
+>   foo (
+>     name
+>     , age
+>   )
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewInsertInto(
@@ -50,18 +54,20 @@ func TestInsertSQL(t *testing.T) {
 				statement.NewColumn("name"),
 				statement.NewColumn("age"),
 			).Values(
-				"Obi-Wan Kenobi",
-				53,
+				statement.NewParams("Obi-Wan Kenobi", 63),
 			),
 			"INSERT INTO foo (name, age) VALUES (?, ?)",
 			`> INSERT INTO
->   foo (name, age)
+>   foo (
+>     name
+>     , age
+>   )
 > VALUES
 >   (?, ?)
 `,
 			[]interface{}{
 				"Obi-Wan Kenobi",
-				53,
+				63,
 			},
 		},
 		{
@@ -70,15 +76,15 @@ func TestInsertSQL(t *testing.T) {
 				statement.NewColumn("name"),
 				statement.NewColumn("age"),
 			).Values(
-				"Obi-Wan Kenobi",
-				63,
-			).Values(
-				"Luke Skywalker",
-				19,
+				statement.NewParams("Obi-Wan Kenobi", 63),
+				statement.NewParams("Luke Skywalker", 19),
 			),
 			"INSERT INTO foo (name, age) VALUES (?, ?), (?, ?)",
 			`> INSERT INTO
->   foo (name, age)
+>   foo (
+>     name
+>     , age
+>   )
 > VALUES
 >   (?, ?)
 >   , (?, ?)
@@ -98,10 +104,13 @@ func TestInsertSQL(t *testing.T) {
 			).DefaultValues(),
 			"INSERT INTO foo (name, age) DEFAULT VALUES",
 			`> INSERT INTO
->   foo (name, age)
+>   foo (
+>     name
+>     , age
+>   )
 > DEFAULT VALUES
 `,
-			[]interface{}{},
+			nil,
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {

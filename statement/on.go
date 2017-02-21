@@ -19,7 +19,7 @@ func NewOn(column1, column2 Column) On {
 }
 
 func (o On) nodeize() (token.Tokenizer, []interface{}) {
-	joiners := tableNodes(o)
+	joiners := collectJoiners(o)
 	ts := make(token.Tokenizers, len(joiners))
 	values := []interface{}{}
 	for i, j := range joiners {
@@ -31,25 +31,34 @@ func (o On) nodeize() (token.Tokenizer, []interface{}) {
 }
 
 func (o On) self() (token.Tokenizer, []interface{}) {
-	line1, values1 := o.column1.line()
-	line2, values2 := o.column2.line()
-
-	line := token.NewLine(
+	t1, v1 := o.column1.nodeize()
+	t2, v2 := o.column2.nodeize()
+	t12 := token.ConcatTokenizers(
+		t1,
+		t2,
+		token.NewLine(
+			token.Space,
+			token.Word(operator.Eq),
+			token.Space,
+		),
+	).Prepend(
 		token.Word(keyword.On),
-	).Join(
-		line1,
-		token.NewLine(token.Word(operator.Eq)),
-		line2,
+		token.Space,
 	)
 
-	lines := token.NewLines(line)
-	values := append(values1, values2...)
+	v12 := append(v1, v2...)
 	if o.joiner == nil {
-		return lines, values
+		return t12, v12
 	}
 
-	lines0, values0 := o.joiner.self()
-	return token.NewTokenizers(lines0, lines), append(values0, values...)
+	t0, v0 := o.joiner.self()
+	return token.ConcatTokenizers(
+		t0,
+		t12,
+		token.NewLine(
+			token.Space,
+		),
+	), append(v0, v12...)
 }
 
 func (o On) previous() Joiner {

@@ -6,53 +6,41 @@ import (
 )
 
 type Values struct {
-	prevClause Clause
-	prev       Vals
-	values     []interface{}
+	prev     Clause
+	paramses []Params
 }
 
-func NewValues(values ...interface{}) Values {
+func NewValues(paramses ...Params) Values {
 	return Values{
-		values: values,
+		paramses: paramses,
 	}
 }
 
 func (v Values) nodeize() (token.Tokenizer, []interface{}) {
-	vss := valuesNodes(v)
-	lines := make(token.Lines, len(vss))
+	return nodeizeClauses(v)
+}
+
+func (v Values) self() (token.Tokenizer, []interface{}) {
+	tokenizers := make(token.Tokenizers, len(v.paramses))
 	values := []interface{}{}
-	for i, vs := range vss {
+	for i, p := range v.paramses {
 		var vals []interface{}
-		lines[i], vals = vs.line()
+		tokenizers[i], vals = p.nodeize()
 		values = append(values, vals...)
 	}
-	c := token.NewContainer(
+
+	return token.NewContainer(
 		token.NewLine(token.Word(keyword.Values)),
 	).SetMiddle(
-		lines.Prefix(token.Comma, token.Space),
-	)
-	return c, values
+		token.NewTokenizers(tokenizers...).Prefix(
+			token.Comma,
+			token.Space,
+		),
+	), values
 }
 
-func (v Values) line() (token.Line, []interface{}) {
-	line, values := token.ParamsToLine(v.values...)
-	return line.
-		P(token.ParenthesesStart).
-		A(token.ParenthesesEnd), values
-}
-
-func (v Values) clause() Clause {
-	return v.prevClause
-}
-
-func (v Values) previous() Vals {
+func (v Values) previous() Clause {
 	return v.prev
-}
-
-func (v Values) Values(vals ...interface{}) Values {
-	f := NewValues(vals...)
-	f.prev = v
-	return f
 }
 
 type DefaultValues struct {
@@ -64,18 +52,10 @@ func NewDefaultValues() DefaultValues {
 }
 
 func (v DefaultValues) nodeize() (token.Tokenizer, []interface{}) {
-	clauses := clauseNodes(v)
-	ts := make(token.Tokenizers, len(clauses))
-	values := []interface{}{}
-	for i, c := range clauses {
-		var vals []interface{}
-		ts[i], vals = c.container()
-		values = append(values, vals...)
-	}
-	return ts, values
+	return nodeizeClauses(v)
 }
 
-func (v DefaultValues) container() (token.Container, []interface{}) {
+func (v DefaultValues) self() (token.Tokenizer, []interface{}) {
 	return token.NewContainer(
 		token.NewLine(token.Word(keyword.DefaultValues)),
 	), nil

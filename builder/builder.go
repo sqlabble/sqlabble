@@ -24,6 +24,9 @@ func NewBuilder(options Options) Builder {
 func (b Builder) Build(stmt statement.Statement) (string, []interface{}) {
 	tokenizer, values := statement.Nodeize(stmt)
 	query := printer.Print(tokenizer.Tokenize(0), b.context)
+	if len(values) == 0 {
+		values = nil
+	}
 	return query, values
 }
 

@@ -89,9 +89,9 @@ func (c Column) RegExp(value ParamOrSubquery) ComparisonOperation {
 	return r
 }
 
-func (c Column) Between(from, to interface{}) Between {
+func (c Column) Between(from, to ParamOrSubquery) Between {
 	b := NewBetween(from, to)
-	b.col = c
+	b.column = c
 	return b
 }
 
@@ -109,13 +109,13 @@ func (c Column) NotIn(params ParamsOrSubquery) ContainingOperation {
 
 func (c Column) IsNull() NullOperation {
 	i := NewIsNull()
-	i.col = c
+	i.column = c
 	return i
 }
 
 func (c Column) IsNotNull() NullOperation {
 	i := NewIsNotNull()
-	i.col = c
+	i.column = c
 	return i
 }
 
@@ -132,25 +132,19 @@ func (c Column) Desc() Order {
 }
 
 func (c Column) nodeize() (token.Tokenizer, []interface{}) {
-	return c.line()
-}
-
-func (c Column) lines() (token.Lines, []interface{}) {
-	line, values := c.line()
-	return token.NewLines(line), values
-}
-
-func (c Column) line() (token.Line, []interface{}) {
 	return token.NewLine(token.Word(c.name)), nil
-}
-
-func (c Column) columnName() string {
-	return c.name
 }
 
 // isColumnOrSubquery always returns true.
 // This method exists only to implement the interface ColumnOrSubquery.
 // This is a shit of duck typing, but anyway it works.
 func (c Column) isColumnOrSubquery() bool {
+	return true
+}
+
+// isColumnOrColumnAsOrSubquery always returns true.
+// This method exists only to implement the interface ColumnOrColumnAsOrSubquery.
+// This is a shit of duck typing, but anyway it works.
+func (c Column) isColumnOrColumnAsOrSubquery() bool {
 	return true
 }

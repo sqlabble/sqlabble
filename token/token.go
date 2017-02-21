@@ -1,6 +1,10 @@
 package token
 
-import "github.com/minodisk/sqlabble/node"
+import (
+	"fmt"
+
+	"github.com/minodisk/sqlabble/node"
+)
 
 var (
 	EmptyLine = Line{}
@@ -20,6 +24,13 @@ func NewTokenizers(tokenizers ...Tokenizer) Tokenizers {
 }
 
 func (ts Tokenizers) Prepend(tokens ...Token) Tokenizer {
+	if len(ts) == 0 {
+		return NewLine(tokens...)
+	}
+	if ts[0] == nil {
+		ts[0] = NewLine(tokens...)
+		return ts
+	}
 	ts[0] = ts[0].Prepend(tokens...)
 	return ts
 }
@@ -31,15 +42,29 @@ func (ts Tokenizers) Append(tokens ...Token) Tokenizer {
 }
 
 func (ts Tokenizers) FirstLine() (Line, Tokenizer) {
-	var line Line
-	line, ts[0] = ts[0].FirstLine()
+	line, t := ts[0].FirstLine()
+	if t == nil {
+		ts = ts[1:]
+		if len(ts) == 0 {
+			return line, nil
+		}
+		return line, ts
+	}
+	ts[0] = t
 	return line, ts
 }
 
 func (ts Tokenizers) LastLine() (Tokenizer, Line) {
-	var line Line
 	n := len(ts) - 1
-	ts[n], line = ts[n].LastLine()
+	t, line := ts[n].LastLine()
+	if t == nil {
+		ts = ts[:n]
+		if len(ts) == 0 {
+			return nil, line
+		}
+		return ts, line
+	}
+	ts[n] = t
 	return ts, line
 }
 
@@ -166,13 +191,15 @@ func (l Line) Join(lines ...Line) Line {
 }
 
 func ConcatTokenizers(t1, t2 Tokenizer, sep Line) Tokenizers {
-	tkn1, last := t1.LastLine()
-	first, tkn2 := t2.FirstLine()
-	return NewTokenizers(
-		tkn1,
+	t1, last := t1.LastLine()
+	first, t2 := t2.FirstLine()
+	ts := NewTokenizers(
+		t1,
 		last.A(sep.tokens...).A(first.tokens...),
-		tkn2,
+		t2,
 	)
+	fmt.Println(t1, last, first, t2, "->", ts)
+	return ts
 }
 
 func ConcatLines(lines1, lines2 Lines, seps ...Line) Lines {

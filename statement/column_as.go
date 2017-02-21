@@ -6,7 +6,7 @@ import (
 )
 
 type ColumnAs struct {
-	column Column
+	column ColumnOrSubquery
 	alias  string
 }
 
@@ -17,26 +17,38 @@ func NewColumnAs(alias string) ColumnAs {
 }
 
 func (c ColumnAs) nodeize() (token.Tokenizer, []interface{}) {
-	return c.line()
-}
-
-func (c ColumnAs) line() (token.Line, []interface{}) {
-	line, values := c.column.line()
-	return line.
-		A(
+	if c.column == nil {
+		return token.NewLine(
 			token.Word(operator.As),
 			token.Space,
-		).
-		A(token.Wrap(
-			token.Quote,
-			token.Word(c.alias),
-		)...), values
+		).Append(
+			token.Wrap(
+				token.Word(c.alias),
+				token.Quote,
+			)...,
+		), nil
+	}
+
+	t1, v1 := c.column.nodeize()
+	return token.ConcatTokenizers(
+		t1,
+		token.NewLine(
+			token.Wrap(
+				token.Word(c.alias),
+				token.Quote,
+			)...,
+		),
+		token.NewLine(
+			token.Space,
+			token.Word(operator.As),
+			token.Space,
+		),
+	), v1
 }
 
-func (c ColumnAs) values() []interface{} {
-	return nil
-}
-
-func (c ColumnAs) columnName() string {
-	return c.column.columnName()
+// isColumnOrColumnAsOrSubquery always returns true.
+// This method exists only to implement the interface ColumnOrColumnAsOrSubquery.
+// This is a shit of duck typing, but anyway it works.
+func (c ColumnAs) isColumnOrColumnAsOrSubquery() bool {
+	return true
 }

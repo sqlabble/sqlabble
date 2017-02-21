@@ -14,13 +14,9 @@ func NewDefinition(definition string) Definition {
 }
 
 func (d Definition) nodeize() (token.Tokenizer, []interface{}) {
-	return d.line()
-}
-
-func (d Definition) line() (token.Line, []interface{}) {
-	line, values := d.column.line()
-	return line.
-		A(
+	t, values := d.column.nodeize()
+	return t.
+		Append(
 			token.Space,
 			token.Word(d.definition),
 		), values
@@ -38,23 +34,21 @@ func NewDefinitions(definitions ...Definition) Definitions {
 }
 
 func (ds Definitions) nodeize() (token.Tokenizer, []interface{}) {
-	lines := make(token.Lines, len(ds.definitions))
+	ts := make(token.Tokenizers, len(ds.definitions))
 	values := []interface{}{}
 	for i, d := range ds.definitions {
 		var vals []interface{}
-		lines[i], vals = d.line()
+		ts[i], vals = d.nodeize()
 		values = append(values, vals...)
 	}
-	lines = lines.Prefix(
+	ts = ts.Prefix(
 		token.Comma,
 		token.Space,
 	)
 
 	c, values := ds.createTable.container()
 	middle := c.Middle()
-	def := token.WrapParenthesesLines(
-		lines...,
-	)
+	def := token.NewParentheses(ts)
 
 	return c.SetMiddle(
 		token.ConcatTokenizers(

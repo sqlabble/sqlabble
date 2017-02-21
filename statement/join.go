@@ -76,26 +76,14 @@ func (j Join) Using(col Column) Using {
 }
 
 func (j Join) nodeize() (token.Tokenizer, []interface{}) {
-	joiners := tableNodes(j)
-	ts := make(token.Tokenizers, len(joiners))
-	values := []interface{}{}
-	for i, j := range joiners {
-		var vals []interface{}
-		ts[i], vals = j.self()
-		values = append(values, vals...)
-	}
-	return ts, values
+	return nodeizeJoiners(j)
 }
 
 func (j Join) self() (token.Tokenizer, []interface{}) {
 	t, values := j.joiner.nodeize()
-	line, tokenizer := t.FirstLine()
-	return token.NewTokenizers(
-		line.Prepend(
-			token.Word(j.joinType),
-			token.Space,
-		),
-		tokenizer,
+	return t.Prepend(
+		token.Word(j.joinType),
+		token.Space,
 	), values
 }
 

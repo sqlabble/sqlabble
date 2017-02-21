@@ -35,7 +35,7 @@ func TestJoin(t *testing.T) {
 			`JOIN foo`,
 			`> JOIN foo
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewJoin(
@@ -44,7 +44,7 @@ func TestJoin(t *testing.T) {
 			`JOIN foo AS "f"`,
 			`> JOIN foo AS "f"
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewJoin(
@@ -56,7 +56,7 @@ func TestJoin(t *testing.T) {
 			`> JOIN foo AS "f"
 > JOIN bar AS "b"
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewJoin(
@@ -68,7 +68,7 @@ func TestJoin(t *testing.T) {
 			`> JOIN foo AS "f"
 > INNER JOIN bar AS "b"
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewJoin(
@@ -80,7 +80,7 @@ func TestJoin(t *testing.T) {
 			`> JOIN foo AS "f"
 > LEFT JOIN bar AS "b"
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewJoin(
@@ -92,7 +92,7 @@ func TestJoin(t *testing.T) {
 			`> JOIN foo AS "f"
 > RIGHT JOIN bar AS "b"
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewJoin(
@@ -104,7 +104,7 @@ func TestJoin(t *testing.T) {
 			`JOIN foo ON foo.id = bar.id`,
 			`> JOIN foo ON foo.id = bar.id
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewJoin(
@@ -116,7 +116,7 @@ func TestJoin(t *testing.T) {
 			`JOIN foo AS "f" ON f.id = b.id`,
 			`> JOIN foo AS "f" ON f.id = b.id
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewJoin(
@@ -127,7 +127,7 @@ func TestJoin(t *testing.T) {
 			`JOIN foo USING id`,
 			`> JOIN foo USING id
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewJoin(
@@ -138,7 +138,7 @@ func TestJoin(t *testing.T) {
 			`JOIN foo AS "f" USING id`,
 			`> JOIN foo AS "f" USING id
 `,
-			[]interface{}{},
+			nil,
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
@@ -177,7 +177,7 @@ func TestInnerJoin(t *testing.T) {
 			`INNER JOIN foo`,
 			`> INNER JOIN foo
 `,
-			[]interface{}{},
+			nil,
 		},
 		// 1
 		{
@@ -187,7 +187,7 @@ func TestInnerJoin(t *testing.T) {
 			`INNER JOIN foo AS "f"`,
 			`> INNER JOIN foo AS "f"
 `,
-			[]interface{}{},
+			nil,
 		},
 		// 2
 		{
@@ -200,7 +200,7 @@ func TestInnerJoin(t *testing.T) {
 			`INNER JOIN foo ON foo.id = bar.id`,
 			`> INNER JOIN foo ON foo.id = bar.id
 `,
-			[]interface{}{},
+			nil,
 		},
 		// 3
 		{
@@ -213,7 +213,7 @@ func TestInnerJoin(t *testing.T) {
 			`INNER JOIN foo AS "f" ON f.id = b.id`,
 			`> INNER JOIN foo AS "f" ON f.id = b.id
 `,
-			[]interface{}{},
+			nil,
 		},
 		// 4
 		{
@@ -225,7 +225,7 @@ func TestInnerJoin(t *testing.T) {
 			`INNER JOIN foo USING id`,
 			`> INNER JOIN foo USING id
 `,
-			[]interface{}{},
+			nil,
 		},
 		// 5
 		{
@@ -237,7 +237,7 @@ func TestInnerJoin(t *testing.T) {
 			`INNER JOIN foo AS "f" USING id`,
 			`> INNER JOIN foo AS "f" USING id
 `,
-			[]interface{}{},
+			nil,
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
@@ -275,7 +275,7 @@ func TestLeftJoin(t *testing.T) {
 			`LEFT JOIN foo`,
 			`> LEFT JOIN foo
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewLeftJoin(
@@ -284,7 +284,7 @@ func TestLeftJoin(t *testing.T) {
 			`LEFT JOIN foo AS "f"`,
 			`> LEFT JOIN foo AS "f"
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewLeftJoin(
@@ -296,7 +296,7 @@ func TestLeftJoin(t *testing.T) {
 			`LEFT JOIN foo ON foo.id = bar.id`,
 			`> LEFT JOIN foo ON foo.id = bar.id
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewLeftJoin(
@@ -308,7 +308,7 @@ func TestLeftJoin(t *testing.T) {
 			`LEFT JOIN foo AS "f" ON f.id = b.id`,
 			`> LEFT JOIN foo AS "f" ON f.id = b.id
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewLeftJoin(
@@ -319,7 +319,7 @@ func TestLeftJoin(t *testing.T) {
 			`LEFT JOIN foo USING id`,
 			`> LEFT JOIN foo USING id
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewLeftJoin(
@@ -330,7 +330,7 @@ func TestLeftJoin(t *testing.T) {
 			`LEFT JOIN foo AS "f" USING id`,
 			`> LEFT JOIN foo AS "f" USING id
 `,
-			[]interface{}{},
+			nil,
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
@@ -368,7 +368,7 @@ func TestRightJoin(t *testing.T) {
 			`RIGHT JOIN foo`,
 			`> RIGHT JOIN foo
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewRightJoin(
@@ -377,7 +377,7 @@ func TestRightJoin(t *testing.T) {
 			`RIGHT JOIN foo AS "f"`,
 			`> RIGHT JOIN foo AS "f"
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewRightJoin(
@@ -389,7 +389,7 @@ func TestRightJoin(t *testing.T) {
 			`RIGHT JOIN foo ON foo.id = bar.id`,
 			`> RIGHT JOIN foo ON foo.id = bar.id
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewRightJoin(
@@ -401,7 +401,7 @@ func TestRightJoin(t *testing.T) {
 			`RIGHT JOIN foo AS "f" ON f.id = b.id`,
 			`> RIGHT JOIN foo AS "f" ON f.id = b.id
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewRightJoin(
@@ -412,7 +412,7 @@ func TestRightJoin(t *testing.T) {
 			`RIGHT JOIN foo USING id`,
 			`> RIGHT JOIN foo USING id
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewRightJoin(
@@ -423,7 +423,7 @@ func TestRightJoin(t *testing.T) {
 			`RIGHT JOIN foo AS "f" USING id`,
 			`> RIGHT JOIN foo AS "f" USING id
 `,
-			[]interface{}{},
+			nil,
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {

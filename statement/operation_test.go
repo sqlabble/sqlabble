@@ -117,92 +117,25 @@ func TestAnd(t *testing.T) {
 					statement.NewColumn("bar").Eq(statement.NewParam(200)),
 					statement.NewColumn("baz").Like(statement.NewParam("abc")),
 				),
-			),
-			"foo != ? AND bar = ? AND baz LIKE ?",
-			`> foo != ?
-> AND bar = ?
-> AND baz LIKE ?
-`,
-			[]interface{}{
-				100,
-				200,
-				"abc",
-			},
-		},
-		// 4
-		{
-			statement.NewAnd(
-				statement.NewAnd(
-					statement.NewAnd(
-						statement.NewColumn("foo").NotEq(statement.NewParam(100)),
-						statement.NewColumn("bar").Eq(statement.NewParam(200)),
-						statement.NewColumn("baz").Like(statement.NewParam("abc")),
-					),
+				statement.NewColumn("foo").Between(
+					statement.NewParam(300),
+					statement.NewParam(400),
 				),
 			),
-			"foo != ? AND bar = ? AND baz LIKE ?",
-			`> foo != ?
-> AND bar = ?
-> AND baz LIKE ?
-`,
-			[]interface{}{
-				100,
-				200,
-				"abc",
-			},
-		},
-		// 5
-		{
-			statement.NewAnd(
-				statement.NewAnd(
-					statement.NewAnd(
-						statement.NewColumn("foo").NotEq(statement.NewParam(100)),
-						statement.NewColumn("bar").Eq(statement.NewParam(200)),
-						statement.NewColumn("baz").Like(statement.NewParam("abc")),
-					),
-				),
-				statement.NewColumn("foo").Gt(statement.NewParam(300)),
-			),
-			"(foo != ? AND bar = ? AND baz LIKE ?) AND foo > ?",
+			"(foo != ? AND bar = ? AND baz LIKE ?) AND foo BETWEEN ? AND ?",
 			`> (
 >   foo != ?
 >   AND bar = ?
 >   AND baz LIKE ?
 > )
-> AND foo > ?
+> AND foo BETWEEN ? AND ?
 `,
 			[]interface{}{
 				100,
 				200,
 				"abc",
 				300,
-			},
-		},
-		// 6
-		{
-			statement.NewAnd(
-				statement.NewAnd(
-					statement.NewAnd(
-						statement.NewColumn("foo").NotEq(statement.NewParam(100)),
-						statement.NewColumn("bar").Eq(statement.NewParam(200)),
-						statement.NewColumn("baz").Like(statement.NewParam("abc")),
-					),
-					statement.NewColumn("foo").Gt(statement.NewParam(300)),
-				),
-			),
-			"(foo != ? AND bar = ? AND baz LIKE ?) AND foo > ?",
-			`> (
->   foo != ?
->   AND bar = ?
->   AND baz LIKE ?
-> )
-> AND foo > ?
-`,
-			[]interface{}{
-				100,
-				200,
-				"abc",
-				300,
+				400,
 			},
 		},
 	} {
@@ -229,7 +162,7 @@ func TestAnd(t *testing.T) {
 }
 
 func TestOr(t *testing.T) {
-	for _, c := range []struct {
+	for i, c := range []struct {
 		statement statement.Statement
 		sql       string
 		sqlIndent string
@@ -284,48 +217,6 @@ func TestOr(t *testing.T) {
 					statement.NewColumn("bar").Eq(statement.NewParam(200)),
 					statement.NewColumn("baz").Like(statement.NewParam("abc")),
 				),
-			),
-			"foo != ? OR bar = ? OR baz LIKE ?",
-			`> foo != ?
-> OR bar = ?
-> OR baz LIKE ?
-`,
-			[]interface{}{
-				100,
-				200,
-				"abc",
-			},
-		},
-		{
-			statement.NewOr(
-				statement.NewOr(
-					statement.NewOr(
-						statement.NewColumn("foo").NotEq(statement.NewParam(100)),
-						statement.NewColumn("bar").Eq(statement.NewParam(200)),
-						statement.NewColumn("baz").Like(statement.NewParam("abc")),
-					),
-				),
-			),
-			"foo != ? OR bar = ? OR baz LIKE ?",
-			`> foo != ?
-> OR bar = ?
-> OR baz LIKE ?
-`,
-			[]interface{}{
-				100,
-				200,
-				"abc",
-			},
-		},
-		{
-			statement.NewOr(
-				statement.NewOr(
-					statement.NewOr(
-						statement.NewColumn("foo").NotEq(statement.NewParam(100)),
-						statement.NewColumn("bar").Eq(statement.NewParam(200)),
-						statement.NewColumn("baz").Like(statement.NewParam("abc")),
-					),
-				),
 				statement.NewColumn("foo").Gt(statement.NewParam(300)),
 			),
 			"(foo != ? OR bar = ? OR baz LIKE ?) OR foo > ?",
@@ -343,34 +234,8 @@ func TestOr(t *testing.T) {
 				300,
 			},
 		},
-		{
-			statement.NewOr(
-				statement.NewOr(
-					statement.NewOr(
-						statement.NewColumn("foo").NotEq(statement.NewParam(100)),
-						statement.NewColumn("bar").Eq(statement.NewParam(200)),
-						statement.NewColumn("baz").Like(statement.NewParam("abc")),
-					),
-					statement.NewColumn("foo").Gt(statement.NewParam(300)),
-				),
-			),
-			"(foo != ? OR bar = ? OR baz LIKE ?) OR foo > ?",
-			`> (
->   foo != ?
->   OR bar = ?
->   OR baz LIKE ?
-> )
-> OR foo > ?
-`,
-			[]interface{}{
-				100,
-				200,
-				"abc",
-				300,
-			},
-		},
 	} {
-		t.Run(fmt.Sprintf("Build %+v", c.statement), func(t *testing.T) {
+		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
 			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
@@ -380,7 +245,7 @@ func TestOr(t *testing.T) {
 			}
 		})
 
-		t.Run(fmt.Sprintf("BuildIndent %+v", c.statement), func(t *testing.T) {
+		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
 			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
@@ -671,8 +536,8 @@ func TestBetween(t *testing.T) {
 	}{
 		{
 			statement.NewColumn("foo").Between(
-				100,
-				200,
+				statement.NewParam(100),
+				statement.NewParam(200),
 			),
 			"foo BETWEEN ? AND ?",
 			`> foo BETWEEN ? AND ?
@@ -766,7 +631,7 @@ func TestContainingOperators(t *testing.T) {
 }
 
 func TestKeywordOperators(t *testing.T) {
-	for _, c := range []struct {
+	for i, c := range []struct {
 		statement statement.Statement
 		sql       string
 		sqlIndent string
@@ -777,17 +642,17 @@ func TestKeywordOperators(t *testing.T) {
 			"foo IS NULL",
 			`> foo IS NULL
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewColumn("foo").IsNotNull(),
 			"foo IS NOT NULL",
 			`> foo IS NOT NULL
 `,
-			[]interface{}{},
+			nil,
 		},
 	} {
-		t.Run(fmt.Sprintf("Build %+v", c.statement), func(t *testing.T) {
+		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
 			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
@@ -796,7 +661,7 @@ func TestKeywordOperators(t *testing.T) {
 				t.Error(diff.Values(values, c.values))
 			}
 		})
-		t.Run(fmt.Sprintf("BuildIndent %+v", c.statement), func(t *testing.T) {
+		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
 			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
@@ -829,10 +694,14 @@ func TestComplexOperation(t *testing.T) {
 					),
 				),
 			),
-			"NOT (NOT (foo = ?))",
-			`> NOT (
+			"(NOT ((NOT (foo = ?))))",
+			`> (
 >   NOT (
->     foo = ?
+>     (
+>       NOT (
+>         foo = ?
+>       )
+>     )
 >   )
 > )
 `,
@@ -847,7 +716,10 @@ func TestComplexOperation(t *testing.T) {
 				),
 				statement.NewOr(
 					statement.NewAnd(
-						statement.NewColumn("qux").Between(400, 500),
+						statement.NewColumn("qux").Between(
+							statement.NewParam(400),
+							statement.NewParam(500),
+						),
 						statement.NewNot(
 							statement.NewAnd(
 								statement.NewOr(
@@ -871,22 +743,26 @@ func TestComplexOperation(t *testing.T) {
 					),
 				),
 			),
-			"NOT (baz REGEXP ?) OR (qux BETWEEN ? AND ? AND NOT (foo != ? OR bar = ? OR baz LIKE ? OR (baz IN (?, ?, ?) OR qux NOT IN (?, ?, ?))) AND foo > ?)",
+			"NOT (baz REGEXP ?) OR ((qux BETWEEN ? AND ? AND NOT ((foo != ? OR bar = ? OR baz LIKE ? OR (baz IN (?, ?, ?) OR qux NOT IN (?, ?, ?)))) AND foo > ?))",
 			`> NOT (
 >   baz REGEXP ?
 > )
 > OR (
->   qux BETWEEN ? AND ?
->   AND NOT (
->     foo != ?
->     OR bar = ?
->     OR baz LIKE ?
->     OR (
->       baz IN (?, ?, ?)
->       OR qux NOT IN (?, ?, ?)
+>   (
+>     qux BETWEEN ? AND ?
+>     AND NOT (
+>       (
+>         foo != ?
+>         OR bar = ?
+>         OR baz LIKE ?
+>         OR (
+>           baz IN (?, ?, ?)
+>           OR qux NOT IN (?, ?, ?)
+>         )
+>       )
 >     )
+>     AND foo > ?
 >   )
->   AND foo > ?
 > )
 `,
 			[]interface{}{

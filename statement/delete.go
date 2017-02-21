@@ -12,18 +12,10 @@ func NewDelete() Delete {
 }
 
 func (d Delete) nodeize() (token.Tokenizer, []interface{}) {
-	clauses := clauseNodes(d)
-	cs := make(token.Containers, len(clauses))
-	vals := []interface{}{}
-	for i, clause := range clauses {
-		var vs []interface{}
-		cs[i], vs = clause.container()
-		vals = append(vals, vs...)
-	}
-	return cs, vals
+	return nodeizeClauses(d)
 }
 
-func (d Delete) container() (token.Container, []interface{}) {
+func (d Delete) self() (token.Tokenizer, []interface{}) {
 	return token.NewContainer(
 		token.NewLine(token.Word(keyword.Delete)),
 	), nil

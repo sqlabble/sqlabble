@@ -7,7 +7,7 @@ import (
 
 type Assign struct {
 	column Column
-	param  interface{}
+	param  ParamOrSubquery
 }
 
 func NewAssign(column Column, param ParamOrSubquery) Assign {
@@ -18,20 +18,15 @@ func NewAssign(column Column, param ParamOrSubquery) Assign {
 }
 
 func (a Assign) nodeize() (token.Tokenizer, []interface{}) {
-	return a.line()
-}
-
-func (a Assign) line() (token.Line, []interface{}) {
-	line, values := a.column.line()
-	return line.
-		A(
+	t1, v1 := a.column.nodeize()
+	t2, v2 := a.param.nodeize()
+	return token.ConcatTokenizers(
+		t1,
+		t2,
+		token.NewLine(
 			token.Space,
 			token.Word(operator.Eq),
 			token.Space,
-			token.Placeholder,
-		), values
-}
-
-func (a Assign) values() []interface{} {
-	return []interface{}{a.param}
+		),
+	), append(v1, v2...)
 }

@@ -23,18 +23,10 @@ func (l Limit) Offset(count int) Offset {
 }
 
 func (l Limit) nodeize() (token.Tokenizer, []interface{}) {
-	clauses := clauseNodes(l)
-	cs := make(token.Containers, len(clauses))
-	values := []interface{}{}
-	for i, c := range clauses {
-		var vals []interface{}
-		cs[i], vals = c.container()
-		values = append(values, vals...)
-	}
-	return cs, values
+	return nodeizeClauses(l)
 }
 
-func (l Limit) container() (token.Container, []interface{}) {
+func (l Limit) self() (token.Tokenizer, []interface{}) {
 	line, values := token.ParamsToLine(l.count)
 	return token.NewContainer(
 		token.NewLine(token.Word(keyword.Limit)),

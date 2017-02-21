@@ -36,7 +36,7 @@ func TestUpdate(t *testing.T) {
 			`> UPDATE
 >   foo
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewUpdate(

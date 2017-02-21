@@ -28,7 +28,7 @@ func TestSelectSQL(t *testing.T) {
 			`SELECT`,
 			`> SELECT
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewSelect(
@@ -38,7 +38,7 @@ func TestSelectSQL(t *testing.T) {
 			`> SELECT
 >   *
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewSelect(
@@ -48,7 +48,7 @@ func TestSelectSQL(t *testing.T) {
 			`> SELECT
 >   foo
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewSelect(
@@ -58,7 +58,7 @@ func TestSelectSQL(t *testing.T) {
 			`> SELECT
 >   foo AS "a"
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewSelect(
@@ -72,7 +72,7 @@ func TestSelectSQL(t *testing.T) {
 >   , bar AS "b"
 >   , baz AS "c"
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewSelectDistinct(
@@ -86,7 +86,7 @@ func TestSelectSQL(t *testing.T) {
 >   , bar AS "b"
 >   , baz AS "c"
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewSelect(
@@ -100,7 +100,7 @@ func TestSelectSQL(t *testing.T) {
 > FROM
 >   bar
 `,
-			[]interface{}{},
+			nil,
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {

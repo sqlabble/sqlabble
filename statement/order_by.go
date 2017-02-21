@@ -15,29 +15,21 @@ func NewOrderBy(os ...Order) OrderBy {
 }
 
 func (o OrderBy) nodeize() (token.Tokenizer, []interface{}) {
-	clauses := clauseNodes(o)
-	cs := make(token.Containers, len(clauses))
-	values := []interface{}{}
-	for i, c := range clauses {
-		var vals []interface{}
-		cs[i], vals = c.container()
-		values = append(values, vals...)
-	}
-	return cs, values
+	return nodeizeClauses(o)
 }
 
-func (o OrderBy) container() (token.Container, []interface{}) {
-	lines := make(token.Lines, len(o.orders))
+func (o OrderBy) self() (token.Tokenizer, []interface{}) {
+	tokenizers := make(token.Tokenizers, len(o.orders))
 	values := []interface{}{}
 	for i, o := range o.orders {
 		var vals []interface{}
-		lines[i], vals = o.line()
+		tokenizers[i], vals = o.nodeize()
 		values = append(values, vals...)
 	}
 	return token.NewContainer(
 		token.NewLine(token.Word(keyword.OrderBy)),
 	).SetMiddle(
-		lines.Prefix(token.Comma, token.Space),
+		tokenizers.Prefix(token.Comma, token.Space),
 	), values
 }
 

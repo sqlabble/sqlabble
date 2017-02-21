@@ -1,78 +1,88 @@
 package statement
 
 import (
-	"github.com/minodisk/sqlabble/keyword"
+	"github.com/minodisk/sqlabble/operator"
 	"github.com/minodisk/sqlabble/token"
 )
 
 type SetOperation struct {
-	operator   string
+	op         operator.Operator
 	statements []Statement
 }
 
 func NewUnion(statements ...Statement) SetOperation {
 	return SetOperation{
-		operator:   keyword.Union,
+		op:         operator.Union,
 		statements: statements,
 	}
 }
 
 func NewUnionAll(statements ...Statement) SetOperation {
 	return SetOperation{
-		operator:   keyword.UnionAll,
+		op:         operator.UnionAll,
 		statements: statements,
 	}
 }
 
 func NewIntersect(statements ...Statement) SetOperation {
 	return SetOperation{
-		operator:   keyword.Intersect,
+		op:         operator.Intersect,
 		statements: statements,
 	}
 }
 
 func NewIntersectAll(statements ...Statement) SetOperation {
 	return SetOperation{
-		operator:   keyword.IntersectAll,
+		op:         operator.IntersectAll,
 		statements: statements,
 	}
 }
 
 func NewExcept(statements ...Statement) SetOperation {
 	return SetOperation{
-		operator:   keyword.Except,
+		op:         operator.Except,
 		statements: statements,
 	}
 }
 
 func NewExceptAll(statements ...Statement) SetOperation {
 	return SetOperation{
-		operator:   keyword.ExceptAll,
+		op:         operator.ExceptAll,
 		statements: statements,
 	}
 }
 
 func (u SetOperation) nodeize() (token.Tokenizer, []interface{}) {
-	return u.tokenizers()
+	return u.self()
 }
 
-func (u SetOperation) tokenizers() (token.Tokenizers, []interface{}) {
-	ts := make([]token.Tokenizer, len(u.statements))
+func (u SetOperation) self() (token.Tokenizer, []interface{}) {
+	tokenizers := make(token.Tokenizers, len(u.statements))
 	values := []interface{}{}
 	for i, s := range u.statements {
-		var vals []interface{}
-		ts[i], vals = s.nodeize()
+		t, vals := s.nodeize()
+		t = token.NewParentheses(t)
+		if i != 0 {
+			t = t.Prepend(
+				token.Word(u.operator()),
+				token.Space,
+			)
+		}
+		tokenizers[i] = t
 		values = append(values, vals...)
 	}
-	return token.NewTokenizers(ts...).Prefix(token.Word(u.operator)), values
-}
-
-func (u SetOperation) container() (token.Container, []interface{}) {
-	return token.NewContainer(token.NewLine(token.Word(""))), nil
+	if len(values) == 0 {
+		values = nil
+	}
+	return tokenizers, values
 }
 
 func (u SetOperation) previous() Clause {
 	return nil
+}
+
+func (u SetOperation) operator() operator.Operator {
+	return u.op
 }
 
 func (u SetOperation) OrderBy(os ...Order) OrderBy {

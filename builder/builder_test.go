@@ -45,13 +45,13 @@ func TestBuilder(t *testing.T) {
 				statement.NewTable("users"),
 			).Where(
 				statement.NewAnd(
-					statement.NewColumn("g").Eq("male"),
+					statement.NewColumn("g").Eq(statement.NewParam("male")),
 					statement.NewOr(
-						statement.NewColumn("age").Lt(20),
-						statement.NewColumn("age").Eq(30),
-						statement.NewColumn("age").Gte(50),
+						statement.NewColumn("age").Lt(statement.NewParam(20)),
+						statement.NewColumn("age").Eq(statement.NewParam(30)),
+						statement.NewColumn("age").Gte(statement.NewParam(50)),
 					),
-					statement.NewColumn("created_at").Between("2016-01-01", "2016-12-31"),
+					statement.NewColumn("created_at").Between(statement.NewParam("2016-01-01"), statement.NewParam("2016-12-31")),
 				),
 			).OrderBy(
 				statement.NewColumn("created_at").Desc(),
@@ -102,15 +102,15 @@ func TestBuilder(t *testing.T) {
 				statement.NewColumn("name"),
 				statement.NewColumn("age"),
 			).Values(
-				`Obi-Wan Kenobi`,
-				63,
-			).Values(
-				`Luke Skywalker`,
-				19,
+				statement.NewParams(`Obi-Wan Kenobi`, 63),
+				statement.NewParams(`Luke Skywalker`, 19),
 			),
 			`INSERT INTO foo (name, age) VALUES (?, ?), (?, ?)`,
 			`> INSERT INTO
->   foo (name, age)
+>   foo (
+>     name
+>     , age
+>   )
 > VALUES
 >   (?, ?)
 >   , (?, ?)
@@ -126,7 +126,7 @@ func TestBuilder(t *testing.T) {
 			statement.NewDelete().From(
 				statement.NewTable("login_history"),
 			).Where(
-				statement.NewColumn("login_date").Lt("2004-07-02 09:00:00"),
+				statement.NewColumn("login_date").Lt(statement.NewParam("2004-07-02 09:00:00")),
 			),
 			`DELETE FROM login_history WHERE login_date < ?`,
 			`> DELETE
@@ -147,10 +147,10 @@ func TestBuilder(t *testing.T) {
 					statement.NewTable("employee"),
 				).Where(
 					statement.NewAnd(
-						statement.NewColumn("assigned_branch_id").Eq(2),
+						statement.NewColumn("assigned_branch_id").Eq(statement.NewParam(2)),
 						statement.NewOr(
-							statement.NewColumn("title").Eq("Teller"),
-							statement.NewColumn("title").Eq("Head Teller"),
+							statement.NewColumn("title").Eq(statement.NewParam("Teller")),
+							statement.NewColumn("title").Eq(statement.NewParam("Head Teller")),
 						),
 					),
 				),
@@ -159,7 +159,7 @@ func TestBuilder(t *testing.T) {
 				).From(
 					statement.NewTable("account"),
 				).Where(
-					statement.NewColumn("open_branch_id").Eq(2),
+					statement.NewColumn("open_branch_id").Eq(statement.NewParam(2)),
 				),
 			),
 			`(SELECT emp_id FROM employee WHERE assigned_branch_id = ? AND (title = ? OR title = ?)) UNION (SELECT DISTINCT open_emp_id FROM account WHERE open_branch_id = ?)`,
@@ -175,8 +175,7 @@ func TestBuilder(t *testing.T) {
 >       OR title = ?
 >     )
 > )
-> UNION
-> (
+> UNION (
 >   SELECT DISTINCT
 >     open_emp_id
 >   FROM
@@ -232,13 +231,13 @@ func TestBuild(t *testing.T) {
 				statement.NewTable("users"),
 			).Where(
 				statement.NewAnd(
-					statement.NewColumn("g").Eq("male"),
+					statement.NewColumn("g").Eq(statement.NewParam("male")),
 					statement.NewOr(
-						statement.NewColumn("age").Lt(20),
-						statement.NewColumn("age").Eq(30),
-						statement.NewColumn("age").Gte(50),
+						statement.NewColumn("age").Lt(statement.NewParam(20)),
+						statement.NewColumn("age").Eq(statement.NewParam(30)),
+						statement.NewColumn("age").Gte(statement.NewParam(50)),
 					),
-					statement.NewColumn("created_at").Between("2016-01-01", "2016-12-31"),
+					statement.NewColumn("created_at").Between(statement.NewParam("2016-01-01"), statement.NewParam("2016-12-31")),
 				),
 			).OrderBy(
 				statement.NewColumn("created_at").Desc(),

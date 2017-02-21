@@ -17,18 +17,10 @@ func NewWhere(operation ComparisonOrLogicalOperation) Where {
 }
 
 func (w Where) nodeize() (token.Tokenizer, []interface{}) {
-	clauses := clauseNodes(w)
-	ts := make(token.Tokenizers, len(clauses))
-	values := []interface{}{}
-	for i, c := range clauses {
-		var vals []interface{}
-		ts[i], vals = c.container()
-		values = append(values, vals...)
-	}
-	return ts, values
+	return nodeizeClauses(w)
 }
 
-func (w Where) container() (token.Container, []interface{}) {
+func (w Where) self() (token.Tokenizer, []interface{}) {
 	middle, values := w.operation.nodeize()
 	return token.NewContainer(
 		token.NewLine(token.Word(keyword.Where)),

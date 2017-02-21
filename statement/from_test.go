@@ -32,7 +32,7 @@ func TestFromSQL(t *testing.T) {
 			`> FROM
 >   foo
 `,
-			[]interface{}{},
+			nil,
 		},
 		// 1
 		{
@@ -43,7 +43,7 @@ func TestFromSQL(t *testing.T) {
 			`> FROM
 >   foo AS "a"
 `,
-			[]interface{}{},
+			nil,
 		},
 		// 2
 		{
@@ -57,7 +57,7 @@ func TestFromSQL(t *testing.T) {
 >   foo AS "a"
 >   JOIN bar
 `,
-			[]interface{}{},
+			nil,
 		},
 		// 3
 		{
@@ -89,7 +89,7 @@ func TestFromSQL(t *testing.T) {
 > GROUP BY
 >   id
 `,
-			[]interface{}{},
+			nil,
 		},
 		// 5
 		{
@@ -104,7 +104,7 @@ func TestFromSQL(t *testing.T) {
 > ORDER BY
 >   age ASC
 `,
-			[]interface{}{},
+			nil,
 		},
 		// 6
 		{

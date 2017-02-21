@@ -24,7 +24,7 @@ func TestOn(t *testing.T) {
 			sql: "ON f.id = b.id",
 			sqlIndent: `> ON f.id = b.id
 `,
-			values: []interface{}{},
+			values: nil,
 		},
 		{
 			statement: statement.NewOn(
@@ -37,7 +37,7 @@ func TestOn(t *testing.T) {
 			sqlIndent: `> ON f.id = b.id
 > JOIN bar
 `,
-			values: []interface{}{},
+			values: nil,
 		},
 		{
 			statement: statement.NewOn(
@@ -50,7 +50,7 @@ func TestOn(t *testing.T) {
 			sqlIndent: `> ON f.id = b.id
 > INNER JOIN bar
 `,
-			values: []interface{}{},
+			values: nil,
 		},
 		{
 			statement: statement.NewOn(
@@ -63,7 +63,7 @@ func TestOn(t *testing.T) {
 			sqlIndent: `> ON f.id = b.id
 > LEFT JOIN bar
 `,
-			values: []interface{}{},
+			values: nil,
 		},
 		{
 			statement: statement.NewOn(
@@ -76,7 +76,7 @@ func TestOn(t *testing.T) {
 			sqlIndent: `> ON f.id = b.id
 > RIGHT JOIN bar
 `,
-			values: []interface{}{},
+			values: nil,
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {

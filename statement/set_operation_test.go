@@ -21,12 +21,10 @@ func TestSetOperationType(t *testing.T) {
 
 func TestUnionSQL(t *testing.T) {
 	for i, c := range []struct {
-		statement         statement.Statement
-		sql               string
-		sqlIndent         string
-		sqlForMySQL       string
-		sqlIndentForMySQL string
-		values            []interface{}
+		statement statement.Statement
+		sql       string
+		sqlIndent string
+		values    []interface{}
 	}{
 		{
 			statement.NewUnion(
@@ -40,28 +38,14 @@ func TestUnionSQL(t *testing.T) {
 >   SELECT
 >     a
 > )
-> UNION
-> (
+> UNION (
 >   SELECT
 >     b
 > )
 > ORDER BY
 >   foo ASC
 `,
-			"(SELECT a) UNION (SELECT b) ORDER BY foo ASC",
-			`> (
->   SELECT
->     a
-> )
-> UNION
-> (
->   SELECT
->     b
-> )
-> ORDER BY
->   foo ASC
-`,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewUnion(
@@ -80,58 +64,28 @@ func TestUnionSQL(t *testing.T) {
 >   SELECT
 >     a
 > )
-> UNION
-> (
+> UNION (
 >   (
 >     (
 >       SELECT
 >         b
 >     )
->     UNION
->     (
+>     UNION (
 >       SELECT
 >         c
 >     )
 >   )
->   UNION
->   (
+>   UNION (
 >     SELECT
 >       d
 >   )
->   UNION
->   (
+>   UNION (
 >     SELECT
 >       e
 >   )
 > )
 `,
-			"(SELECT a) UNION (SELECT b) UNION (SELECT c) UNION (SELECT d) UNION (SELECT e)",
-			`> (
->   SELECT
->     a
-> )
-> UNION
-> (
->   SELECT
->     b
-> )
-> UNION
-> (
->   SELECT
->     c
-> )
-> UNION
-> (
->   SELECT
->     d
-> )
-> UNION
-> (
->   SELECT
->     e
-> )
-`,
-			[]interface{}{},
+			nil,
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Builder", i), func(t *testing.T) {
@@ -152,35 +106,15 @@ func TestUnionSQL(t *testing.T) {
 				t.Error(diff.Values(values, c.values))
 			}
 		})
-		t.Run(fmt.Sprintf("%d BuildForMySQL4", i), func(t *testing.T) {
-			sql, values := bm4.Build(c.statement)
-			if sql != c.sqlForMySQL {
-				t.Error(diff.SQL(sql, c.sqlForMySQL))
-			}
-			if !reflect.DeepEqual(values, c.values) {
-				t.Error(diff.Values(values, c.values))
-			}
-		})
-		t.Run(fmt.Sprintf("%d BuildIndentForMySQL4", i), func(t *testing.T) {
-			sql, values := bim4.Build(c.statement)
-			if sql != c.sqlIndentForMySQL {
-				t.Error(diff.SQL(sql, c.sqlIndentForMySQL))
-			}
-			if !reflect.DeepEqual(values, c.values) {
-				t.Error(diff.Values(values, c.values))
-			}
-		})
 	}
 }
 
 func TestUnionAllSQL(t *testing.T) {
 	for i, c := range []struct {
-		statement         statement.Statement
-		sql               string
-		sqlIndent         string
-		sqlForMySQL       string
-		sqlIndentForMySQL string
-		values            []interface{}
+		statement statement.Statement
+		sql       string
+		sqlIndent string
+		values    []interface{}
 	}{
 		{
 			statement.NewUnionAll(
@@ -199,58 +133,28 @@ func TestUnionAllSQL(t *testing.T) {
 >   SELECT
 >     a
 > )
-> UNION ALL
-> (
+> UNION ALL (
 >   (
 >     (
 >       SELECT
 >         b
 >     )
->     UNION ALL
->     (
+>     UNION ALL (
 >       SELECT
 >         c
 >     )
 >   )
->   UNION ALL
->   (
+>   UNION ALL (
 >     SELECT
 >       d
 >   )
->   UNION ALL
->   (
+>   UNION ALL (
 >     SELECT
 >       e
 >   )
 > )
 `,
-			"(SELECT a) UNION ALL (SELECT b) UNION ALL (SELECT c) UNION ALL (SELECT d) UNION ALL (SELECT e)",
-			`> (
->   SELECT
->     a
-> )
-> UNION ALL
-> (
->   SELECT
->     b
-> )
-> UNION ALL
-> (
->   SELECT
->     c
-> )
-> UNION ALL
-> (
->   SELECT
->     d
-> )
-> UNION ALL
-> (
->   SELECT
->     e
-> )
-`,
-			[]interface{}{},
+			nil,
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Builder", i), func(t *testing.T) {
@@ -271,35 +175,15 @@ func TestUnionAllSQL(t *testing.T) {
 				t.Error(diff.Values(values, c.values))
 			}
 		})
-		t.Run(fmt.Sprintf("%d BuildForMySQL4", i), func(t *testing.T) {
-			sql, values := bm4.Build(c.statement)
-			if sql != c.sqlForMySQL {
-				t.Error(diff.SQL(sql, c.sqlForMySQL))
-			}
-			if !reflect.DeepEqual(values, c.values) {
-				t.Error(diff.Values(values, c.values))
-			}
-		})
-		t.Run(fmt.Sprintf("%d BuildIndentForMySQL4", i), func(t *testing.T) {
-			sql, values := bim4.Build(c.statement)
-			if sql != c.sqlIndentForMySQL {
-				t.Error(diff.SQL(sql, c.sqlIndentForMySQL))
-			}
-			if !reflect.DeepEqual(values, c.values) {
-				t.Error(diff.Values(values, c.values))
-			}
-		})
 	}
 }
 
 func TestIntersectSQL(t *testing.T) {
 	for i, c := range []struct {
-		statement         statement.Statement
-		sql               string
-		sqlIndent         string
-		sqlForMySQL       string
-		sqlIndentForMySQL string
-		values            []interface{}
+		statement statement.Statement
+		sql       string
+		sqlIndent string
+		values    []interface{}
 	}{
 		{
 			statement.NewIntersect(
@@ -318,58 +202,28 @@ func TestIntersectSQL(t *testing.T) {
 >   SELECT
 >     a
 > )
-> INTERSECT
-> (
+> INTERSECT (
 >   (
 >     (
 >       SELECT
 >         b
 >     )
->     INTERSECT
->     (
+>     INTERSECT (
 >       SELECT
 >         c
 >     )
 >   )
->   INTERSECT
->   (
+>   INTERSECT (
 >     SELECT
 >       d
 >   )
->   INTERSECT
->   (
+>   INTERSECT (
 >     SELECT
 >       e
 >   )
 > )
 `,
-			"(SELECT a) INTERSECT (SELECT b) INTERSECT (SELECT c) INTERSECT (SELECT d) INTERSECT (SELECT e)",
-			`> (
->   SELECT
->     a
-> )
-> INTERSECT
-> (
->   SELECT
->     b
-> )
-> INTERSECT
-> (
->   SELECT
->     c
-> )
-> INTERSECT
-> (
->   SELECT
->     d
-> )
-> INTERSECT
-> (
->   SELECT
->     e
-> )
-`,
-			[]interface{}{},
+			nil,
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Builder", i), func(t *testing.T) {
@@ -390,35 +244,15 @@ func TestIntersectSQL(t *testing.T) {
 				t.Error(diff.Values(values, c.values))
 			}
 		})
-		t.Run(fmt.Sprintf("%d BuildForMySQL4", i), func(t *testing.T) {
-			sql, values := bm4.Build(c.statement)
-			if sql != c.sqlForMySQL {
-				t.Error(diff.SQL(sql, c.sqlForMySQL))
-			}
-			if !reflect.DeepEqual(values, c.values) {
-				t.Error(diff.Values(values, c.values))
-			}
-		})
-		t.Run(fmt.Sprintf("%d BuildIndentForMySQL4", i), func(t *testing.T) {
-			sql, values := bim4.Build(c.statement)
-			if sql != c.sqlIndentForMySQL {
-				t.Error(diff.SQL(sql, c.sqlIndentForMySQL))
-			}
-			if !reflect.DeepEqual(values, c.values) {
-				t.Error(diff.Values(values, c.values))
-			}
-		})
 	}
 }
 
 func TestIntersectAllSQL(t *testing.T) {
 	for i, c := range []struct {
-		statement         statement.Statement
-		sql               string
-		sqlIndent         string
-		sqlForMySQL       string
-		sqlIndentForMySQL string
-		values            []interface{}
+		statement statement.Statement
+		sql       string
+		sqlIndent string
+		values    []interface{}
 	}{
 		{
 			statement.NewIntersectAll(
@@ -437,58 +271,28 @@ func TestIntersectAllSQL(t *testing.T) {
 >   SELECT
 >     a
 > )
-> INTERSECT ALL
-> (
+> INTERSECT ALL (
 >   (
 >     (
 >       SELECT
 >         b
 >     )
->     INTERSECT ALL
->     (
+>     INTERSECT ALL (
 >       SELECT
 >         c
 >     )
 >   )
->   INTERSECT ALL
->   (
+>   INTERSECT ALL (
 >     SELECT
 >       d
 >   )
->   INTERSECT ALL
->   (
+>   INTERSECT ALL (
 >     SELECT
 >       e
 >   )
 > )
 `,
-			"(SELECT a) INTERSECT ALL (SELECT b) INTERSECT ALL (SELECT c) INTERSECT ALL (SELECT d) INTERSECT ALL (SELECT e)",
-			`> (
->   SELECT
->     a
-> )
-> INTERSECT ALL
-> (
->   SELECT
->     b
-> )
-> INTERSECT ALL
-> (
->   SELECT
->     c
-> )
-> INTERSECT ALL
-> (
->   SELECT
->     d
-> )
-> INTERSECT ALL
-> (
->   SELECT
->     e
-> )
-`,
-			[]interface{}{},
+			nil,
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Builder", i), func(t *testing.T) {
@@ -509,35 +313,15 @@ func TestIntersectAllSQL(t *testing.T) {
 				t.Error(diff.Values(values, c.values))
 			}
 		})
-		t.Run(fmt.Sprintf("%d BuildForMySQL4", i), func(t *testing.T) {
-			sql, values := bm4.Build(c.statement)
-			if sql != c.sqlForMySQL {
-				t.Error(diff.SQL(sql, c.sqlForMySQL))
-			}
-			if !reflect.DeepEqual(values, c.values) {
-				t.Error(diff.Values(values, c.values))
-			}
-		})
-		t.Run(fmt.Sprintf("%d BuildIndentForMySQL4", i), func(t *testing.T) {
-			sql, values := bim4.Build(c.statement)
-			if sql != c.sqlIndentForMySQL {
-				t.Error(diff.SQL(sql, c.sqlIndentForMySQL))
-			}
-			if !reflect.DeepEqual(values, c.values) {
-				t.Error(diff.Values(values, c.values))
-			}
-		})
 	}
 }
 
 func TestExceptSQL(t *testing.T) {
 	for i, c := range []struct {
-		statement         statement.Statement
-		sql               string
-		sqlIndent         string
-		sqlForMySQL       string
-		sqlIndentForMySQL string
-		values            []interface{}
+		statement statement.Statement
+		sql       string
+		sqlIndent string
+		values    []interface{}
 	}{
 		{
 			statement.NewExcept(
@@ -556,58 +340,28 @@ func TestExceptSQL(t *testing.T) {
 >   SELECT
 >     a
 > )
-> EXCEPT
-> (
+> EXCEPT (
 >   (
 >     (
 >       SELECT
 >         b
 >     )
->     EXCEPT
->     (
+>     EXCEPT (
 >       SELECT
 >         c
 >     )
 >   )
->   EXCEPT
->   (
+>   EXCEPT (
 >     SELECT
 >       d
 >   )
->   EXCEPT
->   (
+>   EXCEPT (
 >     SELECT
 >       e
 >   )
 > )
 `,
-			"(SELECT a) EXCEPT (SELECT b) EXCEPT (SELECT c) EXCEPT (SELECT d) EXCEPT (SELECT e)",
-			`> (
->   SELECT
->     a
-> )
-> EXCEPT
-> (
->   SELECT
->     b
-> )
-> EXCEPT
-> (
->   SELECT
->     c
-> )
-> EXCEPT
-> (
->   SELECT
->     d
-> )
-> EXCEPT
-> (
->   SELECT
->     e
-> )
-`,
-			[]interface{}{},
+			nil,
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Builder", i), func(t *testing.T) {
@@ -628,35 +382,15 @@ func TestExceptSQL(t *testing.T) {
 				t.Error(diff.Values(values, c.values))
 			}
 		})
-		t.Run(fmt.Sprintf("%d BuildForMySQL4", i), func(t *testing.T) {
-			sql, values := bm4.Build(c.statement)
-			if sql != c.sqlForMySQL {
-				t.Error(diff.SQL(sql, c.sqlForMySQL))
-			}
-			if !reflect.DeepEqual(values, c.values) {
-				t.Error(diff.Values(values, c.values))
-			}
-		})
-		t.Run(fmt.Sprintf("%d BuildIndentForMySQL4", i), func(t *testing.T) {
-			sql, values := bim4.Build(c.statement)
-			if sql != c.sqlIndentForMySQL {
-				t.Error(diff.SQL(sql, c.sqlIndentForMySQL))
-			}
-			if !reflect.DeepEqual(values, c.values) {
-				t.Error(diff.Values(values, c.values))
-			}
-		})
 	}
 }
 
 func TestExceptAllSQL(t *testing.T) {
 	for i, c := range []struct {
-		statement         statement.Statement
-		sql               string
-		sqlIndent         string
-		sqlForMySQL       string
-		sqlIndentForMySQL string
-		values            []interface{}
+		statement statement.Statement
+		sql       string
+		sqlIndent string
+		values    []interface{}
 	}{
 		{
 			statement.NewExceptAll(
@@ -675,58 +409,28 @@ func TestExceptAllSQL(t *testing.T) {
 >   SELECT
 >     a
 > )
-> EXCEPT ALL
-> (
+> EXCEPT ALL (
 >   (
 >     (
 >       SELECT
 >         b
 >     )
->     EXCEPT ALL
->     (
+>     EXCEPT ALL (
 >       SELECT
 >         c
 >     )
 >   )
->   EXCEPT ALL
->   (
+>   EXCEPT ALL (
 >     SELECT
 >       d
 >   )
->   EXCEPT ALL
->   (
+>   EXCEPT ALL (
 >     SELECT
 >       e
 >   )
 > )
 `,
-			"(SELECT a) EXCEPT ALL (SELECT b) EXCEPT ALL (SELECT c) EXCEPT ALL (SELECT d) EXCEPT ALL (SELECT e)",
-			`> (
->   SELECT
->     a
-> )
-> EXCEPT ALL
-> (
->   SELECT
->     b
-> )
-> EXCEPT ALL
-> (
->   SELECT
->     c
-> )
-> EXCEPT ALL
-> (
->   SELECT
->     d
-> )
-> EXCEPT ALL
-> (
->   SELECT
->     e
-> )
-`,
-			[]interface{}{},
+			nil,
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Builder", i), func(t *testing.T) {
@@ -742,24 +446,6 @@ func TestExceptAllSQL(t *testing.T) {
 			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
-			}
-			if !reflect.DeepEqual(values, c.values) {
-				t.Error(diff.Values(values, c.values))
-			}
-		})
-		t.Run(fmt.Sprintf("%d BuildForMySQL4", i), func(t *testing.T) {
-			sql, values := bm4.Build(c.statement)
-			if sql != c.sqlForMySQL {
-				t.Error(diff.SQL(sql, c.sqlForMySQL))
-			}
-			if !reflect.DeepEqual(values, c.values) {
-				t.Error(diff.Values(values, c.values))
-			}
-		})
-		t.Run(fmt.Sprintf("%d BuildIndentForMySQL4", i), func(t *testing.T) {
-			sql, values := bim4.Build(c.statement)
-			if sql != c.sqlIndentForMySQL {
-				t.Error(diff.SQL(sql, c.sqlIndentForMySQL))
 			}
 			if !reflect.DeepEqual(values, c.values) {
 				t.Error(diff.Values(values, c.values))

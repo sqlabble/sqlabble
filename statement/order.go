@@ -17,12 +17,11 @@ func NewOrder(dir direction.Direction) Order {
 }
 
 func (o Order) nodeize() (token.Tokenizer, []interface{}) {
-	return o.line()
-}
-
-func (o Order) line() (token.Line, []interface{}) {
-	line, values := o.column.line()
-	return line.A(token.Space, token.Word(o.direction())), values
+	t1, v1 := o.column.nodeize()
+	return t1.Append(
+		token.Space,
+		token.Word(o.direction()),
+	), v1
 }
 
 func (o Order) direction() direction.Direction {

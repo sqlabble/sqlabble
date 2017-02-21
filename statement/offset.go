@@ -19,18 +19,10 @@ func NewOffset(count int) Offset {
 }
 
 func (o Offset) nodeize() (token.Tokenizer, []interface{}) {
-	clauses := clauseNodes(o)
-	cs := make(token.Containers, len(clauses))
-	values := []interface{}{}
-	for i, c := range clauses {
-		var vals []interface{}
-		cs[i], vals = c.container()
-		values = append(values, vals...)
-	}
-	return cs, values
+	return nodeizeClauses(o)
 }
 
-func (o Offset) container() (token.Container, []interface{}) {
+func (o Offset) self() (token.Tokenizer, []interface{}) {
 	line, values := token.ParamsToLine(o.count)
 	return token.NewContainer(
 		token.NewLine(token.Word(keyword.Offset)),

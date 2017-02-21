@@ -23,7 +23,7 @@ func TestUsing(t *testing.T) {
 			sql: "USING id",
 			sqlIndent: `> USING id
 `,
-			values: []interface{}{},
+			values: nil,
 		},
 		{
 			statement: statement.NewUsing(
@@ -35,7 +35,7 @@ func TestUsing(t *testing.T) {
 			sqlIndent: `> USING id
 > JOIN bar
 `,
-			values: []interface{}{},
+			values: nil,
 		},
 		{
 			statement: statement.NewUsing(
@@ -47,7 +47,7 @@ func TestUsing(t *testing.T) {
 			sqlIndent: `> USING id
 > INNER JOIN bar
 `,
-			values: []interface{}{},
+			values: nil,
 		},
 		{
 			statement: statement.NewUsing(
@@ -59,7 +59,7 @@ func TestUsing(t *testing.T) {
 			sqlIndent: `> USING id
 > LEFT JOIN bar
 `,
-			values: []interface{}{},
+			values: nil,
 		},
 		{
 			statement: statement.NewUsing(
@@ -71,7 +71,7 @@ func TestUsing(t *testing.T) {
 			sqlIndent: `> USING id
 > RIGHT JOIN bar
 `,
-			values: []interface{}{},
+			values: nil,
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {

@@ -31,7 +31,7 @@ func TestGroupBySQL(t *testing.T) {
 			`> GROUP BY
 >   foo
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewGroupBy(
@@ -45,7 +45,7 @@ func TestGroupBySQL(t *testing.T) {
 >   , bar
 >   , baz
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewGroupBy(
@@ -75,7 +75,7 @@ func TestGroupBySQL(t *testing.T) {
 > ORDER BY
 >   age ASC
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewGroupBy(

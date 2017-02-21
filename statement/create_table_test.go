@@ -27,7 +27,7 @@ func TestCreateTableSQL(t *testing.T) {
 			`> CREATE TABLE
 >   foo
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewCreateTableIfNotExists(
@@ -37,7 +37,7 @@ func TestCreateTableSQL(t *testing.T) {
 			`> CREATE TABLE IF NOT EXISTS
 >   foo
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewCreateTable(
@@ -48,7 +48,7 @@ func TestCreateTableSQL(t *testing.T) {
 >   foo (
 >   )
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewCreateTable(
@@ -62,7 +62,7 @@ func TestCreateTableSQL(t *testing.T) {
 >     name VARCHAR(255)
 >   )
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewCreateTable(
@@ -78,7 +78,7 @@ func TestCreateTableSQL(t *testing.T) {
 >     , gender ENUM('M', 'F')
 >   )
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewCreateTable(
@@ -96,7 +96,7 @@ func TestCreateTableSQL(t *testing.T) {
 >     , birth_date DATE
 >   )
 `,
-			[]interface{}{},
+			nil,
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {

@@ -18,33 +18,29 @@ func NewInsertInto(table Table, columns ...Column) InsertInto {
 }
 
 func (i InsertInto) nodeize() (token.Tokenizer, []interface{}) {
-	clauses := clauseNodes(i)
-	cs := make(token.Containers, len(clauses))
-	values := []interface{}{}
-	for j, c := range clauses {
-		var vals []interface{}
-		cs[j], vals = c.container()
-		values = append(values, vals...)
-	}
-	return cs, values
+	return nodeizeClauses(i)
 }
 
-func (i InsertInto) container() (token.Container, []interface{}) {
+func (i InsertInto) self() (token.Tokenizer, []interface{}) {
 	tableTokenizer, values := i.table.nodeize()
-	lines := make(token.Lines, len(i.columns))
+	ts := make(token.Tokenizers, len(i.columns))
 	for j, c := range i.columns {
 		var vals []interface{}
-		lines[j], vals = c.line()
+		ts[j], vals = c.nodeize()
 		values = append(values, vals...)
 	}
 	return token.NewContainer(
 		token.NewLine(token.Word(keyword.InsertInto)),
 	).SetMiddle(
-		token.NewTokenizers(
+		token.ConcatTokenizers(
 			tableTokenizer,
-			token.WrapParenthesesLines(
-				lines.Prefix(token.Comma)...,
+			token.NewParentheses(
+				ts.Prefix(
+					token.Comma,
+					token.Space,
+				),
 			),
+			token.NewLine(token.Space),
 		),
 	), values
 }
@@ -53,9 +49,9 @@ func (i InsertInto) previous() Clause {
 	return nil
 }
 
-func (i InsertInto) Values(values ...interface{}) Values {
-	v := NewValues(values...)
-	v.prevClause = i
+func (i InsertInto) Values(paramses ...Params) Values {
+	v := NewValues(paramses...)
+	v.prev = i
 	return v
 }
 

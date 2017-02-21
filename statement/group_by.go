@@ -17,29 +17,21 @@ func NewGroupBy(column Column, columns ...Column) GroupBy {
 }
 
 func (g GroupBy) nodeize() (token.Tokenizer, []interface{}) {
-	clauses := clauseNodes(g)
-	cs := make(token.Containers, len(clauses))
-	values := []interface{}{}
-	for i, c := range clauses {
-		var vals []interface{}
-		cs[i], vals = c.container()
-		values = append(values, vals...)
-	}
-	return cs, values
+	return nodeizeClauses(g)
 }
 
-func (g GroupBy) container() (token.Container, []interface{}) {
-	lines := make(token.Lines, len(g.columns))
+func (g GroupBy) self() (token.Tokenizer, []interface{}) {
+	ts := make(token.Tokenizers, len(g.columns))
 	values := []interface{}{}
 	for i, c := range g.columns {
 		var vals []interface{}
-		lines[i], vals = c.line()
+		ts[i], vals = c.nodeize()
 		values = append(values, vals...)
 	}
 	return token.NewContainer(
 		token.NewLine(token.Word(keyword.GroupBy)),
 	).SetMiddle(
-		lines.Prefix(
+		ts.Prefix(
 			token.Comma,
 			token.Space,
 		),

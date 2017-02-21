@@ -1,6 +1,7 @@
 package statement
 
 import (
+	"github.com/minodisk/sqlabble/keyword"
 	"github.com/minodisk/sqlabble/operator"
 	"github.com/minodisk/sqlabble/token"
 )
@@ -28,14 +29,14 @@ func (o JoinOperation) nodeize() (token.Tokenizer, []interface{}) {
 	ts := make(token.Tokenizers, len(o.ops))
 	values := []interface{}{}
 	for i, op := range o.ops {
-		var vals []interface{}
-		ts[i], vals = op.nodeize()
+		t, vals := op.nodeize()
+		if _, ok := op.(JoinOperation); ok {
+			t = token.NewParentheses(t)
+		}
+		ts[i] = t
 		values = append(values, vals...)
 	}
-	if len(values) == 0 {
-		values = nil
-	}
-	return ts.Prefix(
+	return token.NewTokenizers(ts...).Prefix(
 		token.Word(o.operator()),
 		token.Space,
 	), values
@@ -59,18 +60,11 @@ func NewNot(operation ComparisonOrLogicalOperation) Not {
 
 func (o Not) nodeize() (token.Tokenizer, []interface{}) {
 	middle, values := o.operation.nodeize()
-	return token.NewContainer(
-		token.NewLine(
-			token.Word(o.operator()),
-			token.Space,
-			token.ParenthesesStart,
-		),
-	).SetMiddle(
+	return token.NewParentheses(
 		middle,
-	).SetLast(
-		token.NewLine(
-			token.ParenthesesEnd,
-		),
+	).Prepend(
+		token.Word(o.operator()),
+		token.Space,
 	), values
 }
 
@@ -147,7 +141,6 @@ func NewRegExp(param ParamOrSubquery) ComparisonOperation {
 func (o ComparisonOperation) nodeize() (token.Tokenizer, []interface{}) {
 	t1, v1 := o.column.nodeize()
 	t2, v2 := o.param.nodeize()
-	values := append(v1, v2...)
 	return token.ConcatTokenizers(
 		t1,
 		t2,
@@ -156,7 +149,7 @@ func (o ComparisonOperation) nodeize() (token.Tokenizer, []interface{}) {
 			token.Word(o.operator()),
 			token.Space,
 		),
-	), values
+	), append(v1, v2...)
 }
 
 func (o ComparisonOperation) operator() operator.Operator {
@@ -164,11 +157,11 @@ func (o ComparisonOperation) operator() operator.Operator {
 }
 
 type Between struct {
-	col      ColumnOrSubquery
-	from, to interface{}
+	column   ColumnOrSubquery
+	from, to ParamOrSubquery
 }
 
-func NewBetween(from, to interface{}) Between {
+func NewBetween(from, to ParamOrSubquery) Between {
 	return Between{
 		from: from,
 		to:   to,
@@ -176,22 +169,26 @@ func NewBetween(from, to interface{}) Between {
 }
 
 func (o Between) nodeize() (token.Tokenizer, []interface{}) {
-	line := token.NewLine(
-		token.Word(o.operator()),
-		token.Space,
-		token.PlaceholderTokens(1),
-		token.Space,
-		token.Word(operator.And),
-		token.Space,
-		token.PlaceholderTokens(1),
-	)
-	values := []interface{}{o.from, o.to}
-
-	if o.col == nil {
-		return line, values
-	}
-
-	return line, values
+	t1, v1 := o.column.nodeize()
+	t2, v2 := o.from.nodeize()
+	t3, v3 := o.to.nodeize()
+	return token.ConcatTokenizers(
+		token.ConcatTokenizers(
+			t1,
+			t2,
+			token.NewLine(
+				token.Space,
+				token.Word(o.operator()),
+				token.Space,
+			),
+		),
+		t3,
+		token.NewLine(
+			token.Space,
+			token.Word(operator.And),
+			token.Space,
+		),
+	), append(append(v1, v2...), v3...)
 }
 
 func (o Between) operator() operator.Operator {
@@ -221,11 +218,15 @@ func NewNotIn(vals ParamsOrSubquery) ContainingOperation {
 func (o ContainingOperation) nodeize() (token.Tokenizer, []interface{}) {
 	t1, v1 := o.column.nodeize()
 	t2, v2 := o.params.nodeize()
-	return token.ConcatTokenizers(t1, t2, token.NewLine(
-		token.Space,
-		token.Word(o.operator()),
-		token.Space,
-	)), append(v1, v2...)
+	return token.ConcatTokenizers(
+		t1,
+		t2,
+		token.NewLine(
+			token.Space,
+			token.Word(o.operator()),
+			token.Space,
+		),
+	), append(v1, v2...)
 }
 
 func (o ContainingOperation) operator() operator.Operator {
@@ -233,24 +234,33 @@ func (o ContainingOperation) operator() operator.Operator {
 }
 
 type NullOperation struct {
-	op  operator.Operator
-	col ColumnOrSubquery
+	op     operator.Operator
+	column ColumnOrSubquery
 }
 
 func NewIsNull() NullOperation {
 	return NullOperation{
-		op: operator.IsNull,
+		op: operator.Is,
 	}
 }
 
 func NewIsNotNull() NullOperation {
 	return NullOperation{
-		op: operator.IsNotNull,
+		op: operator.IsNot,
 	}
 }
 
 func (o NullOperation) nodeize() (token.Tokenizer, []interface{}) {
-	return token.NewLine(), nil
+	t1, v1 := o.column.nodeize()
+	return token.ConcatTokenizers(
+		t1,
+		token.NewLine(token.Word(keyword.Null)),
+		token.NewLine(
+			token.Space,
+			token.Word(o.operator()),
+			token.Space,
+		),
+	), v1
 }
 
 func (o NullOperation) operator() operator.Operator {

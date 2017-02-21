@@ -17,15 +17,7 @@ func NewUsing(column Column) Using {
 }
 
 func (u Using) nodeize() (token.Tokenizer, []interface{}) {
-	ts := tableNodes(u)
-	tokenizers := make(token.Tokenizers, len(ts))
-	values := []interface{}{}
-	for i, t := range ts {
-		var vals []interface{}
-		tokenizers[i], vals = t.self()
-		values = append(values, vals...)
-	}
-	return tokenizers, values
+	return nodeizeJoiners(u)
 }
 
 func (u Using) self() (token.Tokenizer, []interface{}) {
@@ -40,7 +32,11 @@ func (u Using) self() (token.Tokenizer, []interface{}) {
 	}
 
 	t1, v1 := u.joiner.nodeize()
-	return token.ConcatTokenizers(t1, t2, token.NewLine(token.Space)), append(v1, v2...)
+	return token.ConcatTokenizers(
+		t1,
+		t2,
+		token.NewLine(token.Space),
+	), append(v1, v2...)
 }
 
 func (u Using) previous() Joiner {

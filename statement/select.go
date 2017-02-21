@@ -7,17 +7,17 @@ import (
 
 type Select struct {
 	distinct bool
-	columns  []ColumnOrColumnAs
+	columns  []ColumnOrColumnAsOrSubquery
 }
 
-func NewSelect(columns ...ColumnOrColumnAs) Select {
+func NewSelect(columns ...ColumnOrColumnAsOrSubquery) Select {
 	return Select{
 		distinct: false,
 		columns:  columns,
 	}
 }
 
-func NewSelectDistinct(columns ...ColumnOrColumnAs) Select {
+func NewSelectDistinct(columns ...ColumnOrColumnAsOrSubquery) Select {
 	return Select{
 		distinct: true,
 		columns:  columns,
@@ -25,26 +25,15 @@ func NewSelectDistinct(columns ...ColumnOrColumnAs) Select {
 }
 
 func (s Select) nodeize() (token.Tokenizer, []interface{}) {
-	clauses := clauseNodes(s)
-	cs := make(token.Containers, len(clauses))
-	values := []interface{}{}
-	for i, c := range clauses {
-		var vals []interface{}
-		cs[i], vals = c.container()
-		values = append(values, vals...)
-	}
-	if len(values) == 0 {
-		values = nil
-	}
-	return cs, values
+	return nodeizeClauses(s)
 }
 
-func (s Select) container() (token.Container, []interface{}) {
-	lines := make(token.Lines, len(s.columns))
+func (s Select) self() (token.Tokenizer, []interface{}) {
+	tokenizers := make(token.Tokenizers, len(s.columns))
 	values := []interface{}{}
 	for i, c := range s.columns {
 		var vals []interface{}
-		lines[i], vals = c.line()
+		tokenizers[i], vals = c.nodeize()
 		values = append(values, vals...)
 	}
 	tokens := token.NewTokens(token.Word(keyword.Select))
@@ -57,7 +46,7 @@ func (s Select) container() (token.Container, []interface{}) {
 	return token.NewContainer(
 		token.NewLine(tokens...),
 	).SetMiddle(
-		lines.Prefix(token.Comma, token.Space),
+		tokenizers.Prefix(token.Comma, token.Space),
 	), values
 }
 

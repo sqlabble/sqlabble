@@ -13,7 +13,7 @@ func NewTable(name string) Table {
 }
 
 func (t Table) nodeize() (token.Tokenizer, []interface{}) {
-	tables := tableNodes(t)
+	tables := collectJoiners(t)
 	ts := make(token.Tokenizers, len(tables))
 	values := []interface{}{}
 	for i, t := range tables {

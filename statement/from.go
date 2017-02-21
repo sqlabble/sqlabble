@@ -17,18 +17,10 @@ func NewFrom(joiner Joiner) From {
 }
 
 func (f From) nodeize() (token.Tokenizer, []interface{}) {
-	clauses := clauseNodes(f)
-	cs := make(token.Containers, len(clauses))
-	values := []interface{}{}
-	for i, c := range clauses {
-		var vals []interface{}
-		cs[i], vals = c.container()
-		values = append(values, vals...)
-	}
-	return cs, values
+	return nodeizeClauses(f)
 }
 
-func (f From) container() (token.Container, []interface{}) {
+func (f From) self() (token.Tokenizer, []interface{}) {
 	middle, values := f.joiner.nodeize()
 	return token.NewContainer(
 		token.NewLine(token.Word(keyword.From)),

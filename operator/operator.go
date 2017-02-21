@@ -22,8 +22,8 @@ const (
 	In    Operator = "IN"
 	NotIn Operator = "NOT IN"
 
-	IsNull    Operator = "IS NULL"
-	IsNotNull Operator = "IS NOT NULL"
+	Is    Operator = "IS"
+	IsNot Operator = "IS NOT"
 )
 
 // Comparison operators.
@@ -48,4 +48,14 @@ const (
 // Alias operators.
 const (
 	As Operator = "AS"
+)
+
+// Set operators.
+const (
+	Union        = "UNION"
+	UnionAll     = "UNION ALL"
+	Intersect    = "INTERSECT"
+	IntersectAll = "INTERSECT ALL"
+	Except       = "EXCEPT"
+	ExceptAll    = "EXCEPT ALL"
 )

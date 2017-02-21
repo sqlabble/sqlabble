@@ -14,11 +14,11 @@ func TestColumnType(t *testing.T) {
 		statement.Column{},
 	} {
 		t.Run(fmt.Sprintf("%T", c), func(t *testing.T) {
-			if _, ok := c.(statement.ColumnOrColumnAs); !ok {
-				t.Errorf("%T should implement statement.ColumnOrColumnAs", c)
-			}
 			if _, ok := c.(statement.ColumnOrSubquery); !ok {
 				t.Errorf("%T should implement statement.ColumnOrSubquery", c)
+			}
+			if _, ok := c.(statement.ColumnOrColumnAsOrSubquery); !ok {
+				t.Errorf("%T should implement statement.ColumnOrColumnAsOrSubquery", c)
 			}
 		})
 	}
@@ -36,21 +36,21 @@ func TestColumnSQL(t *testing.T) {
 			`foo`,
 			`> foo
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewColumn("foo").As("f"),
 			`foo AS "f"`,
 			`> foo AS "f"
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewColumn("foo").Define("VARCHAR(20)"),
 			`foo VARCHAR(20)`,
 			`> foo VARCHAR(20)
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewColumn("foo").Assign(statement.NewParam(100)),
@@ -116,7 +116,7 @@ func TestColumnSQL(t *testing.T) {
 			},
 		},
 		{
-			statement.NewColumn("foo").Between(100, 200),
+			statement.NewColumn("foo").Between(statement.NewParam(100), statement.NewParam(200)),
 			`foo BETWEEN ? AND ?`,
 			`> foo BETWEEN ? AND ?
 `,
@@ -172,28 +172,28 @@ func TestColumnSQL(t *testing.T) {
 			`foo IS NULL`,
 			`> foo IS NULL
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewColumn("foo").IsNotNull(),
 			`foo IS NOT NULL`,
 			`> foo IS NOT NULL
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewColumn("foo").Asc(),
 			`foo ASC`,
 			`> foo ASC
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewColumn("foo").Desc(),
 			`foo DESC`,
 			`> foo DESC
 `,
-			[]interface{}{},
+			nil,
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {

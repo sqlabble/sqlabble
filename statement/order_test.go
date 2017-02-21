@@ -26,17 +26,17 @@ func TestOrderSQL(t *testing.T) {
 	}{
 		{
 			statement.NewOrder(direction.ASC),
-			"ASC",
-			`> ASC
+			" ASC",
+			`>  ASC
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewOrder(direction.DESC),
-			"DESC",
-			`> DESC
+			" DESC",
+			`>  DESC
 `,
-			[]interface{}{},
+			nil,
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
