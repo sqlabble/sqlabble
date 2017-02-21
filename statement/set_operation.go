@@ -71,9 +71,6 @@ func (u SetOperation) self() (token.Tokenizer, []interface{}) {
 		tokenizers[i] = t
 		values = append(values, vals...)
 	}
-	if len(values) == 0 {
-		values = nil
-	}
 	return tokenizers, values
 }
 

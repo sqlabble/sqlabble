@@ -17,61 +17,61 @@ func TestUsing(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			statement: statement.NewUsing(
+			statement.NewUsing(
 				statement.NewColumn("id"),
 			),
-			sql: "USING id",
-			sqlIndent: `> USING id
+			"USING id",
+			`> USING id
 `,
-			values: nil,
+			nil,
 		},
 		{
-			statement: statement.NewUsing(
+			statement.NewUsing(
 				statement.NewColumn("id"),
 			).Join(
 				statement.NewTable("bar"),
 			),
-			sql: "USING id JOIN bar",
-			sqlIndent: `> USING id
+			"USING id JOIN bar",
+			`> USING id
 > JOIN bar
 `,
-			values: nil,
+			nil,
 		},
 		{
-			statement: statement.NewUsing(
+			statement.NewUsing(
 				statement.NewColumn("id"),
 			).InnerJoin(
 				statement.NewTable("bar"),
 			),
-			sql: "USING id INNER JOIN bar",
-			sqlIndent: `> USING id
+			"USING id INNER JOIN bar",
+			`> USING id
 > INNER JOIN bar
 `,
-			values: nil,
+			nil,
 		},
 		{
-			statement: statement.NewUsing(
+			statement.NewUsing(
 				statement.NewColumn("id"),
 			).LeftJoin(
 				statement.NewTable("bar"),
 			),
-			sql: "USING id LEFT JOIN bar",
-			sqlIndent: `> USING id
+			"USING id LEFT JOIN bar",
+			`> USING id
 > LEFT JOIN bar
 `,
-			values: nil,
+			nil,
 		},
 		{
-			statement: statement.NewUsing(
+			statement.NewUsing(
 				statement.NewColumn("id"),
 			).RightJoin(
 				statement.NewTable("bar"),
 			),
-			sql: "USING id RIGHT JOIN bar",
-			sqlIndent: `> USING id
+			"USING id RIGHT JOIN bar",
+			`> USING id
 > RIGHT JOIN bar
 `,
-			values: nil,
+			nil,
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {

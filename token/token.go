@@ -1,10 +1,6 @@
 package token
 
-import (
-	"fmt"
-
-	"github.com/minodisk/sqlabble/node"
-)
+import "github.com/minodisk/sqlabble/node"
 
 var (
 	EmptyLine = Line{}
@@ -127,7 +123,7 @@ func PlaceholderTokens(i int) Tokens {
 
 func ParamsToLine(values ...interface{}) (Line, []interface{}) {
 	if len(values) == 0 {
-		return EmptyLine, []interface{}{}
+		return EmptyLine, nil
 	}
 	return NewLine(PlaceholderTokens(len(values))...), values
 }
@@ -198,7 +194,6 @@ func ConcatTokenizers(t1, t2 Tokenizer, sep Line) Tokenizers {
 		last.A(sep.tokens...).A(first.tokens...),
 		t2,
 	)
-	fmt.Println(t1, last, first, t2, "->", ts)
 	return ts
 }
 
