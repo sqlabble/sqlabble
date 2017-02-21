@@ -12,8 +12,8 @@ SQL query builder with type support.
 
 ### Clauses
 
-- [x] `SELECT {COLUMN}`
-- [x] `SELECT DISTINCT {COLUMN}`
+- [x] `SELECT {COLUMN|SUBQUERY}`
+- [x] `SELECT DISTINCT {COLUMN|SUBQUERY}`
 - [x] `FROM {TABLE}`
 - [x] `WHERE {OPERATION}`
 - [x] `GROUP BY {COLUMN}`
@@ -103,7 +103,6 @@ SQL query builder with type support.
 
 ### Subqueries
 
-- [ ] `SELECT ({SUBQUERY})`
 - [ ] `FROM ({SUBQUERY})`
 
 #### Nonscalar Operation

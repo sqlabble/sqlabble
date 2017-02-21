@@ -24,6 +24,12 @@ func NewSelectDistinct(columns ...ColumnOrColumnAsOrSubquery) Select {
 	}
 }
 
+func (s Select) From(t Joiner) From {
+	f := NewFrom(t)
+	f.prev = s
+	return f
+}
+
 func (s Select) nodeize() (token.Tokenizer, []interface{}) {
 	return nodeizeClauses(s)
 }
@@ -52,10 +58,4 @@ func (s Select) self() (token.Tokenizer, []interface{}) {
 
 func (s Select) previous() Clause {
 	return nil
-}
-
-func (s Select) From(t Joiner) From {
-	f := NewFrom(t)
-	f.prev = s
-	return f
 }

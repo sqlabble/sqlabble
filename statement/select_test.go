@@ -23,6 +23,7 @@ func TestSelectSQL(t *testing.T) {
 		sqlIndent string
 		values    []interface{}
 	}{
+		// 0
 		{
 			statement.NewSelect(),
 			`SELECT`,
@@ -30,6 +31,7 @@ func TestSelectSQL(t *testing.T) {
 `,
 			nil,
 		},
+		// 1
 		{
 			statement.NewSelect(
 				statement.NewColumn("*"),
@@ -40,6 +42,7 @@ func TestSelectSQL(t *testing.T) {
 `,
 			nil,
 		},
+		// 2
 		{
 			statement.NewSelect(
 				statement.NewColumn("foo"),
@@ -50,6 +53,7 @@ func TestSelectSQL(t *testing.T) {
 `,
 			nil,
 		},
+		// 3
 		{
 			statement.NewSelect(
 				statement.NewColumn("foo").As("a"),
@@ -60,6 +64,7 @@ func TestSelectSQL(t *testing.T) {
 `,
 			nil,
 		},
+		// 4
 		{
 			statement.NewSelect(
 				statement.NewColumn("foo").As("a"),
@@ -74,6 +79,7 @@ func TestSelectSQL(t *testing.T) {
 `,
 			nil,
 		},
+		// 5
 		{
 			statement.NewSelectDistinct(
 				statement.NewColumn("foo").As("a"),
@@ -88,6 +94,7 @@ func TestSelectSQL(t *testing.T) {
 `,
 			nil,
 		},
+		// 6
 		{
 			statement.NewSelect(
 				statement.NewColumn("foo"),
@@ -97,6 +104,28 @@ func TestSelectSQL(t *testing.T) {
 			`SELECT foo FROM bar`,
 			`> SELECT
 >   foo
+> FROM
+>   bar
+`,
+			nil,
+		},
+		// 7
+		{
+			statement.NewSelect(
+				statement.NewSubquery(
+					statement.NewSelect(
+						statement.NewColumn("foo"),
+					),
+				),
+			).From(
+				statement.NewTable("bar"),
+			),
+			`SELECT (SELECT foo) FROM bar`,
+			`> SELECT
+>   (
+>     SELECT
+>       foo
+>   )
 > FROM
 >   bar
 `,
