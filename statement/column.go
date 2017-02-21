@@ -2,7 +2,6 @@ package statement
 
 import (
 	"github.com/minodisk/sqlabble/direction"
-	"github.com/minodisk/sqlabble/node"
 	"github.com/minodisk/sqlabble/token"
 )
 
@@ -35,58 +34,58 @@ func (c Column) Define(definition string) Definition {
 	return d
 }
 
-// Assign is used to assign a value to the column.
+// Assign is used to assign a params to the column.
 // This constitutes a part of the record update statement.
 // Returns a new Assign.
-func (c Column) Assign(value interface{}) Assign {
-	return NewAssign(c, value)
+func (c Column) Assign(param ParamOrSubquery) Assign {
+	return NewAssign(c, param)
 }
 
-func (c Column) Eq(value interface{}) ComparisonOperation {
+func (c Column) Eq(value ParamOrSubquery) ComparisonOperation {
 	e := NewEq(value)
-	e.col = c
+	e.column = c
 	return e
 }
 
-func (c Column) NotEq(value interface{}) ComparisonOperation {
+func (c Column) NotEq(value ParamOrSubquery) ComparisonOperation {
 	n := NewNotEq(value)
-	n.col = c
+	n.column = c
 	return n
 }
 
-func (c Column) Gt(value interface{}) ComparisonOperation {
+func (c Column) Gt(value ParamOrSubquery) ComparisonOperation {
 	g := NewGt(value)
-	g.col = c
+	g.column = c
 	return g
 }
 
-func (c Column) Gte(value interface{}) ComparisonOperation {
+func (c Column) Gte(value ParamOrSubquery) ComparisonOperation {
 	g := NewGte(value)
-	g.col = c
+	g.column = c
 	return g
 }
 
-func (c Column) Lt(value interface{}) ComparisonOperation {
+func (c Column) Lt(value ParamOrSubquery) ComparisonOperation {
 	l := NewLt(value)
-	l.col = c
+	l.column = c
 	return l
 }
 
-func (c Column) Lte(value interface{}) ComparisonOperation {
+func (c Column) Lte(value ParamOrSubquery) ComparisonOperation {
 	l := NewLte(value)
-	l.col = c
+	l.column = c
 	return l
 }
 
-func (c Column) Like(value interface{}) ComparisonOperation {
+func (c Column) Like(value ParamOrSubquery) ComparisonOperation {
 	l := NewLike(value)
-	l.col = c
+	l.column = c
 	return l
 }
 
-func (c Column) RegExp(value interface{}) ComparisonOperation {
+func (c Column) RegExp(value ParamOrSubquery) ComparisonOperation {
 	r := NewRegExp(value)
-	r.col = c
+	r.column = c
 	return r
 }
 
@@ -96,15 +95,15 @@ func (c Column) Between(from, to interface{}) Between {
 	return b
 }
 
-func (c Column) In(values ...interface{}) ContainingOperation {
-	i := NewIn(values...)
-	i.col = c
+func (c Column) In(params ParamsOrSubquery) ContainingOperation {
+	i := NewIn(params)
+	i.column = c
 	return i
 }
 
-func (c Column) NotIn(values ...interface{}) ContainingOperation {
-	n := NewNotIn(values...)
-	n.col = c
+func (c Column) NotIn(params ParamsOrSubquery) ContainingOperation {
+	n := NewNotIn(params)
+	n.column = c
 	return n
 }
 
@@ -132,25 +131,17 @@ func (c Column) Desc() Order {
 	return o
 }
 
-func (c Column) node() node.Node {
-	return token.NewTokensNode(
-		c.tokenize(),
-	)
+func (c Column) nodeize() (token.Tokenizer, []interface{}) {
+	return c.line()
 }
 
-func (c Column) tokenize() token.Tokens {
-	if c.name == "" {
-		return token.Tokens{}
-	}
-	return token.Tokens{
-		token.Word(c.name),
-	}
+func (c Column) lines() (token.Lines, []interface{}) {
+	line, values := c.line()
+	return token.NewLines(line), values
 }
 
-func (c Column) expression() node.Expression {
-	return node.NewExpression(
-		c.name,
-	)
+func (c Column) line() (token.Line, []interface{}) {
+	return token.NewLine(token.Word(c.name)), nil
 }
 
 func (c Column) columnName() string {

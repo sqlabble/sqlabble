@@ -2,7 +2,7 @@ package statement
 
 import (
 	"github.com/minodisk/sqlabble/keyword"
-	"github.com/minodisk/sqlabble/node"
+	"github.com/minodisk/sqlabble/token"
 )
 
 type Select struct {
@@ -24,28 +24,41 @@ func NewSelectDistinct(columns ...ColumnOrColumnAs) Select {
 	}
 }
 
-func (s Select) node() node.Node {
-	cs := clauseNodes(s)
-	fs := make([]node.Node, len(cs))
-	for i, c := range cs {
-		fs[i] = c.myNode()
+func (s Select) nodeize() (token.Tokenizer, []interface{}) {
+	clauses := clauseNodes(s)
+	cs := make(token.Containers, len(clauses))
+	values := []interface{}{}
+	for i, c := range clauses {
+		var vals []interface{}
+		cs[i], vals = c.container()
+		values = append(values, vals...)
 	}
-	return node.NewNodes(fs...)
+	if len(values) == 0 {
+		values = nil
+	}
+	return cs, values
 }
 
-func (s Select) myNode() node.Node {
-	fs := make([]node.Node, len(s.columns))
+func (s Select) container() (token.Container, []interface{}) {
+	lines := make(token.Lines, len(s.columns))
+	values := []interface{}{}
 	for i, c := range s.columns {
-		fs[i] = c.node()
+		var vals []interface{}
+		lines[i], vals = c.line()
+		values = append(values, vals...)
 	}
-	k := node.NewExpression(keyword.Select)
+	tokens := token.NewTokens(token.Word(keyword.Select))
 	if s.distinct {
-		k = k.Append(node.NewExpression(keyword.Distinct))
+		tokens = tokens.Append(
+			token.Space,
+			token.Word(keyword.Distinct),
+		)
 	}
-	return node.NewContainer(
-		k,
-		node.NewComma(fs...),
-	)
+	return token.NewContainer(
+		token.NewLine(tokens...),
+	).SetMiddle(
+		lines.Prefix(token.Comma, token.Space),
+	), values
 }
 
 func (s Select) previous() Clause {

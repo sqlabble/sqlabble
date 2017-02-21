@@ -2,7 +2,7 @@ package statement
 
 import (
 	"github.com/minodisk/sqlabble/keyword"
-	"github.com/minodisk/sqlabble/node"
+	"github.com/minodisk/sqlabble/token"
 )
 
 type Update struct {
@@ -16,15 +16,17 @@ func NewUpdate(table Table) Update {
 	}
 }
 
-func (u Update) node() node.Node {
-	return u.myNode()
+func (u Update) nodeize() (token.Tokenizer, []interface{}) {
+	return u.container()
 }
 
-func (u Update) myNode() node.Node {
-	return node.NewContainer(
-		node.NewExpression(keyword.Update),
-		u.table.node(),
-	)
+func (u Update) container() (token.Container, []interface{}) {
+	middle, values := u.table.nodeize()
+	return token.NewContainer(
+		token.NewLine(token.Word(keyword.Update)),
+	).SetMiddle(
+		middle,
+	), values
 }
 
 func (u Update) previous() Clause {

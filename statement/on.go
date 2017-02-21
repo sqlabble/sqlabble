@@ -2,7 +2,6 @@ package statement
 
 import (
 	"github.com/minodisk/sqlabble/keyword"
-	"github.com/minodisk/sqlabble/node"
 	"github.com/minodisk/sqlabble/operator"
 	"github.com/minodisk/sqlabble/token"
 )
@@ -19,37 +18,38 @@ func NewOn(column1, column2 Column) On {
 	}
 }
 
-func (o On) node() node.Node {
-	ts := tableNodes(o)
-	ns := make([]node.Node, len(ts))
-	for i, t := range ts {
-		ns[i] = token.NewTokensNode(t.tokenize())
+func (o On) nodeize() (token.Tokenizer, []interface{}) {
+	joiners := tableNodes(o)
+	ts := make(token.Tokenizers, len(joiners))
+	values := []interface{}{}
+	for i, j := range joiners {
+		var vals []interface{}
+		ts[i], vals = j.self()
+		values = append(values, vals...)
 	}
-	return node.NewNodes(ns...)
+	return ts, values
 }
 
-func (o On) expression() node.Expression {
-	e := node.NewExpression(keyword.On).
-		Append(o.column1.expression()).
-		Append(node.NewExpression(string(operator.Eq))).
-		Append(o.column2.expression())
+func (o On) self() (token.Tokenizer, []interface{}) {
+	line1, values1 := o.column1.line()
+	line2, values2 := o.column2.line()
+
+	line := token.NewLine(
+		token.Word(keyword.On),
+	).Join(
+		line1,
+		token.NewLine(token.Word(operator.Eq)),
+		line2,
+	)
+
+	lines := token.NewLines(line)
+	values := append(values1, values2...)
 	if o.joiner == nil {
-		return e
+		return lines, values
 	}
-	return o.joiner.expression().
-		Append(e)
-}
 
-func (o On) tokenize() token.Tokens {
-	var t token.Tokens
-	if o.joiner != nil {
-		t = o.joiner.tokenize()
-	}
-	return t.
-		Append(token.Word(keyword.On)).
-		Append(o.column1.tokenize()...).
-		Append(token.Word(operator.Eq)).
-		Append(o.column2.tokenize()...)
+	lines0, values0 := o.joiner.self()
+	return token.NewTokenizers(lines0, lines), append(values0, values...)
 }
 
 func (o On) previous() Joiner {

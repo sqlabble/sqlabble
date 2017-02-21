@@ -2,6 +2,7 @@ package builder
 
 import (
 	"github.com/minodisk/sqlabble/node"
+	"github.com/minodisk/sqlabble/printer"
 	"github.com/minodisk/sqlabble/statement"
 )
 
@@ -21,7 +22,9 @@ func NewBuilder(options Options) Builder {
 
 // Build converts a statement into a query and a slice of values.
 func (b Builder) Build(stmt statement.Statement) (string, []interface{}) {
-	return statement.Node(stmt).ToSQL(b.context)
+	tokenizer, values := statement.Nodeize(stmt)
+	query := printer.Print(tokenizer.Tokenize(0), b.context)
+	return query, values
 }
 
 // Typical builders commonly used to build queries.

@@ -2,7 +2,6 @@ package statement
 
 import (
 	"github.com/minodisk/sqlabble/keyword"
-	"github.com/minodisk/sqlabble/node"
 	"github.com/minodisk/sqlabble/token"
 )
 
@@ -17,33 +16,31 @@ func NewUsing(column Column) Using {
 	}
 }
 
-func (u Using) node() node.Node {
+func (u Using) nodeize() (token.Tokenizer, []interface{}) {
 	ts := tableNodes(u)
-	ns := make([]node.Node, len(ts))
+	tokenizers := make(token.Tokenizers, len(ts))
+	values := []interface{}{}
 	for i, t := range ts {
-		ns[i] = token.NewTokensNode(t.tokenize())
+		var vals []interface{}
+		tokenizers[i], vals = t.self()
+		values = append(values, vals...)
 	}
-	return node.NewNodes(ns...)
+	return tokenizers, values
 }
 
-func (u Using) expression() node.Expression {
-	e := node.NewExpression(keyword.Using).
-		Append(u.column.expression())
+func (u Using) self() (token.Tokenizer, []interface{}) {
+	tokens := token.NewTokens(
+		token.Word(keyword.Using),
+		token.Space,
+	)
+	t2, v2 := u.column.nodeize()
+	t2 = t2.Prepend(tokens...)
 	if u.joiner == nil {
-		return e
+		return t2, v2
 	}
-	return u.joiner.expression().
-		Append(e)
-}
 
-func (u Using) tokenize() token.Tokens {
-	var t token.Tokens
-	if u.joiner != nil {
-		t = u.joiner.tokenize()
-	}
-	return t.
-		Append(token.Word(keyword.Using)).
-		Append(u.column.tokenize()...)
+	t1, v1 := u.joiner.nodeize()
+	return token.ConcatTokenizers(t1, t2, token.NewLine(token.Space)), append(v1, v2...)
 }
 
 func (u Using) previous() Joiner {

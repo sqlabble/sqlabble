@@ -2,34 +2,39 @@ package statement
 
 import (
 	"github.com/minodisk/sqlabble/keyword"
-	"github.com/minodisk/sqlabble/node"
+	"github.com/minodisk/sqlabble/token"
 )
 
 type From struct {
-	prev  Clause
-	table Joiner
+	prev   Clause
+	joiner Joiner
 }
 
-func NewFrom(table Joiner) From {
+func NewFrom(joiner Joiner) From {
 	return From{
-		table: table,
+		joiner: joiner,
 	}
 }
 
-func (f From) node() node.Node {
-	cs := clauseNodes(f)
-	ns := make([]node.Node, len(cs))
-	for i, c := range cs {
-		ns[i] = c.myNode()
+func (f From) nodeize() (token.Tokenizer, []interface{}) {
+	clauses := clauseNodes(f)
+	cs := make(token.Containers, len(clauses))
+	values := []interface{}{}
+	for i, c := range clauses {
+		var vals []interface{}
+		cs[i], vals = c.container()
+		values = append(values, vals...)
 	}
-	return node.NewNodes(ns...)
+	return cs, values
 }
 
-func (f From) myNode() node.Node {
-	return node.NewContainer(
-		node.NewExpression(string(keyword.From)),
-		f.table.node(),
-	)
+func (f From) container() (token.Container, []interface{}) {
+	middle, values := f.joiner.nodeize()
+	return token.NewContainer(
+		token.NewLine(token.Word(keyword.From)),
+	).SetMiddle(
+		middle,
+	), values
 }
 
 func (f From) previous() Clause {

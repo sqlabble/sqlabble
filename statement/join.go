@@ -2,7 +2,6 @@ package statement
 
 import (
 	"github.com/minodisk/sqlabble/keyword"
-	"github.com/minodisk/sqlabble/node"
 	"github.com/minodisk/sqlabble/token"
 )
 
@@ -12,58 +11,32 @@ type Join struct {
 	prev     Joiner
 }
 
-func NewJoin(table Joiner) Join {
+func NewJoin(joiner Joiner) Join {
 	return Join{
 		joinType: keyword.Join,
-		joiner:   table,
+		joiner:   joiner,
 	}
 }
 
-func NewInnerJoin(table Joiner) Join {
+func NewInnerJoin(joiner Joiner) Join {
 	return Join{
 		joinType: keyword.InnerJoin,
-		joiner:   table,
+		joiner:   joiner,
 	}
 }
 
-func NewLeftJoin(table Joiner) Join {
+func NewLeftJoin(joiner Joiner) Join {
 	return Join{
 		joinType: keyword.LeftJoin,
-		joiner:   table,
+		joiner:   joiner,
 	}
 }
 
-func NewRightJoin(table Joiner) Join {
+func NewRightJoin(joiner Joiner) Join {
 	return Join{
 		joinType: keyword.RightJoin,
-		joiner:   table,
+		joiner:   joiner,
 	}
-}
-
-func (j Join) node() node.Node {
-	ts := tableNodes(j)
-	ns := make([]node.Node, len(ts))
-	for i, t := range ts {
-		ns[i] = token.NewTokensNode(t.tokenize())
-	}
-	return node.NewNodes(ns...)
-}
-
-func (j Join) tokenize() token.Tokens {
-	return token.Word(j.joinType).
-		Append(j.joiner.tokenize()...)
-}
-
-func (j Join) expression() node.Expression {
-	return node.NewExpression(j.joinType).
-		Append(j.joiner.expression())
-}
-
-func (j Join) previous() Joiner {
-	if j.prev == nil {
-		return nil
-	}
-	return j.prev
 }
 
 func (j Join) Join(table Joiner) Joiner {
@@ -100,4 +73,35 @@ func (j Join) Using(col Column) Using {
 	o := NewUsing(col)
 	o.joiner = j
 	return o
+}
+
+func (j Join) nodeize() (token.Tokenizer, []interface{}) {
+	joiners := tableNodes(j)
+	ts := make(token.Tokenizers, len(joiners))
+	values := []interface{}{}
+	for i, j := range joiners {
+		var vals []interface{}
+		ts[i], vals = j.self()
+		values = append(values, vals...)
+	}
+	return ts, values
+}
+
+func (j Join) self() (token.Tokenizer, []interface{}) {
+	t, values := j.joiner.nodeize()
+	line, tokenizer := t.FirstLine()
+	return token.NewTokenizers(
+		line.Prepend(
+			token.Word(j.joinType),
+			token.Space,
+		),
+		tokenizer,
+	), values
+}
+
+func (j Join) previous() Joiner {
+	if j.prev == nil {
+		return nil
+	}
+	return j.prev
 }

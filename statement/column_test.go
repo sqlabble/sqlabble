@@ -17,6 +17,9 @@ func TestColumnType(t *testing.T) {
 			if _, ok := c.(statement.ColumnOrColumnAs); !ok {
 				t.Errorf("%T should implement statement.ColumnOrColumnAs", c)
 			}
+			if _, ok := c.(statement.ColumnOrSubquery); !ok {
+				t.Errorf("%T should implement statement.ColumnOrSubquery", c)
+			}
 		})
 	}
 }
@@ -50,7 +53,7 @@ func TestColumnSQL(t *testing.T) {
 			[]interface{}{},
 		},
 		{
-			statement.NewColumn("foo").Assign(100),
+			statement.NewColumn("foo").Assign(statement.NewParam(100)),
 			`foo = ?`,
 			`> foo = ?
 `,
@@ -59,7 +62,7 @@ func TestColumnSQL(t *testing.T) {
 			},
 		},
 		{
-			statement.NewColumn("foo").Eq(100),
+			statement.NewColumn("foo").Eq(statement.NewParam(100)),
 			`foo = ?`,
 			`> foo = ?
 `,
@@ -68,7 +71,7 @@ func TestColumnSQL(t *testing.T) {
 			},
 		},
 		{
-			statement.NewColumn("foo").NotEq(100),
+			statement.NewColumn("foo").NotEq(statement.NewParam(100)),
 			`foo != ?`,
 			`> foo != ?
 `,
@@ -77,7 +80,7 @@ func TestColumnSQL(t *testing.T) {
 			},
 		},
 		{
-			statement.NewColumn("foo").Gt(100),
+			statement.NewColumn("foo").Gt(statement.NewParam(100)),
 			`foo > ?`,
 			`> foo > ?
 `,
@@ -86,7 +89,7 @@ func TestColumnSQL(t *testing.T) {
 			},
 		},
 		{
-			statement.NewColumn("foo").Gte(100),
+			statement.NewColumn("foo").Gte(statement.NewParam(100)),
 			`foo >= ?`,
 			`> foo >= ?
 `,
@@ -95,7 +98,7 @@ func TestColumnSQL(t *testing.T) {
 			},
 		},
 		{
-			statement.NewColumn("foo").Lt(100),
+			statement.NewColumn("foo").Lt(statement.NewParam(100)),
 			`foo < ?`,
 			`> foo < ?
 `,
@@ -104,7 +107,7 @@ func TestColumnSQL(t *testing.T) {
 			},
 		},
 		{
-			statement.NewColumn("foo").Lte(100),
+			statement.NewColumn("foo").Lte(statement.NewParam(100)),
 			`foo <= ?`,
 			`> foo <= ?
 `,
@@ -123,7 +126,8 @@ func TestColumnSQL(t *testing.T) {
 			},
 		},
 		{
-			statement.NewColumn("foo").In(100, 200, 300),
+			statement.NewColumn("foo").
+				In(statement.NewParams(100, 200, 300)),
 			`foo IN (?, ?, ?)`,
 			`> foo IN (?, ?, ?)
 `,
@@ -134,7 +138,8 @@ func TestColumnSQL(t *testing.T) {
 			},
 		},
 		{
-			statement.NewColumn("foo").NotIn(100, 200, 300),
+			statement.NewColumn("foo").
+				NotIn(statement.NewParams(100, 200, 300)),
 			`foo NOT IN (?, ?, ?)`,
 			`> foo NOT IN (?, ?, ?)
 `,
@@ -145,7 +150,7 @@ func TestColumnSQL(t *testing.T) {
 			},
 		},
 		{
-			statement.NewColumn("foo").Like(`%bar%`),
+			statement.NewColumn("foo").Like(statement.NewParam(`%bar%`)),
 			`foo LIKE ?`,
 			`> foo LIKE ?
 `,
@@ -154,7 +159,7 @@ func TestColumnSQL(t *testing.T) {
 			},
 		},
 		{
-			statement.NewColumn("foo").RegExp("^(bar|baz)"),
+			statement.NewColumn("foo").RegExp(statement.NewParam("^(bar|baz)")),
 			`foo REGEXP ?`,
 			`> foo REGEXP ?
 `,

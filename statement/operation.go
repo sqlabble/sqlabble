@@ -1,8 +1,8 @@
 package statement
 
 import (
-	"github.com/minodisk/sqlabble/node"
 	"github.com/minodisk/sqlabble/operator"
+	"github.com/minodisk/sqlabble/token"
 )
 
 type JoinOperation struct {
@@ -24,15 +24,21 @@ func NewOr(ops ...ComparisonOrLogicalOperation) JoinOperation {
 	}
 }
 
-func (o JoinOperation) node() node.Node {
-	ns := make([]node.Node, len(o.ops))
+func (o JoinOperation) nodeize() (token.Tokenizer, []interface{}) {
+	ts := make(token.Tokenizers, len(o.ops))
+	values := []interface{}{}
 	for i, op := range o.ops {
-		ns[i] = op.node()
+		var vals []interface{}
+		ts[i], vals = op.nodeize()
+		values = append(values, vals...)
 	}
-	return node.NewJoinOperation(
-		o.operator(),
-		ns...,
-	)
+	if len(values) == 0 {
+		values = nil
+	}
+	return ts.Prefix(
+		token.Word(o.operator()),
+		token.Space,
+	), values
 }
 
 func (o JoinOperation) operator() operator.Operator {
@@ -51,11 +57,21 @@ func NewNot(operation ComparisonOrLogicalOperation) Not {
 	return Not{operation: operation}
 }
 
-func (o Not) node() node.Node {
-	return node.NewOpParentheses(
-		o.operator(),
-		node.NewParentheses(o.operation.node()),
-	)
+func (o Not) nodeize() (token.Tokenizer, []interface{}) {
+	middle, values := o.operation.nodeize()
+	return token.NewContainer(
+		token.NewLine(
+			token.Word(o.operator()),
+			token.Space,
+			token.ParenthesesStart,
+		),
+	).SetMiddle(
+		middle,
+	).SetLast(
+		token.NewLine(
+			token.ParenthesesEnd,
+		),
+	), values
 }
 
 func (o Not) operator() operator.Operator {
@@ -67,92 +83,80 @@ func (o Not) operations() []ComparisonOrLogicalOperation {
 }
 
 type ComparisonOperation struct {
-	op  operator.Operator
-	col ColumnOrSubquery
-	val interface{}
+	op     operator.Operator
+	column ColumnOrSubquery
+	param  ParamOrSubquery
 }
 
-func NewEq(val interface{}) ComparisonOperation {
+func NewEq(param ParamOrSubquery) ComparisonOperation {
 	return ComparisonOperation{
-		op:  operator.Eq,
-		val: val,
+		op:    operator.Eq,
+		param: param,
 	}
 }
 
-func NewNotEq(val interface{}) ComparisonOperation {
+func NewNotEq(param ParamOrSubquery) ComparisonOperation {
 	return ComparisonOperation{
-		op:  operator.NotEq,
-		val: val,
+		op:    operator.NotEq,
+		param: param,
 	}
 }
 
-func NewGt(val interface{}) ComparisonOperation {
+func NewGt(param ParamOrSubquery) ComparisonOperation {
 	return ComparisonOperation{
-		op:  operator.Gt,
-		val: val,
+		op:    operator.Gt,
+		param: param,
 	}
 }
 
-func NewGte(val interface{}) ComparisonOperation {
+func NewGte(param ParamOrSubquery) ComparisonOperation {
 	return ComparisonOperation{
-		op:  operator.Gte,
-		val: val,
+		op:    operator.Gte,
+		param: param,
 	}
 }
 
-func NewLt(val interface{}) ComparisonOperation {
+func NewLt(param ParamOrSubquery) ComparisonOperation {
 	return ComparisonOperation{
-		op:  operator.Lt,
-		val: val,
+		op:    operator.Lt,
+		param: param,
 	}
 }
 
-func NewLte(val interface{}) ComparisonOperation {
+func NewLte(param ParamOrSubquery) ComparisonOperation {
 	return ComparisonOperation{
-		op:  operator.Lte,
-		val: val,
+		op:    operator.Lte,
+		param: param,
 	}
 }
 
-func NewLike(val interface{}) ComparisonOperation {
+func NewLike(param ParamOrSubquery) ComparisonOperation {
 	return ComparisonOperation{
-		op:  operator.Like,
-		val: val,
+		op:    operator.Like,
+		param: param,
 	}
 }
 
-func NewRegExp(val interface{}) ComparisonOperation {
+func NewRegExp(param ParamOrSubquery) ComparisonOperation {
 	return ComparisonOperation{
-		op:  operator.RegExp,
-		val: val,
+		op:    operator.RegExp,
+		param: param,
 	}
 }
 
-func (o ComparisonOperation) node() node.Node {
-	var n1, n2 node.Node
-
-	if o.col != nil {
-		switch col := o.col.(type) {
-		case Column:
-			n1 = col.expression()
-		default:
-			n1 = o.col.node()
-		}
-	}
-
-	if o.val != nil {
-		switch val := o.val.(type) {
-		case Subquery:
-			n2 = val.node()
-		case Statement:
-			n2 = NewSubquery(val).node()
-		default:
-			n2 = node.ValuesToExpression(val)
-		}
-	}
-
-	op := node.NewExpression(string(o.operator()))
-	return joinExpressionLikes(n1, n2, op)
+func (o ComparisonOperation) nodeize() (token.Tokenizer, []interface{}) {
+	t1, v1 := o.column.nodeize()
+	t2, v2 := o.param.nodeize()
+	values := append(v1, v2...)
+	return token.ConcatTokenizers(
+		t1,
+		t2,
+		token.NewLine(
+			token.Space,
+			token.Word(o.operator()),
+			token.Space,
+		),
+	), values
 }
 
 func (o ComparisonOperation) operator() operator.Operator {
@@ -171,28 +175,23 @@ func NewBetween(from, to interface{}) Between {
 	}
 }
 
-func (o Between) node() node.Node {
-	post := node.JoinExpressions(
-		node.NewExpression(string(o.operator())),
-		node.ValuesToExpression(o.from),
-		node.NewExpression(string(operator.And)),
-		node.ValuesToExpression(o.to),
+func (o Between) nodeize() (token.Tokenizer, []interface{}) {
+	line := token.NewLine(
+		token.Word(o.operator()),
+		token.Space,
+		token.PlaceholderTokens(1),
+		token.Space,
+		token.Word(operator.And),
+		token.Space,
+		token.PlaceholderTokens(1),
 	)
+	values := []interface{}{o.from, o.to}
+
 	if o.col == nil {
-		return post
+		return line, values
 	}
-	switch col := o.col.(type) {
-	case Column:
-		return node.JoinExpressions(
-			col.expression(),
-			post,
-		)
-	default:
-		return node.NewNodes(
-			o.col.node(),
-			post,
-		)
-	}
+
+	return line, values
 }
 
 func (o Between) operator() operator.Operator {
@@ -200,70 +199,33 @@ func (o Between) operator() operator.Operator {
 }
 
 type ContainingOperation struct {
-	op   operator.Operator
-	col  ColumnOrSubquery
-	vals []interface{}
+	op     operator.Operator
+	column ColumnOrSubquery
+	params ParamsOrSubquery
 }
 
-func NewIn(vals ...interface{}) ContainingOperation {
+func NewIn(params ParamsOrSubquery) ContainingOperation {
 	return ContainingOperation{
-		op:   operator.In,
-		vals: vals,
+		op:     operator.In,
+		params: params,
 	}
 }
 
-func NewNotIn(vals ...interface{}) ContainingOperation {
+func NewNotIn(vals ParamsOrSubquery) ContainingOperation {
 	return ContainingOperation{
-		op:   operator.NotIn,
-		vals: vals,
+		op:     operator.NotIn,
+		params: vals,
 	}
 }
 
-func (o ContainingOperation) node() node.Node {
-	var n1, n2 node.Node
-
-	if o.col != nil {
-		switch col := o.col.(type) {
-		case Column:
-			n1 = col.expression()
-		default:
-			n1 = o.col.node()
-		}
-	}
-
-	if o.vals != nil && len(o.vals) == 1 {
-		switch val := o.vals[0].(type) {
-		case Subquery:
-			n2 = val.node()
-		case Statement:
-			n2 = NewSubquery(val).node()
-		}
-	}
-	if n2 == nil {
-		n2 = node.JoinExpressions(
-			node.ValuesToExpression(o.vals...).
-				WrapSQL("(", ")"),
-		)
-
-	}
-
-	op := node.NewExpression(string(o.operator()))
-	return joinExpressionLikes(n1, n2, op)
-}
-
-func joinExpressionLikes(n1, n2 node.Node, op node.Expression) node.Node {
-	e1, ok1 := n1.(node.Expression)
-	e2, ok2 := n2.(node.Expression)
-	if ok1 && ok2 {
-		return node.JoinExpressions(e1, op, e2)
-	}
-	if ok1 {
-		return node.NewNodes(e1.Append(op), n2)
-	}
-	if ok2 {
-		return node.NewNodes(n1, e2.Prepend(op))
-	}
-	return node.NewNodes(n1, op, n2)
+func (o ContainingOperation) nodeize() (token.Tokenizer, []interface{}) {
+	t1, v1 := o.column.nodeize()
+	t2, v2 := o.params.nodeize()
+	return token.ConcatTokenizers(t1, t2, token.NewLine(
+		token.Space,
+		token.Word(o.operator()),
+		token.Space,
+	)), append(v1, v2...)
 }
 
 func (o ContainingOperation) operator() operator.Operator {
@@ -287,23 +249,8 @@ func NewIsNotNull() NullOperation {
 	}
 }
 
-func (o NullOperation) node() node.Node {
-	post := node.NewExpression(string(o.operator()))
-	if o.col == nil {
-		return post
-	}
-	switch col := o.col.(type) {
-	case Column:
-		return node.JoinExpressions(
-			col.expression(),
-			post,
-		)
-	default:
-		return node.NewNodes(
-			o.col.node(),
-			post,
-		)
-	}
+func (o NullOperation) nodeize() (token.Tokenizer, []interface{}) {
+	return token.NewLine(), nil
 }
 
 func (o NullOperation) operator() operator.Operator {

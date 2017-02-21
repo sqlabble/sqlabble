@@ -53,7 +53,15 @@ func (c Context) IsBreaking() bool {
 }
 
 func (c Context) Prefix() string {
-	return c.prefix + strings.Repeat(c.indent, c.depth)
+	return c.prefix
+}
+
+func (c Context) Indent() string {
+	return c.indent
+}
+
+func (c Context) LineEnd() string {
+	return "\n"
 }
 
 func (c Context) incDepth() Context {

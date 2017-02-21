@@ -67,7 +67,7 @@ func TestAnd(t *testing.T) {
 		// 0
 		{
 			statement.NewAnd(
-				statement.NewColumn("foo").NotEq(100),
+				statement.NewColumn("foo").NotEq(statement.NewParam(100)),
 			),
 			"foo != ?",
 			`> foo != ?
@@ -79,8 +79,8 @@ func TestAnd(t *testing.T) {
 		// 1
 		{
 			statement.NewAnd(
-				statement.NewColumn("foo").NotEq(100),
-				statement.NewColumn("bar").Eq(200),
+				statement.NewColumn("foo").NotEq(statement.NewParam(100)),
+				statement.NewColumn("bar").Eq(statement.NewParam(200)),
 			),
 			"foo != ? AND bar = ?",
 			`> foo != ?
@@ -94,9 +94,9 @@ func TestAnd(t *testing.T) {
 		// 2
 		{
 			statement.NewAnd(
-				statement.NewColumn("foo").NotEq(100),
-				statement.NewColumn("bar").Eq(200),
-				statement.NewColumn("baz").Like("abc"),
+				statement.NewColumn("foo").NotEq(statement.NewParam(100)),
+				statement.NewColumn("bar").Eq(statement.NewParam(200)),
+				statement.NewColumn("baz").Like(statement.NewParam("abc")),
 			),
 			"foo != ? AND bar = ? AND baz LIKE ?",
 			`> foo != ?
@@ -113,9 +113,9 @@ func TestAnd(t *testing.T) {
 		{
 			statement.NewAnd(
 				statement.NewAnd(
-					statement.NewColumn("foo").NotEq(100),
-					statement.NewColumn("bar").Eq(200),
-					statement.NewColumn("baz").Like("abc"),
+					statement.NewColumn("foo").NotEq(statement.NewParam(100)),
+					statement.NewColumn("bar").Eq(statement.NewParam(200)),
+					statement.NewColumn("baz").Like(statement.NewParam("abc")),
 				),
 			),
 			"foo != ? AND bar = ? AND baz LIKE ?",
@@ -134,9 +134,9 @@ func TestAnd(t *testing.T) {
 			statement.NewAnd(
 				statement.NewAnd(
 					statement.NewAnd(
-						statement.NewColumn("foo").NotEq(100),
-						statement.NewColumn("bar").Eq(200),
-						statement.NewColumn("baz").Like("abc"),
+						statement.NewColumn("foo").NotEq(statement.NewParam(100)),
+						statement.NewColumn("bar").Eq(statement.NewParam(200)),
+						statement.NewColumn("baz").Like(statement.NewParam("abc")),
 					),
 				),
 			),
@@ -156,12 +156,12 @@ func TestAnd(t *testing.T) {
 			statement.NewAnd(
 				statement.NewAnd(
 					statement.NewAnd(
-						statement.NewColumn("foo").NotEq(100),
-						statement.NewColumn("bar").Eq(200),
-						statement.NewColumn("baz").Like("abc"),
+						statement.NewColumn("foo").NotEq(statement.NewParam(100)),
+						statement.NewColumn("bar").Eq(statement.NewParam(200)),
+						statement.NewColumn("baz").Like(statement.NewParam("abc")),
 					),
 				),
-				statement.NewColumn("foo").Gt(300),
+				statement.NewColumn("foo").Gt(statement.NewParam(300)),
 			),
 			"(foo != ? AND bar = ? AND baz LIKE ?) AND foo > ?",
 			`> (
@@ -183,11 +183,11 @@ func TestAnd(t *testing.T) {
 			statement.NewAnd(
 				statement.NewAnd(
 					statement.NewAnd(
-						statement.NewColumn("foo").NotEq(100),
-						statement.NewColumn("bar").Eq(200),
-						statement.NewColumn("baz").Like("abc"),
+						statement.NewColumn("foo").NotEq(statement.NewParam(100)),
+						statement.NewColumn("bar").Eq(statement.NewParam(200)),
+						statement.NewColumn("baz").Like(statement.NewParam("abc")),
 					),
-					statement.NewColumn("foo").Gt(300),
+					statement.NewColumn("foo").Gt(statement.NewParam(300)),
 				),
 			),
 			"(foo != ? AND bar = ? AND baz LIKE ?) AND foo > ?",
@@ -237,7 +237,7 @@ func TestOr(t *testing.T) {
 	}{
 		{
 			statement.NewOr(
-				statement.NewColumn("foo").NotEq(100),
+				statement.NewColumn("foo").NotEq(statement.NewParam(100)),
 			),
 			"foo != ?",
 			`> foo != ?
@@ -248,8 +248,8 @@ func TestOr(t *testing.T) {
 		},
 		{
 			statement.NewOr(
-				statement.NewColumn("foo").NotEq(100),
-				statement.NewColumn("bar").Eq(200),
+				statement.NewColumn("foo").NotEq(statement.NewParam(100)),
+				statement.NewColumn("bar").Eq(statement.NewParam(200)),
 			),
 			"foo != ? OR bar = ?",
 			`> foo != ?
@@ -262,9 +262,9 @@ func TestOr(t *testing.T) {
 		},
 		{
 			statement.NewOr(
-				statement.NewColumn("foo").NotEq(100),
-				statement.NewColumn("bar").Eq(200),
-				statement.NewColumn("baz").Like("abc"),
+				statement.NewColumn("foo").NotEq(statement.NewParam(100)),
+				statement.NewColumn("bar").Eq(statement.NewParam(200)),
+				statement.NewColumn("baz").Like(statement.NewParam("abc")),
 			),
 			"foo != ? OR bar = ? OR baz LIKE ?",
 			`> foo != ?
@@ -280,9 +280,9 @@ func TestOr(t *testing.T) {
 		{
 			statement.NewOr(
 				statement.NewOr(
-					statement.NewColumn("foo").NotEq(100),
-					statement.NewColumn("bar").Eq(200),
-					statement.NewColumn("baz").Like("abc"),
+					statement.NewColumn("foo").NotEq(statement.NewParam(100)),
+					statement.NewColumn("bar").Eq(statement.NewParam(200)),
+					statement.NewColumn("baz").Like(statement.NewParam("abc")),
 				),
 			),
 			"foo != ? OR bar = ? OR baz LIKE ?",
@@ -300,9 +300,9 @@ func TestOr(t *testing.T) {
 			statement.NewOr(
 				statement.NewOr(
 					statement.NewOr(
-						statement.NewColumn("foo").NotEq(100),
-						statement.NewColumn("bar").Eq(200),
-						statement.NewColumn("baz").Like("abc"),
+						statement.NewColumn("foo").NotEq(statement.NewParam(100)),
+						statement.NewColumn("bar").Eq(statement.NewParam(200)),
+						statement.NewColumn("baz").Like(statement.NewParam("abc")),
 					),
 				),
 			),
@@ -321,12 +321,12 @@ func TestOr(t *testing.T) {
 			statement.NewOr(
 				statement.NewOr(
 					statement.NewOr(
-						statement.NewColumn("foo").NotEq(100),
-						statement.NewColumn("bar").Eq(200),
-						statement.NewColumn("baz").Like("abc"),
+						statement.NewColumn("foo").NotEq(statement.NewParam(100)),
+						statement.NewColumn("bar").Eq(statement.NewParam(200)),
+						statement.NewColumn("baz").Like(statement.NewParam("abc")),
 					),
 				),
-				statement.NewColumn("foo").Gt(300),
+				statement.NewColumn("foo").Gt(statement.NewParam(300)),
 			),
 			"(foo != ? OR bar = ? OR baz LIKE ?) OR foo > ?",
 			`> (
@@ -347,11 +347,11 @@ func TestOr(t *testing.T) {
 			statement.NewOr(
 				statement.NewOr(
 					statement.NewOr(
-						statement.NewColumn("foo").NotEq(100),
-						statement.NewColumn("bar").Eq(200),
-						statement.NewColumn("baz").Like("abc"),
+						statement.NewColumn("foo").NotEq(statement.NewParam(100)),
+						statement.NewColumn("bar").Eq(statement.NewParam(200)),
+						statement.NewColumn("baz").Like(statement.NewParam("abc")),
 					),
-					statement.NewColumn("foo").Gt(300),
+					statement.NewColumn("foo").Gt(statement.NewParam(300)),
 				),
 			),
 			"(foo != ? OR bar = ? OR baz LIKE ?) OR foo > ?",
@@ -402,7 +402,7 @@ func TestNot(t *testing.T) {
 		// 0
 		{
 			statement.NewNot(
-				statement.NewColumn("foo").NotEq(100),
+				statement.NewColumn("foo").NotEq(statement.NewParam(100)),
 			),
 			"NOT (foo != ?)",
 			`> NOT (
@@ -417,7 +417,7 @@ func TestNot(t *testing.T) {
 		{
 			statement.NewNot(
 				statement.NewNot(
-					statement.NewColumn("foo").NotEq(100),
+					statement.NewColumn("foo").NotEq(statement.NewParam(100)),
 				),
 			),
 			"NOT (NOT (foo != ?))",
@@ -436,7 +436,7 @@ func TestNot(t *testing.T) {
 			statement.NewNot(
 				statement.NewNot(
 					statement.NewNot(
-						statement.NewColumn("foo").NotEq(100),
+						statement.NewColumn("foo").NotEq(statement.NewParam(100)),
 					),
 				),
 			),
@@ -457,7 +457,7 @@ func TestNot(t *testing.T) {
 		{
 			statement.NewNot(
 				statement.NewOr(
-					statement.NewColumn("foo").NotEq(100),
+					statement.NewColumn("foo").NotEq(statement.NewParam(100)),
 				),
 			),
 			"NOT (foo != ?)",
@@ -473,9 +473,9 @@ func TestNot(t *testing.T) {
 		{
 			statement.NewNot(
 				statement.NewOr(
-					statement.NewColumn("foo").NotEq(100),
-					statement.NewColumn("bar").Eq(200),
-					statement.NewColumn("baz").Like("abc"),
+					statement.NewColumn("foo").NotEq(statement.NewParam(100)),
+					statement.NewColumn("bar").Eq(statement.NewParam(200)),
+					statement.NewColumn("baz").Like(statement.NewParam("abc")),
 				),
 			),
 			"NOT (foo != ? OR bar = ? OR baz LIKE ?)",
@@ -496,9 +496,9 @@ func TestNot(t *testing.T) {
 			statement.NewNot(
 				statement.NewNot(
 					statement.NewOr(
-						statement.NewColumn("foo").NotEq(100),
-						statement.NewColumn("bar").Eq(200),
-						statement.NewColumn("baz").Like("abc"),
+						statement.NewColumn("foo").NotEq(statement.NewParam(100)),
+						statement.NewColumn("bar").Eq(statement.NewParam(200)),
+						statement.NewColumn("baz").Like(statement.NewParam("abc")),
 					),
 				),
 			),
@@ -523,9 +523,9 @@ func TestNot(t *testing.T) {
 				statement.NewNot(
 					statement.NewNot(
 						statement.NewOr(
-							statement.NewColumn("foo").NotEq(100),
-							statement.NewColumn("bar").Eq(200),
-							statement.NewColumn("baz").Like("abc"),
+							statement.NewColumn("foo").NotEq(statement.NewParam(100)),
+							statement.NewColumn("bar").Eq(statement.NewParam(200)),
+							statement.NewColumn("baz").Like(statement.NewParam("abc")),
 						),
 					),
 				),
@@ -578,7 +578,7 @@ func TestComparisonOperators(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			statement.NewColumn("foo").Eq(100),
+			statement.NewColumn("foo").Eq(statement.NewParam(100)),
 			"foo = ?",
 			`> foo = ?
 `,
@@ -587,7 +587,7 @@ func TestComparisonOperators(t *testing.T) {
 			},
 		},
 		{
-			statement.NewColumn("foo").Lt(100),
+			statement.NewColumn("foo").Lt(statement.NewParam(100)),
 			"foo < ?",
 			`> foo < ?
 `,
@@ -596,7 +596,7 @@ func TestComparisonOperators(t *testing.T) {
 			},
 		},
 		{
-			statement.NewColumn("foo").Lte(100),
+			statement.NewColumn("foo").Lte(statement.NewParam(100)),
 			"foo <= ?",
 			`> foo <= ?
 `,
@@ -605,7 +605,7 @@ func TestComparisonOperators(t *testing.T) {
 			},
 		},
 		{
-			statement.NewColumn("foo").Gt(100),
+			statement.NewColumn("foo").Gt(statement.NewParam(100)),
 			"foo > ?",
 			`> foo > ?
 `,
@@ -614,7 +614,7 @@ func TestComparisonOperators(t *testing.T) {
 			},
 		},
 		{
-			statement.NewColumn("foo").Gte(100),
+			statement.NewColumn("foo").Gte(statement.NewParam(100)),
 			"foo >= ?",
 			`> foo >= ?
 `,
@@ -623,7 +623,7 @@ func TestComparisonOperators(t *testing.T) {
 			},
 		},
 		{
-			statement.NewColumn("foo").Like("bar"),
+			statement.NewColumn("foo").Like(statement.NewParam("bar")),
 			"foo LIKE ?",
 			`> foo LIKE ?
 `,
@@ -632,7 +632,7 @@ func TestComparisonOperators(t *testing.T) {
 			},
 		},
 		{
-			statement.NewColumn("foo").RegExp("bar"),
+			statement.NewColumn("foo").RegExp(statement.NewParam("bar")),
 			"foo REGEXP ?",
 			`> foo REGEXP ?
 `,
@@ -712,11 +712,12 @@ func TestContainingOperators(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			statement.NewColumn("foo").In(
-				100,
-				200,
-				300,
-			),
+			statement.NewColumn("foo").
+				In(statement.NewParams(
+					100,
+					200,
+					300,
+				)),
 			"foo IN (?, ?, ?)",
 			`> foo IN (?, ?, ?)
 `,
@@ -727,11 +728,12 @@ func TestContainingOperators(t *testing.T) {
 			},
 		},
 		{
-			statement.NewColumn("foo").NotIn(
-				100,
-				200,
-				300,
-			),
+			statement.NewColumn("foo").
+				NotIn(statement.NewParams(
+					100,
+					200,
+					300,
+				)),
 			"foo NOT IN (?, ?, ?)",
 			`> foo NOT IN (?, ?, ?)
 `,
@@ -820,7 +822,7 @@ func TestComplexOperation(t *testing.T) {
 						statement.NewAnd(
 							statement.NewOr(
 								statement.NewNot(
-									statement.NewColumn("foo").Eq(100),
+									statement.NewColumn("foo").Eq(statement.NewParam(100)),
 								),
 							),
 						),
@@ -841,7 +843,7 @@ func TestComplexOperation(t *testing.T) {
 		{
 			statement.NewOr(
 				statement.NewNot(
-					statement.NewColumn("baz").RegExp("def"),
+					statement.NewColumn("baz").RegExp(statement.NewParam("def")),
 				),
 				statement.NewOr(
 					statement.NewAnd(
@@ -849,17 +851,23 @@ func TestComplexOperation(t *testing.T) {
 						statement.NewNot(
 							statement.NewAnd(
 								statement.NewOr(
-									statement.NewColumn("foo").NotEq(100),
-									statement.NewColumn("bar").Eq(200),
-									statement.NewColumn("baz").Like("abc"),
+									statement.NewColumn("foo").NotEq(statement.NewParam(100)),
+									statement.NewColumn("bar").Eq(statement.NewParam(200)),
+									statement.NewColumn("baz").Like(statement.NewParam("abc")),
 									statement.NewOr(
-										statement.NewColumn("baz").In("a", "b", "c"),
-										statement.NewColumn("qux").NotIn(600, 700, 800),
+										statement.NewColumn("baz").
+											In(statement.NewParams(
+												"a", "b", "c",
+											)),
+										statement.NewColumn("qux").
+											NotIn(statement.NewParams(
+												600, 700, 800,
+											)),
 									),
 								),
 							),
 						),
-						statement.NewColumn("foo").Gt(300),
+						statement.NewColumn("foo").Gt(statement.NewParam(300)),
 					),
 				),
 			),

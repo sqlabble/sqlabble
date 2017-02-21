@@ -51,7 +51,7 @@ func TestGroupBySQL(t *testing.T) {
 			statement.NewGroupBy(
 				statement.NewColumn("foo"),
 			).Having(
-				statement.NewColumn("COUNT(*)").Gt(200),
+				statement.NewColumn("COUNT(*)").Gt(statement.NewParam(200)),
 			),
 			"GROUP BY foo HAVING COUNT(*) > ?",
 			`> GROUP BY

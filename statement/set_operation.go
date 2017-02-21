@@ -2,7 +2,7 @@ package statement
 
 import (
 	"github.com/minodisk/sqlabble/keyword"
-	"github.com/minodisk/sqlabble/node"
+	"github.com/minodisk/sqlabble/token"
 )
 
 type SetOperation struct {
@@ -52,22 +52,23 @@ func NewExceptAll(statements ...Statement) SetOperation {
 	}
 }
 
-func (u SetOperation) node() node.Node {
-	cs := clauseNodes(u)
-	gs := make([]node.Node, len(cs))
-	for i, c := range cs {
-		gs[i] = c.myNode()
-	}
-	return node.NewNodes(gs...)
+func (u SetOperation) nodeize() (token.Tokenizer, []interface{}) {
+	return u.tokenizers()
 }
 
-func (u SetOperation) myNode() node.Node {
-	sep := node.NewExpression(u.operator)
-	gs := make([]node.Node, len(u.statements))
+func (u SetOperation) tokenizers() (token.Tokenizers, []interface{}) {
+	ts := make([]token.Tokenizer, len(u.statements))
+	values := []interface{}{}
 	for i, s := range u.statements {
-		gs[i] = s.node()
+		var vals []interface{}
+		ts[i], vals = s.nodeize()
+		values = append(values, vals...)
 	}
-	return node.NewSet(sep, gs...)
+	return token.NewTokenizers(ts...).Prefix(token.Word(u.operator)), values
+}
+
+func (u SetOperation) container() (token.Container, []interface{}) {
+	return token.NewContainer(token.NewLine(token.Word(""))), nil
 }
 
 func (u SetOperation) previous() Clause {

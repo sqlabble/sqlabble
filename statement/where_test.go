@@ -25,7 +25,7 @@ func TestWhereSQL(t *testing.T) {
 	}{
 		{
 			statement.NewWhere(
-				statement.NewColumn("foo").Eq(100),
+				statement.NewColumn("foo").Eq(statement.NewParam(100)),
 			),
 			"WHERE foo = ?",
 			`> WHERE
@@ -38,8 +38,8 @@ func TestWhereSQL(t *testing.T) {
 		{
 			statement.NewWhere(
 				statement.NewAnd(
-					statement.NewColumn("foo").Eq(100),
-					statement.NewColumn("bar").Eq("abc"),
+					statement.NewColumn("foo").Eq(statement.NewParam(100)),
+					statement.NewColumn("bar").Eq(statement.NewParam("abc")),
 				),
 			),
 			"WHERE foo = ? AND bar = ?",
@@ -55,8 +55,8 @@ func TestWhereSQL(t *testing.T) {
 		{
 			statement.NewWhere(
 				statement.NewAnd(
-					statement.NewColumn("foo").Eq(100),
-					statement.NewColumn("bar").Eq("abc"),
+					statement.NewColumn("foo").Eq(statement.NewParam(100)),
+					statement.NewColumn("bar").Eq(statement.NewParam("abc")),
 				),
 			).GroupBy(
 				statement.NewColumn("baz"),
@@ -76,8 +76,8 @@ func TestWhereSQL(t *testing.T) {
 		{
 			statement.NewWhere(
 				statement.NewAnd(
-					statement.NewColumn("foo").Eq(100),
-					statement.NewColumn("bar").Eq("abc"),
+					statement.NewColumn("foo").Eq(statement.NewParam(100)),
+					statement.NewColumn("bar").Eq(statement.NewParam("abc")),
 				),
 			).OrderBy(
 				statement.NewColumn("baz").Asc(),
@@ -97,8 +97,8 @@ func TestWhereSQL(t *testing.T) {
 		{
 			statement.NewWhere(
 				statement.NewAnd(
-					statement.NewColumn("foo").Eq(100),
-					statement.NewColumn("bar").Eq("abc"),
+					statement.NewColumn("foo").Eq(statement.NewParam(100)),
+					statement.NewColumn("bar").Eq(statement.NewParam("abc")),
 				),
 			).Limit(20),
 			"WHERE foo = ? AND bar = ? LIMIT ?",

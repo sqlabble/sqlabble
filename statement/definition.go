@@ -1,6 +1,6 @@
 package statement
 
-import "github.com/minodisk/sqlabble/node"
+import "github.com/minodisk/sqlabble/token"
 
 type Definition struct {
 	column     Column
@@ -13,9 +13,17 @@ func NewDefinition(definition string) Definition {
 	}
 }
 
-func (d Definition) node() node.Node {
-	return d.column.expression().
-		Append(node.NewExpression(d.definition))
+func (d Definition) nodeize() (token.Tokenizer, []interface{}) {
+	return d.line()
+}
+
+func (d Definition) line() (token.Line, []interface{}) {
+	line, values := d.column.line()
+	return line.
+		A(
+			token.Space,
+			token.Word(d.definition),
+		), values
 }
 
 type Definitions struct {
@@ -29,17 +37,30 @@ func NewDefinitions(definitions ...Definition) Definitions {
 	}
 }
 
-func (ds Definitions) node() node.Node {
-	p := ds.createTable.container()
-	gs := make([]node.Node, len(ds.definitions))
+func (ds Definitions) nodeize() (token.Tokenizer, []interface{}) {
+	lines := make(token.Lines, len(ds.definitions))
+	values := []interface{}{}
 	for i, d := range ds.definitions {
-		gs[i] = d.node()
+		var vals []interface{}
+		lines[i], vals = d.line()
+		values = append(values, vals...)
 	}
-	return p.AddChild(
-		node.NewParentheses(
-			node.NewComma(
-				gs...,
-			),
-		),
+	lines = lines.Prefix(
+		token.Comma,
+		token.Space,
 	)
+
+	c, values := ds.createTable.container()
+	middle := c.Middle()
+	def := token.WrapParenthesesLines(
+		lines...,
+	)
+
+	return c.SetMiddle(
+		token.ConcatTokenizers(
+			middle,
+			def,
+			token.NewLine(token.Space),
+		),
+	), values
 }

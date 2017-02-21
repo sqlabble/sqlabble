@@ -2,7 +2,7 @@ package statement
 
 import (
 	"github.com/minodisk/sqlabble/keyword"
-	"github.com/minodisk/sqlabble/node"
+	"github.com/minodisk/sqlabble/token"
 )
 
 type Delete struct{}
@@ -11,19 +11,22 @@ func NewDelete() Delete {
 	return Delete{}
 }
 
-func (d Delete) node() node.Node {
-	cs := clauseNodes(d)
-	fs := make([]node.Node, len(cs))
-	for i, c := range cs {
-		fs[i] = c.myNode()
+func (d Delete) nodeize() (token.Tokenizer, []interface{}) {
+	clauses := clauseNodes(d)
+	cs := make(token.Containers, len(clauses))
+	vals := []interface{}{}
+	for i, clause := range clauses {
+		var vs []interface{}
+		cs[i], vs = clause.container()
+		vals = append(vals, vs...)
 	}
-	return node.NewNodes(fs...)
+	return cs, vals
 }
 
-func (d Delete) myNode() node.Node {
-	return node.NewContainer(
-		node.NewExpression(keyword.Delete),
-	)
+func (d Delete) container() (token.Container, []interface{}) {
+	return token.NewContainer(
+		token.NewLine(token.Word(keyword.Delete)),
+	), nil
 }
 
 func (d Delete) previous() Clause {

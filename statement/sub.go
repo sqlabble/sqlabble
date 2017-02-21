@@ -1,6 +1,6 @@
 package statement
 
-import "github.com/minodisk/sqlabble/node"
+import "github.com/minodisk/sqlabble/token"
 
 type Subquery struct {
 	statement Statement
@@ -12,62 +12,51 @@ func NewSubquery(statement Statement) Subquery {
 	}
 }
 
-func (s Subquery) node() node.Node {
-	return node.NewParentheses(s.statement.node())
-}
-
-// isColumnOrSubquery always returns true.
-// This method exists only to implement the interface columnOrSubquery.
-// This is a shit of duck typing, but anyway it works.
-func (s Subquery) isColumnOrSubquery() bool {
-	return true
-}
-
-func (s Subquery) Eq(value interface{}) ComparisonOperation {
+func (s Subquery) Eq(value ParamOrSubquery) ComparisonOperation {
 	e := NewEq(value)
-	e.col = s
+	e.column = s
 	return e
 }
 
-func (s Subquery) NotEq(value interface{}) ComparisonOperation {
+func (s Subquery) NotEq(value ParamOrSubquery) ComparisonOperation {
 	n := NewNotEq(value)
-	n.col = s
+	n.column = s
 	return n
 }
 
-func (s Subquery) Gt(value interface{}) ComparisonOperation {
+func (s Subquery) Gt(value ParamOrSubquery) ComparisonOperation {
 	g := NewGt(value)
-	g.col = s
+	g.column = s
 	return g
 }
 
-func (s Subquery) Gte(value interface{}) ComparisonOperation {
+func (s Subquery) Gte(value ParamOrSubquery) ComparisonOperation {
 	g := NewGte(value)
-	g.col = s
+	g.column = s
 	return g
 }
 
-func (s Subquery) Lt(value interface{}) ComparisonOperation {
+func (s Subquery) Lt(value ParamOrSubquery) ComparisonOperation {
 	l := NewLt(value)
-	l.col = s
+	l.column = s
 	return l
 }
 
-func (s Subquery) Lte(value interface{}) ComparisonOperation {
+func (s Subquery) Lte(value ParamOrSubquery) ComparisonOperation {
 	l := NewLte(value)
-	l.col = s
+	l.column = s
 	return l
 }
 
-func (s Subquery) Like(value interface{}) ComparisonOperation {
+func (s Subquery) Like(value ParamOrSubquery) ComparisonOperation {
 	l := NewLike(value)
-	l.col = s
+	l.column = s
 	return l
 }
 
-func (s Subquery) RegExp(value interface{}) ComparisonOperation {
+func (s Subquery) RegExp(value ParamOrSubquery) ComparisonOperation {
 	r := NewRegExp(value)
-	r.col = s
+	r.column = s
 	return r
 }
 
@@ -77,15 +66,15 @@ func (s Subquery) Between(from, to interface{}) Between {
 	return b
 }
 
-func (s Subquery) In(values ...interface{}) ContainingOperation {
-	i := NewIn(values...)
-	i.col = s
+func (s Subquery) In(params ParamsOrSubquery) ContainingOperation {
+	i := NewIn(params)
+	i.column = s
 	return i
 }
 
-func (s Subquery) NotIn(values ...interface{}) ContainingOperation {
-	n := NewNotIn(values...)
-	n.col = s
+func (s Subquery) NotIn(params ParamsOrSubquery) ContainingOperation {
+	n := NewNotIn(params)
+	n.column = s
 	return n
 }
 
@@ -99,4 +88,30 @@ func (s Subquery) IsNotNull() NullOperation {
 	i := NewIsNotNull()
 	i.col = s
 	return i
+}
+
+func (s Subquery) nodeize() (token.Tokenizer, []interface{}) {
+	tokenizer, values := s.statement.nodeize()
+	return token.NewParentheses(tokenizer), values
+}
+
+// isColumnOrSubquery always returns true.
+// This method exists only to implement the interface ColumnOrSubquery.
+// This is a shit of duck typing, but anyway it works.
+func (s Subquery) isColumnOrSubquery() bool {
+	return true
+}
+
+// isParamOrSubquery always returns true.
+// This method exists only to implement the interface ParamOrSubquery.
+// This is a shit of duck typing, but anyway it works.
+func (s Subquery) isParamOrSubquery() bool {
+	return true
+}
+
+// isParamsOrSubquery always returns true.
+// This method exists only to implement the interface ParamsOrSubquery.
+// This is a shit of duck typing, but anyway it works.
+func (s Subquery) isParamsOrSubquery() bool {
+	return true
 }

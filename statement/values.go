@@ -1,10 +1,8 @@
 package statement
 
 import (
-	"fmt"
-
 	"github.com/minodisk/sqlabble/keyword"
-	"github.com/minodisk/sqlabble/node"
+	"github.com/minodisk/sqlabble/token"
 )
 
 type Values struct {
@@ -19,34 +17,28 @@ func NewValues(values ...interface{}) Values {
 	}
 }
 
-func (v Values) node() node.Node {
-	vs := valuesNodes(v)
-	ns := make([]node.Node, len(vs))
-	for i, v := range vs {
-		ns[i] = v.expression()
+func (v Values) nodeize() (token.Tokenizer, []interface{}) {
+	vss := valuesNodes(v)
+	lines := make(token.Lines, len(vss))
+	values := []interface{}{}
+	for i, vs := range vss {
+		var vals []interface{}
+		lines[i], vals = vs.line()
+		values = append(values, vals...)
 	}
-	g := node.NewContainer(
-		node.NewExpression(keyword.Values),
-		node.NewComma(ns...),
+	c := token.NewContainer(
+		token.NewLine(token.Word(keyword.Values)),
+	).SetMiddle(
+		lines.Prefix(token.Comma, token.Space),
 	)
-
-	if len(vs) > 0 {
-		if c := vs[0].clause(); c != nil {
-			return node.NewNodes(
-				c.node(),
-				g,
-			)
-		}
-	}
-
-	return g
+	return c, values
 }
 
-func (v Values) expression() node.Expression {
-	return node.NewExpression(
-		fmt.Sprintf("(%s)", placeholders(len(v.values))),
-		v.values...,
-	)
+func (v Values) line() (token.Line, []interface{}) {
+	line, values := token.ParamsToLine(v.values...)
+	return line.
+		P(token.ParenthesesStart).
+		A(token.ParenthesesEnd), values
 }
 
 func (v Values) clause() Clause {
@@ -71,17 +63,22 @@ func NewDefaultValues() DefaultValues {
 	return DefaultValues{}
 }
 
-func (v DefaultValues) node() node.Node {
-	cs := clauseNodes(v)
-	ns := make([]node.Node, len(cs))
-	for i, c := range cs {
-		ns[i] = c.myNode()
+func (v DefaultValues) nodeize() (token.Tokenizer, []interface{}) {
+	clauses := clauseNodes(v)
+	ts := make(token.Tokenizers, len(clauses))
+	values := []interface{}{}
+	for i, c := range clauses {
+		var vals []interface{}
+		ts[i], vals = c.container()
+		values = append(values, vals...)
 	}
-	return node.NewNodes(ns...)
+	return ts, values
 }
 
-func (v DefaultValues) myNode() node.Node {
-	return node.NewExpression(keyword.DefaultValues)
+func (v DefaultValues) container() (token.Container, []interface{}) {
+	return token.NewContainer(
+		token.NewLine(token.Word(keyword.DefaultValues)),
+	), nil
 }
 
 func (v DefaultValues) previous() Clause {

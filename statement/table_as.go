@@ -1,7 +1,6 @@
 package statement
 
 import (
-	"github.com/minodisk/sqlabble/node"
 	"github.com/minodisk/sqlabble/operator"
 	"github.com/minodisk/sqlabble/token"
 )
@@ -11,30 +10,25 @@ type TableAs struct {
 	alias string
 }
 
-func (t TableAs) node() node.Node {
-	ts := tableNodes(t)
-	ns := make([]node.Node, len(ts))
-	for i, t := range ts {
-		ns[i] = token.NewTokensNode(t.tokenize())
-	}
-	return node.NewNodes(ns...)
+func (t TableAs) nodeize() (token.Tokenizer, []interface{}) {
+	return t.self()
 }
 
-func (t TableAs) expression() node.Expression {
-	return node.JoinExpressions(
-		t.table.expression(),
-		node.NewExpression(string(operator.As)),
-		node.NewExpression(t.alias),
-	)
-}
-
-func (t TableAs) tokenize() token.Tokens {
-	return t.table.tokenize().
-		Append(token.Word(operator.As)).
-		Add(token.Wrap(
-			token.Word(t.alias),
-			token.Quote,
-		))
+func (t TableAs) self() (token.Tokenizer, []interface{}) {
+	tokenizer, values := t.table.nodeize()
+	return tokenizer.
+			Append(
+				token.Space,
+				token.Word(operator.As),
+				token.Space,
+			).
+			Append(
+				token.Wrap(
+					token.Word(t.alias),
+					token.Quote,
+				)...,
+			),
+		values
 }
 
 func (t TableAs) previous() Joiner {

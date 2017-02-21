@@ -42,7 +42,7 @@ func TestUpdate(t *testing.T) {
 			statement.NewUpdate(
 				statement.NewTable("foo"),
 			).Set(
-				statement.NewColumn("bar").Assign(100),
+				statement.NewColumn("bar").Assign(statement.NewParam(100)),
 			),
 			"UPDATE foo SET bar = ?",
 			`> UPDATE

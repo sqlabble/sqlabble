@@ -45,8 +45,7 @@ func TestCreateTableSQL(t *testing.T) {
 			).Definitions(),
 			"CREATE TABLE foo ()",
 			`> CREATE TABLE
->   foo
->   (
+>   foo (
 >   )
 `,
 			[]interface{}{},
@@ -59,8 +58,7 @@ func TestCreateTableSQL(t *testing.T) {
 			),
 			"CREATE TABLE foo (name VARCHAR(255))",
 			`> CREATE TABLE
->   foo
->   (
+>   foo (
 >     name VARCHAR(255)
 >   )
 `,
@@ -75,8 +73,7 @@ func TestCreateTableSQL(t *testing.T) {
 			),
 			"CREATE TABLE foo (name VARCHAR(255), gender ENUM('M', 'F'))",
 			`> CREATE TABLE
->   foo
->   (
+>   foo (
 >     name VARCHAR(255)
 >     , gender ENUM('M', 'F')
 >   )
@@ -93,8 +90,7 @@ func TestCreateTableSQL(t *testing.T) {
 			),
 			"CREATE TABLE foo (name VARCHAR(255), gender ENUM('M', 'F'), birth_date DATE)",
 			`> CREATE TABLE
->   foo
->   (
+>   foo (
 >     name VARCHAR(255)
 >     , gender ENUM('M', 'F')
 >     , birth_date DATE

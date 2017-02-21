@@ -2,7 +2,7 @@ package statement
 
 import (
 	"github.com/minodisk/sqlabble/direction"
-	"github.com/minodisk/sqlabble/node"
+	"github.com/minodisk/sqlabble/token"
 )
 
 type Order struct {
@@ -16,11 +16,13 @@ func NewOrder(dir direction.Direction) Order {
 	}
 }
 
-func (o Order) node() node.Node {
-	return node.JoinExpressions(
-		o.column.expression(),
-		node.NewExpression(string(o.direction())),
-	)
+func (o Order) nodeize() (token.Tokenizer, []interface{}) {
+	return o.line()
+}
+
+func (o Order) line() (token.Line, []interface{}) {
+	line, values := o.column.line()
+	return line.A(token.Space, token.Word(o.direction())), values
 }
 
 func (o Order) direction() direction.Direction {

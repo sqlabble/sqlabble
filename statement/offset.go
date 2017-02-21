@@ -2,7 +2,7 @@ package statement
 
 import (
 	"github.com/minodisk/sqlabble/keyword"
-	"github.com/minodisk/sqlabble/node"
+	"github.com/minodisk/sqlabble/token"
 )
 
 // Offset skips specified rows before beginning to return rows.
@@ -18,20 +18,25 @@ func NewOffset(count int) Offset {
 	}
 }
 
-func (o Offset) node() node.Node {
-	cs := clauseNodes(o)
-	ns := make([]node.Node, len(cs))
-	for i, c := range cs {
-		ns[i] = c.myNode()
+func (o Offset) nodeize() (token.Tokenizer, []interface{}) {
+	clauses := clauseNodes(o)
+	cs := make(token.Containers, len(clauses))
+	values := []interface{}{}
+	for i, c := range clauses {
+		var vals []interface{}
+		cs[i], vals = c.container()
+		values = append(values, vals...)
 	}
-	return node.NewNodes(ns...)
+	return cs, values
 }
 
-func (o Offset) myNode() node.Node {
-	return node.NewContainer(
-		node.NewExpression(keyword.Offset),
-		node.ValuesToExpression(o.count),
-	)
+func (o Offset) container() (token.Container, []interface{}) {
+	line, values := token.ParamsToLine(o.count)
+	return token.NewContainer(
+		token.NewLine(token.Word(keyword.Offset)),
+	).SetMiddle(
+		line,
+	), values
 }
 
 func (o Offset) previous() Clause {

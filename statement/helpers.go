@@ -1,10 +1,8 @@
 package statement
 
-import "github.com/minodisk/sqlabble/node"
-
-func Node(stmt Statement) node.Node {
-	return stmt.node()
-}
+// func Node(stmt Statement) node.Node {
+// 	return stmt.node()
+// }
 
 func placeholders(i int) string {
 	s := ""

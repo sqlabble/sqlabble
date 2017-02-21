@@ -64,7 +64,7 @@ func TestFromSQL(t *testing.T) {
 			statement.NewFrom(
 				statement.NewTable("foo"),
 			).Where(
-				statement.NewColumn("age").Gt(20),
+				statement.NewColumn("age").Gt(statement.NewParam(20)),
 			),
 			`FROM foo WHERE age > ?`,
 			`> FROM
