@@ -2,6 +2,10 @@ package tokenizer
 
 import "github.com/minodisk/sqlabble/token"
 
+var (
+	EmptyLine = Line{}
+)
+
 func ParamsToLine(values ...interface{}) (Line, []interface{}) {
 	if len(values) == 0 {
 		return EmptyLine, nil

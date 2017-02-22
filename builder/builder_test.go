@@ -8,24 +8,12 @@ import (
 	"github.com/minodisk/sqlabble/builder"
 	"github.com/minodisk/sqlabble/internal/diff"
 	"github.com/minodisk/sqlabble/statement"
+	"github.com/minodisk/sqlabble/token"
 )
 
 var (
-	b  = builder.NewBuilder(builder.Options{})
-	bi = builder.NewBuilder(
-		builder.Options{
-			Prefix: "> ",
-			Indent: "  ",
-		})
-	bMySQL4 = builder.NewBuilder(builder.Options{
-		FlatSets: true,
-	})
-	biMySQL4 = builder.NewBuilder(
-		builder.Options{
-			Prefix:   "> ",
-			Indent:   "  ",
-			FlatSets: true,
-		})
+	b  = builder.Standard
+	bi = builder.NewBuilder(token.NewFormat("> ", "  ", `"`, "\n"))
 )
 
 func TestBuilder(t *testing.T) {
@@ -204,97 +192,6 @@ func TestBuilder(t *testing.T) {
 
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
 			sql, values := bi.Build(c.statement)
-			if sql != c.sqlIndent {
-				t.Error(diff.SQL(sql, c.sqlIndent))
-			}
-			if !reflect.DeepEqual(values, c.values) {
-				t.Error(diff.Values(values, c.values))
-			}
-		})
-	}
-}
-
-func TestBuild(t *testing.T) {
-	for i, c := range []struct {
-		statement statement.Statement
-		sql       string
-		sqlIndent string
-		values    []interface{}
-	}{
-		{
-			statement.NewSelect(
-				statement.NewColumn("created_at"),
-				statement.NewColumn("name").As("n"),
-				statement.NewColumn("gender").As("g"),
-				statement.NewColumn("age"),
-			).From(
-				statement.NewTable("users"),
-			).Where(
-				statement.NewAnd(
-					statement.NewColumn("g").Eq(statement.NewParam("male")),
-					statement.NewOr(
-						statement.NewColumn("age").Lt(statement.NewParam(20)),
-						statement.NewColumn("age").Eq(statement.NewParam(30)),
-						statement.NewColumn("age").Gte(statement.NewParam(50)),
-					),
-					statement.NewColumn("created_at").Between(statement.NewParam("2016-01-01"), statement.NewParam("2016-12-31")),
-				),
-			).OrderBy(
-				statement.NewColumn("created_at").Desc(),
-				statement.NewColumn("id").Asc(),
-			).Limit(
-				20,
-			).Offset(
-				20 * 5,
-			),
-			`SELECT created_at, name AS "n", gender AS "g", age FROM users WHERE g = ? AND (age < ? OR age = ? OR age >= ?) AND created_at BETWEEN ? AND ? ORDER BY created_at DESC, id ASC LIMIT ? OFFSET ?`,
-			`SELECT
-  created_at
-  , name AS "n"
-  , gender AS "g"
-  , age
-FROM
-  users
-WHERE
-  g = ?
-  AND (
-    age < ?
-    OR age = ?
-    OR age >= ?
-  )
-  AND created_at BETWEEN ? AND ?
-ORDER BY
-  created_at DESC
-  , id ASC
-LIMIT
-  ?
-OFFSET
-  ?
-`,
-			[]interface{}{
-				`male`,
-				20,
-				30,
-				50,
-				`2016-01-01`,
-				`2016-12-31`,
-				20,
-				100,
-			},
-		},
-	} {
-		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
-			sql, values := builder.Build(c.statement)
-			if sql != c.sql {
-				t.Error(diff.SQL(sql, c.sql))
-			}
-			if !reflect.DeepEqual(values, c.values) {
-				t.Error(diff.Values(values, c.values))
-			}
-		})
-
-		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
-			sql, values := builder.BuildIndent(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
 			}

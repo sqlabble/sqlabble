@@ -1,11 +1,5 @@
 package token
 
-import "github.com/minodisk/sqlabble/node"
-
-type Token interface {
-	String(node.Context) string
-}
-
 type Tokens []Token
 
 func NewTokens(tokens ...Token) Tokens {
@@ -30,18 +24,6 @@ func PlaceholderTokens(i int) Tokens {
 	return tokens
 }
 
-func (ts Tokens) Append(tokens ...Token) Tokens {
-	return append(ts, tokens...)
-}
-
-func (ts Tokens) String(ctx node.Context) string {
-	sql := ""
-	for _, t := range ts {
-		sql += t.String(ctx)
-	}
-	return sql
-}
-
 func Wrap(inner, outer Token) Tokens {
 	return Tokens{outer, inner, outer}
 }
@@ -62,59 +44,14 @@ func Flatten(tss ...[]Token) Tokens {
 	return tokens
 }
 
-type quote string
-
-func (q quote) String(ctx node.Context) string {
-	return ctx.Quote
+func (ts Tokens) Append(tokens ...Token) Tokens {
+	return append(ts, tokens...)
 }
 
-type Word string
-
-func NewWord(char string) *Word {
-	w := Word(char)
-	return &w
-}
-
-func (w Word) String(ctx node.Context) string {
-	return string(w)
-}
-
-func (w Word) Append(tokens ...Token) []Token {
-	return append([]Token{w}, tokens...)
-}
-
-var (
-	Quote            = *new(quote)
-	Placeholder      = Word("?")
-	Space            = Word(" ")
-	Comma            = Word(",")
-	ParenthesesStart = Word("(")
-	ParenthesesEnd   = *new(parenthesesEnd)
-	LineStart        = *new(lineStart)
-	LineEnd          = *new(lineEnd)
-	Indent           = *new(indent)
-)
-
-type parenthesesEnd string
-
-func (p parenthesesEnd) String(ctx node.Context) string {
-	return ")"
-}
-
-type lineStart string
-
-func (l lineStart) String(ctx node.Context) string {
-	return ctx.Prefix()
-}
-
-type lineEnd string
-
-func (l lineEnd) String(ctx node.Context) string {
-	return ctx.LineEnd()
-}
-
-type indent string
-
-func (i indent) String(ctx node.Context) string {
-	return ctx.Indent()
+func (ts Tokens) String(format Format) string {
+	sql := ""
+	for _, t := range ts {
+		sql += t.String(format)
+	}
+	return sql
 }

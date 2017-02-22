@@ -67,7 +67,7 @@ func TestMain(m *testing.M) {
 
 func TestCreateTable(t *testing.T) {
 	{
-		sql, values := builder.Build(
+		sql, values := builder.Standard.Build(
 			q.CreateTable(
 				q.T("user"),
 			).Definitions(
@@ -82,7 +82,7 @@ func TestCreateTable(t *testing.T) {
 		}
 	}
 	{
-		sql, values := builder.Build(
+		sql, values := builder.Standard.Build(
 			q.CreateTable(
 				q.T("comment"),
 			).Definitions(
@@ -97,7 +97,7 @@ func TestCreateTable(t *testing.T) {
 		}
 	}
 	{
-		sql, values := builder.Build(
+		sql, values := builder.Standard.Build(
 			q.CreateTable(
 				q.T("post"),
 			).Definitions(
@@ -117,7 +117,7 @@ func TestCreateTable(t *testing.T) {
 
 func TestInsertInto(t *testing.T) {
 	{
-		sql, values := builder.Build(
+		sql, values := builder.Standard.Build(
 			q.InsertInto(
 				q.T("user"),
 				q.C("id"), q.C("name"), q.C("avatar"),
@@ -133,7 +133,7 @@ func TestInsertInto(t *testing.T) {
 		}
 	}
 	{
-		sql, values := builder.Build(
+		sql, values := builder.Standard.Build(
 			q.InsertInto(
 				q.T("comment"),
 				q.C("id"), q.C("body"), q.C("author_id"),
@@ -147,7 +147,7 @@ func TestInsertInto(t *testing.T) {
 		}
 	}
 	{
-		sql, values := builder.Build(
+		sql, values := builder.Standard.Build(
 			q.InsertInto(
 				q.T("post"),
 				q.C("id"), q.C("title"), q.C("body"), q.C("author_id"), q.C("comment_id"),
@@ -163,7 +163,7 @@ func TestInsertInto(t *testing.T) {
 }
 
 func TestSelect(t *testing.T) {
-	sql, values := builder.Build(
+	sql, values := builder.Standard.Build(
 		q.Select(
 			q.C("id").As("User.ID"),
 			q.C("name").As("User.Name"),
