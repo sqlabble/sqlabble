@@ -11,6 +11,12 @@ func NewDelete() Delete {
 	return Delete{}
 }
 
+func (d Delete) From(t Table) From {
+	f := NewFrom(t)
+	f.prev = d
+	return f
+}
+
 func (d Delete) nodeize() (token.Tokenizer, []interface{}) {
 	return nodeizeClauses(d)
 }
@@ -23,10 +29,4 @@ func (d Delete) self() (token.Tokenizer, []interface{}) {
 
 func (d Delete) previous() Clause {
 	return nil
-}
-
-func (d Delete) From(t Table) From {
-	f := NewFrom(t)
-	f.prev = d
-	return f
 }

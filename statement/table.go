@@ -12,31 +12,6 @@ func NewTable(name string) Table {
 	}
 }
 
-func (t Table) nodeize() (token.Tokenizer, []interface{}) {
-	tables := collectJoiners(t)
-	ts := make(token.Tokenizers, len(tables))
-	values := []interface{}{}
-	for i, t := range tables {
-		var vals []interface{}
-		ts[i], vals = t.self()
-		values = append(values, vals...)
-	}
-	return ts, values
-}
-
-func (t Table) self() (token.Tokenizer, []interface{}) {
-	if t.name == "" {
-		return token.EmptyLine, nil
-	}
-	return token.NewLines(token.NewLine(
-		token.Word(t.name),
-	)), nil
-}
-
-func (t Table) previous() Joiner {
-	return nil
-}
-
 func (t Table) As(alias string) TableAs {
 	return TableAs{
 		table: t,
@@ -44,26 +19,55 @@ func (t Table) As(alias string) TableAs {
 	}
 }
 
-func (t Table) Join(table Joiner) Joiner {
+func (t Table) Join(table TableOrAlias) Join {
 	nj := NewJoin(table)
 	nj.prev = t
 	return nj
 }
 
-func (t Table) InnerJoin(table Joiner) Joiner {
+func (t Table) InnerJoin(table TableOrAlias) Join {
 	ij := NewInnerJoin(table)
 	ij.prev = t
 	return ij
 }
 
-func (t Table) LeftJoin(table Joiner) Joiner {
+func (t Table) LeftJoin(table TableOrAlias) Join {
 	lj := NewLeftJoin(table)
 	lj.prev = t
 	return lj
 }
 
-func (t Table) RightJoin(table Joiner) Joiner {
+func (t Table) RightJoin(table TableOrAlias) Join {
 	rj := NewRightJoin(table)
 	rj.prev = t
 	return rj
+}
+
+func (t Table) nodeize() (token.Tokenizer, []interface{}) {
+	return nodeizeJoiners(t)
+}
+
+func (t Table) self() (token.Tokenizer, []interface{}) {
+	if t.name == "" {
+		return nil, nil
+	}
+	return token.NewLine(token.Word(t.name)), nil
+}
+
+func (t Table) previous() Joiner {
+	return nil
+}
+
+// isTableOrAlias always returns true.
+// This method exists only to implement the interface TableOrAlias.
+// This is a shit of duck typing, but anyway it works.
+func (t Table) isTableOrAlias() bool {
+	return true
+}
+
+// isTableOrAliasOrJoiner always returns true.
+// This method exists only to implement the interface TableOrAliasOrJoiner.
+// This is a shit of duck typing, but anyway it works.
+func (t Table) isTableOrAliasOrJoiner() bool {
+	return true
 }

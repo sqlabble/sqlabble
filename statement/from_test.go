@@ -48,14 +48,13 @@ func TestFromSQL(t *testing.T) {
 		// 2
 		{
 			statement.NewFrom(
-				statement.NewTable("foo").As("a").Join(
-					statement.NewTable("bar"),
-				),
+				statement.NewTable("foo").As("a").
+					Join(statement.NewTable("bar")).Using(statement.NewColumn("id")),
 			),
-			`FROM foo AS "a" JOIN bar`,
+			`FROM foo AS "a" JOIN bar USING id`,
 			`> FROM
 >   foo AS "a"
->   JOIN bar
+>   JOIN bar USING id
 `,
 			nil,
 		},

@@ -2,20 +2,16 @@ package statement
 
 import "github.com/minodisk/sqlabble/token"
 
-// func Node(stmt Statement) node.Node {
-// 	return stmt.node()
-// }
-
 func nodeizeClauses(c Clause) (token.Tokenizer, []interface{}) {
 	clauses := collectClauses(c)
 	ts := make(token.Tokenizers, len(clauses))
-	vals := []interface{}{}
-	for i, clause := range clauses {
-		var vs []interface{}
-		ts[i], vs = clause.self()
-		vals = append(vals, vs...)
+	values := []interface{}{}
+	for i, c := range clauses {
+		var vals []interface{}
+		ts[i], vals = c.self()
+		values = append(values, vals...)
 	}
-	return ts, vals
+	return ts, values
 }
 
 func nodeizeJoiners(j Joiner) (token.Tokenizer, []interface{}) {

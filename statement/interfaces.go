@@ -23,6 +23,16 @@ type Clause interface {
 	previous() Clause
 }
 
+type TableOrAlias interface {
+	Statement
+	isTableOrAlias() bool
+}
+
+type TableOrAliasOrJoiner interface {
+	Statement
+	isTableOrAliasOrJoiner() bool
+}
+
 type ColumnOrColumnAsOrSubquery interface {
 	Statement
 	isColumnOrColumnAsOrSubquery() bool
@@ -46,15 +56,14 @@ type ParamsOrSubquery interface {
 type Joiner interface {
 	Statement
 	self() (token.Tokenizer, []interface{})
-	Join(Joiner) Joiner
-	InnerJoin(Joiner) Joiner
-	LeftJoin(Joiner) Joiner
-	RightJoin(Joiner) Joiner
+	Join(TableOrAlias) Join
+	InnerJoin(TableOrAlias) Join
+	LeftJoin(TableOrAlias) Join
+	RightJoin(TableOrAlias) Join
 	previous() Joiner
 }
 
 type ComparisonOrLogicalOperation interface {
 	Statement
-	// lines() (token.Lines, []interface{})
 	operator() operator.Operator
 }

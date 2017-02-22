@@ -6,31 +6,14 @@ import (
 )
 
 type From struct {
-	prev   Clause
-	joiner Joiner
+	prev  Clause
+	table TableOrAliasOrJoiner
 }
 
-func NewFrom(joiner Joiner) From {
+func NewFrom(table TableOrAliasOrJoiner) From {
 	return From{
-		joiner: joiner,
+		table: table,
 	}
-}
-
-func (f From) nodeize() (token.Tokenizer, []interface{}) {
-	return nodeizeClauses(f)
-}
-
-func (f From) self() (token.Tokenizer, []interface{}) {
-	middle, values := f.joiner.nodeize()
-	return token.NewContainer(
-		token.NewLine(token.Word(keyword.From)),
-	).SetMiddle(
-		middle,
-	), values
-}
-
-func (f From) previous() Clause {
-	return f.prev
 }
 
 func (f From) Where(op ComparisonOrLogicalOperation) Where {
@@ -55,4 +38,21 @@ func (f From) Limit(count int) Limit {
 	l := NewLimit(count)
 	l.prev = f
 	return l
+}
+
+func (f From) nodeize() (token.Tokenizer, []interface{}) {
+	return nodeizeClauses(f)
+}
+
+func (f From) self() (token.Tokenizer, []interface{}) {
+	middle, values := f.table.nodeize()
+	return token.NewContainer(
+		token.NewLine(token.Word(keyword.From)),
+	).SetMiddle(
+		middle,
+	), values
+}
+
+func (f From) previous() Clause {
+	return f.prev
 }

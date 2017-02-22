@@ -7,71 +7,71 @@ import (
 
 type Join struct {
 	joinType string
-	joiner   Joiner
+	table    TableOrAlias
 	prev     Joiner
 }
 
-func NewJoin(joiner Joiner) Join {
+func NewJoin(table TableOrAlias) Join {
 	return Join{
 		joinType: keyword.Join,
-		joiner:   joiner,
+		table:    table,
 	}
 }
 
-func NewInnerJoin(joiner Joiner) Join {
+func NewInnerJoin(table TableOrAlias) Join {
 	return Join{
 		joinType: keyword.InnerJoin,
-		joiner:   joiner,
+		table:    table,
 	}
 }
 
-func NewLeftJoin(joiner Joiner) Join {
+func NewLeftJoin(table TableOrAlias) Join {
 	return Join{
 		joinType: keyword.LeftJoin,
-		joiner:   joiner,
+		table:    table,
 	}
 }
 
-func NewRightJoin(joiner Joiner) Join {
+func NewRightJoin(table TableOrAlias) Join {
 	return Join{
 		joinType: keyword.RightJoin,
-		joiner:   joiner,
+		table:    table,
 	}
 }
 
-func (j Join) Join(table Joiner) Joiner {
-	nj := NewJoin(table)
-	nj.prev = j
-	return nj
+func (j Join) Join(table TableOrAlias) Join {
+	j1 := NewJoin(table)
+	j1.prev = j
+	return j1
 }
 
-func (j Join) InnerJoin(table Joiner) Joiner {
-	ij := NewInnerJoin(table)
-	ij.prev = j
-	return ij
+func (j Join) InnerJoin(table TableOrAlias) Join {
+	j1 := NewInnerJoin(table)
+	j1.prev = j
+	return j1
 }
 
-func (j Join) LeftJoin(table Joiner) Joiner {
-	lj := NewLeftJoin(table)
-	lj.prev = j
-	return lj
+func (j Join) LeftJoin(table TableOrAlias) Join {
+	j1 := NewLeftJoin(table)
+	j1.prev = j
+	return j1
 }
 
-func (j Join) RightJoin(table Joiner) Joiner {
-	rj := NewRightJoin(table)
-	rj.prev = j
-	return rj
+func (j Join) RightJoin(table TableOrAlias) Join {
+	j1 := NewRightJoin(table)
+	j1.prev = j
+	return j1
 }
 
 func (j Join) On(column1, column2 Column) On {
 	o := NewOn(column1, column2)
-	o.joiner = j
+	o.join = j
 	return o
 }
 
 func (j Join) Using(col Column) Using {
 	o := NewUsing(col)
-	o.joiner = j
+	o.join = j
 	return o
 }
 
@@ -80,11 +80,14 @@ func (j Join) nodeize() (token.Tokenizer, []interface{}) {
 }
 
 func (j Join) self() (token.Tokenizer, []interface{}) {
-	t, values := j.joiner.nodeize()
+	if j.table == nil {
+		return nil, nil
+	}
+	t, v := j.table.nodeize()
 	return t.Prepend(
 		token.Word(j.joinType),
 		token.Space,
-	), values
+	), v
 }
 
 func (j Join) previous() Joiner {

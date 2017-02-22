@@ -6,7 +6,7 @@ import (
 )
 
 type Using struct {
-	joiner Joiner
+	join   Join
 	column Column
 }
 
@@ -16,56 +16,55 @@ func NewUsing(column Column) Using {
 	}
 }
 
-func (u Using) nodeize() (token.Tokenizer, []interface{}) {
-	return nodeizeJoiners(u)
-}
-
-func (u Using) self() (token.Tokenizer, []interface{}) {
-	tokens := token.NewTokens(
-		token.Word(keyword.Using),
-		token.Space,
-	)
-	t2, v2 := u.column.nodeize()
-	t2 = t2.Prepend(tokens...)
-	if u.joiner == nil {
-		return t2, v2
-	}
-
-	t1, v1 := u.joiner.nodeize()
-	return token.ConcatTokenizers(
-		t1,
-		t2,
-		token.NewLine(token.Space),
-	), append(v1, v2...)
-}
-
-func (u Using) previous() Joiner {
-	if u.joiner == nil {
-		return nil
-	}
-	return u.joiner.previous()
-}
-
-func (u Using) Join(table Joiner) Joiner {
+func (u Using) Join(table TableOrAlias) Join {
 	j := NewJoin(table)
 	j.prev = u
 	return j
 }
 
-func (u Using) InnerJoin(table Joiner) Joiner {
-	ij := NewInnerJoin(table)
-	ij.prev = u
-	return ij
+func (u Using) InnerJoin(table TableOrAlias) Join {
+	j := NewInnerJoin(table)
+	j.prev = u
+	return j
 }
 
-func (u Using) LeftJoin(table Joiner) Joiner {
-	lj := NewLeftJoin(table)
-	lj.prev = u
-	return lj
+func (u Using) LeftJoin(table TableOrAlias) Join {
+	j := NewLeftJoin(table)
+	j.prev = u
+	return j
 }
 
-func (u Using) RightJoin(table Joiner) Joiner {
-	rj := NewRightJoin(table)
-	rj.prev = u
-	return rj
+func (u Using) RightJoin(table TableOrAlias) Join {
+	j := NewRightJoin(table)
+	j.prev = u
+	return j
+}
+
+func (u Using) nodeize() (token.Tokenizer, []interface{}) {
+	return nodeizeJoiners(u)
+}
+
+func (u Using) self() (token.Tokenizer, []interface{}) {
+	t1, v1 := u.join.self()
+	t2, v2 := u.column.nodeize()
+	return token.ConcatTokenizers(
+		t1,
+		t2,
+		token.NewLine(
+			token.Space,
+			token.Word(keyword.Using),
+			token.Space,
+		),
+	), append(v1, v2...)
+}
+
+func (u Using) previous() Joiner {
+	return u.join.previous()
+}
+
+// isTableOrAliasOrJoiner always returns true.
+// This method exists only to implement the interface TableOrAliasOrJoiner.
+// This is a shit of duck typing, but anyway it works.
+func (u Using) isTableOrAliasOrJoiner() bool {
+	return true
 }

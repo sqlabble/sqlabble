@@ -7,7 +7,7 @@ import (
 )
 
 type On struct {
-	joiner           Joiner
+	join             Join
 	column1, column2 Column
 }
 
@@ -18,76 +18,64 @@ func NewOn(column1, column2 Column) On {
 	}
 }
 
-func (o On) nodeize() (token.Tokenizer, []interface{}) {
-	joiners := collectJoiners(o)
-	ts := make(token.Tokenizers, len(joiners))
-	values := []interface{}{}
-	for i, j := range joiners {
-		var vals []interface{}
-		ts[i], vals = j.self()
-		values = append(values, vals...)
-	}
-	return ts, values
-}
-
-func (o On) self() (token.Tokenizer, []interface{}) {
-	t1, v1 := o.column1.nodeize()
-	t2, v2 := o.column2.nodeize()
-	t12 := token.ConcatTokenizers(
-		t1,
-		t2,
-		token.NewLine(
-			token.Space,
-			token.Word(operator.Eq),
-			token.Space,
-		),
-	).Prepend(
-		token.Word(keyword.On),
-		token.Space,
-	)
-
-	v12 := append(v1, v2...)
-	if o.joiner == nil {
-		return t12, v12
-	}
-
-	t0, v0 := o.joiner.self()
-	return token.ConcatTokenizers(
-		t0,
-		t12,
-		token.NewLine(
-			token.Space,
-		),
-	), append(v0, v12...)
-}
-
-func (o On) previous() Joiner {
-	if o.joiner == nil {
-		return nil
-	}
-	return o.joiner.previous()
-}
-
-func (o On) Join(table Joiner) Joiner {
+func (o On) Join(table TableOrAlias) Join {
 	j := NewJoin(table)
 	j.prev = o
 	return j
 }
 
-func (o On) InnerJoin(table Joiner) Joiner {
-	ij := NewInnerJoin(table)
-	ij.prev = o
-	return ij
+func (o On) InnerJoin(table TableOrAlias) Join {
+	j := NewInnerJoin(table)
+	j.prev = o
+	return j
 }
 
-func (o On) LeftJoin(table Joiner) Joiner {
-	lj := NewLeftJoin(table)
-	lj.prev = o
-	return lj
+func (o On) LeftJoin(table TableOrAlias) Join {
+	j := NewLeftJoin(table)
+	j.prev = o
+	return j
 }
 
-func (o On) RightJoin(table Joiner) Joiner {
-	rj := NewRightJoin(table)
-	rj.prev = o
-	return rj
+func (o On) RightJoin(table TableOrAlias) Join {
+	j := NewRightJoin(table)
+	j.prev = o
+	return j
+}
+
+func (o On) nodeize() (token.Tokenizer, []interface{}) {
+	return nodeizeJoiners(o)
+}
+
+func (o On) self() (token.Tokenizer, []interface{}) {
+	t0, v0 := o.join.self()
+	t1, v1 := o.column1.nodeize()
+	t2, v2 := o.column2.nodeize()
+	return token.ConcatTokenizers(
+		t0,
+		token.ConcatTokenizers(
+			t1,
+			t2,
+			token.NewLine(
+				token.Space,
+				token.Word(operator.Eq),
+				token.Space,
+			),
+		),
+		token.NewLine(
+			token.Space,
+			token.Word(keyword.On),
+			token.Space,
+		),
+	), append(append(v0, v1...), v2...)
+}
+
+func (o On) previous() Joiner {
+	return o.join.previous()
+}
+
+// isTableOrAliasOrJoiner always returns true.
+// This method exists only to implement the interface TableOrAliasOrJoiner.
+// This is a shit of duck typing, but anyway it works.
+func (o On) isTableOrAliasOrJoiner() bool {
+	return true
 }

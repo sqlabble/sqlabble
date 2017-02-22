@@ -38,6 +38,11 @@ func (ts Tokenizers) Append(tokens ...Token) Tokenizer {
 }
 
 func (ts Tokenizers) FirstLine() (Line, Tokenizer) {
+	ts = NewTokenizers(ts...)
+	if len(ts) == 0 {
+		return EmptyLine, nil
+	}
+
 	line, t := ts[0].FirstLine()
 	if t == nil {
 		ts = ts[1:]
@@ -51,6 +56,11 @@ func (ts Tokenizers) FirstLine() (Line, Tokenizer) {
 }
 
 func (ts Tokenizers) LastLine() (Tokenizer, Line) {
+	ts = NewTokenizers(ts...)
+	if len(ts) == 0 {
+		return nil, EmptyLine
+	}
+
 	n := len(ts) - 1
 	t, line := ts[n].LastLine()
 	if t == nil {
@@ -187,6 +197,20 @@ func (l Line) Join(lines ...Line) Line {
 }
 
 func ConcatTokenizers(t1, t2 Tokenizer, sep Line) Tokenizers {
+	if t1 == nil {
+		first, t2 := t2.FirstLine()
+		return NewTokenizers(
+			first.Prepend(sep.tokens...),
+			t2,
+		)
+	}
+	if t2 == nil {
+		t1, last := t1.LastLine()
+		return NewTokenizers(
+			t1,
+			last.Append(sep.tokens...),
+		)
+	}
 	t1, last := t1.LastLine()
 	first, t2 := t2.FirstLine()
 	ts := NewTokenizers(

@@ -17,66 +17,78 @@ func TestOn(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			statement: statement.NewOn(
+			statement.NewOn(
 				statement.NewColumn("f.id"),
 				statement.NewColumn("b.id"),
 			),
-			sql: "ON f.id = b.id",
-			sqlIndent: `> ON f.id = b.id
+			" ON f.id = b.id",
+			`>  ON f.id = b.id
 `,
-			values: nil,
+			nil,
 		},
 		{
-			statement: statement.NewOn(
+			statement.NewOn(
 				statement.NewColumn("f.id"),
 				statement.NewColumn("b.id"),
 			).Join(
 				statement.NewTable("bar"),
 			),
-			sql: "ON f.id = b.id JOIN bar",
-			sqlIndent: `> ON f.id = b.id
+			" ON f.id = b.id JOIN bar",
+			`>  ON f.id = b.id
 > JOIN bar
 `,
-			values: nil,
+			nil,
 		},
 		{
-			statement: statement.NewOn(
+			statement.NewOn(
 				statement.NewColumn("f.id"),
 				statement.NewColumn("b.id"),
 			).InnerJoin(
 				statement.NewTable("bar"),
 			),
-			sql: "ON f.id = b.id INNER JOIN bar",
-			sqlIndent: `> ON f.id = b.id
+			" ON f.id = b.id INNER JOIN bar",
+			`>  ON f.id = b.id
 > INNER JOIN bar
 `,
-			values: nil,
+			nil,
 		},
 		{
-			statement: statement.NewOn(
+			statement.NewOn(
 				statement.NewColumn("f.id"),
 				statement.NewColumn("b.id"),
 			).LeftJoin(
 				statement.NewTable("bar"),
 			),
-			sql: "ON f.id = b.id LEFT JOIN bar",
-			sqlIndent: `> ON f.id = b.id
+			" ON f.id = b.id LEFT JOIN bar",
+			`>  ON f.id = b.id
 > LEFT JOIN bar
 `,
-			values: nil,
+			nil,
 		},
 		{
-			statement: statement.NewOn(
+			statement.NewOn(
 				statement.NewColumn("f.id"),
 				statement.NewColumn("b.id"),
 			).RightJoin(
 				statement.NewTable("bar"),
 			),
-			sql: "ON f.id = b.id RIGHT JOIN bar",
-			sqlIndent: `> ON f.id = b.id
+			" ON f.id = b.id RIGHT JOIN bar",
+			`>  ON f.id = b.id
 > RIGHT JOIN bar
 `,
-			values: nil,
+			nil,
+		},
+		{
+			statement.NewTable("foo").As("a").
+				Join(statement.NewTable("bar")).On(
+				statement.NewColumn("a.id"),
+				statement.NewColumn("bar.id"),
+			),
+			`foo AS "a" JOIN bar ON a.id = bar.id`,
+			`> foo AS "a"
+> JOIN bar ON a.id = bar.id
+`,
+			nil,
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {

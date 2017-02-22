@@ -12,6 +12,12 @@ func NewSubquery(statement Statement) Subquery {
 	}
 }
 
+func (s Subquery) As(alias string) SubqueryAs {
+	a := NewSubqueryAs(alias)
+	a.subquery = s
+	return a
+}
+
 func (s Subquery) Eq(value ParamOrSubquery) ComparisonOperation {
 	e := NewEq(value)
 	e.column = s

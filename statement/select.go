@@ -24,7 +24,7 @@ func NewSelectDistinct(columns ...ColumnOrColumnAsOrSubquery) Select {
 	}
 }
 
-func (s Select) From(t Joiner) From {
+func (s Select) From(t TableOrAliasOrJoiner) From {
 	f := NewFrom(t)
 	f.prev = s
 	return f
