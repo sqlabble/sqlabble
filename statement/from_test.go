@@ -23,7 +23,6 @@ func TestFromSQL(t *testing.T) {
 		sqlIndent string
 		values    []interface{}
 	}{
-		// 0
 		{
 			statement.NewFrom(
 				statement.NewTable("foo"),
@@ -34,7 +33,6 @@ func TestFromSQL(t *testing.T) {
 `,
 			nil,
 		},
-		// 1
 		{
 			statement.NewFrom(
 				statement.NewTable("foo").As("a"),
@@ -45,7 +43,6 @@ func TestFromSQL(t *testing.T) {
 `,
 			nil,
 		},
-		// 2
 		{
 			statement.NewFrom(
 				statement.NewTable("foo").As("a").
@@ -58,7 +55,23 @@ func TestFromSQL(t *testing.T) {
 `,
 			nil,
 		},
-		// 3
+		{
+			statement.NewFrom(
+				statement.NewSubquery(
+					statement.NewSelect(
+						statement.NewColumn("foo"),
+					),
+				).As("f"),
+			),
+			`FROM (SELECT foo) AS f`,
+			`> FROM
+>   (
+>     SELECT
+>       foo
+>   ) AS f
+`,
+			nil,
+		},
 		{
 			statement.NewFrom(
 				statement.NewTable("foo"),
@@ -75,7 +88,6 @@ func TestFromSQL(t *testing.T) {
 				20,
 			},
 		},
-		// 4
 		{
 			statement.NewFrom(
 				statement.NewTable("foo"),
@@ -90,7 +102,6 @@ func TestFromSQL(t *testing.T) {
 `,
 			nil,
 		},
-		// 5
 		{
 			statement.NewFrom(
 				statement.NewTable("foo"),
@@ -105,7 +116,6 @@ func TestFromSQL(t *testing.T) {
 `,
 			nil,
 		},
-		// 6
 		{
 			statement.NewFrom(
 				statement.NewTable("foo"),

@@ -36,3 +36,10 @@ func (a SubqueryAs) nodeize() (token.Tokenizer, []interface{}) {
 func (a SubqueryAs) isTableOrAlias() bool {
 	return true
 }
+
+// isTableOrAliasOrJoiner always returns true.
+// This method exists only to implement the interface TableOrAliasOrJoiner.
+// This is a shit of duck typing, but anyway it works.
+func (a SubqueryAs) isTableOrAliasOrJoiner() bool {
+	return true
+}
