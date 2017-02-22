@@ -3,6 +3,7 @@ package statement
 import (
 	"github.com/minodisk/sqlabble/keyword"
 	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type Where struct {
@@ -16,14 +17,14 @@ func NewWhere(operation ComparisonOrLogicalOperation) Where {
 	}
 }
 
-func (w Where) nodeize() (token.Tokenizer, []interface{}) {
+func (w Where) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizeClauses(w)
 }
 
-func (w Where) self() (token.Tokenizer, []interface{}) {
+func (w Where) self() (tokenizer.Tokenizer, []interface{}) {
 	middle, values := w.operation.nodeize()
-	return token.NewContainer(
-		token.NewLine(token.Word(keyword.Where)),
+	return tokenizer.NewContainer(
+		tokenizer.NewLine(token.Word(keyword.Where)),
 	).SetMiddle(
 		middle,
 	), values

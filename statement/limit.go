@@ -3,6 +3,7 @@ package statement
 import (
 	"github.com/minodisk/sqlabble/keyword"
 	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type Limit struct {
@@ -22,14 +23,14 @@ func (l Limit) Offset(count int) Offset {
 	return o
 }
 
-func (l Limit) nodeize() (token.Tokenizer, []interface{}) {
+func (l Limit) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizeClauses(l)
 }
 
-func (l Limit) self() (token.Tokenizer, []interface{}) {
-	line, values := token.ParamsToLine(l.count)
-	return token.NewContainer(
-		token.NewLine(token.Word(keyword.Limit)),
+func (l Limit) self() (tokenizer.Tokenizer, []interface{}) {
+	line, values := tokenizer.ParamsToLine(l.count)
+	return tokenizer.NewContainer(
+		tokenizer.NewLine(token.Word(keyword.Limit)),
 	).SetMiddle(
 		line,
 	), values

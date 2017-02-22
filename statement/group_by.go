@@ -3,6 +3,7 @@ package statement
 import (
 	"github.com/minodisk/sqlabble/keyword"
 	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type GroupBy struct {
@@ -16,20 +17,20 @@ func NewGroupBy(column Column, columns ...Column) GroupBy {
 	}
 }
 
-func (g GroupBy) nodeize() (token.Tokenizer, []interface{}) {
+func (g GroupBy) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizeClauses(g)
 }
 
-func (g GroupBy) self() (token.Tokenizer, []interface{}) {
-	ts := make(token.Tokenizers, len(g.columns))
+func (g GroupBy) self() (tokenizer.Tokenizer, []interface{}) {
+	ts := make(tokenizer.Tokenizers, len(g.columns))
 	values := []interface{}{}
 	for i, c := range g.columns {
 		var vals []interface{}
 		ts[i], vals = c.nodeize()
 		values = append(values, vals...)
 	}
-	return token.NewContainer(
-		token.NewLine(token.Word(keyword.GroupBy)),
+	return tokenizer.NewContainer(
+		tokenizer.NewLine(token.Word(keyword.GroupBy)),
 	).SetMiddle(
 		ts.Prefix(
 			token.Comma,

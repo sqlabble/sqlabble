@@ -3,6 +3,7 @@ package statement
 import (
 	"github.com/minodisk/sqlabble/keyword"
 	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type Set struct {
@@ -16,20 +17,20 @@ func NewSet(assigns ...Assign) Set {
 	}
 }
 
-func (s Set) nodeize() (token.Tokenizer, []interface{}) {
+func (s Set) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizeClauses(s)
 }
 
-func (s Set) self() (token.Tokenizer, []interface{}) {
-	tokenizers := make(token.Tokenizers, len(s.assigns))
+func (s Set) self() (tokenizer.Tokenizer, []interface{}) {
+	tokenizers := make(tokenizer.Tokenizers, len(s.assigns))
 	values := []interface{}{}
 	for i, a := range s.assigns {
 		var vals []interface{}
 		tokenizers[i], vals = a.nodeize()
 		values = append(values, vals...)
 	}
-	return token.NewContainer(
-		token.NewLine(
+	return tokenizer.NewContainer(
+		tokenizer.NewLine(
 			token.Word(keyword.Set),
 		),
 	).SetMiddle(

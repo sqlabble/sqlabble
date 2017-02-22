@@ -3,6 +3,7 @@ package statement
 import (
 	"github.com/minodisk/sqlabble/keyword"
 	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type Delete struct{}
@@ -17,13 +18,13 @@ func (d Delete) From(t Table) From {
 	return f
 }
 
-func (d Delete) nodeize() (token.Tokenizer, []interface{}) {
+func (d Delete) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizeClauses(d)
 }
 
-func (d Delete) self() (token.Tokenizer, []interface{}) {
-	return token.NewContainer(
-		token.NewLine(token.Word(keyword.Delete)),
+func (d Delete) self() (tokenizer.Tokenizer, []interface{}) {
+	return tokenizer.NewContainer(
+		tokenizer.NewLine(token.Word(keyword.Delete)),
 	), nil
 }
 

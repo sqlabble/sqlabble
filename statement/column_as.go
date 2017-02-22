@@ -3,6 +3,7 @@ package statement
 import (
 	"github.com/minodisk/sqlabble/keyword"
 	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type ColumnAs struct {
@@ -16,9 +17,9 @@ func NewColumnAs(alias string) ColumnAs {
 	}
 }
 
-func (c ColumnAs) nodeize() (token.Tokenizer, []interface{}) {
+func (c ColumnAs) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	if c.column == nil {
-		return token.NewLine(
+		return tokenizer.NewLine(
 			token.Word(keyword.As),
 			token.Space,
 		).Append(
@@ -30,15 +31,15 @@ func (c ColumnAs) nodeize() (token.Tokenizer, []interface{}) {
 	}
 
 	t1, v1 := c.column.nodeize()
-	return token.ConcatTokenizers(
+	return tokenizer.ConcatTokenizers(
 		t1,
-		token.NewLine(
+		tokenizer.NewLine(
 			token.Wrap(
 				token.Word(c.alias),
 				token.Quote,
 			)...,
 		),
-		token.NewLine(
+		tokenizer.NewLine(
 			token.Space,
 			token.Word(keyword.As),
 			token.Space,

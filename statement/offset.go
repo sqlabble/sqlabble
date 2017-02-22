@@ -3,6 +3,7 @@ package statement
 import (
 	"github.com/minodisk/sqlabble/keyword"
 	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 // Offset skips specified rows before beginning to return rows.
@@ -18,14 +19,14 @@ func NewOffset(count int) Offset {
 	}
 }
 
-func (o Offset) nodeize() (token.Tokenizer, []interface{}) {
+func (o Offset) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizeClauses(o)
 }
 
-func (o Offset) self() (token.Tokenizer, []interface{}) {
-	line, values := token.ParamsToLine(o.count)
-	return token.NewContainer(
-		token.NewLine(token.Word(keyword.Offset)),
+func (o Offset) self() (tokenizer.Tokenizer, []interface{}) {
+	line, values := tokenizer.ParamsToLine(o.count)
+	return tokenizer.NewContainer(
+		tokenizer.NewLine(token.Word(keyword.Offset)),
 	).SetMiddle(
 		line,
 	), values

@@ -1,6 +1,9 @@
 package statement
 
-import "github.com/minodisk/sqlabble/token"
+import (
+	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
+)
 
 type Table struct {
 	name string
@@ -43,15 +46,15 @@ func (t Table) RightJoin(table TableOrAlias) Join {
 	return rj
 }
 
-func (t Table) nodeize() (token.Tokenizer, []interface{}) {
+func (t Table) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizeJoiners(t)
 }
 
-func (t Table) self() (token.Tokenizer, []interface{}) {
+func (t Table) self() (tokenizer.Tokenizer, []interface{}) {
 	if t.name == "" {
 		return nil, nil
 	}
-	return token.NewLine(token.Word(t.name)), nil
+	return tokenizer.NewLine(token.Word(t.name)), nil
 }
 
 func (t Table) previous() Joiner {

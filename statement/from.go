@@ -3,6 +3,7 @@ package statement
 import (
 	"github.com/minodisk/sqlabble/keyword"
 	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type From struct {
@@ -40,14 +41,14 @@ func (f From) Limit(count int) Limit {
 	return l
 }
 
-func (f From) nodeize() (token.Tokenizer, []interface{}) {
+func (f From) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizeClauses(f)
 }
 
-func (f From) self() (token.Tokenizer, []interface{}) {
+func (f From) self() (tokenizer.Tokenizer, []interface{}) {
 	middle, values := f.table.nodeize()
-	return token.NewContainer(
-		token.NewLine(token.Word(keyword.From)),
+	return tokenizer.NewContainer(
+		tokenizer.NewLine(token.Word(keyword.From)),
 	).SetMiddle(
 		middle,
 	), values

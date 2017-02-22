@@ -1,14 +1,14 @@
 package statement
 
-import "github.com/minodisk/sqlabble/token"
+import "github.com/minodisk/sqlabble/tokenizer"
 
-func Nodeize(stmt Statement) (token.Tokenizer, []interface{}) {
+func Nodeize(stmt Statement) (tokenizer.Tokenizer, []interface{}) {
 	return stmt.nodeize()
 }
 
-func nodeizeClauses(c Clause) (token.Tokenizer, []interface{}) {
+func nodeizeClauses(c Clause) (tokenizer.Tokenizer, []interface{}) {
 	clauses := collectClauses(c)
-	ts := make(token.Tokenizers, len(clauses))
+	ts := make(tokenizer.Tokenizers, len(clauses))
 	values := []interface{}{}
 	for i, c := range clauses {
 		var vals []interface{}
@@ -27,9 +27,9 @@ func collectClauses(c Clause) []Clause {
 	return cs
 }
 
-func nodeizeJoiners(j Joiner) (token.Tokenizer, []interface{}) {
+func nodeizeJoiners(j Joiner) (tokenizer.Tokenizer, []interface{}) {
 	joiners := collectJoiners(j)
-	ts := make(token.Tokenizers, len(joiners))
+	ts := make(tokenizer.Tokenizers, len(joiners))
 	values := []interface{}{}
 	for i, j := range joiners {
 		var vals []interface{}

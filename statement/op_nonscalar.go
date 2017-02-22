@@ -3,6 +3,7 @@ package statement
 import (
 	"github.com/minodisk/sqlabble/keyword"
 	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type NonScalarOperation struct {
@@ -95,7 +96,7 @@ func NewLteAny(params Subquery) NonScalarOperation {
 	}
 }
 
-func (n NonScalarOperation) nodeize() (token.Tokenizer, []interface{}) {
+func (n NonScalarOperation) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	t2, v2 := n.params.nodeize()
 	if n.column == nil {
 		return t2.Prepend(
@@ -105,10 +106,10 @@ func (n NonScalarOperation) nodeize() (token.Tokenizer, []interface{}) {
 	}
 
 	t1, v1 := n.column.nodeize()
-	return token.ConcatTokenizers(
+	return tokenizer.ConcatTokenizers(
 		t1,
 		t2,
-		token.NewLine(
+		tokenizer.NewLine(
 			token.Space,
 			token.Word(n.keyword()),
 			token.Space,
@@ -139,7 +140,7 @@ func NewNotExists(params Subquery) ExistanceOperation {
 	}
 }
 
-func (e ExistanceOperation) nodeize() (token.Tokenizer, []interface{}) {
+func (e ExistanceOperation) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	t2, v2 := e.params.nodeize()
 	return t2.Prepend(
 		token.Word(e.keyword()),

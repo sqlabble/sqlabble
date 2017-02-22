@@ -3,6 +3,7 @@ package statement
 import (
 	"github.com/minodisk/sqlabble/keyword"
 	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type Order struct {
@@ -22,7 +23,7 @@ func NewDesc() Order {
 	}
 }
 
-func (o Order) nodeize() (token.Tokenizer, []interface{}) {
+func (o Order) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	t1, v1 := o.column.nodeize()
 	return t1.Append(
 		token.Space,

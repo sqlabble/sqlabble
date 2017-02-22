@@ -1,6 +1,9 @@
 package statement
 
-import "github.com/minodisk/sqlabble/token"
+import (
+	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
+)
 
 type Definition struct {
 	column     Column
@@ -13,7 +16,7 @@ func NewDefinition(definition string) Definition {
 	}
 }
 
-func (d Definition) nodeize() (token.Tokenizer, []interface{}) {
+func (d Definition) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	t, values := d.column.nodeize()
 	return t.
 		Append(
@@ -33,8 +36,8 @@ func NewDefinitions(definitions ...Definition) Definitions {
 	}
 }
 
-func (ds Definitions) nodeize() (token.Tokenizer, []interface{}) {
-	ts := make(token.Tokenizers, len(ds.definitions))
+func (ds Definitions) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	ts := make(tokenizer.Tokenizers, len(ds.definitions))
 	values := []interface{}{}
 	for i, d := range ds.definitions {
 		var vals []interface{}
@@ -48,13 +51,13 @@ func (ds Definitions) nodeize() (token.Tokenizer, []interface{}) {
 
 	c, values := ds.createTable.container()
 	middle := c.Middle()
-	def := token.NewParentheses(ts)
+	def := tokenizer.NewParentheses(ts)
 
 	return c.SetMiddle(
-		token.ConcatTokenizers(
+		tokenizer.ConcatTokenizers(
 			middle,
 			def,
-			token.NewLine(token.Space),
+			tokenizer.NewLine(token.Space),
 		),
 	), values
 }

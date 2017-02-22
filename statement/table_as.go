@@ -3,6 +3,7 @@ package statement
 import (
 	"github.com/minodisk/sqlabble/keyword"
 	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type TableAs struct {
@@ -34,23 +35,23 @@ func (t TableAs) RightJoin(table TableOrAlias) Join {
 	return rj
 }
 
-func (t TableAs) nodeize() (token.Tokenizer, []interface{}) {
+func (t TableAs) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return t.self()
 }
 
-func (t TableAs) self() (token.Tokenizer, []interface{}) {
+func (t TableAs) self() (tokenizer.Tokenizer, []interface{}) {
 	t1, v1 := t.table.nodeize()
-	t2 := token.NewLine(
+	t2 := tokenizer.NewLine(
 		token.Wrap(
 			token.Word(t.alias),
 			token.Quote,
 		)...,
 	)
 
-	return token.ConcatTokenizers(
+	return tokenizer.ConcatTokenizers(
 		t1,
 		t2,
-		token.NewLine(
+		tokenizer.NewLine(
 			token.Space,
 			token.Word(keyword.As),
 			token.Space,

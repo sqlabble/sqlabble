@@ -3,6 +3,7 @@ package statement
 import (
 	"github.com/minodisk/sqlabble/keyword"
 	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type SubqueryAs struct {
@@ -16,13 +17,13 @@ func NewSubqueryAs(alias string) SubqueryAs {
 	}
 }
 
-func (a SubqueryAs) nodeize() (token.Tokenizer, []interface{}) {
+func (a SubqueryAs) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	t1, v1 := a.subquery.nodeize()
-	t2 := token.NewLine(token.Word(a.alias))
-	return token.ConcatTokenizers(
+	t2 := tokenizer.NewLine(token.Word(a.alias))
+	return tokenizer.ConcatTokenizers(
 		t1,
 		t2,
-		token.NewLine(
+		tokenizer.NewLine(
 			token.Space,
 			token.Word(keyword.As),
 			token.Space,

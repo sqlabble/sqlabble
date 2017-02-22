@@ -3,6 +3,7 @@ package statement
 import (
 	"github.com/minodisk/sqlabble/keyword"
 	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type Join struct {
@@ -75,11 +76,11 @@ func (j Join) Using(col Column) Using {
 	return o
 }
 
-func (j Join) nodeize() (token.Tokenizer, []interface{}) {
+func (j Join) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizeJoiners(j)
 }
 
-func (j Join) self() (token.Tokenizer, []interface{}) {
+func (j Join) self() (tokenizer.Tokenizer, []interface{}) {
 	if j.table == nil {
 		return nil, nil
 	}

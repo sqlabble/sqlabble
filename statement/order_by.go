@@ -3,6 +3,7 @@ package statement
 import (
 	"github.com/minodisk/sqlabble/keyword"
 	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type OrderBy struct {
@@ -14,20 +15,20 @@ func NewOrderBy(os ...Order) OrderBy {
 	return OrderBy{orders: os}
 }
 
-func (o OrderBy) nodeize() (token.Tokenizer, []interface{}) {
+func (o OrderBy) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizeClauses(o)
 }
 
-func (o OrderBy) self() (token.Tokenizer, []interface{}) {
-	tokenizers := make(token.Tokenizers, len(o.orders))
+func (o OrderBy) self() (tokenizer.Tokenizer, []interface{}) {
+	tokenizers := make(tokenizer.Tokenizers, len(o.orders))
 	values := []interface{}{}
 	for i, o := range o.orders {
 		var vals []interface{}
 		tokenizers[i], vals = o.nodeize()
 		values = append(values, vals...)
 	}
-	return token.NewContainer(
-		token.NewLine(token.Word(keyword.OrderBy)),
+	return tokenizer.NewContainer(
+		tokenizer.NewLine(token.Word(keyword.OrderBy)),
 	).SetMiddle(
 		tokenizers.Prefix(token.Comma, token.Space),
 	), values

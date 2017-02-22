@@ -3,6 +3,7 @@ package statement
 import (
 	"github.com/minodisk/sqlabble/keyword"
 	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type SetOperation struct {
@@ -52,16 +53,16 @@ func NewExceptAll(statements ...Statement) SetOperation {
 	}
 }
 
-func (u SetOperation) nodeize() (token.Tokenizer, []interface{}) {
+func (u SetOperation) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return u.self()
 }
 
-func (u SetOperation) self() (token.Tokenizer, []interface{}) {
-	tokenizers := make(token.Tokenizers, len(u.statements))
+func (u SetOperation) self() (tokenizer.Tokenizer, []interface{}) {
+	tokenizers := make(tokenizer.Tokenizers, len(u.statements))
 	values := []interface{}{}
 	for i, s := range u.statements {
 		t, vals := s.nodeize()
-		t = token.NewParentheses(t)
+		t = tokenizer.NewParentheses(t)
 		if i != 0 {
 			t = t.Prepend(
 				token.Word(u.keyword()),

@@ -3,6 +3,7 @@ package statement
 import (
 	"github.com/minodisk/sqlabble/keyword"
 	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type Assign struct {
@@ -17,13 +18,13 @@ func NewAssign(column Column, param ParamOrSubquery) Assign {
 	}
 }
 
-func (a Assign) nodeize() (token.Tokenizer, []interface{}) {
+func (a Assign) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	t1, v1 := a.column.nodeize()
 	t2, v2 := a.param.nodeize()
-	return token.ConcatTokenizers(
+	return tokenizer.ConcatTokenizers(
 		t1,
 		t2,
-		token.NewLine(
+		tokenizer.NewLine(
 			token.Space,
 			token.Word(keyword.Eq),
 			token.Space,

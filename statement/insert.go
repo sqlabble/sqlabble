@@ -3,6 +3,7 @@ package statement
 import (
 	"github.com/minodisk/sqlabble/keyword"
 	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type InsertInto struct {
@@ -17,30 +18,30 @@ func NewInsertInto(table Table, columns ...Column) InsertInto {
 	}
 }
 
-func (i InsertInto) nodeize() (token.Tokenizer, []interface{}) {
+func (i InsertInto) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizeClauses(i)
 }
 
-func (i InsertInto) self() (token.Tokenizer, []interface{}) {
+func (i InsertInto) self() (tokenizer.Tokenizer, []interface{}) {
 	tableTokenizer, values := i.table.nodeize()
-	ts := make(token.Tokenizers, len(i.columns))
+	ts := make(tokenizer.Tokenizers, len(i.columns))
 	for j, c := range i.columns {
 		var vals []interface{}
 		ts[j], vals = c.nodeize()
 		values = append(values, vals...)
 	}
-	return token.NewContainer(
-		token.NewLine(token.Word(keyword.InsertInto)),
+	return tokenizer.NewContainer(
+		tokenizer.NewLine(token.Word(keyword.InsertInto)),
 	).SetMiddle(
-		token.ConcatTokenizers(
+		tokenizer.ConcatTokenizers(
 			tableTokenizer,
-			token.NewParentheses(
+			tokenizer.NewParentheses(
 				ts.Prefix(
 					token.Comma,
 					token.Space,
 				),
 			),
-			token.NewLine(token.Space),
+			tokenizer.NewLine(token.Space),
 		),
 	), values
 }

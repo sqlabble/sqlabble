@@ -2,7 +2,7 @@ package statement
 
 import (
 	"github.com/minodisk/sqlabble/keyword"
-	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 // Statement is the interface of the component
@@ -10,12 +10,12 @@ import (
 // All types that implement this interface
 // can be built as SQL.
 type Statement interface {
-	nodeize() (token.Tokenizer, []interface{})
+	nodeize() (tokenizer.Tokenizer, []interface{})
 }
 
 type Clause interface {
 	Statement
-	self() (token.Tokenizer, []interface{})
+	self() (tokenizer.Tokenizer, []interface{})
 	previous() Clause
 }
 
@@ -25,7 +25,7 @@ type Joiner interface {
 	InnerJoin(TableOrAlias) Join
 	LeftJoin(TableOrAlias) Join
 	RightJoin(TableOrAlias) Join
-	self() (token.Tokenizer, []interface{})
+	self() (tokenizer.Tokenizer, []interface{})
 	previous() Joiner
 }
 

@@ -3,6 +3,7 @@ package statement
 import (
 	"github.com/minodisk/sqlabble/keyword"
 	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type CreateTable struct {
@@ -24,12 +25,12 @@ func NewCreateTableIfNotExists(joiner Joiner) CreateTable {
 	}
 }
 
-func (c CreateTable) nodeize() (token.Tokenizer, []interface{}) {
+func (c CreateTable) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return c.container()
 }
 
-func (c CreateTable) container() (token.Container, []interface{}) {
-	line := token.NewLine(token.Word(keyword.CreateTable))
+func (c CreateTable) container() (tokenizer.Container, []interface{}) {
+	line := tokenizer.NewLine(token.Word(keyword.CreateTable))
 	if c.ifNotExists {
 		line = line.A(
 			token.Space,
@@ -38,7 +39,7 @@ func (c CreateTable) container() (token.Container, []interface{}) {
 	}
 
 	middle, values := c.joiner.nodeize()
-	return token.NewContainer(
+	return tokenizer.NewContainer(
 		line,
 	).SetMiddle(
 		middle,

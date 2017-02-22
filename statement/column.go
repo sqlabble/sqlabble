@@ -1,6 +1,9 @@
 package statement
 
-import "github.com/minodisk/sqlabble/token"
+import (
+	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
+)
 
 // Column is a statement to indicate a column in a table.
 type Column struct {
@@ -200,8 +203,8 @@ func (c Column) Desc() Order {
 	return o
 }
 
-func (c Column) nodeize() (token.Tokenizer, []interface{}) {
-	return token.NewLine(token.Word(c.name)), nil
+func (c Column) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	return tokenizer.NewLine(token.Word(c.name)), nil
 }
 
 // isColumnOrSubquery always returns true.

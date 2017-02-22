@@ -3,6 +3,7 @@ package statement
 import (
 	"github.com/minodisk/sqlabble/keyword"
 	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type Values struct {
@@ -16,12 +17,12 @@ func NewValues(paramses ...Params) Values {
 	}
 }
 
-func (v Values) nodeize() (token.Tokenizer, []interface{}) {
+func (v Values) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizeClauses(v)
 }
 
-func (v Values) self() (token.Tokenizer, []interface{}) {
-	tokenizers := make(token.Tokenizers, len(v.paramses))
+func (v Values) self() (tokenizer.Tokenizer, []interface{}) {
+	tokenizers := make(tokenizer.Tokenizers, len(v.paramses))
 	values := []interface{}{}
 	for i, p := range v.paramses {
 		var vals []interface{}
@@ -29,10 +30,10 @@ func (v Values) self() (token.Tokenizer, []interface{}) {
 		values = append(values, vals...)
 	}
 
-	return token.NewContainer(
-		token.NewLine(token.Word(keyword.Values)),
+	return tokenizer.NewContainer(
+		tokenizer.NewLine(token.Word(keyword.Values)),
 	).SetMiddle(
-		token.NewTokenizers(tokenizers...).Prefix(
+		tokenizer.NewTokenizers(tokenizers...).Prefix(
 			token.Comma,
 			token.Space,
 		),
@@ -51,13 +52,13 @@ func NewDefaultValues() DefaultValues {
 	return DefaultValues{}
 }
 
-func (v DefaultValues) nodeize() (token.Tokenizer, []interface{}) {
+func (v DefaultValues) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizeClauses(v)
 }
 
-func (v DefaultValues) self() (token.Tokenizer, []interface{}) {
-	return token.NewContainer(
-		token.NewLine(token.Word(keyword.DefaultValues)),
+func (v DefaultValues) self() (tokenizer.Tokenizer, []interface{}) {
+	return tokenizer.NewContainer(
+		tokenizer.NewLine(token.Word(keyword.DefaultValues)),
 	), nil
 }
 

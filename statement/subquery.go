@@ -1,6 +1,6 @@
 package statement
 
-import "github.com/minodisk/sqlabble/token"
+import "github.com/minodisk/sqlabble/tokenizer"
 
 type Subquery struct {
 	statement Statement
@@ -96,9 +96,9 @@ func (s Subquery) IsNotNull() NullOperation {
 	return i
 }
 
-func (s Subquery) nodeize() (token.Tokenizer, []interface{}) {
-	tokenizer, values := s.statement.nodeize()
-	return token.NewParentheses(tokenizer), values
+func (s Subquery) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	t, values := s.statement.nodeize()
+	return tokenizer.NewParentheses(t), values
 }
 
 // isColumnOrSubquery always returns true.

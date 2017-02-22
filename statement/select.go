@@ -3,6 +3,7 @@ package statement
 import (
 	"github.com/minodisk/sqlabble/keyword"
 	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type Select struct {
@@ -30,12 +31,12 @@ func (s Select) From(t TableOrAliasOrJoiner) From {
 	return f
 }
 
-func (s Select) nodeize() (token.Tokenizer, []interface{}) {
+func (s Select) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizeClauses(s)
 }
 
-func (s Select) self() (token.Tokenizer, []interface{}) {
-	tokenizers := make(token.Tokenizers, len(s.columns))
+func (s Select) self() (tokenizer.Tokenizer, []interface{}) {
+	tokenizers := make(tokenizer.Tokenizers, len(s.columns))
 	values := []interface{}{}
 	for i, c := range s.columns {
 		var vals []interface{}
@@ -49,8 +50,8 @@ func (s Select) self() (token.Tokenizer, []interface{}) {
 			token.Word(keyword.Distinct),
 		)
 	}
-	return token.NewContainer(
-		token.NewLine(tokens...),
+	return tokenizer.NewContainer(
+		tokenizer.NewLine(tokens...),
 	).SetMiddle(
 		tokenizers.Prefix(token.Comma, token.Space),
 	), values
