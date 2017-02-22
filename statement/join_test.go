@@ -48,6 +48,26 @@ func TestJoin(t *testing.T) {
 		},
 		{
 			statement.NewJoin(
+				statement.NewSubquery(
+					statement.NewSelect(
+						statement.NewColumn("emp_id"),
+					).From(
+						statement.NewTable("employee"),
+					),
+				).As("e"),
+			),
+			`JOIN (SELECT emp_id FROM employee) AS e`,
+			`> JOIN (
+>   SELECT
+>     emp_id
+>   FROM
+>     employee
+> ) AS e
+`,
+			nil,
+		},
+		{
+			statement.NewJoin(
 				statement.NewTable("foo").As("f"),
 			).Join(
 				statement.NewTable("bar").As("b"),
@@ -189,7 +209,26 @@ func TestInnerJoin(t *testing.T) {
 `,
 			nil,
 		},
-		// 2
+		{
+			statement.NewInnerJoin(
+				statement.NewSubquery(
+					statement.NewSelect(
+						statement.NewColumn("emp_id"),
+					).From(
+						statement.NewTable("employee"),
+					),
+				).As("e"),
+			),
+			`INNER JOIN (SELECT emp_id FROM employee) AS e`,
+			`> INNER JOIN (
+>   SELECT
+>     emp_id
+>   FROM
+>     employee
+> ) AS e
+`,
+			nil,
+		},
 		{
 			statement.NewInnerJoin(
 				statement.NewTable("foo"),
@@ -288,6 +327,26 @@ func TestLeftJoin(t *testing.T) {
 		},
 		{
 			statement.NewLeftJoin(
+				statement.NewSubquery(
+					statement.NewSelect(
+						statement.NewColumn("emp_id"),
+					).From(
+						statement.NewTable("employee"),
+					),
+				).As("e"),
+			),
+			`LEFT JOIN (SELECT emp_id FROM employee) AS e`,
+			`> LEFT JOIN (
+>   SELECT
+>     emp_id
+>   FROM
+>     employee
+> ) AS e
+`,
+			nil,
+		},
+		{
+			statement.NewLeftJoin(
 				statement.NewTable("foo"),
 			).On(
 				statement.NewColumn("foo.id"),
@@ -376,6 +435,26 @@ func TestRightJoin(t *testing.T) {
 			),
 			`RIGHT JOIN foo AS "f"`,
 			`> RIGHT JOIN foo AS "f"
+`,
+			nil,
+		},
+		{
+			statement.NewRightJoin(
+				statement.NewSubquery(
+					statement.NewSelect(
+						statement.NewColumn("emp_id"),
+					).From(
+						statement.NewTable("employee"),
+					),
+				).As("e"),
+			),
+			`RIGHT JOIN (SELECT emp_id FROM employee) AS e`,
+			`> RIGHT JOIN (
+>   SELECT
+>     emp_id
+>   FROM
+>     employee
+> ) AS e
 `,
 			nil,
 		},

@@ -65,10 +65,10 @@ SQL query builder with type support.
 
 ### Joins
 
-- [x] `JOIN {TABLE}`
-- [x] `INNER JOIN {TABLE}`
-- [x] `LEFT JOIN {TABLE}`
-- [x] `RIGHT JOIN {TABLE}`
+- [x] `JOIN {TABLE|SUBQUERY}`
+- [x] `INNER JOIN {TABLE|SUBQUERY}`
+- [x] `LEFT JOIN {TABLE|SUBQUERY}`
+- [x] `RIGHT JOIN {TABLE|SUBQUERY}`
 
 #### Join Conditions
 
@@ -121,10 +121,3 @@ SQL query builder with type support.
 - [ ] `{COLUMN} <= ANY ({SUBQUERY})`
 - [ ] `EXISTS ({SUBQUERY})`
 - [ ] `NOT EXISTS ({SUBQUERY})`
-
-#### Joins
-
-- [ ] `JOIN ({SUBQUERY})`
-- [ ] `INNER JOIN ({SUBQUERY})`
-- [ ] `LEFT JOIN ({SUBQUERY})`
-- [ ] `RIGHT JOIN ({SUBQUERY})`
