@@ -39,6 +39,14 @@ SQL query builder with type support.
 
 - [x] `{COLUMN} = {VALUE}`
 
+### Conditional Logics
+
+- [ ] `CASE`
+- [ ] `WHEN`
+- [ ] `ELSE`
+- [ ] `THEN`
+- [ ] `END`
+
 ### Operators
 
 #### Logical Operators
@@ -48,6 +56,8 @@ SQL query builder with type support.
 - [x] `NOT ({OPERATION})`
 
 #### Comparison Operators
+
+##### Scalar
 
 - [x] `{COLUMN|SUBQUERY} = {VALUE|SUBQUERY}`
 - [x] `{COLUMN|SUBQUERY} != {VALUE|SUBQUERY}`
@@ -62,6 +72,23 @@ SQL query builder with type support.
 - [x] `{COLUMN|SUBQUERY} NOT IN {VALUE|SUBQUERY}`
 - [x] `{COLUMN|SUBQUERY} IS NULL`
 - [x] `{COLUMN|SUBQUERY} IS NOT NULL`
+
+##### Nonscalar
+
+- [x] `{COLUMN} = ALL {SUBQUERY}`
+- [x] `{COLUMN} != ALL {SUBQUERY}`
+- [x] `{COLUMN} > ALL {SUBQUERY}`
+- [x] `{COLUMN} >= ALL {SUBQUERY}`
+- [x] `{COLUMN} < ALL {SUBQUERY}`
+- [x] `{COLUMN} <= ALL {SUBQUERY}`
+- [x] `{COLUMN} = ANY {SUBQUERY}`
+- [x] `{COLUMN} != ANY {SUBQUERY}`
+- [x] `{COLUMN} > ANY {SUBQUERY}`
+- [x] `{COLUMN} >= ANY {SUBQUERY}`
+- [x] `{COLUMN} < ANY {SUBQUERY}`
+- [x] `{COLUMN} <= ANY {SUBQUERY}`
+- [x] `EXISTS {SUBQUERY}`
+- [x] `NOT EXISTS {SUBQUERY}`
 
 ### Joins
 
@@ -92,28 +119,3 @@ SQL query builder with type support.
 ### Table Definitions
 
 - [x] `({COLUMN} {DEFINITION})`
-
-### Conditional Logics
-
-- [ ] `CASE`
-- [ ] `WHEN`
-- [ ] `ELSE`
-- [ ] `THEN`
-- [ ] `END`
-
-#### Nonscalar Operation
-
-- [ ] `{COLUMN} = ALL ({SUBQUERY})`
-- [ ] `{COLUMN} != ALL ({SUBQUERY})`
-- [ ] `{COLUMN} > ALL ({SUBQUERY})`
-- [ ] `{COLUMN} >= ALL ({SUBQUERY})`
-- [ ] `{COLUMN} < ALL ({SUBQUERY})`
-- [ ] `{COLUMN} <= ALL ({SUBQUERY})`
-- [ ] `{COLUMN} = ANY ({SUBQUERY})`
-- [ ] `{COLUMN} != ANY ({SUBQUERY})`
-- [ ] `{COLUMN} > ANY ({SUBQUERY})`
-- [ ] `{COLUMN} >= ANY ({SUBQUERY})`
-- [ ] `{COLUMN} < ANY ({SUBQUERY})`
-- [ ] `{COLUMN} <= ANY ({SUBQUERY})`
-- [ ] `EXISTS ({SUBQUERY})`
-- [ ] `NOT EXISTS ({SUBQUERY})`

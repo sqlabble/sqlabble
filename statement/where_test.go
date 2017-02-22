@@ -16,6 +16,81 @@ func TestWhereType(t *testing.T) {
 	}
 }
 
+func TestWhereOperation(t *testing.T) {
+	for i, c := range []struct {
+		statement statement.Statement
+		sql       string
+		sqlIndent string
+		values    []interface{}
+	}{
+		{
+			statement.NewWhere(
+				statement.NewColumn("foo").
+					Eq(statement.NewParam(100)),
+			),
+			"WHERE foo = ?",
+			`> WHERE
+>   foo = ?
+`,
+			[]interface{}{
+				100,
+			},
+		},
+		{
+			statement.NewWhere(
+				statement.NewColumn("foo").
+					EqAll(
+						statement.NewSubquery(
+							statement.NewSelect(),
+						),
+					),
+			),
+			"WHERE foo = ALL (SELECT)",
+			`> WHERE
+>   foo = ALL (
+>     SELECT
+>   )
+`,
+			nil,
+		},
+		{
+			statement.NewWhere(
+				statement.NewExists(
+					statement.NewSubquery(
+						statement.NewSelect(),
+					),
+				),
+			),
+			"WHERE EXISTS (SELECT)",
+			`> WHERE
+>   EXISTS (
+>     SELECT
+>   )
+`,
+			nil,
+		},
+	} {
+		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
+			sql, values := b.Build(c.statement)
+			if sql != c.sql {
+				t.Error(diff.SQL(sql, c.sql))
+			}
+			if !reflect.DeepEqual(values, c.values) {
+				t.Error(diff.Values(values, c.values))
+			}
+		})
+		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
+			sql, values := bi.Build(c.statement)
+			if sql != c.sqlIndent {
+				t.Error(diff.SQL(sql, c.sqlIndent))
+			}
+			if !reflect.DeepEqual(values, c.values) {
+				t.Error(diff.Values(values, c.values))
+			}
+		})
+	}
+}
+
 func TestWhereSQL(t *testing.T) {
 	for i, c := range []struct {
 		statement statement.Statement

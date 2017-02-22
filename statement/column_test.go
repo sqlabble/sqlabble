@@ -182,6 +182,162 @@ func TestColumnSQL(t *testing.T) {
 			nil,
 		},
 		{
+			statement.NewColumn("foo").EqAll(
+				statement.NewSubquery(
+					statement.NewSelect(),
+				),
+			),
+			`foo = ALL (SELECT)`,
+			`> foo = ALL (
+>   SELECT
+> )
+`,
+			nil,
+		},
+		{
+			statement.NewColumn("foo").NotEqAll(
+				statement.NewSubquery(
+					statement.NewSelect(),
+				),
+			),
+			`foo != ALL (SELECT)`,
+			`> foo != ALL (
+>   SELECT
+> )
+`,
+			nil,
+		},
+		{
+			statement.NewColumn("foo").GtAll(
+				statement.NewSubquery(
+					statement.NewSelect(),
+				),
+			),
+			`foo > ALL (SELECT)`,
+			`> foo > ALL (
+>   SELECT
+> )
+`,
+			nil,
+		},
+		{
+			statement.NewColumn("foo").GteAll(
+				statement.NewSubquery(
+					statement.NewSelect(),
+				),
+			),
+			`foo >= ALL (SELECT)`,
+			`> foo >= ALL (
+>   SELECT
+> )
+`,
+			nil,
+		},
+		{
+			statement.NewColumn("foo").LtAll(
+				statement.NewSubquery(
+					statement.NewSelect(),
+				),
+			),
+			`foo < ALL (SELECT)`,
+			`> foo < ALL (
+>   SELECT
+> )
+`,
+			nil,
+		},
+		{
+			statement.NewColumn("foo").LteAll(
+				statement.NewSubquery(
+					statement.NewSelect(),
+				),
+			),
+			`foo <= ALL (SELECT)`,
+			`> foo <= ALL (
+>   SELECT
+> )
+`,
+			nil,
+		},
+		{
+			statement.NewColumn("foo").EqAny(
+				statement.NewSubquery(
+					statement.NewSelect(),
+				),
+			),
+			`foo = ANY (SELECT)`,
+			`> foo = ANY (
+>   SELECT
+> )
+`,
+			nil,
+		},
+		{
+			statement.NewColumn("foo").NotEqAny(
+				statement.NewSubquery(
+					statement.NewSelect(),
+				),
+			),
+			`foo != ANY (SELECT)`,
+			`> foo != ANY (
+>   SELECT
+> )
+`,
+			nil,
+		},
+		{
+			statement.NewColumn("foo").GtAny(
+				statement.NewSubquery(
+					statement.NewSelect(),
+				),
+			),
+			`foo > ANY (SELECT)`,
+			`> foo > ANY (
+>   SELECT
+> )
+`,
+			nil,
+		},
+		{
+			statement.NewColumn("foo").GteAny(
+				statement.NewSubquery(
+					statement.NewSelect(),
+				),
+			),
+			`foo >= ANY (SELECT)`,
+			`> foo >= ANY (
+>   SELECT
+> )
+`,
+			nil,
+		},
+		{
+			statement.NewColumn("foo").LtAny(
+				statement.NewSubquery(
+					statement.NewSelect(),
+				),
+			),
+			`foo < ANY (SELECT)`,
+			`> foo < ANY (
+>   SELECT
+> )
+`,
+			nil,
+		},
+		{
+			statement.NewColumn("foo").LteAny(
+				statement.NewSubquery(
+					statement.NewSelect(),
+				),
+			),
+			`foo <= ANY (SELECT)`,
+			`> foo <= ANY (
+>   SELECT
+> )
+`,
+			nil,
+		},
+		{
 			statement.NewColumn("foo").Asc(),
 			`foo ASC`,
 			`> foo ASC

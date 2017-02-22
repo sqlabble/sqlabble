@@ -1,5 +1,7 @@
 package operator
 
+import "strings"
+
 // Operator is reserved keyword in SQL statement.
 type Operator string
 
@@ -9,9 +11,6 @@ const (
 	Or  Operator = "OR"
 	Not Operator = "NOT"
 
-	All    Operator = "ALL"
-	Any    Operator = "ANY"
-	Exists Operator = "EXISTS"
 	Unique Operator = "UNIQUE"
 
 	Like   Operator = "LIKE"
@@ -26,7 +25,7 @@ const (
 	IsNot Operator = "IS NOT"
 )
 
-// Comparison operators.
+// Scalar Comparison operators.
 const (
 	Eq    Operator = "="
 	NotEq Operator = "!="
@@ -34,6 +33,24 @@ const (
 	Gte   Operator = ">="
 	Lt    Operator = "<"
 	Lte   Operator = "<="
+)
+
+// Non-Scalar Comparison operators.
+const (
+	EqAll     Operator = "= ALL"
+	NotEqAll  Operator = "!= ALL"
+	GtAll     Operator = "> ALL"
+	GteAll    Operator = ">= ALL"
+	LtAll     Operator = "< ALL"
+	LteAll    Operator = "<= ALL"
+	EqAny     Operator = "= ANY"
+	NotEqAny  Operator = "!= ANY"
+	GtAny     Operator = "> ANY"
+	GteAny    Operator = ">= ANY"
+	LtAny     Operator = "< ANY"
+	LteAny    Operator = "<= ANY"
+	Exists    Operator = "EXISTS"
+	NotExists Operator = "NOT EXISTS"
 )
 
 // Arithmetic operators.
@@ -59,3 +76,11 @@ const (
 	Except       = "EXCEPT"
 	ExceptAll    = "EXCEPT ALL"
 )
+
+func Join(ops ...Operator) Operator {
+	strs := make([]string, len(ops))
+	for i, op := range ops {
+		strs[i] = string(op)
+	}
+	return Operator(strings.Join(strs, " "))
+}
