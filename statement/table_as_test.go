@@ -33,7 +33,7 @@ func TestTableAs(t *testing.T) {
 			`foo AS "f"`,
 			`> foo AS "f"
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewTable("foo").As("f").
@@ -42,7 +42,7 @@ func TestTableAs(t *testing.T) {
 			`> foo AS "f"
 > JOIN bar
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewTable("foo").As("f").
@@ -51,7 +51,7 @@ func TestTableAs(t *testing.T) {
 			`> foo AS "f"
 > INNER JOIN bar
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewTable("foo").As("f").
@@ -60,7 +60,7 @@ func TestTableAs(t *testing.T) {
 			`> foo AS "f"
 > LEFT JOIN bar
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewTable("foo").As("f").
@@ -69,7 +69,7 @@ func TestTableAs(t *testing.T) {
 			`> foo AS "f"
 > RIGHT JOIN bar
 `,
-			[]interface{}{},
+			nil,
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {

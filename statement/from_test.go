@@ -23,7 +23,6 @@ func TestFromSQL(t *testing.T) {
 		sqlIndent string
 		values    []interface{}
 	}{
-		// 0
 		{
 			statement.NewFrom(
 				statement.NewTable("foo"),
@@ -32,9 +31,8 @@ func TestFromSQL(t *testing.T) {
 			`> FROM
 >   foo
 `,
-			[]interface{}{},
+			nil,
 		},
-		// 1
 		{
 			statement.NewFrom(
 				statement.NewTable("foo").As("a"),
@@ -43,28 +41,42 @@ func TestFromSQL(t *testing.T) {
 			`> FROM
 >   foo AS "a"
 `,
-			[]interface{}{},
+			nil,
 		},
-		// 2
 		{
 			statement.NewFrom(
-				statement.NewTable("foo").As("a").Join(
-					statement.NewTable("bar"),
-				),
+				statement.NewTable("foo").As("a").
+					Join(statement.NewTable("bar")).Using(statement.NewColumn("id")),
 			),
-			`FROM foo AS "a" JOIN bar`,
+			`FROM foo AS "a" JOIN bar USING id`,
 			`> FROM
 >   foo AS "a"
->   JOIN bar
+>   JOIN bar USING id
 `,
-			[]interface{}{},
+			nil,
 		},
-		// 3
+		{
+			statement.NewFrom(
+				statement.NewSubquery(
+					statement.NewSelect(
+						statement.NewColumn("foo"),
+					),
+				).As("f"),
+			),
+			`FROM (SELECT foo) AS f`,
+			`> FROM
+>   (
+>     SELECT
+>       foo
+>   ) AS f
+`,
+			nil,
+		},
 		{
 			statement.NewFrom(
 				statement.NewTable("foo"),
 			).Where(
-				statement.NewColumn("age").Gt(20),
+				statement.NewColumn("age").Gt(statement.NewParam(20)),
 			),
 			`FROM foo WHERE age > ?`,
 			`> FROM
@@ -76,7 +88,6 @@ func TestFromSQL(t *testing.T) {
 				20,
 			},
 		},
-		// 4
 		{
 			statement.NewFrom(
 				statement.NewTable("foo"),
@@ -89,9 +100,8 @@ func TestFromSQL(t *testing.T) {
 > GROUP BY
 >   id
 `,
-			[]interface{}{},
+			nil,
 		},
-		// 5
 		{
 			statement.NewFrom(
 				statement.NewTable("foo"),
@@ -104,9 +114,8 @@ func TestFromSQL(t *testing.T) {
 > ORDER BY
 >   age ASC
 `,
-			[]interface{}{},
+			nil,
 		},
-		// 6
 		{
 			statement.NewFrom(
 				statement.NewTable("foo"),

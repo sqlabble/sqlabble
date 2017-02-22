@@ -1,9 +1,8 @@
 package statement
 
 import (
-	"github.com/minodisk/sqlabble/direction"
-	"github.com/minodisk/sqlabble/node"
 	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 // Column is a statement to indicate a column in a table.
@@ -35,131 +34,189 @@ func (c Column) Define(definition string) Definition {
 	return d
 }
 
-// Assign is used to assign a value to the column.
+// Assign is used to assign a params to the column.
 // This constitutes a part of the record update statement.
 // Returns a new Assign.
-func (c Column) Assign(value interface{}) Assign {
-	return NewAssign(c, value)
+func (c Column) Assign(param ParamOrSubquery) Assign {
+	return NewAssign(c, param)
 }
 
-func (c Column) Eq(value interface{}) ComparisonOperation {
+func (c Column) Eq(value ParamOrSubquery) ComparisonOperation {
 	e := NewEq(value)
-	e.col = c
+	e.column = c
 	return e
 }
 
-func (c Column) NotEq(value interface{}) ComparisonOperation {
+func (c Column) NotEq(value ParamOrSubquery) ComparisonOperation {
 	n := NewNotEq(value)
-	n.col = c
+	n.column = c
 	return n
 }
 
-func (c Column) Gt(value interface{}) ComparisonOperation {
+func (c Column) Gt(value ParamOrSubquery) ComparisonOperation {
 	g := NewGt(value)
-	g.col = c
+	g.column = c
 	return g
 }
 
-func (c Column) Gte(value interface{}) ComparisonOperation {
+func (c Column) Gte(value ParamOrSubquery) ComparisonOperation {
 	g := NewGte(value)
-	g.col = c
+	g.column = c
 	return g
 }
 
-func (c Column) Lt(value interface{}) ComparisonOperation {
+func (c Column) Lt(value ParamOrSubquery) ComparisonOperation {
 	l := NewLt(value)
-	l.col = c
+	l.column = c
 	return l
 }
 
-func (c Column) Lte(value interface{}) ComparisonOperation {
+func (c Column) Lte(value ParamOrSubquery) ComparisonOperation {
 	l := NewLte(value)
-	l.col = c
+	l.column = c
 	return l
 }
 
-func (c Column) Like(value interface{}) ComparisonOperation {
+func (c Column) Like(value ParamOrSubquery) ComparisonOperation {
 	l := NewLike(value)
-	l.col = c
+	l.column = c
 	return l
 }
 
-func (c Column) RegExp(value interface{}) ComparisonOperation {
+func (c Column) RegExp(value ParamOrSubquery) ComparisonOperation {
 	r := NewRegExp(value)
-	r.col = c
+	r.column = c
 	return r
 }
 
-func (c Column) Between(from, to interface{}) Between {
+func (c Column) Between(from, to ParamOrSubquery) Between {
 	b := NewBetween(from, to)
-	b.col = c
+	b.column = c
 	return b
 }
 
-func (c Column) In(values ...interface{}) ContainingOperation {
-	i := NewIn(values...)
-	i.col = c
+func (c Column) In(params ParamsOrSubquery) ContainingOperation {
+	i := NewIn(params)
+	i.column = c
 	return i
 }
 
-func (c Column) NotIn(values ...interface{}) ContainingOperation {
-	n := NewNotIn(values...)
-	n.col = c
+func (c Column) NotIn(params ParamsOrSubquery) ContainingOperation {
+	n := NewNotIn(params)
+	n.column = c
 	return n
 }
 
 func (c Column) IsNull() NullOperation {
 	i := NewIsNull()
-	i.col = c
+	i.column = c
 	return i
 }
 
 func (c Column) IsNotNull() NullOperation {
 	i := NewIsNotNull()
-	i.col = c
+	i.column = c
 	return i
 }
 
+func (c Column) EqAll(params Subquery) NonScalarOperation {
+	n := NewEqAll(params)
+	n.column = c
+	return n
+}
+
+func (c Column) NotEqAll(params Subquery) NonScalarOperation {
+	n := NewNotEqAll(params)
+	n.column = c
+	return n
+}
+
+func (c Column) GtAll(params Subquery) NonScalarOperation {
+	n := NewGtAll(params)
+	n.column = c
+	return n
+}
+
+func (c Column) GteAll(params Subquery) NonScalarOperation {
+	n := NewGteAll(params)
+	n.column = c
+	return n
+}
+
+func (c Column) LtAll(params Subquery) NonScalarOperation {
+	n := NewLtAll(params)
+	n.column = c
+	return n
+}
+
+func (c Column) LteAll(params Subquery) NonScalarOperation {
+	n := NewLteAll(params)
+	n.column = c
+	return n
+}
+
+func (c Column) EqAny(params Subquery) NonScalarOperation {
+	n := NewEqAny(params)
+	n.column = c
+	return n
+}
+
+func (c Column) NotEqAny(params Subquery) NonScalarOperation {
+	n := NewNotEqAny(params)
+	n.column = c
+	return n
+}
+
+func (c Column) GtAny(params Subquery) NonScalarOperation {
+	n := NewGtAny(params)
+	n.column = c
+	return n
+}
+
+func (c Column) GteAny(params Subquery) NonScalarOperation {
+	n := NewGteAny(params)
+	n.column = c
+	return n
+}
+
+func (c Column) LtAny(params Subquery) NonScalarOperation {
+	n := NewLtAny(params)
+	n.column = c
+	return n
+}
+
+func (c Column) LteAny(params Subquery) NonScalarOperation {
+	n := NewLteAny(params)
+	n.column = c
+	return n
+}
+
 func (c Column) Asc() Order {
-	o := NewOrder(direction.ASC)
+	o := NewAsc()
 	o.column = c
 	return o
 }
 
 func (c Column) Desc() Order {
-	o := NewOrder(direction.DESC)
+	o := NewDesc()
 	o.column = c
 	return o
 }
 
-func (c Column) node() node.Node {
-	return token.NewTokensNode(
-		c.tokenize(),
-	)
-}
-
-func (c Column) tokenize() token.Tokens {
-	if c.name == "" {
-		return token.Tokens{}
-	}
-	return token.Tokens{
-		token.Word(c.name),
-	}
-}
-
-func (c Column) expression() node.Expression {
-	return node.NewExpression(
-		c.name,
-	)
-}
-
-func (c Column) columnName() string {
-	return c.name
+func (c Column) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	return tokenizer.NewLine(token.Word(c.name)), nil
 }
 
 // isColumnOrSubquery always returns true.
 // This method exists only to implement the interface ColumnOrSubquery.
 // This is a shit of duck typing, but anyway it works.
 func (c Column) isColumnOrSubquery() bool {
+	return true
+}
+
+// isColumnOrColumnAsOrSubquery always returns true.
+// This method exists only to implement the interface ColumnOrColumnAsOrSubquery.
+// This is a shit of duck typing, but anyway it works.
+func (c Column) isColumnOrAliasOrSubquery() bool {
 	return true
 }

@@ -1,66 +1,47 @@
 package statement
 
 import (
-	"fmt"
-
 	"github.com/minodisk/sqlabble/keyword"
-	"github.com/minodisk/sqlabble/node"
+	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type Values struct {
-	prevClause Clause
-	prev       Vals
-	values     []interface{}
+	prev     Clause
+	paramses []Params
 }
 
-func NewValues(values ...interface{}) Values {
+func NewValues(paramses ...Params) Values {
 	return Values{
-		values: values,
+		paramses: paramses,
 	}
 }
 
-func (v Values) node() node.Node {
-	vs := valuesNodes(v)
-	ns := make([]node.Node, len(vs))
-	for i, v := range vs {
-		ns[i] = v.expression()
-	}
-	g := node.NewContainer(
-		node.NewExpression(keyword.Values),
-		node.NewComma(ns...),
-	)
+func (v Values) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	return nodeizeClauses(v)
+}
 
-	if len(vs) > 0 {
-		if c := vs[0].clause(); c != nil {
-			return node.NewNodes(
-				c.node(),
-				g,
-			)
-		}
+func (v Values) self() (tokenizer.Tokenizer, []interface{}) {
+	tokenizers := make(tokenizer.Tokenizers, len(v.paramses))
+	values := []interface{}{}
+	for i, p := range v.paramses {
+		var vals []interface{}
+		tokenizers[i], vals = p.nodeize()
+		values = append(values, vals...)
 	}
 
-	return g
+	return tokenizer.NewContainer(
+		tokenizer.NewLine(token.Word(keyword.Values)),
+	).SetMiddle(
+		tokenizer.NewTokenizers(tokenizers...).Prefix(
+			token.Comma,
+			token.Space,
+		),
+	), values
 }
 
-func (v Values) expression() node.Expression {
-	return node.NewExpression(
-		fmt.Sprintf("(%s)", placeholders(len(v.values))),
-		v.values...,
-	)
-}
-
-func (v Values) clause() Clause {
-	return v.prevClause
-}
-
-func (v Values) previous() Vals {
+func (v Values) previous() Clause {
 	return v.prev
-}
-
-func (v Values) Values(vals ...interface{}) Values {
-	f := NewValues(vals...)
-	f.prev = v
-	return f
 }
 
 type DefaultValues struct {
@@ -71,17 +52,14 @@ func NewDefaultValues() DefaultValues {
 	return DefaultValues{}
 }
 
-func (v DefaultValues) node() node.Node {
-	cs := clauseNodes(v)
-	ns := make([]node.Node, len(cs))
-	for i, c := range cs {
-		ns[i] = c.myNode()
-	}
-	return node.NewNodes(ns...)
+func (v DefaultValues) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	return nodeizeClauses(v)
 }
 
-func (v DefaultValues) myNode() node.Node {
-	return node.NewExpression(keyword.DefaultValues)
+func (v DefaultValues) self() (tokenizer.Tokenizer, []interface{}) {
+	return tokenizer.NewContainer(
+		tokenizer.NewLine(token.Word(keyword.DefaultValues)),
+	), nil
 }
 
 func (v DefaultValues) previous() Clause {

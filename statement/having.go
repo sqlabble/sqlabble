@@ -2,7 +2,8 @@ package statement
 
 import (
 	"github.com/minodisk/sqlabble/keyword"
-	"github.com/minodisk/sqlabble/node"
+	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type Having struct {
@@ -16,20 +17,17 @@ func NewHaving(operation ComparisonOrLogicalOperation) Having {
 	}
 }
 
-func (h Having) node() node.Node {
-	cs := clauseNodes(h)
-	ns := make([]node.Node, len(cs))
-	for i, c := range cs {
-		ns[i] = c.myNode()
-	}
-	return node.NewNodes(ns...)
+func (h Having) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	return nodeizeClauses(h)
 }
 
-func (h Having) myNode() node.Node {
-	return node.NewContainer(
-		node.NewExpression(string(keyword.Having)),
-		h.operation.node(),
-	)
+func (h Having) self() (tokenizer.Tokenizer, []interface{}) {
+	middle, values := h.operation.nodeize()
+	return tokenizer.NewContainer(
+		tokenizer.NewLine(token.Word(keyword.Having)),
+	).SetMiddle(
+		middle,
+	), values
 }
 
 func (h Having) previous() Clause {

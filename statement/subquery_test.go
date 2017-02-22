@@ -23,16 +23,15 @@ func TestSubOperationLeftSide(t *testing.T) {
 >   SELECT
 > )
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewSubquery(statement.NewSelect()).
-				Eq(100),
+				Eq(statement.NewParam(100)),
 			"(SELECT) = ?",
 			`> (
 >   SELECT
-> )
-> = ?
+> ) = ?
 `,
 			[]interface{}{
 				100,
@@ -40,12 +39,11 @@ func TestSubOperationLeftSide(t *testing.T) {
 		},
 		{
 			statement.NewSubquery(statement.NewSelect()).
-				NotEq(100),
+				NotEq(statement.NewParam(100)),
 			"(SELECT) != ?",
 			`> (
 >   SELECT
-> )
-> != ?
+> ) != ?
 `,
 			[]interface{}{
 				100,
@@ -53,12 +51,11 @@ func TestSubOperationLeftSide(t *testing.T) {
 		},
 		{
 			statement.NewSubquery(statement.NewSelect()).
-				Gt(100),
+				Gt(statement.NewParam(100)),
 			"(SELECT) > ?",
 			`> (
 >   SELECT
-> )
-> > ?
+> ) > ?
 `,
 			[]interface{}{
 				100,
@@ -66,12 +63,11 @@ func TestSubOperationLeftSide(t *testing.T) {
 		},
 		{
 			statement.NewSubquery(statement.NewSelect()).
-				Gte(100),
+				Gte(statement.NewParam(100)),
 			"(SELECT) >= ?",
 			`> (
 >   SELECT
-> )
-> >= ?
+> ) >= ?
 `,
 			[]interface{}{
 				100,
@@ -79,12 +75,11 @@ func TestSubOperationLeftSide(t *testing.T) {
 		},
 		{
 			statement.NewSubquery(statement.NewSelect()).
-				Lt(100),
+				Lt(statement.NewParam(100)),
 			"(SELECT) < ?",
 			`> (
 >   SELECT
-> )
-> < ?
+> ) < ?
 `,
 			[]interface{}{
 				100,
@@ -92,12 +87,11 @@ func TestSubOperationLeftSide(t *testing.T) {
 		},
 		{
 			statement.NewSubquery(statement.NewSelect()).
-				Lte(100),
+				Lte(statement.NewParam(100)),
 			"(SELECT) <= ?",
 			`> (
 >   SELECT
-> )
-> <= ?
+> ) <= ?
 `,
 			[]interface{}{
 				100,
@@ -105,12 +99,11 @@ func TestSubOperationLeftSide(t *testing.T) {
 		},
 		{
 			statement.NewSubquery(statement.NewSelect()).
-				Like("bar"),
+				Like(statement.NewParam("bar")),
 			"(SELECT) LIKE ?",
 			`> (
 >   SELECT
-> )
-> LIKE ?
+> ) LIKE ?
 `,
 			[]interface{}{
 				"bar",
@@ -118,12 +111,11 @@ func TestSubOperationLeftSide(t *testing.T) {
 		},
 		{
 			statement.NewSubquery(statement.NewSelect()).
-				RegExp("bar"),
+				RegExp(statement.NewParam("bar")),
 			"(SELECT) REGEXP ?",
 			`> (
 >   SELECT
-> )
-> REGEXP ?
+> ) REGEXP ?
 `,
 			[]interface{}{
 				"bar",
@@ -131,12 +123,14 @@ func TestSubOperationLeftSide(t *testing.T) {
 		},
 		{
 			statement.NewSubquery(statement.NewSelect()).
-				Between(100, 200),
+				Between(
+					statement.NewParam(100),
+					statement.NewParam(200),
+				),
 			"(SELECT) BETWEEN ? AND ?",
 			`> (
 >   SELECT
-> )
-> BETWEEN ? AND ?
+> ) BETWEEN ? AND ?
 `,
 			[]interface{}{
 				100,
@@ -149,10 +143,9 @@ func TestSubOperationLeftSide(t *testing.T) {
 			"(SELECT) IS NULL",
 			`> (
 >   SELECT
-> )
-> IS NULL
+> ) IS NULL
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewSubquery(statement.NewSelect()).
@@ -160,19 +153,19 @@ func TestSubOperationLeftSide(t *testing.T) {
 			"(SELECT) IS NOT NULL",
 			`> (
 >   SELECT
-> )
-> IS NOT NULL
+> ) IS NOT NULL
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewSubquery(statement.NewSelect()).
-				In(100, 200, 300),
+				In(statement.NewParams(
+					100, 200, 300,
+				)),
 			"(SELECT) IN (?, ?, ?)",
 			`> (
 >   SELECT
-> )
-> IN (?, ?, ?)
+> ) IN (?, ?, ?)
 `,
 			[]interface{}{
 				100,
@@ -182,12 +175,13 @@ func TestSubOperationLeftSide(t *testing.T) {
 		},
 		{
 			statement.NewSubquery(statement.NewSelect()).
-				NotIn(100, 200, 300),
+				NotIn(statement.NewParams(
+					100, 200, 300,
+				)),
 			"(SELECT) NOT IN (?, ?, ?)",
 			`> (
 >   SELECT
-> )
-> NOT IN (?, ?, ?)
+> ) NOT IN (?, ?, ?)
 `,
 			[]interface{}{
 				100,
@@ -224,135 +218,153 @@ func TestSubOperationRightSide(t *testing.T) {
 		sqlIndent string
 		values    []interface{}
 	}{
+		// 0
 		{
 			statement.NewColumn("foo").Eq(
-				statement.NewSelect(statement.NewColumn("bar")),
+				statement.NewSubquery(
+					statement.NewSelect(statement.NewColumn("bar")),
+				),
 			),
 			"foo = (SELECT bar)",
-			`> foo =
-> (
+			`> foo = (
 >   SELECT
 >     bar
 > )
 `,
-			[]interface{}{},
+			nil,
 		},
+		// 1
 		{
 			statement.NewColumn("foo").NotEq(
-				statement.NewSelect(statement.NewColumn("bar")),
+				statement.NewSubquery(
+					statement.NewSelect(statement.NewColumn("bar")),
+				),
 			),
 			"foo != (SELECT bar)",
-			`> foo !=
-> (
+			`> foo != (
 >   SELECT
 >     bar
 > )
 `,
-			[]interface{}{},
+			nil,
 		},
+		// 2
 		{
 			statement.NewColumn("foo").Gt(
-				statement.NewSelect(statement.NewColumn("bar")),
+				statement.NewSubquery(
+					statement.NewSelect(statement.NewColumn("bar")),
+				),
 			),
 			"foo > (SELECT bar)",
-			`> foo >
-> (
+			`> foo > (
 >   SELECT
 >     bar
 > )
 `,
-			[]interface{}{},
+			nil,
 		},
+		// 3
 		{
 			statement.NewColumn("foo").Gte(
-				statement.NewSelect(statement.NewColumn("bar")),
+				statement.NewSubquery(
+					statement.NewSelect(statement.NewColumn("bar")),
+				),
 			),
 			"foo >= (SELECT bar)",
-			`> foo >=
-> (
+			`> foo >= (
 >   SELECT
 >     bar
 > )
 `,
-			[]interface{}{},
+			nil,
 		},
+		// 4
 		{
 			statement.NewColumn("foo").Lt(
-				statement.NewSelect(statement.NewColumn("bar")),
+				statement.NewSubquery(
+					statement.NewSelect(statement.NewColumn("bar")),
+				),
 			),
 			"foo < (SELECT bar)",
-			`> foo <
-> (
+			`> foo < (
 >   SELECT
 >     bar
 > )
 `,
-			[]interface{}{},
+			nil,
 		},
+		// 5
 		{
 			statement.NewColumn("foo").Lte(
-				statement.NewSelect(statement.NewColumn("bar")),
+				statement.NewSubquery(
+					statement.NewSelect(statement.NewColumn("bar")),
+				),
 			),
 			"foo <= (SELECT bar)",
-			`> foo <=
-> (
+			`> foo <= (
 >   SELECT
 >     bar
 > )
 `,
-			[]interface{}{},
+			nil,
 		},
+		// 6
 		{
 			statement.NewColumn("foo").Like(
-				statement.NewSelect(statement.NewColumn("bar")),
+				statement.NewSubquery(
+					statement.NewSelect(statement.NewColumn("bar")),
+				),
 			),
 			"foo LIKE (SELECT bar)",
-			`> foo LIKE
-> (
+			`> foo LIKE (
 >   SELECT
 >     bar
 > )
 `,
-			[]interface{}{},
+			nil,
 		},
+		// 7
 		{
 			statement.NewColumn("foo").RegExp(
-				statement.NewSelect(statement.NewColumn("bar")),
+				statement.NewSubquery(
+					statement.NewSelect(statement.NewColumn("bar")),
+				),
 			),
 			"foo REGEXP (SELECT bar)",
-			`> foo REGEXP
-> (
+			`> foo REGEXP (
 >   SELECT
 >     bar
 > )
 `,
-			[]interface{}{},
+			nil,
 		},
+		// 8
 		{
-			statement.NewColumn("foo").In(
-				statement.NewSelect(statement.NewColumn("bar")),
-			),
+			statement.NewColumn("foo").
+				In(statement.NewSubquery(
+					statement.NewSelect(statement.NewColumn("bar")),
+				)),
 			"foo IN (SELECT bar)",
-			`> foo IN
-> (
+			`> foo IN (
 >   SELECT
 >     bar
 > )
 `,
-			[]interface{}{},
+			nil,
 		},
+		// 9
 		{
-			statement.NewColumn("foo").NotIn(
-				statement.NewSelect(statement.NewColumn("bar")),
-			),
+			statement.NewColumn("foo").
+				NotIn(statement.NewSubquery(
+					statement.NewSelect(statement.NewColumn("bar")),
+				)),
 			"foo NOT IN (SELECT bar)",
-			`> foo NOT IN
-> (
+			`> foo NOT IN (
 >   SELECT
 >     bar
 > )
 `,
-			[]interface{}{},
+			nil,
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
@@ -395,14 +407,12 @@ func TestSubOperationBothSide(t *testing.T) {
 			`> (
 >   SELECT
 >     foo
-> )
-> =
-> (
+> ) = (
 >   SELECT
 >     bar
 > )
 `,
-			[]interface{}{},
+			nil,
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {

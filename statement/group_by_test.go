@@ -31,7 +31,7 @@ func TestGroupBySQL(t *testing.T) {
 			`> GROUP BY
 >   foo
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewGroupBy(
@@ -45,13 +45,13 @@ func TestGroupBySQL(t *testing.T) {
 >   , bar
 >   , baz
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewGroupBy(
 				statement.NewColumn("foo"),
 			).Having(
-				statement.NewColumn("COUNT(*)").Gt(200),
+				statement.NewColumn("COUNT(*)").Gt(statement.NewParam(200)),
 			),
 			"GROUP BY foo HAVING COUNT(*) > ?",
 			`> GROUP BY
@@ -75,7 +75,7 @@ func TestGroupBySQL(t *testing.T) {
 > ORDER BY
 >   age ASC
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewGroupBy(

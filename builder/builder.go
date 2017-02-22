@@ -1,51 +1,38 @@
 package builder
 
 import (
-	"github.com/minodisk/sqlabble/node"
 	"github.com/minodisk/sqlabble/statement"
+	"github.com/minodisk/sqlabble/token"
+)
+
+// Typical builders commonly used to build queries.
+var (
+	Standard         = NewBuilder(token.StandardFormat)
+	StandardIndented = NewBuilder(token.StandardIndentedFormat)
+	MySQL            = NewBuilder(token.MySQLFormat)
+	MySQLIndented    = NewBuilder(token.MySQLIndentedFormat)
 )
 
 // Builder is a container for storing options
 // so that you can build a query with the same options
 // over and over again.
 type Builder struct {
-	context node.Context
+	Format token.Format
 }
 
 // NewBuilder returns a Builder with a specified options.
-func NewBuilder(options Options) Builder {
+func NewBuilder(format token.Format) Builder {
 	return Builder{
-		context: options.ToContext(),
+		Format: format,
 	}
 }
 
 // Build converts a statement into a query and a slice of values.
 func (b Builder) Build(stmt statement.Statement) (string, []interface{}) {
-	return statement.Node(stmt).ToSQL(b.context)
-}
-
-// Typical builders commonly used to build queries.
-var (
-	Standard = Builder{
-		context: node.Standard,
+	tokenizer, values := statement.Nodeize(stmt)
+	query := token.Print(tokenizer.Tokenize(0), b.Format)
+	if len(values) == 0 {
+		values = nil
 	}
-	IndentedStandard = Builder{
-		context: node.IndentedStandard,
-	}
-	MySQL = Builder{
-		context: node.MySQL,
-	}
-	MySQL4 = Builder{
-		context: node.MySQL4,
-	}
-)
-
-// Build builds a query.
-func Build(s statement.Statement) (string, []interface{}) {
-	return Standard.Build(s)
-}
-
-// BuildIndent builds an indented query.
-func BuildIndent(s statement.Statement) (string, []interface{}) {
-	return IndentedStandard.Build(s)
+	return query, values
 }

@@ -2,7 +2,8 @@ package statement
 
 import (
 	"github.com/minodisk/sqlabble/keyword"
-	"github.com/minodisk/sqlabble/node"
+	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type Set struct {
@@ -16,25 +17,25 @@ func NewSet(assigns ...Assign) Set {
 	}
 }
 
-func (s Set) node() node.Node {
-	cs := clauseNodes(s)
-	gs := make([]node.Node, len(cs))
-	for i, c := range cs {
-		gs[i] = c.myNode()
-	}
-	return node.NewNodes(gs...)
+func (s Set) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	return nodeizeClauses(s)
 }
 
-func (s Set) myNode() node.Node {
-	gs := make([]node.Node, len(s.assigns))
+func (s Set) self() (tokenizer.Tokenizer, []interface{}) {
+	tokenizers := make(tokenizer.Tokenizers, len(s.assigns))
+	values := []interface{}{}
 	for i, a := range s.assigns {
-		gs[i] = a.expression()
+		var vals []interface{}
+		tokenizers[i], vals = a.nodeize()
+		values = append(values, vals...)
 	}
-	c := node.NewContainer(
-		node.NewExpression(keyword.Set),
-		node.NewComma(gs...),
-	)
-	return c
+	return tokenizer.NewContainer(
+		tokenizer.NewLine(
+			token.Word(keyword.Set),
+		),
+	).SetMiddle(
+		tokenizers.Prefix(token.Comma, token.Space),
+	), values
 }
 
 func (s Set) previous() Clause {

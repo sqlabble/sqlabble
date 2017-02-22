@@ -1,9 +1,8 @@
 package statement
 
 import (
-	"github.com/minodisk/sqlabble/node"
-	"github.com/minodisk/sqlabble/operator"
-	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/keyword"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 // Statement is the interface of the component
@@ -11,23 +10,38 @@ import (
 // All types that implement this interface
 // can be built as SQL.
 type Statement interface {
-	node() node.Node
-}
-
-type Expressor interface {
-	Statement
-	expression() node.Expression
+	nodeize() (tokenizer.Tokenizer, []interface{})
 }
 
 type Clause interface {
 	Statement
-	myNode() node.Node
+	self() (tokenizer.Tokenizer, []interface{})
 	previous() Clause
 }
 
-type ColumnOrColumnAs interface {
+type Joiner interface {
 	Statement
-	columnName() string
+	Join(TableOrAlias) Join
+	InnerJoin(TableOrAlias) Join
+	LeftJoin(TableOrAlias) Join
+	RightJoin(TableOrAlias) Join
+	self() (tokenizer.Tokenizer, []interface{})
+	previous() Joiner
+}
+
+type TableOrAlias interface {
+	Statement
+	isTableOrAlias() bool
+}
+
+type TableOrAliasOrJoiner interface {
+	Statement
+	isTableOrAliasOrJoiner() bool
+}
+
+type ColumnOrAliasOrSubquery interface {
+	Statement
+	isColumnOrAliasOrSubquery() bool
 }
 
 type ColumnOrSubquery interface {
@@ -35,23 +49,17 @@ type ColumnOrSubquery interface {
 	isColumnOrSubquery() bool
 }
 
-type Joiner interface {
-	Expressor
-	tokenize() token.Tokens
-	Join(Joiner) Joiner
-	InnerJoin(Joiner) Joiner
-	LeftJoin(Joiner) Joiner
-	RightJoin(Joiner) Joiner
-	previous() Joiner
+type ParamOrSubquery interface {
+	Statement
+	isParamOrSubquery() bool
+}
+
+type ParamsOrSubquery interface {
+	Statement
+	isParamsOrSubquery() bool
 }
 
 type ComparisonOrLogicalOperation interface {
 	Statement
-	operator() operator.Operator
-}
-
-type Vals interface {
-	Expressor
-	clause() Clause
-	previous() Vals
+	keyword() keyword.Operator
 }

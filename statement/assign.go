@@ -1,28 +1,33 @@
 package statement
 
 import (
-	"github.com/minodisk/sqlabble/node"
-	"github.com/minodisk/sqlabble/operator"
+	"github.com/minodisk/sqlabble/keyword"
+	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type Assign struct {
 	column Column
-	value  interface{}
+	param  ParamOrSubquery
 }
 
-func NewAssign(column Column, value interface{}) Assign {
+func NewAssign(column Column, param ParamOrSubquery) Assign {
 	return Assign{
 		column: column,
-		value:  value,
+		param:  param,
 	}
 }
 
-func (a Assign) node() node.Node {
-	return a.expression()
-}
-
-func (a Assign) expression() node.Expression {
-	return a.column.expression().
-		Append(node.NewExpression(string(operator.Eq))).
-		Append(node.ValuesToExpression(a.value))
+func (a Assign) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	t1, v1 := a.column.nodeize()
+	t2, v2 := a.param.nodeize()
+	return tokenizer.ConcatTokenizers(
+		t1,
+		t2,
+		tokenizer.NewLine(
+			token.Space,
+			token.Word(keyword.Eq),
+			token.Space,
+		),
+	), append(v1, v2...)
 }

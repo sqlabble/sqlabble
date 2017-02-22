@@ -2,58 +2,61 @@ package statement
 
 import (
 	"github.com/minodisk/sqlabble/keyword"
-	"github.com/minodisk/sqlabble/node"
+	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type Select struct {
 	distinct bool
-	columns  []ColumnOrColumnAs
+	columns  []ColumnOrAliasOrSubquery
 }
 
-func NewSelect(columns ...ColumnOrColumnAs) Select {
+func NewSelect(columns ...ColumnOrAliasOrSubquery) Select {
 	return Select{
 		distinct: false,
 		columns:  columns,
 	}
 }
 
-func NewSelectDistinct(columns ...ColumnOrColumnAs) Select {
+func NewSelectDistinct(columns ...ColumnOrAliasOrSubquery) Select {
 	return Select{
 		distinct: true,
 		columns:  columns,
 	}
 }
 
-func (s Select) node() node.Node {
-	cs := clauseNodes(s)
-	fs := make([]node.Node, len(cs))
-	for i, c := range cs {
-		fs[i] = c.myNode()
-	}
-	return node.NewNodes(fs...)
+func (s Select) From(t TableOrAliasOrJoiner) From {
+	f := NewFrom(t)
+	f.prev = s
+	return f
 }
 
-func (s Select) myNode() node.Node {
-	fs := make([]node.Node, len(s.columns))
+func (s Select) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	return nodeizeClauses(s)
+}
+
+func (s Select) self() (tokenizer.Tokenizer, []interface{}) {
+	tokenizers := make(tokenizer.Tokenizers, len(s.columns))
+	values := []interface{}{}
 	for i, c := range s.columns {
-		fs[i] = c.node()
+		var vals []interface{}
+		tokenizers[i], vals = c.nodeize()
+		values = append(values, vals...)
 	}
-	k := node.NewExpression(keyword.Select)
+	tokens := token.NewTokens(token.Word(keyword.Select))
 	if s.distinct {
-		k = k.Append(node.NewExpression(keyword.Distinct))
+		tokens = tokens.Append(
+			token.Space,
+			token.Word(keyword.Distinct),
+		)
 	}
-	return node.NewContainer(
-		k,
-		node.NewComma(fs...),
-	)
+	return tokenizer.NewContainer(
+		tokenizer.NewLine(tokens...),
+	).SetMiddle(
+		tokenizers.Prefix(token.Comma, token.Space),
+	), values
 }
 
 func (s Select) previous() Clause {
 	return nil
-}
-
-func (s Select) From(t Joiner) From {
-	f := NewFrom(t)
-	f.prev = s
-	return f
 }

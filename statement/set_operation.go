@@ -2,76 +2,85 @@ package statement
 
 import (
 	"github.com/minodisk/sqlabble/keyword"
-	"github.com/minodisk/sqlabble/node"
+	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type SetOperation struct {
-	operator   string
+	op         keyword.Operator
 	statements []Statement
 }
 
 func NewUnion(statements ...Statement) SetOperation {
 	return SetOperation{
-		operator:   keyword.Union,
+		op:         keyword.Union,
 		statements: statements,
 	}
 }
 
 func NewUnionAll(statements ...Statement) SetOperation {
 	return SetOperation{
-		operator:   keyword.UnionAll,
+		op:         keyword.UnionAll,
 		statements: statements,
 	}
 }
 
 func NewIntersect(statements ...Statement) SetOperation {
 	return SetOperation{
-		operator:   keyword.Intersect,
+		op:         keyword.Intersect,
 		statements: statements,
 	}
 }
 
 func NewIntersectAll(statements ...Statement) SetOperation {
 	return SetOperation{
-		operator:   keyword.IntersectAll,
+		op:         keyword.IntersectAll,
 		statements: statements,
 	}
 }
 
 func NewExcept(statements ...Statement) SetOperation {
 	return SetOperation{
-		operator:   keyword.Except,
+		op:         keyword.Except,
 		statements: statements,
 	}
 }
 
 func NewExceptAll(statements ...Statement) SetOperation {
 	return SetOperation{
-		operator:   keyword.ExceptAll,
+		op:         keyword.ExceptAll,
 		statements: statements,
 	}
 }
 
-func (u SetOperation) node() node.Node {
-	cs := clauseNodes(u)
-	gs := make([]node.Node, len(cs))
-	for i, c := range cs {
-		gs[i] = c.myNode()
-	}
-	return node.NewNodes(gs...)
+func (u SetOperation) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	return u.self()
 }
 
-func (u SetOperation) myNode() node.Node {
-	sep := node.NewExpression(u.operator)
-	gs := make([]node.Node, len(u.statements))
+func (u SetOperation) self() (tokenizer.Tokenizer, []interface{}) {
+	tokenizers := make(tokenizer.Tokenizers, len(u.statements))
+	values := []interface{}{}
 	for i, s := range u.statements {
-		gs[i] = s.node()
+		t, vals := s.nodeize()
+		t = tokenizer.NewParentheses(t)
+		if i != 0 {
+			t = t.Prepend(
+				token.Word(u.keyword()),
+				token.Space,
+			)
+		}
+		tokenizers[i] = t
+		values = append(values, vals...)
 	}
-	return node.NewSet(sep, gs...)
+	return tokenizers, values
 }
 
 func (u SetOperation) previous() Clause {
 	return nil
+}
+
+func (u SetOperation) keyword() keyword.Operator {
+	return u.op
 }
 
 func (u SetOperation) OrderBy(os ...Order) OrderBy {

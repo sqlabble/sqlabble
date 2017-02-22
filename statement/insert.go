@@ -2,51 +2,57 @@ package statement
 
 import (
 	"github.com/minodisk/sqlabble/keyword"
-	"github.com/minodisk/sqlabble/node"
+	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type InsertInto struct {
-	table   Joiner
+	table   Table
 	columns []Column
 }
 
-func NewInsertInto(table Joiner, columns ...Column) InsertInto {
+func NewInsertInto(table Table, columns ...Column) InsertInto {
 	return InsertInto{
 		table:   table,
 		columns: columns,
 	}
 }
 
-func (i InsertInto) node() node.Node {
-	cs := clauseNodes(i)
-	ns := make([]node.Node, len(cs))
-	for j, c := range cs {
-		ns[j] = c.myNode()
-	}
-	return node.NewNodes(ns...)
+func (i InsertInto) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	return nodeizeClauses(i)
 }
 
-func (i InsertInto) myNode() node.Node {
-	es := make([]node.Expression, len(i.columns))
+func (i InsertInto) self() (tokenizer.Tokenizer, []interface{}) {
+	tableTokenizer, values := i.table.nodeize()
+	ts := make(tokenizer.Tokenizers, len(i.columns))
 	for j, c := range i.columns {
-		es[j] = c.expression()
+		var vals []interface{}
+		ts[j], vals = c.nodeize()
+		values = append(values, vals...)
 	}
-	return node.NewContainer(
-		node.NewExpression(string(keyword.InsertInto)),
-		node.JoinExpressions(
-			i.table.expression(),
-			node.ArrayToExpression(es...),
+	return tokenizer.NewContainer(
+		tokenizer.NewLine(token.Word(keyword.InsertInto)),
+	).SetMiddle(
+		tokenizer.ConcatTokenizers(
+			tableTokenizer,
+			tokenizer.NewParentheses(
+				ts.Prefix(
+					token.Comma,
+					token.Space,
+				),
+			),
+			tokenizer.NewLine(token.Space),
 		),
-	)
+	), values
 }
 
 func (i InsertInto) previous() Clause {
 	return nil
 }
 
-func (i InsertInto) Values(values ...interface{}) Values {
-	v := NewValues(values...)
-	v.prevClause = i
+func (i InsertInto) Values(paramses ...Params) Values {
+	v := NewValues(paramses...)
+	v.prev = i
 	return v
 }
 

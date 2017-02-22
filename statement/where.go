@@ -2,7 +2,8 @@ package statement
 
 import (
 	"github.com/minodisk/sqlabble/keyword"
-	"github.com/minodisk/sqlabble/node"
+	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type Where struct {
@@ -16,20 +17,17 @@ func NewWhere(operation ComparisonOrLogicalOperation) Where {
 	}
 }
 
-func (w Where) node() node.Node {
-	cs := clauseNodes(w)
-	ns := make([]node.Node, len(cs))
-	for i, c := range cs {
-		ns[i] = c.myNode()
-	}
-	return node.NewNodes(ns...)
+func (w Where) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	return nodeizeClauses(w)
 }
 
-func (w Where) myNode() node.Node {
-	return node.NewContainer(
-		node.NewExpression(keyword.Where),
-		w.operation.node(),
-	)
+func (w Where) self() (tokenizer.Tokenizer, []interface{}) {
+	middle, values := w.operation.nodeize()
+	return tokenizer.NewContainer(
+		tokenizer.NewLine(token.Word(keyword.Where)),
+	).SetMiddle(
+		middle,
+	), values
 }
 
 func (w Where) previous() Clause {

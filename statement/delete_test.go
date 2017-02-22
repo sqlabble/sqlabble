@@ -27,7 +27,7 @@ func TestDeleteSQL(t *testing.T) {
 			"DELETE",
 			`> DELETE
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewDelete().From(
@@ -38,7 +38,7 @@ func TestDeleteSQL(t *testing.T) {
 > FROM
 >   foo
 `,
-			[]interface{}{},
+			nil,
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {

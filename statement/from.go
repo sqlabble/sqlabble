@@ -2,38 +2,19 @@ package statement
 
 import (
 	"github.com/minodisk/sqlabble/keyword"
-	"github.com/minodisk/sqlabble/node"
+	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type From struct {
 	prev  Clause
-	table Joiner
+	table TableOrAliasOrJoiner
 }
 
-func NewFrom(table Joiner) From {
+func NewFrom(table TableOrAliasOrJoiner) From {
 	return From{
 		table: table,
 	}
-}
-
-func (f From) node() node.Node {
-	cs := clauseNodes(f)
-	ns := make([]node.Node, len(cs))
-	for i, c := range cs {
-		ns[i] = c.myNode()
-	}
-	return node.NewNodes(ns...)
-}
-
-func (f From) myNode() node.Node {
-	return node.NewContainer(
-		node.NewExpression(string(keyword.From)),
-		f.table.node(),
-	)
-}
-
-func (f From) previous() Clause {
-	return f.prev
 }
 
 func (f From) Where(op ComparisonOrLogicalOperation) Where {
@@ -58,4 +39,21 @@ func (f From) Limit(count int) Limit {
 	l := NewLimit(count)
 	l.prev = f
 	return l
+}
+
+func (f From) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	return nodeizeClauses(f)
+}
+
+func (f From) self() (tokenizer.Tokenizer, []interface{}) {
+	middle, values := f.table.nodeize()
+	return tokenizer.NewContainer(
+		tokenizer.NewLine(token.Word(keyword.From)),
+	).SetMiddle(
+		middle,
+	), values
+}
+
+func (f From) previous() Clause {
+	return f.prev
 }

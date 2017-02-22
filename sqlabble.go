@@ -12,14 +12,22 @@ var (
 	Update                 = statement.NewUpdate
 	Delete                 = statement.NewDelete
 
-	Column = statement.NewColumn
-	C      = statement.NewColumn
-	Table  = statement.NewTable
-	T      = statement.NewTable
+	Column   = statement.NewColumn
+	C        = statement.NewColumn
+	Table    = statement.NewTable
+	T        = statement.NewTable
+	Param    = statement.NewParam
+	P        = statement.NewParam
+	Params   = statement.NewParams
+	Ps       = statement.NewParams
+	Subquery = statement.NewSubquery
+	S        = statement.NewSubquery
 
-	And = statement.NewAnd
-	Or  = statement.NewOr
-	Not = statement.NewNot
+	And       = statement.NewAnd
+	Or        = statement.NewOr
+	Not       = statement.NewNot
+	Exists    = statement.NewExists
+	NotExists = statement.NewNotExists
 
 	Union        = statement.NewUnion
 	UnionAll     = statement.NewUnionAll

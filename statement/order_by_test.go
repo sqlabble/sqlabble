@@ -30,7 +30,7 @@ func TestOrderBySQL(t *testing.T) {
 			`> ORDER BY
 >   foo ASC
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewOrderBy(
@@ -44,7 +44,7 @@ func TestOrderBySQL(t *testing.T) {
 >   , bar ASC
 >   , baz DESC
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewOrderBy(

@@ -1,13 +1,13 @@
 package statement
 
 import (
-	"github.com/minodisk/sqlabble/node"
-	"github.com/minodisk/sqlabble/operator"
+	"github.com/minodisk/sqlabble/keyword"
 	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type ColumnAs struct {
-	column Column
+	column ColumnOrSubquery
 	alias  string
 }
 
@@ -17,21 +17,39 @@ func NewColumnAs(alias string) ColumnAs {
 	}
 }
 
-func (c ColumnAs) node() node.Node {
-	return token.NewTokensNode(
-		c.tokenize(),
-	)
+func (c ColumnAs) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	if c.column == nil {
+		return tokenizer.NewLine(
+			token.Word(keyword.As),
+			token.Space,
+		).Append(
+			token.Wrap(
+				token.Word(c.alias),
+				token.Quote,
+			)...,
+		), nil
+	}
+
+	t1, v1 := c.column.nodeize()
+	return tokenizer.ConcatTokenizers(
+		t1,
+		tokenizer.NewLine(
+			token.Wrap(
+				token.Word(c.alias),
+				token.Quote,
+			)...,
+		),
+		tokenizer.NewLine(
+			token.Space,
+			token.Word(keyword.As),
+			token.Space,
+		),
+	), v1
 }
 
-func (c ColumnAs) tokenize() token.Tokens {
-	return c.column.tokenize().
-		Append(token.Word(operator.As)).
-		Add(token.Wrap(
-			token.Word(c.alias),
-			token.Quote,
-		))
-}
-
-func (c ColumnAs) columnName() string {
-	return c.column.columnName()
+// isColumnOrColumnAsOrSubquery always returns true.
+// This method exists only to implement the interface ColumnOrColumnAsOrSubquery.
+// This is a shit of duck typing, but anyway it works.
+func (c ColumnAs) isColumnOrAliasOrSubquery() bool {
+	return true
 }

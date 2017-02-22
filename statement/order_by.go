@@ -2,7 +2,8 @@ package statement
 
 import (
 	"github.com/minodisk/sqlabble/keyword"
-	"github.com/minodisk/sqlabble/node"
+	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type OrderBy struct {
@@ -14,24 +15,23 @@ func NewOrderBy(os ...Order) OrderBy {
 	return OrderBy{orders: os}
 }
 
-func (o OrderBy) node() node.Node {
-	cs := clauseNodes(o)
-	fs := make([]node.Node, len(cs))
-	for i, c := range cs {
-		fs[i] = c.myNode()
-	}
-	return node.NewNodes(fs...)
+func (o OrderBy) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	return nodeizeClauses(o)
 }
 
-func (o OrderBy) myNode() node.Node {
-	fs := make([]node.Node, len(o.orders))
-	for i, c := range o.orders {
-		fs[i] = c.node()
+func (o OrderBy) self() (tokenizer.Tokenizer, []interface{}) {
+	tokenizers := make(tokenizer.Tokenizers, len(o.orders))
+	values := []interface{}{}
+	for i, o := range o.orders {
+		var vals []interface{}
+		tokenizers[i], vals = o.nodeize()
+		values = append(values, vals...)
 	}
-	return node.NewContainer(
-		node.NewExpression(string(keyword.OrderBy)),
-		node.NewComma(fs...),
-	)
+	return tokenizer.NewContainer(
+		tokenizer.NewLine(token.Word(keyword.OrderBy)),
+	).SetMiddle(
+		tokenizers.Prefix(token.Comma, token.Space),
+	), values
 }
 
 func (o OrderBy) previous() Clause {

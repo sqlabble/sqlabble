@@ -27,10 +27,5 @@ const (
 	On        = "ON"
 	Using     = "USING"
 
-	Union        = "UNION"
-	UnionAll     = "UNION ALL"
-	Intersect    = "INTERSECT"
-	IntersectAll = "INTERSECT ALL"
-	Except       = "EXCEPT"
-	ExceptAll    = "EXCEPT ALL"
+	Null = "NULL"
 )

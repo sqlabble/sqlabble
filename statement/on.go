@@ -2,13 +2,12 @@ package statement
 
 import (
 	"github.com/minodisk/sqlabble/keyword"
-	"github.com/minodisk/sqlabble/node"
-	"github.com/minodisk/sqlabble/operator"
 	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type On struct {
-	joiner           Joiner
+	join             Join
 	column1, column2 Column
 }
 
@@ -19,66 +18,64 @@ func NewOn(column1, column2 Column) On {
 	}
 }
 
-func (o On) node() node.Node {
-	ts := tableNodes(o)
-	ns := make([]node.Node, len(ts))
-	for i, t := range ts {
-		ns[i] = token.NewTokensNode(t.tokenize())
-	}
-	return node.NewNodes(ns...)
-}
-
-func (o On) expression() node.Expression {
-	e := node.NewExpression(keyword.On).
-		Append(o.column1.expression()).
-		Append(node.NewExpression(string(operator.Eq))).
-		Append(o.column2.expression())
-	if o.joiner == nil {
-		return e
-	}
-	return o.joiner.expression().
-		Append(e)
-}
-
-func (o On) tokenize() token.Tokens {
-	var t token.Tokens
-	if o.joiner != nil {
-		t = o.joiner.tokenize()
-	}
-	return t.
-		Append(token.Word(keyword.On)).
-		Append(o.column1.tokenize()...).
-		Append(token.Word(operator.Eq)).
-		Append(o.column2.tokenize()...)
-}
-
-func (o On) previous() Joiner {
-	if o.joiner == nil {
-		return nil
-	}
-	return o.joiner.previous()
-}
-
-func (o On) Join(table Joiner) Joiner {
+func (o On) Join(table TableOrAlias) Join {
 	j := NewJoin(table)
 	j.prev = o
 	return j
 }
 
-func (o On) InnerJoin(table Joiner) Joiner {
-	ij := NewInnerJoin(table)
-	ij.prev = o
-	return ij
+func (o On) InnerJoin(table TableOrAlias) Join {
+	j := NewInnerJoin(table)
+	j.prev = o
+	return j
 }
 
-func (o On) LeftJoin(table Joiner) Joiner {
-	lj := NewLeftJoin(table)
-	lj.prev = o
-	return lj
+func (o On) LeftJoin(table TableOrAlias) Join {
+	j := NewLeftJoin(table)
+	j.prev = o
+	return j
 }
 
-func (o On) RightJoin(table Joiner) Joiner {
-	rj := NewRightJoin(table)
-	rj.prev = o
-	return rj
+func (o On) RightJoin(table TableOrAlias) Join {
+	j := NewRightJoin(table)
+	j.prev = o
+	return j
+}
+
+func (o On) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	return nodeizeJoiners(o)
+}
+
+func (o On) self() (tokenizer.Tokenizer, []interface{}) {
+	t0, v0 := o.join.self()
+	t1, v1 := o.column1.nodeize()
+	t2, v2 := o.column2.nodeize()
+	return tokenizer.ConcatTokenizers(
+		t0,
+		tokenizer.ConcatTokenizers(
+			t1,
+			t2,
+			tokenizer.NewLine(
+				token.Space,
+				token.Word(keyword.Eq),
+				token.Space,
+			),
+		),
+		tokenizer.NewLine(
+			token.Space,
+			token.Word(keyword.On),
+			token.Space,
+		),
+	), append(append(v0, v1...), v2...)
+}
+
+func (o On) previous() Joiner {
+	return o.join.previous()
+}
+
+// isTableOrAliasOrJoiner always returns true.
+// This method exists only to implement the interface TableOrAliasOrJoiner.
+// This is a shit of duck typing, but anyway it works.
+func (o On) isTableOrAliasOrJoiner() bool {
+	return true
 }

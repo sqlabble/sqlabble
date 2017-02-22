@@ -1,23 +1,13 @@
 package statement_test
 
-import "github.com/minodisk/sqlabble/builder"
+import (
+	"github.com/minodisk/sqlabble/builder"
+	"github.com/minodisk/sqlabble/token"
+)
 
 var (
-	b  = builder.NewBuilder(builder.Options{})
-	bi = builder.NewBuilder(
-		builder.Options{
-			Prefix: "> ",
-			Indent: "  ",
-		})
-	bm4 = builder.NewBuilder(builder.Options{
-		Quote:    "`",
-		FlatSets: true,
-	})
-	bim4 = builder.NewBuilder(
-		builder.Options{
-			Prefix:   "> ",
-			Indent:   "  ",
-			Quote:    "`",
-			FlatSets: true,
-		})
+	b    = builder.Standard
+	bi   = builder.NewBuilder(token.NewFormat("> ", "  ", `"`, "\n"))
+	bm4  = builder.MySQL
+	bim4 = builder.NewBuilder(token.NewFormat("> ", "  ", "`", "\n"))
 )

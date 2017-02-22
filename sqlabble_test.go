@@ -67,7 +67,7 @@ func TestMain(m *testing.M) {
 
 func TestCreateTable(t *testing.T) {
 	{
-		sql, values := builder.Build(
+		sql, values := builder.Standard.Build(
 			q.CreateTable(
 				q.T("user"),
 			).Definitions(
@@ -82,7 +82,7 @@ func TestCreateTable(t *testing.T) {
 		}
 	}
 	{
-		sql, values := builder.Build(
+		sql, values := builder.Standard.Build(
 			q.CreateTable(
 				q.T("comment"),
 			).Definitions(
@@ -97,7 +97,7 @@ func TestCreateTable(t *testing.T) {
 		}
 	}
 	{
-		sql, values := builder.Build(
+		sql, values := builder.Standard.Build(
 			q.CreateTable(
 				q.T("post"),
 			).Definitions(
@@ -117,16 +117,14 @@ func TestCreateTable(t *testing.T) {
 
 func TestInsertInto(t *testing.T) {
 	{
-		sql, values := builder.Build(
+		sql, values := builder.Standard.Build(
 			q.InsertInto(
 				q.T("user"),
 				q.C("id"), q.C("name"), q.C("avatar"),
 			).Values(
-				1, "foo", "http://example.com/foo.jpg",
-			).Values(
-				2, "bar", "http://example.com/bar.jpg",
-			).Values(
-				3, "baz", "http://example.com/baz.jpg",
+				q.Params(1, "foo", "http://example.com/foo.jpg"),
+				q.Params(2, "bar", "http://example.com/bar.jpg"),
+				q.Params(3, "baz", "http://example.com/baz.jpg"),
 			),
 		)
 		_, err := db.Exec(sql, values...)
@@ -135,12 +133,12 @@ func TestInsertInto(t *testing.T) {
 		}
 	}
 	{
-		sql, values := builder.Build(
+		sql, values := builder.Standard.Build(
 			q.InsertInto(
 				q.T("comment"),
 				q.C("id"), q.C("body"), q.C("author_id"),
 			).Values(
-				1, "abcdefg", 3,
+				q.Params(1, "abcdefg", 3),
 			),
 		)
 		_, err := db.Exec(sql, values...)
@@ -149,12 +147,12 @@ func TestInsertInto(t *testing.T) {
 		}
 	}
 	{
-		sql, values := builder.Build(
+		sql, values := builder.Standard.Build(
 			q.InsertInto(
 				q.T("post"),
 				q.C("id"), q.C("title"), q.C("body"), q.C("author_id"), q.C("comment_id"),
 			).Values(
-				1, "this is title", "this is body", 2, 1,
+				q.Params(1, "this is title", "this is body", 2, 1),
 			),
 		)
 		_, err := db.Exec(sql, values...)
@@ -165,7 +163,7 @@ func TestInsertInto(t *testing.T) {
 }
 
 func TestSelect(t *testing.T) {
-	sql, values := builder.Build(
+	sql, values := builder.Standard.Build(
 		q.Select(
 			q.C("id").As("User.ID"),
 			q.C("name").As("User.Name"),
@@ -173,7 +171,7 @@ func TestSelect(t *testing.T) {
 		).From(
 			q.T("user"),
 		).Where(
-			q.C("id").Eq(3),
+			q.C("id").Eq(q.Param(3)),
 		),
 	)
 

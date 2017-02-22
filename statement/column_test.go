@@ -14,8 +14,11 @@ func TestColumnType(t *testing.T) {
 		statement.Column{},
 	} {
 		t.Run(fmt.Sprintf("%T", c), func(t *testing.T) {
-			if _, ok := c.(statement.ColumnOrColumnAs); !ok {
-				t.Errorf("%T should implement statement.ColumnOrColumnAs", c)
+			if _, ok := c.(statement.ColumnOrSubquery); !ok {
+				t.Errorf("%T should implement statement.ColumnOrSubquery", c)
+			}
+			if _, ok := c.(statement.ColumnOrAliasOrSubquery); !ok {
+				t.Errorf("%T should implement statement.ColumnOrColumnAsOrSubquery", c)
 			}
 		})
 	}
@@ -33,24 +36,24 @@ func TestColumnSQL(t *testing.T) {
 			`foo`,
 			`> foo
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewColumn("foo").As("f"),
 			`foo AS "f"`,
 			`> foo AS "f"
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewColumn("foo").Define("VARCHAR(20)"),
 			`foo VARCHAR(20)`,
 			`> foo VARCHAR(20)
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
-			statement.NewColumn("foo").Assign(100),
+			statement.NewColumn("foo").Assign(statement.NewParam(100)),
 			`foo = ?`,
 			`> foo = ?
 `,
@@ -59,7 +62,7 @@ func TestColumnSQL(t *testing.T) {
 			},
 		},
 		{
-			statement.NewColumn("foo").Eq(100),
+			statement.NewColumn("foo").Eq(statement.NewParam(100)),
 			`foo = ?`,
 			`> foo = ?
 `,
@@ -68,7 +71,7 @@ func TestColumnSQL(t *testing.T) {
 			},
 		},
 		{
-			statement.NewColumn("foo").NotEq(100),
+			statement.NewColumn("foo").NotEq(statement.NewParam(100)),
 			`foo != ?`,
 			`> foo != ?
 `,
@@ -77,7 +80,7 @@ func TestColumnSQL(t *testing.T) {
 			},
 		},
 		{
-			statement.NewColumn("foo").Gt(100),
+			statement.NewColumn("foo").Gt(statement.NewParam(100)),
 			`foo > ?`,
 			`> foo > ?
 `,
@@ -86,7 +89,7 @@ func TestColumnSQL(t *testing.T) {
 			},
 		},
 		{
-			statement.NewColumn("foo").Gte(100),
+			statement.NewColumn("foo").Gte(statement.NewParam(100)),
 			`foo >= ?`,
 			`> foo >= ?
 `,
@@ -95,7 +98,7 @@ func TestColumnSQL(t *testing.T) {
 			},
 		},
 		{
-			statement.NewColumn("foo").Lt(100),
+			statement.NewColumn("foo").Lt(statement.NewParam(100)),
 			`foo < ?`,
 			`> foo < ?
 `,
@@ -104,7 +107,7 @@ func TestColumnSQL(t *testing.T) {
 			},
 		},
 		{
-			statement.NewColumn("foo").Lte(100),
+			statement.NewColumn("foo").Lte(statement.NewParam(100)),
 			`foo <= ?`,
 			`> foo <= ?
 `,
@@ -113,7 +116,7 @@ func TestColumnSQL(t *testing.T) {
 			},
 		},
 		{
-			statement.NewColumn("foo").Between(100, 200),
+			statement.NewColumn("foo").Between(statement.NewParam(100), statement.NewParam(200)),
 			`foo BETWEEN ? AND ?`,
 			`> foo BETWEEN ? AND ?
 `,
@@ -123,7 +126,8 @@ func TestColumnSQL(t *testing.T) {
 			},
 		},
 		{
-			statement.NewColumn("foo").In(100, 200, 300),
+			statement.NewColumn("foo").
+				In(statement.NewParams(100, 200, 300)),
 			`foo IN (?, ?, ?)`,
 			`> foo IN (?, ?, ?)
 `,
@@ -134,7 +138,8 @@ func TestColumnSQL(t *testing.T) {
 			},
 		},
 		{
-			statement.NewColumn("foo").NotIn(100, 200, 300),
+			statement.NewColumn("foo").
+				NotIn(statement.NewParams(100, 200, 300)),
 			`foo NOT IN (?, ?, ?)`,
 			`> foo NOT IN (?, ?, ?)
 `,
@@ -145,7 +150,7 @@ func TestColumnSQL(t *testing.T) {
 			},
 		},
 		{
-			statement.NewColumn("foo").Like(`%bar%`),
+			statement.NewColumn("foo").Like(statement.NewParam(`%bar%`)),
 			`foo LIKE ?`,
 			`> foo LIKE ?
 `,
@@ -154,7 +159,7 @@ func TestColumnSQL(t *testing.T) {
 			},
 		},
 		{
-			statement.NewColumn("foo").RegExp("^(bar|baz)"),
+			statement.NewColumn("foo").RegExp(statement.NewParam("^(bar|baz)")),
 			`foo REGEXP ?`,
 			`> foo REGEXP ?
 `,
@@ -167,28 +172,184 @@ func TestColumnSQL(t *testing.T) {
 			`foo IS NULL`,
 			`> foo IS NULL
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewColumn("foo").IsNotNull(),
 			`foo IS NOT NULL`,
 			`> foo IS NOT NULL
 `,
-			[]interface{}{},
+			nil,
+		},
+		{
+			statement.NewColumn("foo").EqAll(
+				statement.NewSubquery(
+					statement.NewSelect(),
+				),
+			),
+			`foo = ALL (SELECT)`,
+			`> foo = ALL (
+>   SELECT
+> )
+`,
+			nil,
+		},
+		{
+			statement.NewColumn("foo").NotEqAll(
+				statement.NewSubquery(
+					statement.NewSelect(),
+				),
+			),
+			`foo != ALL (SELECT)`,
+			`> foo != ALL (
+>   SELECT
+> )
+`,
+			nil,
+		},
+		{
+			statement.NewColumn("foo").GtAll(
+				statement.NewSubquery(
+					statement.NewSelect(),
+				),
+			),
+			`foo > ALL (SELECT)`,
+			`> foo > ALL (
+>   SELECT
+> )
+`,
+			nil,
+		},
+		{
+			statement.NewColumn("foo").GteAll(
+				statement.NewSubquery(
+					statement.NewSelect(),
+				),
+			),
+			`foo >= ALL (SELECT)`,
+			`> foo >= ALL (
+>   SELECT
+> )
+`,
+			nil,
+		},
+		{
+			statement.NewColumn("foo").LtAll(
+				statement.NewSubquery(
+					statement.NewSelect(),
+				),
+			),
+			`foo < ALL (SELECT)`,
+			`> foo < ALL (
+>   SELECT
+> )
+`,
+			nil,
+		},
+		{
+			statement.NewColumn("foo").LteAll(
+				statement.NewSubquery(
+					statement.NewSelect(),
+				),
+			),
+			`foo <= ALL (SELECT)`,
+			`> foo <= ALL (
+>   SELECT
+> )
+`,
+			nil,
+		},
+		{
+			statement.NewColumn("foo").EqAny(
+				statement.NewSubquery(
+					statement.NewSelect(),
+				),
+			),
+			`foo = ANY (SELECT)`,
+			`> foo = ANY (
+>   SELECT
+> )
+`,
+			nil,
+		},
+		{
+			statement.NewColumn("foo").NotEqAny(
+				statement.NewSubquery(
+					statement.NewSelect(),
+				),
+			),
+			`foo != ANY (SELECT)`,
+			`> foo != ANY (
+>   SELECT
+> )
+`,
+			nil,
+		},
+		{
+			statement.NewColumn("foo").GtAny(
+				statement.NewSubquery(
+					statement.NewSelect(),
+				),
+			),
+			`foo > ANY (SELECT)`,
+			`> foo > ANY (
+>   SELECT
+> )
+`,
+			nil,
+		},
+		{
+			statement.NewColumn("foo").GteAny(
+				statement.NewSubquery(
+					statement.NewSelect(),
+				),
+			),
+			`foo >= ANY (SELECT)`,
+			`> foo >= ANY (
+>   SELECT
+> )
+`,
+			nil,
+		},
+		{
+			statement.NewColumn("foo").LtAny(
+				statement.NewSubquery(
+					statement.NewSelect(),
+				),
+			),
+			`foo < ANY (SELECT)`,
+			`> foo < ANY (
+>   SELECT
+> )
+`,
+			nil,
+		},
+		{
+			statement.NewColumn("foo").LteAny(
+				statement.NewSubquery(
+					statement.NewSelect(),
+				),
+			),
+			`foo <= ANY (SELECT)`,
+			`> foo <= ANY (
+>   SELECT
+> )
+`,
+			nil,
 		},
 		{
 			statement.NewColumn("foo").Asc(),
 			`foo ASC`,
 			`> foo ASC
 `,
-			[]interface{}{},
+			nil,
 		},
 		{
 			statement.NewColumn("foo").Desc(),
 			`foo DESC`,
 			`> foo DESC
 `,
-			[]interface{}{},
+			nil,
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {

@@ -1,28 +1,36 @@
 package statement
 
 import (
-	"github.com/minodisk/sqlabble/direction"
-	"github.com/minodisk/sqlabble/node"
+	"github.com/minodisk/sqlabble/keyword"
+	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type Order struct {
 	column Column
-	dir    direction.Direction
+	dir    keyword.Direction
 }
 
-func NewOrder(dir direction.Direction) Order {
+func NewAsc() Order {
 	return Order{
-		dir: dir,
+		dir: keyword.ASC,
 	}
 }
 
-func (o Order) node() node.Node {
-	return node.JoinExpressions(
-		o.column.expression(),
-		node.NewExpression(string(o.direction())),
-	)
+func NewDesc() Order {
+	return Order{
+		dir: keyword.DESC,
+	}
 }
 
-func (o Order) direction() direction.Direction {
+func (o Order) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	t1, v1 := o.column.nodeize()
+	return t1.Append(
+		token.Space,
+		token.Word(o.keyword()),
+	), v1
+}
+
+func (o Order) keyword() keyword.Direction {
 	return o.dir
 }

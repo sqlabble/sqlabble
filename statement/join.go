@@ -2,61 +2,93 @@ package statement
 
 import (
 	"github.com/minodisk/sqlabble/keyword"
-	"github.com/minodisk/sqlabble/node"
 	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type Join struct {
 	joinType string
-	joiner   Joiner
+	table    TableOrAlias
 	prev     Joiner
 }
 
-func NewJoin(table Joiner) Join {
+func NewJoin(table TableOrAlias) Join {
 	return Join{
 		joinType: keyword.Join,
-		joiner:   table,
+		table:    table,
 	}
 }
 
-func NewInnerJoin(table Joiner) Join {
+func NewInnerJoin(table TableOrAlias) Join {
 	return Join{
 		joinType: keyword.InnerJoin,
-		joiner:   table,
+		table:    table,
 	}
 }
 
-func NewLeftJoin(table Joiner) Join {
+func NewLeftJoin(table TableOrAlias) Join {
 	return Join{
 		joinType: keyword.LeftJoin,
-		joiner:   table,
+		table:    table,
 	}
 }
 
-func NewRightJoin(table Joiner) Join {
+func NewRightJoin(table TableOrAlias) Join {
 	return Join{
 		joinType: keyword.RightJoin,
-		joiner:   table,
+		table:    table,
 	}
 }
 
-func (j Join) node() node.Node {
-	ts := tableNodes(j)
-	ns := make([]node.Node, len(ts))
-	for i, t := range ts {
-		ns[i] = token.NewTokensNode(t.tokenize())
+func (j Join) Join(table TableOrAlias) Join {
+	j1 := NewJoin(table)
+	j1.prev = j
+	return j1
+}
+
+func (j Join) InnerJoin(table TableOrAlias) Join {
+	j1 := NewInnerJoin(table)
+	j1.prev = j
+	return j1
+}
+
+func (j Join) LeftJoin(table TableOrAlias) Join {
+	j1 := NewLeftJoin(table)
+	j1.prev = j
+	return j1
+}
+
+func (j Join) RightJoin(table TableOrAlias) Join {
+	j1 := NewRightJoin(table)
+	j1.prev = j
+	return j1
+}
+
+func (j Join) On(column1, column2 Column) On {
+	o := NewOn(column1, column2)
+	o.join = j
+	return o
+}
+
+func (j Join) Using(col Column) Using {
+	o := NewUsing(col)
+	o.join = j
+	return o
+}
+
+func (j Join) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	return nodeizeJoiners(j)
+}
+
+func (j Join) self() (tokenizer.Tokenizer, []interface{}) {
+	if j.table == nil {
+		return nil, nil
 	}
-	return node.NewNodes(ns...)
-}
-
-func (j Join) tokenize() token.Tokens {
-	return token.Word(j.joinType).
-		Append(j.joiner.tokenize()...)
-}
-
-func (j Join) expression() node.Expression {
-	return node.NewExpression(j.joinType).
-		Append(j.joiner.expression())
+	t, v := j.table.nodeize()
+	return t.Prepend(
+		token.Word(j.joinType),
+		token.Space,
+	), v
 }
 
 func (j Join) previous() Joiner {
@@ -64,40 +96,4 @@ func (j Join) previous() Joiner {
 		return nil
 	}
 	return j.prev
-}
-
-func (j Join) Join(table Joiner) Joiner {
-	nj := NewJoin(table)
-	nj.prev = j
-	return nj
-}
-
-func (j Join) InnerJoin(table Joiner) Joiner {
-	ij := NewInnerJoin(table)
-	ij.prev = j
-	return ij
-}
-
-func (j Join) LeftJoin(table Joiner) Joiner {
-	lj := NewLeftJoin(table)
-	lj.prev = j
-	return lj
-}
-
-func (j Join) RightJoin(table Joiner) Joiner {
-	rj := NewRightJoin(table)
-	rj.prev = j
-	return rj
-}
-
-func (j Join) On(column1, column2 Column) On {
-	o := NewOn(column1, column2)
-	o.joiner = j
-	return o
-}
-
-func (j Join) Using(col Column) Using {
-	o := NewUsing(col)
-	o.joiner = j
-	return o
 }

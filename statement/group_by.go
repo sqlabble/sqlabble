@@ -2,7 +2,8 @@ package statement
 
 import (
 	"github.com/minodisk/sqlabble/keyword"
-	"github.com/minodisk/sqlabble/node"
+	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type GroupBy struct {
@@ -16,24 +17,26 @@ func NewGroupBy(column Column, columns ...Column) GroupBy {
 	}
 }
 
-func (g GroupBy) node() node.Node {
-	cs := clauseNodes(g)
-	ns := make([]node.Node, len(cs))
-	for i, c := range cs {
-		ns[i] = c.myNode()
-	}
-	return node.NewNodes(ns...)
+func (g GroupBy) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	return nodeizeClauses(g)
 }
 
-func (g GroupBy) myNode() node.Node {
-	gs := make([]node.Node, len(g.columns))
+func (g GroupBy) self() (tokenizer.Tokenizer, []interface{}) {
+	ts := make(tokenizer.Tokenizers, len(g.columns))
+	values := []interface{}{}
 	for i, c := range g.columns {
-		gs[i] = c.node()
+		var vals []interface{}
+		ts[i], vals = c.nodeize()
+		values = append(values, vals...)
 	}
-	return node.NewContainer(
-		node.NewExpression(string(keyword.GroupBy)),
-		node.NewComma(gs...),
-	)
+	return tokenizer.NewContainer(
+		tokenizer.NewLine(token.Word(keyword.GroupBy)),
+	).SetMiddle(
+		ts.Prefix(
+			token.Comma,
+			token.Space,
+		),
+	), values
 }
 
 func (g GroupBy) previous() Clause {

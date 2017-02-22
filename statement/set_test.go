@@ -30,7 +30,7 @@ func TestSet(t *testing.T) {
 	}{
 		{
 			statement.NewSet(
-				statement.NewColumn("foo").Assign(100),
+				statement.NewColumn("foo").Assign(statement.NewParam(100)),
 			),
 			"SET foo = ?",
 			`> SET
@@ -42,8 +42,27 @@ func TestSet(t *testing.T) {
 		},
 		{
 			statement.NewSet(
-				statement.NewColumn("foo").Assign(100),
-				statement.NewColumn("bar").Assign(200),
+				statement.NewColumn("foo").Assign(
+					statement.NewSubquery(
+						statement.NewSelect(
+							statement.NewColumn("count(*)"),
+						),
+					),
+				),
+			),
+			"SET foo = (SELECT count(*))",
+			`> SET
+>   foo = (
+>     SELECT
+>       count(*)
+>   )
+`,
+			nil,
+		},
+		{
+			statement.NewSet(
+				statement.NewColumn("foo").Assign(statement.NewParam(100)),
+				statement.NewColumn("bar").Assign(statement.NewParam(200)),
 			),
 			"SET foo = ?, bar = ?",
 			`> SET
@@ -57,9 +76,9 @@ func TestSet(t *testing.T) {
 		},
 		{
 			statement.NewSet(
-				statement.NewColumn("foo").Assign(100),
-				statement.NewColumn("bar").Assign(200),
-				statement.NewColumn("baz").Assign(300),
+				statement.NewColumn("foo").Assign(statement.NewParam(100)),
+				statement.NewColumn("bar").Assign(statement.NewParam(200)),
+				statement.NewColumn("baz").Assign(statement.NewParam(300)),
 			),
 			"SET foo = ?, bar = ?, baz = ?",
 			`> SET
@@ -75,11 +94,11 @@ func TestSet(t *testing.T) {
 		},
 		{
 			statement.NewSet(
-				statement.NewColumn("foo").Assign(100),
-				statement.NewColumn("bar").Assign(200),
-				statement.NewColumn("baz").Assign(300),
+				statement.NewColumn("foo").Assign(statement.NewParam(100)),
+				statement.NewColumn("bar").Assign(statement.NewParam(200)),
+				statement.NewColumn("baz").Assign(statement.NewParam(300)),
 			).Where(
-				statement.NewColumn("qux").Lte(400),
+				statement.NewColumn("qux").Lte(statement.NewParam(400)),
 			),
 			"SET foo = ?, bar = ?, baz = ? WHERE qux <= ?",
 			`> SET

@@ -2,41 +2,48 @@ package statement
 
 import (
 	"github.com/minodisk/sqlabble/keyword"
-	"github.com/minodisk/sqlabble/node"
+	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type CreateTable struct {
 	ifNotExists bool
-	table       Joiner
+	joiner      Joiner
 }
 
-func NewCreateTable(table Joiner) CreateTable {
+func NewCreateTable(joiner Joiner) CreateTable {
 	return CreateTable{
 		ifNotExists: false,
-		table:       table,
+		joiner:      joiner,
 	}
 }
 
-func NewCreateTableIfNotExists(table Joiner) CreateTable {
+func NewCreateTableIfNotExists(joiner Joiner) CreateTable {
 	return CreateTable{
 		ifNotExists: true,
-		table:       table,
+		joiner:      joiner,
 	}
 }
 
-func (c CreateTable) node() node.Node {
+func (c CreateTable) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return c.container()
 }
 
-func (c CreateTable) container() node.Container {
-	k := node.NewExpression(keyword.CreateTable)
+func (c CreateTable) container() (tokenizer.Container, []interface{}) {
+	line := tokenizer.NewLine(token.Word(keyword.CreateTable))
 	if c.ifNotExists {
-		k = k.Append(node.NewExpression(keyword.IfNotExists))
+		line = line.A(
+			token.Space,
+			token.Word(keyword.IfNotExists),
+		)
 	}
-	return node.NewContainer(
-		k,
-		c.table.expression(),
-	)
+
+	middle, values := c.joiner.nodeize()
+	return tokenizer.NewContainer(
+		line,
+	).SetMiddle(
+		middle,
+	), values
 }
 
 func (c CreateTable) Definitions(defs ...Definition) Definitions {
