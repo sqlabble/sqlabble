@@ -7,17 +7,17 @@ import (
 
 type Select struct {
 	distinct bool
-	columns  []ColumnOrColumnAsOrSubquery
+	columns  []ColumnOrAliasOrSubquery
 }
 
-func NewSelect(columns ...ColumnOrColumnAsOrSubquery) Select {
+func NewSelect(columns ...ColumnOrAliasOrSubquery) Select {
 	return Select{
 		distinct: false,
 		columns:  columns,
 	}
 }
 
-func NewSelectDistinct(columns ...ColumnOrColumnAsOrSubquery) Select {
+func NewSelectDistinct(columns ...ColumnOrAliasOrSubquery) Select {
 	return Select{
 		distinct: true,
 		columns:  columns,

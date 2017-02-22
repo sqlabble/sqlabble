@@ -1,7 +1,7 @@
 package statement
 
 import (
-	"github.com/minodisk/sqlabble/operator"
+	"github.com/minodisk/sqlabble/keyword"
 	"github.com/minodisk/sqlabble/token"
 )
 
@@ -19,7 +19,7 @@ func NewColumnAs(alias string) ColumnAs {
 func (c ColumnAs) nodeize() (token.Tokenizer, []interface{}) {
 	if c.column == nil {
 		return token.NewLine(
-			token.Word(operator.As),
+			token.Word(keyword.As),
 			token.Space,
 		).Append(
 			token.Wrap(
@@ -40,7 +40,7 @@ func (c ColumnAs) nodeize() (token.Tokenizer, []interface{}) {
 		),
 		token.NewLine(
 			token.Space,
-			token.Word(operator.As),
+			token.Word(keyword.As),
 			token.Space,
 		),
 	), v1
@@ -49,6 +49,6 @@ func (c ColumnAs) nodeize() (token.Tokenizer, []interface{}) {
 // isColumnOrColumnAsOrSubquery always returns true.
 // This method exists only to implement the interface ColumnOrColumnAsOrSubquery.
 // This is a shit of duck typing, but anyway it works.
-func (c ColumnAs) isColumnOrColumnAsOrSubquery() bool {
+func (c ColumnAs) isColumnOrAliasOrSubquery() bool {
 	return true
 }

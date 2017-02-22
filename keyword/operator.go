@@ -1,6 +1,4 @@
-package operator
-
-import "strings"
+package keyword
 
 // Operator is reserved keyword in SQL statement.
 type Operator string
@@ -76,11 +74,3 @@ const (
 	Except       = "EXCEPT"
 	ExceptAll    = "EXCEPT ALL"
 )
-
-func Join(ops ...Operator) Operator {
-	strs := make([]string, len(ops))
-	for i, op := range ops {
-		strs[i] = string(op)
-	}
-	return Operator(strings.Join(strs, " "))
-}

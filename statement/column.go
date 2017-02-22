@@ -1,9 +1,6 @@
 package statement
 
-import (
-	"github.com/minodisk/sqlabble/direction"
-	"github.com/minodisk/sqlabble/token"
-)
+import "github.com/minodisk/sqlabble/token"
 
 // Column is a statement to indicate a column in a table.
 type Column struct {
@@ -192,13 +189,13 @@ func (c Column) LteAny(params Subquery) NonScalarOperation {
 }
 
 func (c Column) Asc() Order {
-	o := NewOrder(direction.ASC)
+	o := NewAsc()
 	o.column = c
 	return o
 }
 
 func (c Column) Desc() Order {
-	o := NewOrder(direction.DESC)
+	o := NewDesc()
 	o.column = c
 	return o
 }
@@ -217,6 +214,6 @@ func (c Column) isColumnOrSubquery() bool {
 // isColumnOrColumnAsOrSubquery always returns true.
 // This method exists only to implement the interface ColumnOrColumnAsOrSubquery.
 // This is a shit of duck typing, but anyway it works.
-func (c Column) isColumnOrColumnAsOrSubquery() bool {
+func (c Column) isColumnOrAliasOrSubquery() bool {
 	return true
 }

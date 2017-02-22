@@ -1,7 +1,7 @@
 package statement
 
 import (
-	"github.com/minodisk/sqlabble/operator"
+	"github.com/minodisk/sqlabble/keyword"
 	"github.com/minodisk/sqlabble/token"
 )
 
@@ -25,7 +25,7 @@ func (a Assign) nodeize() (token.Tokenizer, []interface{}) {
 		t2,
 		token.NewLine(
 			token.Space,
-			token.Word(operator.Eq),
+			token.Word(keyword.Eq),
 			token.Space,
 		),
 	), append(v1, v2...)

@@ -111,7 +111,7 @@ func (s Subquery) isColumnOrSubquery() bool {
 // isColumnOrColumnAsOrSubquery always returns true.
 // This method exists only to implement the interface ColumnOrColumnAsOrSubquery.
 // This is a shit of duck typing, but anyway it works.
-func (s Subquery) isColumnOrColumnAsOrSubquery() bool {
+func (s Subquery) isColumnOrAliasOrSubquery() bool {
 	return true
 }
 

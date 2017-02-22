@@ -1,4 +1,4 @@
-package direction
+package keyword
 
 // Direction points the direction of the order.
 type Direction string

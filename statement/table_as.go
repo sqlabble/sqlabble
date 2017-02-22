@@ -1,7 +1,7 @@
 package statement
 
 import (
-	"github.com/minodisk/sqlabble/operator"
+	"github.com/minodisk/sqlabble/keyword"
 	"github.com/minodisk/sqlabble/token"
 )
 
@@ -52,7 +52,7 @@ func (t TableAs) self() (token.Tokenizer, []interface{}) {
 		t2,
 		token.NewLine(
 			token.Space,
-			token.Word(operator.As),
+			token.Word(keyword.As),
 			token.Space,
 		),
 	), v1

@@ -1,53 +1,53 @@
 package statement
 
 import (
-	"github.com/minodisk/sqlabble/operator"
+	"github.com/minodisk/sqlabble/keyword"
 	"github.com/minodisk/sqlabble/token"
 )
 
 type SetOperation struct {
-	op         operator.Operator
+	op         keyword.Operator
 	statements []Statement
 }
 
 func NewUnion(statements ...Statement) SetOperation {
 	return SetOperation{
-		op:         operator.Union,
+		op:         keyword.Union,
 		statements: statements,
 	}
 }
 
 func NewUnionAll(statements ...Statement) SetOperation {
 	return SetOperation{
-		op:         operator.UnionAll,
+		op:         keyword.UnionAll,
 		statements: statements,
 	}
 }
 
 func NewIntersect(statements ...Statement) SetOperation {
 	return SetOperation{
-		op:         operator.Intersect,
+		op:         keyword.Intersect,
 		statements: statements,
 	}
 }
 
 func NewIntersectAll(statements ...Statement) SetOperation {
 	return SetOperation{
-		op:         operator.IntersectAll,
+		op:         keyword.IntersectAll,
 		statements: statements,
 	}
 }
 
 func NewExcept(statements ...Statement) SetOperation {
 	return SetOperation{
-		op:         operator.Except,
+		op:         keyword.Except,
 		statements: statements,
 	}
 }
 
 func NewExceptAll(statements ...Statement) SetOperation {
 	return SetOperation{
-		op:         operator.ExceptAll,
+		op:         keyword.ExceptAll,
 		statements: statements,
 	}
 }
@@ -64,7 +64,7 @@ func (u SetOperation) self() (token.Tokenizer, []interface{}) {
 		t = token.NewParentheses(t)
 		if i != 0 {
 			t = t.Prepend(
-				token.Word(u.operator()),
+				token.Word(u.keyword()),
 				token.Space,
 			)
 		}
@@ -78,7 +78,7 @@ func (u SetOperation) previous() Clause {
 	return nil
 }
 
-func (u SetOperation) operator() operator.Operator {
+func (u SetOperation) keyword() keyword.Operator {
 	return u.op
 }
 

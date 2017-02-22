@@ -1,13 +1,9 @@
 package statement
 
 import (
-	"github.com/minodisk/sqlabble/operator"
+	"github.com/minodisk/sqlabble/keyword"
 	"github.com/minodisk/sqlabble/token"
 )
-
-func Nodeize(stmt Statement) (token.Tokenizer, []interface{}) {
-	return stmt.nodeize()
-}
 
 // Statement is the interface of the component
 // which is the minimum unit constituting SQL.
@@ -23,6 +19,16 @@ type Clause interface {
 	previous() Clause
 }
 
+type Joiner interface {
+	Statement
+	Join(TableOrAlias) Join
+	InnerJoin(TableOrAlias) Join
+	LeftJoin(TableOrAlias) Join
+	RightJoin(TableOrAlias) Join
+	self() (token.Tokenizer, []interface{})
+	previous() Joiner
+}
+
 type TableOrAlias interface {
 	Statement
 	isTableOrAlias() bool
@@ -33,9 +39,9 @@ type TableOrAliasOrJoiner interface {
 	isTableOrAliasOrJoiner() bool
 }
 
-type ColumnOrColumnAsOrSubquery interface {
+type ColumnOrAliasOrSubquery interface {
 	Statement
-	isColumnOrColumnAsOrSubquery() bool
+	isColumnOrAliasOrSubquery() bool
 }
 
 type ColumnOrSubquery interface {
@@ -53,17 +59,7 @@ type ParamsOrSubquery interface {
 	isParamsOrSubquery() bool
 }
 
-type Joiner interface {
-	Statement
-	self() (token.Tokenizer, []interface{})
-	Join(TableOrAlias) Join
-	InnerJoin(TableOrAlias) Join
-	LeftJoin(TableOrAlias) Join
-	RightJoin(TableOrAlias) Join
-	previous() Joiner
-}
-
 type ComparisonOrLogicalOperation interface {
 	Statement
-	operator() operator.Operator
+	keyword() keyword.Operator
 }

@@ -17,7 +17,7 @@ func TestColumnType(t *testing.T) {
 			if _, ok := c.(statement.ColumnOrSubquery); !ok {
 				t.Errorf("%T should implement statement.ColumnOrSubquery", c)
 			}
-			if _, ok := c.(statement.ColumnOrColumnAsOrSubquery); !ok {
+			if _, ok := c.(statement.ColumnOrAliasOrSubquery); !ok {
 				t.Errorf("%T should implement statement.ColumnOrColumnAsOrSubquery", c)
 			}
 		})

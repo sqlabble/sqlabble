@@ -2,25 +2,24 @@ package statement
 
 import (
 	"github.com/minodisk/sqlabble/keyword"
-	"github.com/minodisk/sqlabble/operator"
 	"github.com/minodisk/sqlabble/token"
 )
 
 type JoinOperation struct {
-	op  operator.Operator
+	op  keyword.Operator
 	ops []ComparisonOrLogicalOperation
 }
 
 func NewAnd(ops ...ComparisonOrLogicalOperation) JoinOperation {
 	return JoinOperation{
-		op:  operator.And,
+		op:  keyword.And,
 		ops: ops,
 	}
 }
 
 func NewOr(ops ...ComparisonOrLogicalOperation) JoinOperation {
 	return JoinOperation{
-		op:  operator.Or,
+		op:  keyword.Or,
 		ops: ops,
 	}
 }
@@ -37,12 +36,12 @@ func (o JoinOperation) nodeize() (token.Tokenizer, []interface{}) {
 		values = append(values, vals...)
 	}
 	return token.NewTokenizers(ts...).Prefix(
-		token.Word(o.operator()),
+		token.Word(o.keyword()),
 		token.Space,
 	), values
 }
 
-func (o JoinOperation) operator() operator.Operator {
+func (o JoinOperation) keyword() keyword.Operator {
 	return o.op
 }
 
@@ -63,13 +62,13 @@ func (o Not) nodeize() (token.Tokenizer, []interface{}) {
 	return token.NewParentheses(
 		middle,
 	).Prepend(
-		token.Word(o.operator()),
+		token.Word(o.keyword()),
 		token.Space,
 	), values
 }
 
-func (o Not) operator() operator.Operator {
-	return operator.Not
+func (o Not) keyword() keyword.Operator {
+	return keyword.Not
 }
 
 func (o Not) operations() []ComparisonOrLogicalOperation {
@@ -77,63 +76,63 @@ func (o Not) operations() []ComparisonOrLogicalOperation {
 }
 
 type ComparisonOperation struct {
-	op     operator.Operator
+	op     keyword.Operator
 	column ColumnOrSubquery
 	param  ParamOrSubquery
 }
 
 func NewEq(param ParamOrSubquery) ComparisonOperation {
 	return ComparisonOperation{
-		op:    operator.Eq,
+		op:    keyword.Eq,
 		param: param,
 	}
 }
 
 func NewNotEq(param ParamOrSubquery) ComparisonOperation {
 	return ComparisonOperation{
-		op:    operator.NotEq,
+		op:    keyword.NotEq,
 		param: param,
 	}
 }
 
 func NewGt(param ParamOrSubquery) ComparisonOperation {
 	return ComparisonOperation{
-		op:    operator.Gt,
+		op:    keyword.Gt,
 		param: param,
 	}
 }
 
 func NewGte(param ParamOrSubquery) ComparisonOperation {
 	return ComparisonOperation{
-		op:    operator.Gte,
+		op:    keyword.Gte,
 		param: param,
 	}
 }
 
 func NewLt(param ParamOrSubquery) ComparisonOperation {
 	return ComparisonOperation{
-		op:    operator.Lt,
+		op:    keyword.Lt,
 		param: param,
 	}
 }
 
 func NewLte(param ParamOrSubquery) ComparisonOperation {
 	return ComparisonOperation{
-		op:    operator.Lte,
+		op:    keyword.Lte,
 		param: param,
 	}
 }
 
 func NewLike(param ParamOrSubquery) ComparisonOperation {
 	return ComparisonOperation{
-		op:    operator.Like,
+		op:    keyword.Like,
 		param: param,
 	}
 }
 
 func NewRegExp(param ParamOrSubquery) ComparisonOperation {
 	return ComparisonOperation{
-		op:    operator.RegExp,
+		op:    keyword.RegExp,
 		param: param,
 	}
 }
@@ -146,13 +145,13 @@ func (o ComparisonOperation) nodeize() (token.Tokenizer, []interface{}) {
 		t2,
 		token.NewLine(
 			token.Space,
-			token.Word(o.operator()),
+			token.Word(o.keyword()),
 			token.Space,
 		),
 	), append(v1, v2...)
 }
 
-func (o ComparisonOperation) operator() operator.Operator {
+func (o ComparisonOperation) keyword() keyword.Operator {
 	return o.op
 }
 
@@ -178,39 +177,39 @@ func (o Between) nodeize() (token.Tokenizer, []interface{}) {
 			t2,
 			token.NewLine(
 				token.Space,
-				token.Word(o.operator()),
+				token.Word(o.keyword()),
 				token.Space,
 			),
 		),
 		t3,
 		token.NewLine(
 			token.Space,
-			token.Word(operator.And),
+			token.Word(keyword.And),
 			token.Space,
 		),
 	), append(append(v1, v2...), v3...)
 }
 
-func (o Between) operator() operator.Operator {
-	return operator.Between
+func (o Between) keyword() keyword.Operator {
+	return keyword.Between
 }
 
 type ContainingOperation struct {
-	op     operator.Operator
+	op     keyword.Operator
 	column ColumnOrSubquery
 	params ParamsOrSubquery
 }
 
 func NewIn(params ParamsOrSubquery) ContainingOperation {
 	return ContainingOperation{
-		op:     operator.In,
+		op:     keyword.In,
 		params: params,
 	}
 }
 
 func NewNotIn(vals ParamsOrSubquery) ContainingOperation {
 	return ContainingOperation{
-		op:     operator.NotIn,
+		op:     keyword.NotIn,
 		params: vals,
 	}
 }
@@ -223,30 +222,30 @@ func (o ContainingOperation) nodeize() (token.Tokenizer, []interface{}) {
 		t2,
 		token.NewLine(
 			token.Space,
-			token.Word(o.operator()),
+			token.Word(o.keyword()),
 			token.Space,
 		),
 	), append(v1, v2...)
 }
 
-func (o ContainingOperation) operator() operator.Operator {
+func (o ContainingOperation) keyword() keyword.Operator {
 	return o.op
 }
 
 type NullOperation struct {
-	op     operator.Operator
+	op     keyword.Operator
 	column ColumnOrSubquery
 }
 
 func NewIsNull() NullOperation {
 	return NullOperation{
-		op: operator.Is,
+		op: keyword.Is,
 	}
 }
 
 func NewIsNotNull() NullOperation {
 	return NullOperation{
-		op: operator.IsNot,
+		op: keyword.IsNot,
 	}
 }
 
@@ -257,12 +256,12 @@ func (o NullOperation) nodeize() (token.Tokenizer, []interface{}) {
 		token.NewLine(token.Word(keyword.Null)),
 		token.NewLine(
 			token.Space,
-			token.Word(o.operator()),
+			token.Word(o.keyword()),
 			token.Space,
 		),
 	), v1
 }
 
-func (o NullOperation) operator() operator.Operator {
+func (o NullOperation) keyword() keyword.Operator {
 	return o.op
 }

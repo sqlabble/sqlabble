@@ -5,7 +5,6 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/minodisk/sqlabble/direction"
 	"github.com/minodisk/sqlabble/internal/diff"
 	"github.com/minodisk/sqlabble/statement"
 )
@@ -25,14 +24,14 @@ func TestOrderSQL(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			statement.NewOrder(direction.ASC),
+			statement.NewAsc(),
 			" ASC",
 			`>  ASC
 `,
 			nil,
 		},
 		{
-			statement.NewOrder(direction.DESC),
+			statement.NewDesc(),
 			" DESC",
 			`>  DESC
 `,

@@ -1,3 +1,6 @@
+// Printer is a contrasting package of scanners in parsers.
+// This package converts the tokens to text
+// according to the setting of the formatter.
 package printer
 
 import (
@@ -5,6 +8,7 @@ import (
 	"github.com/minodisk/sqlabble/token"
 )
 
+// Print converts the tokens to text according to ctx.
 func Print(tokens token.Tokens, ctx node.Context) string {
 	if ctx.IsBreaking() {
 		return tokens.String(ctx)
