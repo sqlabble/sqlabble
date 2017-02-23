@@ -74,11 +74,11 @@ SQL query builder with type support.
 - [x] `({STATEMENT}) EXCEPT ({STATEMENT})`
 - [x] `({STATEMENT}) EXCEPT ALL ({STATEMENT})`
 
-### Operators
-
 ### Conditional Logics
 
 - [ ] `CASE {COLUMN} WHEN {VALUE|OPERATION} THEN {VALUE|COLUMN|FUNCTION|SUBQUERY} ELSE {VALUE|COLUMN|FUNCTION|SUBQUERY} END`
+
+### Operators
 
 #### Logical
 
