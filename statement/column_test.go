@@ -14,10 +14,10 @@ func TestColumnType(t *testing.T) {
 		statement.Column{},
 	} {
 		t.Run(fmt.Sprintf("%T", c), func(t *testing.T) {
-			if _, ok := c.(statement.ColumnOrSubquery); !ok {
+			if _, ok := c.(statement.ColOrSub); !ok {
 				t.Errorf("%T should implement statement.ColumnOrSubquery", c)
 			}
-			if _, ok := c.(statement.ColumnOrAliasOrSubquery); !ok {
+			if _, ok := c.(statement.ColOrAliasOrSub); !ok {
 				t.Errorf("%T should implement statement.ColumnOrColumnAsOrSubquery", c)
 			}
 		})

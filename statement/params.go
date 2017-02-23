@@ -22,7 +22,14 @@ func (p Param) nodeize() (tokenizer.Tokenizer, []interface{}) {
 // isParamOrSubquery always returns true.
 // This method exists only to implement the interface ParamOrSubquery.
 // This is a shit of duck typing, but anyway it works.
-func (p Param) isParamOrSubquery() bool {
+func (p Param) isValOrSub() bool {
+	return true
+}
+
+// isColumnOrParamOrSubquery always returns true.
+// This method exists only to implement the interface ColumnOrParamOrSubquery.
+// This is a shit of duck typing, but anyway it works.
+func (p Param) isValOrColOrFuncOrSub() bool {
 	return true
 }
 
@@ -50,6 +57,6 @@ func (ps Params) nodeize() (tokenizer.Tokenizer, []interface{}) {
 // isParamsOrSubquery always returns true.
 // This method exists only to implement the interface ParamsOrSubquery.
 // This is a shit of duck typing, but anyway it works.
-func (vs Params) isParamsOrSubquery() bool {
+func (vs Params) isValsOrSub() bool {
 	return true
 }

@@ -8,7 +8,7 @@ import (
 
 type NonScalarOperation struct {
 	op     keyword.Operator
-	column ColumnOrSubquery
+	column ColOrSub
 	params Subquery
 }
 
