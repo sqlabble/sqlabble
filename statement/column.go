@@ -37,71 +37,71 @@ func (c Column) Define(definition string) Definition {
 // Assign is used to assign a params to the column.
 // This constitutes a part of the record update statement.
 // Returns a new Assign.
-func (c Column) Assign(param ParamOrSubquery) Assign {
+func (c Column) Assign(param ValOrSub) Assign {
 	return NewAssign(c, param)
 }
 
-func (c Column) Eq(value ParamOrSubquery) ComparisonOperation {
+func (c Column) Eq(value ValOrSub) ComparisonOperation {
 	e := NewEq(value)
 	e.column = c
 	return e
 }
 
-func (c Column) NotEq(value ParamOrSubquery) ComparisonOperation {
+func (c Column) NotEq(value ValOrSub) ComparisonOperation {
 	n := NewNotEq(value)
 	n.column = c
 	return n
 }
 
-func (c Column) Gt(value ParamOrSubquery) ComparisonOperation {
+func (c Column) Gt(value ValOrSub) ComparisonOperation {
 	g := NewGt(value)
 	g.column = c
 	return g
 }
 
-func (c Column) Gte(value ParamOrSubquery) ComparisonOperation {
+func (c Column) Gte(value ValOrSub) ComparisonOperation {
 	g := NewGte(value)
 	g.column = c
 	return g
 }
 
-func (c Column) Lt(value ParamOrSubquery) ComparisonOperation {
+func (c Column) Lt(value ValOrSub) ComparisonOperation {
 	l := NewLt(value)
 	l.column = c
 	return l
 }
 
-func (c Column) Lte(value ParamOrSubquery) ComparisonOperation {
+func (c Column) Lte(value ValOrSub) ComparisonOperation {
 	l := NewLte(value)
 	l.column = c
 	return l
 }
 
-func (c Column) Like(value ParamOrSubquery) ComparisonOperation {
+func (c Column) Like(value ValOrSub) ComparisonOperation {
 	l := NewLike(value)
 	l.column = c
 	return l
 }
 
-func (c Column) RegExp(value ParamOrSubquery) ComparisonOperation {
+func (c Column) RegExp(value ValOrSub) ComparisonOperation {
 	r := NewRegExp(value)
 	r.column = c
 	return r
 }
 
-func (c Column) Between(from, to ParamOrSubquery) Between {
+func (c Column) Between(from, to ValOrSub) Between {
 	b := NewBetween(from, to)
 	b.column = c
 	return b
 }
 
-func (c Column) In(params ParamsOrSubquery) ContainingOperation {
+func (c Column) In(params ValsOrSub) ContainingOperation {
 	i := NewIn(params)
 	i.column = c
 	return i
 }
 
-func (c Column) NotIn(params ParamsOrSubquery) ContainingOperation {
+func (c Column) NotIn(params ValsOrSub) ContainingOperation {
 	n := NewNotIn(params)
 	n.column = c
 	return n
@@ -207,16 +207,23 @@ func (c Column) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return tokenizer.NewLine(token.Word(c.name)), nil
 }
 
-// isColumnOrSubquery always returns true.
-// This method exists only to implement the interface ColumnOrSubquery.
+// isColOrSub always returns true.
+// This method exists only to implement the interface ColOrSub.
 // This is a shit of duck typing, but anyway it works.
-func (c Column) isColumnOrSubquery() bool {
+func (c Column) isColOrSub() bool {
 	return true
 }
 
-// isColumnOrColumnAsOrSubquery always returns true.
-// This method exists only to implement the interface ColumnOrColumnAsOrSubquery.
+// isColOrAliasOrSub always returns true.
+// This method exists only to implement the interface ColOrAliasOrSub.
 // This is a shit of duck typing, but anyway it works.
-func (c Column) isColumnOrAliasOrSubquery() bool {
+func (c Column) isColOrAliasOrSub() bool {
+	return true
+}
+
+// isValOrColOrFuncOrSub always returns true.
+// This method exists only to implement the interface ValOrColOrFuncOrSub.
+// This is a shit of duck typing, but anyway it works.
+func (c Column) isValOrColOrFuncOrSub() bool {
 	return true
 }

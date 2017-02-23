@@ -7,7 +7,7 @@ import (
 )
 
 type ColumnAs struct {
-	column ColumnOrSubquery
+	column ColOrSub
 	alias  string
 }
 
@@ -50,6 +50,6 @@ func (c ColumnAs) nodeize() (tokenizer.Tokenizer, []interface{}) {
 // isColumnOrColumnAsOrSubquery always returns true.
 // This method exists only to implement the interface ColumnOrColumnAsOrSubquery.
 // This is a shit of duck typing, but anyway it works.
-func (c ColumnAs) isColumnOrAliasOrSubquery() bool {
+func (c ColumnAs) isColOrAliasOrSub() bool {
 	return true
 }

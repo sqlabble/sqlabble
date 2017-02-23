@@ -78,60 +78,60 @@ func (o Not) operations() []ComparisonOrLogicalOperation {
 
 type ComparisonOperation struct {
 	op     keyword.Operator
-	column ColumnOrSubquery
-	param  ParamOrSubquery
+	column ColOrSub
+	param  ValOrSub
 }
 
-func NewEq(param ParamOrSubquery) ComparisonOperation {
+func NewEq(param ValOrSub) ComparisonOperation {
 	return ComparisonOperation{
 		op:    keyword.Eq,
 		param: param,
 	}
 }
 
-func NewNotEq(param ParamOrSubquery) ComparisonOperation {
+func NewNotEq(param ValOrSub) ComparisonOperation {
 	return ComparisonOperation{
 		op:    keyword.NotEq,
 		param: param,
 	}
 }
 
-func NewGt(param ParamOrSubquery) ComparisonOperation {
+func NewGt(param ValOrSub) ComparisonOperation {
 	return ComparisonOperation{
 		op:    keyword.Gt,
 		param: param,
 	}
 }
 
-func NewGte(param ParamOrSubquery) ComparisonOperation {
+func NewGte(param ValOrSub) ComparisonOperation {
 	return ComparisonOperation{
 		op:    keyword.Gte,
 		param: param,
 	}
 }
 
-func NewLt(param ParamOrSubquery) ComparisonOperation {
+func NewLt(param ValOrSub) ComparisonOperation {
 	return ComparisonOperation{
 		op:    keyword.Lt,
 		param: param,
 	}
 }
 
-func NewLte(param ParamOrSubquery) ComparisonOperation {
+func NewLte(param ValOrSub) ComparisonOperation {
 	return ComparisonOperation{
 		op:    keyword.Lte,
 		param: param,
 	}
 }
 
-func NewLike(param ParamOrSubquery) ComparisonOperation {
+func NewLike(param ValOrSub) ComparisonOperation {
 	return ComparisonOperation{
 		op:    keyword.Like,
 		param: param,
 	}
 }
 
-func NewRegExp(param ParamOrSubquery) ComparisonOperation {
+func NewRegExp(param ValOrSub) ComparisonOperation {
 	return ComparisonOperation{
 		op:    keyword.RegExp,
 		param: param,
@@ -157,11 +157,11 @@ func (o ComparisonOperation) keyword() keyword.Operator {
 }
 
 type Between struct {
-	column   ColumnOrSubquery
-	from, to ParamOrSubquery
+	column   ColOrSub
+	from, to ValOrSub
 }
 
-func NewBetween(from, to ParamOrSubquery) Between {
+func NewBetween(from, to ValOrSub) Between {
 	return Between{
 		from: from,
 		to:   to,
@@ -197,18 +197,18 @@ func (o Between) keyword() keyword.Operator {
 
 type ContainingOperation struct {
 	op     keyword.Operator
-	column ColumnOrSubquery
-	params ParamsOrSubquery
+	column ColOrSub
+	params ValsOrSub
 }
 
-func NewIn(params ParamsOrSubquery) ContainingOperation {
+func NewIn(params ValsOrSub) ContainingOperation {
 	return ContainingOperation{
 		op:     keyword.In,
 		params: params,
 	}
 }
 
-func NewNotIn(vals ParamsOrSubquery) ContainingOperation {
+func NewNotIn(vals ValsOrSub) ContainingOperation {
 	return ContainingOperation{
 		op:     keyword.NotIn,
 		params: vals,
@@ -235,7 +235,7 @@ func (o ContainingOperation) keyword() keyword.Operator {
 
 type NullOperation struct {
 	op     keyword.Operator
-	column ColumnOrSubquery
+	column ColOrSub
 }
 
 func NewIsNull() NullOperation {

@@ -29,6 +29,21 @@ type Joiner interface {
 	previous() Joiner
 }
 
+type ValOrSub interface {
+	Statement
+	isValOrSub() bool
+}
+
+type ValsOrSub interface {
+	Statement
+	isValsOrSub() bool
+}
+
+type ValOrColOrFuncOrSub interface {
+	Statement
+	isValOrColOrFuncOrSub() bool
+}
+
 type TableOrAlias interface {
 	Statement
 	isTableOrAlias() bool
@@ -39,24 +54,14 @@ type TableOrAliasOrJoiner interface {
 	isTableOrAliasOrJoiner() bool
 }
 
-type ColumnOrAliasOrSubquery interface {
+type ColOrSub interface {
 	Statement
-	isColumnOrAliasOrSubquery() bool
+	isColOrSub() bool
 }
 
-type ColumnOrSubquery interface {
+type ColOrAliasOrSub interface {
 	Statement
-	isColumnOrSubquery() bool
-}
-
-type ParamOrSubquery interface {
-	Statement
-	isParamOrSubquery() bool
-}
-
-type ParamsOrSubquery interface {
-	Statement
-	isParamsOrSubquery() bool
+	isColOrAliasOrSub() bool
 }
 
 type ComparisonOrLogicalOperation interface {
