@@ -702,6 +702,13 @@ func (f Func) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return t.Prepend(token.Word(f.name)), v
 }
 
+// isValOrFuncOrSub always returns true.
+// This method exists only to implement the interface ValOrFuncOrSub.
+// This is a shit of duck typing, but anyway it works.
+func (f Func) isValOrFuncOrSub() bool {
+	return true
+}
+
 // isValOrColOrFuncOrSub always returns true.
 // This method exists only to implement the interface ValOrColOrFuncOrSub.
 // This is a shit of duck typing, but anyway it works.

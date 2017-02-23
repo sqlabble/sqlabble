@@ -115,6 +115,13 @@ func (s Subquery) isValsOrSub() bool {
 	return true
 }
 
+// isValOrFuncOrSub always returns true.
+// This method exists only to implement the interface ValOrFuncOrSub.
+// This is a shit of duck typing, but anyway it works.
+func (s Subquery) isValOrFuncOrSub() bool {
+	return true
+}
+
 // isValOrColOrFuncOrSub always returns true.
 // This method exists only to implement the interface ValOrColOrFuncOrSub.
 // This is a shit of duck typing, but anyway it works.

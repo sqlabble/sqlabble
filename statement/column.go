@@ -37,7 +37,7 @@ func (c Column) Define(definition string) Definition {
 // Assign is used to assign a params to the column.
 // This constitutes a part of the record update statement.
 // Returns a new Assign.
-func (c Column) Assign(param ValOrSub) Assign {
+func (c Column) Assign(param ValOrFuncOrSub) Assign {
 	return NewAssign(c, param)
 }
 

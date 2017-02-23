@@ -34,6 +34,11 @@ type ValOrSub interface {
 	isValOrSub() bool
 }
 
+type ValOrFuncOrSub interface {
+	Statement
+	isValOrFuncOrSub() bool
+}
+
 type ValsOrSub interface {
 	Statement
 	isValsOrSub() bool

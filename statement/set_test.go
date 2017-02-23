@@ -42,6 +42,16 @@ func TestSet(t *testing.T) {
 		},
 		{
 			statement.NewSet(
+				statement.NewColumn("foo").Assign(statement.NewCurDate()),
+			),
+			"SET foo = CURDATE()",
+			`> SET
+>   foo = CURDATE()
+`,
+			nil,
+		},
+		{
+			statement.NewSet(
 				statement.NewColumn("foo").Assign(
 					statement.NewSubquery(
 						statement.NewSelect(

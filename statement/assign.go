@@ -8,10 +8,10 @@ import (
 
 type Assign struct {
 	column Column
-	param  ValOrSub
+	param  ValOrFuncOrSub
 }
 
-func NewAssign(column Column, param ValOrSub) Assign {
+func NewAssign(column Column, param ValOrFuncOrSub) Assign {
 	return Assign{
 		column: column,
 		param:  param,
