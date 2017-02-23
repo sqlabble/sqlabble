@@ -28,6 +28,16 @@ func (ps Args) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return tk.Prepend(token.ParenthesesStart).Append(token.ParenthesesEnd), values
 }
 
+type ValOrColOrFuncOrSubs []ValOrColOrFuncOrSub
+
+func (vs ValOrColOrFuncOrSubs) ToArgs() Args {
+	args := make(Args, len(vs))
+	for i, v := range vs {
+		args[i] = v
+	}
+	return args
+}
+
 type Func struct {
 	name keyword.Func
 	args Args
@@ -187,5 +197,12 @@ func (f Func) isValOrFuncOrSub() bool {
 // This method exists only to implement the interface ValOrColOrFuncOrSub.
 // This is a shit of duck typing, but anyway it works.
 func (f Func) isValOrColOrFuncOrSub() bool {
+	return true
+}
+
+// isColOrAliasOrFuncOrSub always returns true.
+// This method exists only to implement the interface ColOrAliasOrFuncOrSub.
+// This is a shit of duck typing, but anyway it works.
+func (f Func) isColOrAliasOrFuncOrSub() bool {
 	return true
 }

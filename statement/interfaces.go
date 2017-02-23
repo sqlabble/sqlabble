@@ -64,6 +64,11 @@ type ColOrAliasOrSub interface {
 	isColOrAliasOrSub() bool
 }
 
+type ColOrAliasOrFuncOrSub interface {
+	Statement
+	isColOrAliasOrFuncOrSub() bool
+}
+
 type ComparisonOrLogicalOperation interface {
 	Statement
 	keyword() keyword.Operator

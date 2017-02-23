@@ -131,6 +131,22 @@ func TestSelectSQL(t *testing.T) {
 `,
 			nil,
 		},
+		{
+			statement.NewSelect(
+				statement.NewConcat(
+					statement.NewColumn("i.fname"),
+					statement.NewParam(" "),
+					statement.NewColumn("i.lname"),
+				),
+			),
+			`SELECT CONCAT(i.fname, ?, i.lname)`,
+			`> SELECT
+>   CONCAT(i.fname, ?, i.lname)
+`,
+			[]interface{}{
+				" ",
+			},
+		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
 			sql, values := b.Build(c.statement)
