@@ -19,13 +19,6 @@ func (p Param) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return tokenizer.ParamsToLine(p.value)
 }
 
-// isValOrSub always returns true.
-// This method exists only to implement the interface ValOrSub.
-// This is a shit of duck typing, but anyway it works.
-func (p Param) isValOrSub() bool {
-	return true
-}
-
 // isValOrFuncOrSub always returns true.
 // This method exists only to implement the interface ValOrFuncOrSub.
 // This is a shit of duck typing, but anyway it works.

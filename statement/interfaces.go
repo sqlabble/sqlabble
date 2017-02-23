@@ -29,11 +29,6 @@ type Joiner interface {
 	previous() Joiner
 }
 
-type ValOrSub interface {
-	Statement
-	isValOrSub() bool
-}
-
 type ValOrFuncOrSub interface {
 	Statement
 	isValOrFuncOrSub() bool

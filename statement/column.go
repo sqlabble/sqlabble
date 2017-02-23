@@ -41,55 +41,55 @@ func (c Column) Assign(param ValOrFuncOrSub) Assign {
 	return NewAssign(c, param)
 }
 
-func (c Column) Eq(value ValOrSub) ComparisonOperation {
+func (c Column) Eq(value ValOrColOrFuncOrSub) ComparisonOperation {
 	e := NewEq(value)
 	e.column = c
 	return e
 }
 
-func (c Column) NotEq(value ValOrSub) ComparisonOperation {
+func (c Column) NotEq(value ValOrColOrFuncOrSub) ComparisonOperation {
 	n := NewNotEq(value)
 	n.column = c
 	return n
 }
 
-func (c Column) Gt(value ValOrSub) ComparisonOperation {
+func (c Column) Gt(value ValOrColOrFuncOrSub) ComparisonOperation {
 	g := NewGt(value)
 	g.column = c
 	return g
 }
 
-func (c Column) Gte(value ValOrSub) ComparisonOperation {
+func (c Column) Gte(value ValOrColOrFuncOrSub) ComparisonOperation {
 	g := NewGte(value)
 	g.column = c
 	return g
 }
 
-func (c Column) Lt(value ValOrSub) ComparisonOperation {
+func (c Column) Lt(value ValOrColOrFuncOrSub) ComparisonOperation {
 	l := NewLt(value)
 	l.column = c
 	return l
 }
 
-func (c Column) Lte(value ValOrSub) ComparisonOperation {
+func (c Column) Lte(value ValOrColOrFuncOrSub) ComparisonOperation {
 	l := NewLte(value)
 	l.column = c
 	return l
 }
 
-func (c Column) Like(value ValOrSub) ComparisonOperation {
+func (c Column) Like(value ValOrColOrFuncOrSub) ComparisonOperation {
 	l := NewLike(value)
 	l.column = c
 	return l
 }
 
-func (c Column) RegExp(value ValOrSub) ComparisonOperation {
+func (c Column) RegExp(value ValOrColOrFuncOrSub) ComparisonOperation {
 	r := NewRegExp(value)
 	r.column = c
 	return r
 }
 
-func (c Column) Between(from, to ValOrSub) Between {
+func (c Column) Between(from, to ValOrColOrFuncOrSub) Between {
 	b := NewBetween(from, to)
 	b.column = c
 	return b
