@@ -78,60 +78,60 @@ func (o Not) operations() []ComparisonOrLogicalOperation {
 
 type ComparisonOperation struct {
 	op     keyword.Operator
-	column ColOrSub
-	param  ValOrSub
+	column ValOrColOrFuncOrSub
+	param  ValOrColOrFuncOrSub
 }
 
-func NewEq(param ValOrSub) ComparisonOperation {
+func NewEq(param ValOrColOrFuncOrSub) ComparisonOperation {
 	return ComparisonOperation{
 		op:    keyword.Eq,
 		param: param,
 	}
 }
 
-func NewNotEq(param ValOrSub) ComparisonOperation {
+func NewNotEq(param ValOrColOrFuncOrSub) ComparisonOperation {
 	return ComparisonOperation{
 		op:    keyword.NotEq,
 		param: param,
 	}
 }
 
-func NewGt(param ValOrSub) ComparisonOperation {
+func NewGt(param ValOrColOrFuncOrSub) ComparisonOperation {
 	return ComparisonOperation{
 		op:    keyword.Gt,
 		param: param,
 	}
 }
 
-func NewGte(param ValOrSub) ComparisonOperation {
+func NewGte(param ValOrColOrFuncOrSub) ComparisonOperation {
 	return ComparisonOperation{
 		op:    keyword.Gte,
 		param: param,
 	}
 }
 
-func NewLt(param ValOrSub) ComparisonOperation {
+func NewLt(param ValOrColOrFuncOrSub) ComparisonOperation {
 	return ComparisonOperation{
 		op:    keyword.Lt,
 		param: param,
 	}
 }
 
-func NewLte(param ValOrSub) ComparisonOperation {
+func NewLte(param ValOrColOrFuncOrSub) ComparisonOperation {
 	return ComparisonOperation{
 		op:    keyword.Lte,
 		param: param,
 	}
 }
 
-func NewLike(param ValOrSub) ComparisonOperation {
+func NewLike(param ValOrColOrFuncOrSub) ComparisonOperation {
 	return ComparisonOperation{
 		op:    keyword.Like,
 		param: param,
 	}
 }
 
-func NewRegExp(param ValOrSub) ComparisonOperation {
+func NewRegExp(param ValOrColOrFuncOrSub) ComparisonOperation {
 	return ComparisonOperation{
 		op:    keyword.RegExp,
 		param: param,
@@ -157,11 +157,11 @@ func (o ComparisonOperation) keyword() keyword.Operator {
 }
 
 type Between struct {
-	column   ColOrSub
-	from, to ValOrSub
+	column   ValOrColOrFuncOrSub
+	from, to ValOrColOrFuncOrSub
 }
 
-func NewBetween(from, to ValOrSub) Between {
+func NewBetween(from, to ValOrColOrFuncOrSub) Between {
 	return Between{
 		from: from,
 		to:   to,
@@ -197,7 +197,7 @@ func (o Between) keyword() keyword.Operator {
 
 type ContainingOperation struct {
 	op     keyword.Operator
-	column ColOrSub
+	column ValOrColOrFuncOrSub
 	params ValsOrSub
 }
 

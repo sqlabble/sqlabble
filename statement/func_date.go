@@ -252,33 +252,6 @@ func (i IntervalUnit) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	), values
 }
 
-type Args []Statement
-
-func (ps Args) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	if len(ps) == 0 {
-		return tokenizer.NewLine(token.ParenthesesStart, token.ParenthesesEnd), nil
-	}
-
-	var tk tokenizer.Tokenizer
-	values := []interface{}{}
-	for i, p := range ps {
-		t, vals := p.nodeize()
-		if i == 0 {
-			tk = t
-			values = append(values, vals...)
-			continue
-		}
-		tk = tokenizer.ConcatTokenizers(tk, t, tokenizer.NewLine(token.Comma, token.Space))
-		values = append(values, vals...)
-	}
-	return tk.Prepend(token.ParenthesesStart).Append(token.ParenthesesEnd), values
-}
-
-type Func struct {
-	name keyword.Func
-	args Args
-}
-
 func NewAdddate(date ValOrColOrFuncOrSub, interval IntervalUnit) Func {
 	return Func{
 		name: keyword.Adddate,
@@ -695,16 +668,4 @@ func NewYearweek(date, mode ValOrColOrFuncOrSub) Func {
 		name: keyword.Yearweek,
 		args: Args{date, mode},
 	}
-}
-
-func (f Func) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	t, v := f.args.nodeize()
-	return t.Prepend(token.Word(f.name)), v
-}
-
-// isValOrColOrFuncOrSub always returns true.
-// This method exists only to implement the interface ValOrColOrFuncOrSub.
-// This is a shit of duck typing, but anyway it works.
-func (f Func) isValOrColOrFuncOrSub() bool {
-	return true
 }

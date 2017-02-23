@@ -1,0 +1,191 @@
+package statement
+
+import (
+	"github.com/minodisk/sqlabble/keyword"
+	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
+)
+
+type Args []Statement
+
+func (ps Args) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	if len(ps) == 0 {
+		return tokenizer.NewLine(token.ParenthesesStart, token.ParenthesesEnd), nil
+	}
+
+	var tk tokenizer.Tokenizer
+	values := []interface{}{}
+	for i, p := range ps {
+		t, vals := p.nodeize()
+		if i == 0 {
+			tk = t
+			values = append(values, vals...)
+			continue
+		}
+		tk = tokenizer.ConcatTokenizers(tk, t, tokenizer.NewLine(token.Comma, token.Space))
+		values = append(values, vals...)
+	}
+	return tk.Prepend(token.ParenthesesStart).Append(token.ParenthesesEnd), values
+}
+
+type Func struct {
+	name keyword.Func
+	args Args
+}
+
+func (c Func) Eq(value ValOrColOrFuncOrSub) ComparisonOperation {
+	e := NewEq(value)
+	e.column = c
+	return e
+}
+
+func (c Func) NotEq(value ValOrColOrFuncOrSub) ComparisonOperation {
+	n := NewNotEq(value)
+	n.column = c
+	return n
+}
+
+func (c Func) Gt(value ValOrColOrFuncOrSub) ComparisonOperation {
+	g := NewGt(value)
+	g.column = c
+	return g
+}
+
+func (c Func) Gte(value ValOrColOrFuncOrSub) ComparisonOperation {
+	g := NewGte(value)
+	g.column = c
+	return g
+}
+
+func (c Func) Lt(value ValOrColOrFuncOrSub) ComparisonOperation {
+	l := NewLt(value)
+	l.column = c
+	return l
+}
+
+func (c Func) Lte(value ValOrColOrFuncOrSub) ComparisonOperation {
+	l := NewLte(value)
+	l.column = c
+	return l
+}
+
+func (c Func) Like(value ValOrColOrFuncOrSub) ComparisonOperation {
+	l := NewLike(value)
+	l.column = c
+	return l
+}
+
+func (c Func) RegExp(value ValOrColOrFuncOrSub) ComparisonOperation {
+	r := NewRegExp(value)
+	r.column = c
+	return r
+}
+
+func (c Func) Between(from, to ValOrColOrFuncOrSub) Between {
+	b := NewBetween(from, to)
+	b.column = c
+	return b
+}
+
+func (c Func) In(params ValsOrSub) ContainingOperation {
+	i := NewIn(params)
+	i.column = c
+	return i
+}
+
+func (c Func) NotIn(params ValsOrSub) ContainingOperation {
+	n := NewNotIn(params)
+	n.column = c
+	return n
+}
+
+func (c Func) EqAll(params Subquery) NonScalarOperation {
+	n := NewEqAll(params)
+	n.column = c
+	return n
+}
+
+func (c Func) NotEqAll(params Subquery) NonScalarOperation {
+	n := NewNotEqAll(params)
+	n.column = c
+	return n
+}
+
+func (c Func) GtAll(params Subquery) NonScalarOperation {
+	n := NewGtAll(params)
+	n.column = c
+	return n
+}
+
+func (c Func) GteAll(params Subquery) NonScalarOperation {
+	n := NewGteAll(params)
+	n.column = c
+	return n
+}
+
+func (c Func) LtAll(params Subquery) NonScalarOperation {
+	n := NewLtAll(params)
+	n.column = c
+	return n
+}
+
+func (c Func) LteAll(params Subquery) NonScalarOperation {
+	n := NewLteAll(params)
+	n.column = c
+	return n
+}
+
+func (c Func) EqAny(params Subquery) NonScalarOperation {
+	n := NewEqAny(params)
+	n.column = c
+	return n
+}
+
+func (c Func) NotEqAny(params Subquery) NonScalarOperation {
+	n := NewNotEqAny(params)
+	n.column = c
+	return n
+}
+
+func (c Func) GtAny(params Subquery) NonScalarOperation {
+	n := NewGtAny(params)
+	n.column = c
+	return n
+}
+
+func (c Func) GteAny(params Subquery) NonScalarOperation {
+	n := NewGteAny(params)
+	n.column = c
+	return n
+}
+
+func (c Func) LtAny(params Subquery) NonScalarOperation {
+	n := NewLtAny(params)
+	n.column = c
+	return n
+}
+
+func (c Func) LteAny(params Subquery) NonScalarOperation {
+	n := NewLteAny(params)
+	n.column = c
+	return n
+}
+
+func (f Func) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	t, v := f.args.nodeize()
+	return t.Prepend(token.Word(f.name)), v
+}
+
+// isValOrFuncOrSub always returns true.
+// This method exists only to implement the interface ValOrFuncOrSub.
+// This is a shit of duck typing, but anyway it works.
+func (f Func) isValOrFuncOrSub() bool {
+	return true
+}
+
+// isValOrColOrFuncOrSub always returns true.
+// This method exists only to implement the interface ValOrColOrFuncOrSub.
+// This is a shit of duck typing, but anyway it works.
+func (f Func) isValOrColOrFuncOrSub() bool {
+	return true
+}

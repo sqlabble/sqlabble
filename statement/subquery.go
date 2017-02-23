@@ -18,55 +18,55 @@ func (s Subquery) As(alias string) SubqueryAs {
 	return a
 }
 
-func (s Subquery) Eq(value ValOrSub) ComparisonOperation {
+func (s Subquery) Eq(value ValOrColOrFuncOrSub) ComparisonOperation {
 	e := NewEq(value)
 	e.column = s
 	return e
 }
 
-func (s Subquery) NotEq(value ValOrSub) ComparisonOperation {
+func (s Subquery) NotEq(value ValOrColOrFuncOrSub) ComparisonOperation {
 	n := NewNotEq(value)
 	n.column = s
 	return n
 }
 
-func (s Subquery) Gt(value ValOrSub) ComparisonOperation {
+func (s Subquery) Gt(value ValOrColOrFuncOrSub) ComparisonOperation {
 	g := NewGt(value)
 	g.column = s
 	return g
 }
 
-func (s Subquery) Gte(value ValOrSub) ComparisonOperation {
+func (s Subquery) Gte(value ValOrColOrFuncOrSub) ComparisonOperation {
 	g := NewGte(value)
 	g.column = s
 	return g
 }
 
-func (s Subquery) Lt(value ValOrSub) ComparisonOperation {
+func (s Subquery) Lt(value ValOrColOrFuncOrSub) ComparisonOperation {
 	l := NewLt(value)
 	l.column = s
 	return l
 }
 
-func (s Subquery) Lte(value ValOrSub) ComparisonOperation {
+func (s Subquery) Lte(value ValOrColOrFuncOrSub) ComparisonOperation {
 	l := NewLte(value)
 	l.column = s
 	return l
 }
 
-func (s Subquery) Like(value ValOrSub) ComparisonOperation {
+func (s Subquery) Like(value ValOrColOrFuncOrSub) ComparisonOperation {
 	l := NewLike(value)
 	l.column = s
 	return l
 }
 
-func (s Subquery) RegExp(value ValOrSub) ComparisonOperation {
+func (s Subquery) RegExp(value ValOrColOrFuncOrSub) ComparisonOperation {
 	r := NewRegExp(value)
 	r.column = s
 	return r
 }
 
-func (s Subquery) Between(from, to ValOrSub) Between {
+func (s Subquery) Between(from, to ValOrColOrFuncOrSub) Between {
 	b := NewBetween(from, to)
 	b.column = s
 	return b
@@ -101,17 +101,17 @@ func (s Subquery) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return tokenizer.NewParentheses(t), values
 }
 
-// isValOrSub always returns true.
-// This method exists only to implement the interface ValOrSub.
-// This is a shit of duck typing, but anyway it works.
-func (s Subquery) isValOrSub() bool {
-	return true
-}
-
 // isValsOrSub always returns true.
 // This method exists only to implement the interface isValsOrSub.
 // This is a shit of duck typing, but anyway it works.
 func (s Subquery) isValsOrSub() bool {
+	return true
+}
+
+// isValOrFuncOrSub always returns true.
+// This method exists only to implement the interface ValOrFuncOrSub.
+// This is a shit of duck typing, but anyway it works.
+func (s Subquery) isValOrFuncOrSub() bool {
 	return true
 }
 
