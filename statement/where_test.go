@@ -9,13 +9,6 @@ import (
 	"github.com/minodisk/sqlabble/statement"
 )
 
-func TestWhereType(t *testing.T) {
-	w := statement.Where{}
-	if _, ok := interface{}(w).(statement.Clause); !ok {
-		t.Errorf("%s should implement statement.Clause", w)
-	}
-}
-
 func TestWhereOperation(t *testing.T) {
 	for i, c := range []struct {
 		statement statement.Statement

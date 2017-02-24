@@ -6,28 +6,22 @@ import (
 	"github.com/minodisk/sqlabble/tokenizer"
 )
 
-type Delete struct{}
-
-func NewDelete() Delete {
-	return Delete{}
+type Delete struct {
+	Prev
 }
 
-func (d Delete) From(t Table) From {
+func NewDelete() *Delete {
+	return &Delete{}
+}
+
+func (d *Delete) From(t Table) *From {
 	f := NewFrom(t)
-	f.prev = d
+	Link(d, f)
 	return f
 }
 
-func (d Delete) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	return nodeizeClauses(d)
-}
-
-func (d Delete) self() (tokenizer.Tokenizer, []interface{}) {
+func (d *Delete) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.Delete)),
 	), nil
-}
-
-func (d Delete) previous() Clause {
-	return nil
 }

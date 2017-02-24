@@ -16,7 +16,7 @@ func NewSearchedCase() *SearchedCase {
 
 func (c *SearchedCase) When(condition ComparisonOrLogicalOperation) *SearchedWhen {
 	w := NewSearchedWhen(condition)
-	Link(c, w)
+	Contract(c, w)
 	return w
 }
 

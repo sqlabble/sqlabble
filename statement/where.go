@@ -7,47 +7,40 @@ import (
 )
 
 type Where struct {
-	prev      Clause
+	Prev
+	Next
 	operation ComparisonOrLogicalOperation
 }
 
-func NewWhere(operation ComparisonOrLogicalOperation) Where {
-	return Where{
+func NewWhere(operation ComparisonOrLogicalOperation) *Where {
+	return &Where{
 		operation: operation,
 	}
 }
 
-func (w Where) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	return nodeizeClauses(w)
+func (w *Where) GroupBy(column Column, columns ...Column) *GroupBy {
+	g := NewGroupBy(column, columns...)
+	Link(w, g)
+	return g
 }
 
-func (w Where) self() (tokenizer.Tokenizer, []interface{}) {
+func (w *Where) OrderBy(orders ...Order) *OrderBy {
+	o := NewOrderBy(orders...)
+	Link(w, o)
+	return o
+}
+
+func (w *Where) Limit(count int) *Limit {
+	l := NewLimit(count)
+	Link(w, l)
+	return l
+}
+
+func (w *Where) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	middle, values := w.operation.nodeize()
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.Where)),
 	).SetMiddle(
 		middle,
 	), values
-}
-
-func (w Where) previous() Clause {
-	return w.prev
-}
-
-func (w Where) GroupBy(column Column, columns ...Column) GroupBy {
-	g := NewGroupBy(column, columns...)
-	g.prev = w
-	return g
-}
-
-func (w Where) OrderBy(orders ...Order) OrderBy {
-	o := NewOrderBy(orders...)
-	o.prev = w
-	return o
-}
-
-func (w Where) Limit(count int) Limit {
-	l := NewLimit(count)
-	l.prev = w
-	return l
 }

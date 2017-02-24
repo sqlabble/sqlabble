@@ -7,57 +7,61 @@ import (
 )
 
 type SetOperation struct {
+	Prev
+	Next
 	op         keyword.Operator
 	statements []Statement
 }
 
-func NewUnion(statements ...Statement) SetOperation {
-	return SetOperation{
+func NewUnion(statements ...Statement) *SetOperation {
+	return &SetOperation{
 		op:         keyword.Union,
 		statements: statements,
 	}
 }
 
-func NewUnionAll(statements ...Statement) SetOperation {
-	return SetOperation{
+func NewUnionAll(statements ...Statement) *SetOperation {
+	return &SetOperation{
 		op:         keyword.UnionAll,
 		statements: statements,
 	}
 }
 
-func NewIntersect(statements ...Statement) SetOperation {
-	return SetOperation{
+func NewIntersect(statements ...Statement) *SetOperation {
+	return &SetOperation{
 		op:         keyword.Intersect,
 		statements: statements,
 	}
 }
 
-func NewIntersectAll(statements ...Statement) SetOperation {
-	return SetOperation{
+func NewIntersectAll(statements ...Statement) *SetOperation {
+	return &SetOperation{
 		op:         keyword.IntersectAll,
 		statements: statements,
 	}
 }
 
-func NewExcept(statements ...Statement) SetOperation {
-	return SetOperation{
+func NewExcept(statements ...Statement) *SetOperation {
+	return &SetOperation{
 		op:         keyword.Except,
 		statements: statements,
 	}
 }
 
-func NewExceptAll(statements ...Statement) SetOperation {
-	return SetOperation{
+func NewExceptAll(statements ...Statement) *SetOperation {
+	return &SetOperation{
 		op:         keyword.ExceptAll,
 		statements: statements,
 	}
 }
 
-func (u SetOperation) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	return u.self()
+func (u *SetOperation) OrderBy(os ...Order) *OrderBy {
+	o := NewOrderBy(os...)
+	Link(u, o)
+	return o
 }
 
-func (u SetOperation) self() (tokenizer.Tokenizer, []interface{}) {
+func (u *SetOperation) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	tokenizers := make(tokenizer.Tokenizers, len(u.statements))
 	values := []interface{}{}
 	for i, s := range u.statements {
@@ -75,16 +79,6 @@ func (u SetOperation) self() (tokenizer.Tokenizer, []interface{}) {
 	return tokenizers, values
 }
 
-func (u SetOperation) previous() Clause {
-	return nil
-}
-
-func (u SetOperation) keyword() keyword.Operator {
+func (u *SetOperation) keyword() keyword.Operator {
 	return u.op
-}
-
-func (u SetOperation) OrderBy(os ...Order) OrderBy {
-	o := NewOrderBy(os...)
-	o.prev = u
-	return o
 }

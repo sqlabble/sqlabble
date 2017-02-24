@@ -2,40 +2,33 @@ package statement
 
 import "github.com/minodisk/sqlabble/token"
 
-func Link(n1, n2 Nodeizer) {
-	switch t1 := n1.(type) {
-	case Childer:
-		switch t2 := n2.(type) {
-		case Parenter:
-			t1.setChild(t2)
-			t2.setParent(t1)
-		}
-	case Nexter:
-		switch t2 := n2.(type) {
-		case Prever:
-			t1.setNext(t2)
-			t2.setPrev(t1)
-		}
-	}
+func Contract(t1 Childer, t2 Parenter) {
+	t1.setChild(t2)
+	t2.setParent(t1)
+}
+
+func Link(t1 Nexter, t2 Prever) {
+	t1.setNext(t2)
+	t2.setPrev(t1)
 }
 
 type Childer interface {
 	Nodeizer
-	child() Parenter
+	children() []Parenter
 	setChild(Parenter)
 	separator() token.Tokens
 }
 
 type Parent struct {
-	c Parenter
+	c []Parenter
 }
 
-func (p *Parent) child() Parenter {
+func (p *Parent) children() []Parenter {
 	return p.c
 }
 
 func (p *Parent) setChild(c Parenter) {
-	p.c = c
+	p.c = append(p.c, c)
 }
 
 type Parenter interface {

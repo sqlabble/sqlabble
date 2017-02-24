@@ -7,19 +7,24 @@ import (
 )
 
 type OrderBy struct {
-	prev   Clause
+	Prev
+	Next
 	orders []Order
 }
 
-func NewOrderBy(os ...Order) OrderBy {
-	return OrderBy{orders: os}
+func NewOrderBy(orders ...Order) *OrderBy {
+	return &OrderBy{
+		orders: orders,
+	}
 }
 
-func (o OrderBy) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	return nodeizeClauses(o)
+func (o *OrderBy) Limit(count int) *Limit {
+	l := NewLimit(count)
+	Link(o, l)
+	return l
 }
 
-func (o OrderBy) self() (tokenizer.Tokenizer, []interface{}) {
+func (o *OrderBy) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	tokenizers := make(tokenizer.Tokenizers, len(o.orders))
 	values := []interface{}{}
 	for i, o := range o.orders {
@@ -32,14 +37,4 @@ func (o OrderBy) self() (tokenizer.Tokenizer, []interface{}) {
 	).SetMiddle(
 		tokenizers.Prefix(token.Comma, token.Space),
 	), values
-}
-
-func (o OrderBy) previous() Clause {
-	return o.prev
-}
-
-func (o OrderBy) Limit(count int) Limit {
-	l := NewLimit(count)
-	l.prev = o
-	return l
 }

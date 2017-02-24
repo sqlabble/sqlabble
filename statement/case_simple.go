@@ -19,7 +19,7 @@ func NewSimpleCase(param ValOrColOrFuncOrSub) *SimpleCase {
 
 func (c *SimpleCase) When(param Param) *SimpleWhen {
 	w := NewSimpleWhen(param)
-	Link(c, w)
+	Contract(c, w)
 	return w
 }
 

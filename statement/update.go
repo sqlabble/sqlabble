@@ -7,35 +7,27 @@ import (
 )
 
 type Update struct {
-	prev  Clause
+	Prev
 	table Table
 }
 
-func NewUpdate(table Table) Update {
-	return Update{
+func NewUpdate(table Table) *Update {
+	return &Update{
 		table: table,
 	}
 }
 
-func (u Update) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	return nodeizeClauses(u)
+func (u *Update) Set(assigns ...Assign) *Set {
+	s := NewSet(assigns...)
+	Link(u, s)
+	return s
 }
 
-func (u Update) self() (tokenizer.Tokenizer, []interface{}) {
+func (u *Update) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	middle, values := u.table.nodeize()
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.Update)),
 	).SetMiddle(
 		middle,
 	), values
-}
-
-func (u Update) previous() Clause {
-	return u.prev
-}
-
-func (u Update) Set(assigns ...Assign) Set {
-	s := NewSet(assigns...)
-	s.prev = u
-	return s
 }

@@ -7,35 +7,32 @@ import (
 )
 
 type Select struct {
+	Prev
 	distinct bool
 	columns  []ColOrAliasOrFuncOrSub
 }
 
-func NewSelect(columns ...ColOrAliasOrFuncOrSub) Select {
-	return Select{
+func NewSelect(columns ...ColOrAliasOrFuncOrSub) *Select {
+	return &Select{
 		distinct: false,
 		columns:  columns,
 	}
 }
 
-func NewSelectDistinct(columns ...ColOrAliasOrFuncOrSub) Select {
-	return Select{
+func NewSelectDistinct(columns ...ColOrAliasOrFuncOrSub) *Select {
+	return &Select{
 		distinct: true,
 		columns:  columns,
 	}
 }
 
-func (s Select) From(t TableOrAliasOrJoiner) From {
+func (s *Select) From(t TableOrAliasOrJoiner) *From {
 	f := NewFrom(t)
-	f.prev = s
+	Link(s, f)
 	return f
 }
 
-func (s Select) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	return nodeizeClauses(s)
-}
-
-func (s Select) self() (tokenizer.Tokenizer, []interface{}) {
+func (s *Select) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	tokenizers := make(tokenizer.Tokenizers, len(s.columns))
 	values := []interface{}{}
 	for i, c := range s.columns {
@@ -55,8 +52,4 @@ func (s Select) self() (tokenizer.Tokenizer, []interface{}) {
 	).SetMiddle(
 		tokenizers.Prefix(token.Comma, token.Space),
 	), values
-}
-
-func (s Select) previous() Clause {
-	return nil
 }

@@ -9,13 +9,6 @@ import (
 	"github.com/minodisk/sqlabble/statement"
 )
 
-func TestLimitType(t *testing.T) {
-	l := statement.Limit{}
-	if _, ok := interface{}(l).(statement.Clause); !ok {
-		t.Errorf("%T should implement statement.Clause", l)
-	}
-}
-
 func TestLimitSQL(t *testing.T) {
 	for i, c := range []struct {
 		statement statement.Statement

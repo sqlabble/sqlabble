@@ -10,34 +10,59 @@ func Nodize(n Nodeizer) (tokenizer.Tokenizers, []interface{}) {
 	var tokenizers tokenizer.Tokenizers
 	values := []interface{}{}
 
-	if childer, ok := n.(Childer); ok {
-		if child := childer.child(); child != nil {
-			t1, vals1 := n.nodeize()
-			t2, vals2 := Nodize(child)
-			first, _ := t1.FirstLine()
-			_, last := t1.LastLine()
-			t12 := tokenizer.
-				NewContainer(first).
-				SetMiddle(t2.Prefix(childer.separator()...)).
-				SetLast(last)
+	ns := []Nodeizer{}
 
-			tokenizers = tokenizer.NewTokenizers(t12)
-			values = append(append(values, vals1...), vals2...)
+	{
+		p := n
+		for {
+			prever, ok := p.(Prever)
+			if !ok {
+				break
+			}
+			p = prever.prev()
+			if p == nil {
+				break
+			}
+			ns = append([]Nodeizer{p}, ns...)
+		}
+	}
+	ns = append(ns, n)
+	{
+		p := n
+		for {
+			nexter, ok := p.(Nexter)
+			if !ok {
+				break
+			}
+			p = nexter.next()
+			if p == nil {
+				break
+			}
+			ns = append(ns, p)
 		}
 	}
 
-	if tokenizers == nil {
-		t, vals := n.nodeize()
-		tokenizers = tokenizer.NewTokenizers(t)
-		values = vals
-	}
+	for _, n := range ns {
+		if childer, ok := n.(Childer); ok {
+			for _, child := range childer.children() {
+				t1, vals1 := n.nodeize()
+				t2, vals2 := Nodize(child)
+				first, _ := t1.FirstLine()
+				_, last := t1.LastLine()
+				t12 := tokenizer.
+					NewContainer(first).
+					SetMiddle(t2.Prefix(childer.separator()...)).
+					SetLast(last)
 
-	if nexter, ok := n.(Nexter); ok {
-		if next := nexter.next(); next != nil {
-			ts, vals := Nodize(next)
-			tokenizers = append(tokenizers, ts...)
-			values = append(values, vals...)
+				tokenizers = append(tokenizers, t12)
+				values = append(append(values, vals1...), vals2...)
+			}
+			continue
 		}
+
+		t1, values1 := n.nodeize()
+		tokenizers = append(tokenizers, t1)
+		values = append(values, values1...)
 	}
 
 	return tokenizers, values

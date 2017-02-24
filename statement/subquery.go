@@ -97,7 +97,7 @@ func (s Subquery) IsNotNull() NullOperation {
 }
 
 func (s Subquery) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	t, values := s.statement.nodeize()
+	t, values := Nodize(s.statement)
 	return tokenizer.NewParentheses(t), values
 }
 
