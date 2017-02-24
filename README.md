@@ -13,6 +13,18 @@ SQL query builder with type support.
     - Standard: `"`
     - MySQL: `` ` ``
 
+## Processing Layers
+
+```
+Statement --> Root --> Nodes --> Tokens --> Query
+           ^        ^         ^          ^
+           |        |         |          |
+       Traverser Nodeizer Tokenizer  Generator
+                                         ^
+                                         |
+                                       Format
+```
+
 ## Supports
 
 ### Clauses
