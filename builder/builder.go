@@ -33,7 +33,7 @@ func (b Builder) Build(stmt statement.Statement) (string, []interface{}) {
 	if n, ok := stmt.(statement.Nodeizer); ok {
 		root := statement.Traverse(n)
 		tokenizers, values := statement.Nodize(root)
-		sql := token.Print(tokenizers.Tokenize(0), b.Format)
+		sql := token.Generate(tokenizers.Tokenize(0), b.Format)
 		if len(values) == 0 {
 			values = nil
 		}
@@ -41,7 +41,7 @@ func (b Builder) Build(stmt statement.Statement) (string, []interface{}) {
 	}
 
 	tokenizer, values := statement.Nodeize(stmt)
-	query := token.Print(tokenizer.Tokenize(0), b.Format)
+	query := token.Generate(tokenizer.Tokenize(0), b.Format)
 	if len(values) == 0 {
 		values = nil
 	}

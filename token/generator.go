@@ -1,9 +1,7 @@
 package token
 
-// Print converts the tokens to text according to format.
-// Print behaves in contrast to the scan in
-// the implementation of a parser.
-func Print(tokens Tokens, format Format) string {
+// Generate converts the tokens to text according to format.
+func Generate(tokens Tokens, format Format) string {
 	if format.IsBreaking {
 		return tokens.String(format)
 	}
