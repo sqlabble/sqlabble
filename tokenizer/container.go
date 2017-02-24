@@ -81,6 +81,9 @@ func (c Container) FirstLine() (Line, Tokenizer) {
 }
 
 func (c Container) LastLine() (Tokenizer, Line) {
+	if c.last == nil {
+		return nil, EmptyLine
+	}
 	t, l := c.last.LastLine()
 	return NewContainer(
 		c.first,

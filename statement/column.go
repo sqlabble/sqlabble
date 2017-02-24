@@ -28,7 +28,7 @@ func (c Column) As(alias string) ColumnAs {
 // Define is used to specify a definition for the column.
 // This constitutes a part of the table creation.
 // Returns a new Definition.
-func (c Column) Define(definition string) Definition {
+func (c Column) Define(definition string) *Definition {
 	d := NewDefinition(definition)
 	d.column = c
 	return d

@@ -44,19 +44,24 @@ func Nodize(n Nodeizer) (tokenizer.Tokenizers, []interface{}) {
 
 	for _, n := range ns {
 		if childer, ok := n.(Childer); ok {
-			for _, child := range childer.children() {
-				t1, vals1 := n.nodeize()
-				t2, vals2 := Nodize(child)
-				first, _ := t1.FirstLine()
-				_, last := t1.LastLine()
-				t12 := tokenizer.
-					NewContainer(first).
-					SetMiddle(t2.Prefix(childer.separator()...)).
-					SetLast(last)
+			t1, vals1 := n.nodeize()
+			values = append(values, vals1...)
+			first, _ := t1.FirstLine()
+			_, last := t1.LastLine()
 
-				tokenizers = append(tokenizers, t12)
-				values = append(append(values, vals1...), vals2...)
+			children := childer.children()
+			ts := make(tokenizer.Tokenizers, len(children))
+			for i, child := range children {
+				var vals []interface{}
+				ts[i], vals = Nodize(child)
+				values = append(values, vals...)
 			}
+
+			t12 := tokenizer.
+				NewContainer(first).
+				SetMiddle(ts.Prefix(childer.separator()...)).
+				SetLast(last)
+			tokenizers = append(tokenizers, t12)
 			continue
 		}
 

@@ -7,47 +7,47 @@ import (
 )
 
 type CreateTable struct {
+	Parent
 	ifNotExists bool
-	joiner      Joiner
+	table       Table
 }
 
-func NewCreateTable(joiner Joiner) CreateTable {
-	return CreateTable{
+func NewCreateTable(table Table) *CreateTable {
+	return &CreateTable{
 		ifNotExists: false,
-		joiner:      joiner,
+		table:       table,
 	}
 }
 
-func NewCreateTableIfNotExists(joiner Joiner) CreateTable {
-	return CreateTable{
+func NewCreateTableIfNotExists(table Table) *CreateTable {
+	return &CreateTable{
 		ifNotExists: true,
-		joiner:      joiner,
+		table:       table,
 	}
 }
 
-func (c CreateTable) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	return c.container()
+func (c *CreateTable) Definitions(defs ...*Definition) *Definitions {
+	ds := NewDefinitions(defs...)
+	Contract(c, ds)
+	return ds
 }
 
-func (c CreateTable) container() (tokenizer.Container, []interface{}) {
-	line := tokenizer.NewLine(token.Word(keyword.CreateTable))
+func (c *CreateTable) separator() token.Tokens {
+	return nil
+}
+
+func (c *CreateTable) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	tokens := token.Tokens{
+		token.Word(keyword.CreateTable),
+		token.Space,
+	}
 	if c.ifNotExists {
-		line = line.A(
-			token.Space,
+		tokens = tokens.Append(
 			token.Word(keyword.IfNotExists),
+			token.Space,
 		)
 	}
 
-	middle, values := c.joiner.nodeize()
-	return tokenizer.NewContainer(
-		line,
-	).SetMiddle(
-		middle,
-	), values
-}
-
-func (c CreateTable) Definitions(defs ...Definition) Definitions {
-	ds := NewDefinitions(defs...)
-	ds.createTable = c
-	return ds
+	t, values := c.table.nodeize()
+	return tokenizer.NewContainer(t.Prepend(tokens...)), values
 }

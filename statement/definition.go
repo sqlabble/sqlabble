@@ -6,12 +6,13 @@ import (
 )
 
 type Definition struct {
+	Child
 	column     Column
 	definition string
 }
 
-func NewDefinition(definition string) Definition {
-	return Definition{
+func NewDefinition(definition string) *Definition {
+	return &Definition{
 		definition: definition,
 	}
 }
@@ -26,38 +27,25 @@ func (d Definition) nodeize() (tokenizer.Tokenizer, []interface{}) {
 }
 
 type Definitions struct {
-	createTable CreateTable
-	definitions []Definition
+	Child
+	Parent
 }
 
-func NewDefinitions(definitions ...Definition) Definitions {
-	return Definitions{
-		definitions: definitions,
+func NewDefinitions(defs ...*Definition) *Definitions {
+	ds := &Definitions{}
+	for _, d := range defs {
+		Contract(ds, d)
 	}
+	return ds
 }
 
-func (ds Definitions) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	ts := make(tokenizer.Tokenizers, len(ds.definitions))
-	values := []interface{}{}
-	for i, d := range ds.definitions {
-		var vals []interface{}
-		ts[i], vals = d.nodeize()
-		values = append(values, vals...)
-	}
-	ts = ts.Prefix(
+func (d Definitions) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	return tokenizer.NewParentheses(nil), nil
+}
+
+func (d Definitions) separator() token.Tokens {
+	return token.NewTokens(
 		token.Comma,
 		token.Space,
 	)
-
-	c, values := ds.createTable.container()
-	middle := c.Middle()
-	def := tokenizer.NewParentheses(ts)
-
-	return c.SetMiddle(
-		tokenizer.ConcatTokenizers(
-			middle,
-			def,
-			tokenizer.NewLine(token.Space),
-		),
-	), values
 }

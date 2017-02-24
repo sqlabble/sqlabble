@@ -24,8 +24,7 @@ func TestCreateTableSQL(t *testing.T) {
 				statement.NewTable("foo"),
 			),
 			"CREATE TABLE foo",
-			`> CREATE TABLE
->   foo
+			`> CREATE TABLE foo
 `,
 			nil,
 		},
@@ -34,8 +33,7 @@ func TestCreateTableSQL(t *testing.T) {
 				statement.NewTable("foo"),
 			),
 			"CREATE TABLE IF NOT EXISTS foo",
-			`> CREATE TABLE IF NOT EXISTS
->   foo
+			`> CREATE TABLE IF NOT EXISTS foo
 `,
 			nil,
 		},
@@ -44,8 +42,8 @@ func TestCreateTableSQL(t *testing.T) {
 				statement.NewTable("foo"),
 			).Definitions(),
 			"CREATE TABLE foo ()",
-			`> CREATE TABLE
->   foo (
+			`> CREATE TABLE foo
+>   (
 >   )
 `,
 			nil,
@@ -57,8 +55,8 @@ func TestCreateTableSQL(t *testing.T) {
 				statement.NewColumn("name").Define("VARCHAR(255)"),
 			),
 			"CREATE TABLE foo (name VARCHAR(255))",
-			`> CREATE TABLE
->   foo (
+			`> CREATE TABLE foo
+>   (
 >     name VARCHAR(255)
 >   )
 `,
@@ -72,8 +70,8 @@ func TestCreateTableSQL(t *testing.T) {
 				statement.NewColumn("gender").Define("ENUM('M', 'F')"),
 			),
 			"CREATE TABLE foo (name VARCHAR(255), gender ENUM('M', 'F'))",
-			`> CREATE TABLE
->   foo (
+			`> CREATE TABLE foo
+>   (
 >     name VARCHAR(255)
 >     , gender ENUM('M', 'F')
 >   )
@@ -89,8 +87,8 @@ func TestCreateTableSQL(t *testing.T) {
 				statement.NewColumn("birth_date").Define("DATE"),
 			),
 			"CREATE TABLE foo (name VARCHAR(255), gender ENUM('M', 'F'), birth_date DATE)",
-			`> CREATE TABLE
->   foo (
+			`> CREATE TABLE foo
+>   (
 >     name VARCHAR(255)
 >     , gender ENUM('M', 'F')
 >     , birth_date DATE
