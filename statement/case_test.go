@@ -17,45 +17,54 @@ func TestCase(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			statement.NewCase().
+			statement.NewSearchedCase().
 				When(
 					statement.NewColumn("employee.title").Eq(statement.NewParam("Head Teller")),
-				).Then(statement.NewParam("Head Teller")).
+				).
+				Then(statement.NewParam("Head Teller")).
 				When(
 					statement.NewAnd(
 						statement.NewColumn("employee.title").Eq(statement.NewParam("Teller")),
 						statement.NewYear(statement.NewColumn("employee.start_date")).Gt(statement.NewParam(2004)),
 					),
-				).Then(statement.NewParam("Teller Trainee")).
+				).
+				Then(statement.NewParam("Teller Trainee")).
 				When(
 					statement.NewAnd(
 						statement.NewColumn("employee.title").Eq(statement.NewParam("Teller")),
 						statement.NewYear(statement.NewColumn("employee.start_date")).Lt(statement.NewParam(2003)),
 					),
-				).Then(statement.NewParam("Experienced Teller")).
+				).
+				Then(statement.NewParam("Experienced Teller")).
 				When(
 					statement.NewAnd(
 						statement.NewColumn("employee.title").Eq(statement.NewParam("Teller")),
 					),
-				).Then(statement.NewParam("Teller")).
+				).
+				Then(statement.NewParam("Teller")).
 				Else(statement.NewParam("Non-Teller")),
-			`> CASE WHEN (employee.title = ?) THEN ? WHEN (employee.title = ? AND YEAR(employee.start_date) > ?) THEN ? WHEN (employee.title = ? AND YEAR(employee.start_date) < ?) THEN ? WHEN (employee.title = ?) THEN ? ELSE ? END`,
+			`CASE WHEN employee.title = ? THEN ? WHEN employee.title = ? AND YEAR(employee.start_date) > ? THEN ? WHEN employee.title = ? AND YEAR(employee.start_date) < ? THEN ? WHEN employee.title = ? THEN ? ELSE ? END`,
 			`> CASE
->   WHEN (
+>   WHEN
 >     employee.title = ?
->   ) THEN ?
->   WHEN (
+>   THEN
+>     ?
+>   WHEN
 >     employee.title = ?
 >     AND YEAR(employee.start_date) > ?
->   ) THEN ?
->   WHEN (
+>   THEN
+>     ?
+>   WHEN
 >     employee.title = ?
 >     AND YEAR(employee.start_date) < ?
->   ) THEN ?
->   WHEN (
+>   THEN
+>     ?
+>   WHEN
 >     employee.title = ?
->   ) THEN ?
->   ELSE ?
+>   THEN
+>     ?
+>   ELSE
+>     ?
 > END
 `,
 			[]interface{}{
@@ -73,7 +82,8 @@ func TestCase(t *testing.T) {
 			},
 		},
 		{
-			statement.NewCase(statement.NewColumn("customer.cust_type_cd")).
+			statement.
+				NewSimpleCase(statement.NewColumn("customer.cust_type_cd")).
 				When(
 					statement.NewParam("I"),
 				).
@@ -103,25 +113,32 @@ func TestCase(t *testing.T) {
 					),
 				).
 				Else(statement.NewParam("Unknown Customer Type")),
-			``,
+			`CASE customer.cust_type_cd WHEN ? THEN (SELECT CONCAT(i.fname, ?, i.lname) FROM individual AS "i" WHERE i.cust_id = customer.cust_id) WHEN ? THEN (SELECT b.name FROM business AS "b" WHERE b.cust_id = customer.cust_id) ELSE ? END`,
 			`> CASE customer.cust_type_cd
->   WHEN ? THEN (
->     SELECT
->       CONCAT(i.fname, ?, i.lname)
->     FROM
->       individual as i
->     WHERE
->       i.cust_id = customer.cust_id
->   )
->   WHEN ? THEN (
->     SELECT
->       b.name
->     FROM
->       business as b
->     WHERE
->       b.cust_id = customer.cust_id
->   )
->   ELSE ?
+>   WHEN
+>     ?
+>   THEN
+>     (
+>       SELECT
+>         CONCAT(i.fname, ?, i.lname)
+>       FROM
+>         individual AS "i"
+>       WHERE
+>         i.cust_id = customer.cust_id
+>     )
+>   WHEN
+>     ?
+>   THEN
+>     (
+>       SELECT
+>         b.name
+>       FROM
+>         business AS "b"
+>       WHERE
+>         b.cust_id = customer.cust_id
+>     )
+>   ELSE
+>     ?
 > END
 `,
 			[]interface{}{

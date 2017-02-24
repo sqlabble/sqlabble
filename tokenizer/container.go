@@ -3,9 +3,9 @@ package tokenizer
 import "github.com/minodisk/sqlabble/token"
 
 type Container struct {
-	first  Line
+	first  Tokenizer
 	middle Tokenizer
-	last   Line
+	last   Tokenizer
 }
 
 func WrapParenthesesLines(lines ...Line) Container {
@@ -18,7 +18,7 @@ func WrapParenthesesLines(lines ...Line) Container {
 	)
 }
 
-func NewContainer(first Line) Container {
+func NewContainer(first Tokenizer) Container {
 	return Container{
 		first: first,
 	}
@@ -41,22 +41,26 @@ func (c Container) SetMiddle(middle Tokenizer) Container {
 	return c
 }
 
-func (c Container) SetLast(line Line) Container {
+func (c Container) SetLast(line Tokenizer) Container {
 	c.last = line
 	return c
 }
 
 func (c Container) Tokenize(depth int) token.Tokens {
-	var tokens token.Tokens
-	if c.middle != nil {
-		tokens = c.middle.Tokenize(depth + 1)
+	tokens := token.Tokens{}
+	if c.first != nil {
+		ts := c.first.Tokenize(depth)
+		tokens = append(tokens, ts...)
 	}
-
-	return token.Flatten(
-		c.first.Tokenize(depth),
-		tokens,
-		c.last.Tokenize(depth),
-	)
+	if c.middle != nil {
+		ts := c.middle.Tokenize(depth + 1)
+		tokens = append(tokens, ts...)
+	}
+	if c.last != nil {
+		ts := c.last.Tokenize(depth)
+		tokens = append(tokens, ts...)
+	}
+	return tokens
 }
 
 func (c Container) Prepend(tokens ...token.Token) Tokenizer {
@@ -70,15 +74,17 @@ func (c Container) Append(tokens ...token.Token) Tokenizer {
 }
 
 func (c Container) FirstLine() (Line, Tokenizer) {
-	return c.first, NewContainer(
-		EmptyLine,
+	f, t := c.first.FirstLine()
+	return f, NewContainer(
+		t,
 	).SetMiddle(c.middle).SetLast(c.last)
 }
 
 func (c Container) LastLine() (Tokenizer, Line) {
+	t, l := c.last.LastLine()
 	return NewContainer(
 		c.first,
-	).SetMiddle(c.middle), c.last
+	).SetMiddle(c.middle).SetLast(t), l
 }
 
 type Containers []Container

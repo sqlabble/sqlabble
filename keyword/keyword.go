@@ -20,6 +20,12 @@ const (
 	CreateTable   = "CREATE TABLE"
 	IfNotExists   = "IF NOT EXISTS"
 
+	Case = "CASE"
+	When = "WHEN"
+	Then = "THEN"
+	Else = "ELSE"
+	End  = "END"
+
 	Join      = "JOIN"
 	InnerJoin = "INNER JOIN"
 	LeftJoin  = "LEFT JOIN"
