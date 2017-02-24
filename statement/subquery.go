@@ -135,3 +135,10 @@ func (s Subquery) isColOrSub() bool {
 func (s Subquery) isColOrAliasOrSub() bool {
 	return true
 }
+
+// isColOrAliasOrFuncOrSub always returns true.
+// This method exists only to implement the interface ColOrAliasOrFuncOrSub.
+// This is a shit of duck typing, but anyway it works.
+func (s Subquery) isColOrAliasOrFuncOrSub() bool {
+	return true
+}

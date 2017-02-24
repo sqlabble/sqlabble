@@ -53,3 +53,10 @@ func (c ColumnAs) nodeize() (tokenizer.Tokenizer, []interface{}) {
 func (c ColumnAs) isColOrAliasOrSub() bool {
 	return true
 }
+
+// isColOrAliasOrFuncOrSub always returns true.
+// This method exists only to implement the interface ColOrAliasOrFuncOrSub.
+// This is a shit of duck typing, but anyway it works.
+func (c ColumnAs) isColOrAliasOrFuncOrSub() bool {
+	return true
+}

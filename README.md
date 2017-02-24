@@ -13,14 +13,26 @@ SQL query builder with type support.
     - Standard: `"`
     - MySQL: `` ` ``
 
+## Processing Layers
+
+```
+Statement --> Root --> Nodes --> Tokens --> Query
+           ^        ^         ^          ^
+           |        |         |          |
+       Traverser Nodeizer Tokenizer  Generator
+                                         ^
+                                         |
+                                       Format
+```
+
 ## Supports
 
 ### Clauses
 
 - [x] `CREATE TABLE {TABLE}`
 - [x] `CREATE TABLE IF NOT EXISTS {TABLE}`
-- [x] `SELECT {COLUMN|SUBQUERY}`
-- [x] `SELECT DISTINCT {COLUMN|SUBQUERY}`
+- [x] `SELECT {COLUMN|FUNCTION|SUBQUERY}`
+- [x] `SELECT DISTINCT {COLUMN|FUNCTION|SUBQUERY}`
 - [x] `FROM {TABLE|SUBQUERY}`
 - [x] `WHERE {OPERATION}`
 - [x] `GROUP BY {COLUMN}`
@@ -76,7 +88,8 @@ SQL query builder with type support.
 
 ### Conditional Logics
 
-- [ ] `CASE {COLUMN} WHEN {VALUE|OPERATION} THEN {VALUE|COLUMN|FUNCTION|SUBQUERY} ELSE {VALUE|COLUMN|FUNCTION|SUBQUERY} END`
+- [x] `CASE {VALUE|COLUMN|FUNCTION|SUBQUERY} WHEN {VALUE} THEN {VALUE|COLUMN|FUNCTION|SUBQUERY} ELSE {VALUE|COLUMN|FUNCTION|SUBQUERY} END`
+- [x] `CASE WHEN {OPERATION} THEN {VALUE|COLUMN|FUNCTION|SUBQUERY} ELSE {VALUE|COLUMN|FUNCTION|SUBQUERY} END`
 
 ### Operators
 
