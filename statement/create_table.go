@@ -32,10 +32,6 @@ func (c *CreateTable) Definitions(defs ...*Definition) *Definitions {
 	return ds
 }
 
-func (c *CreateTable) separator() token.Tokens {
-	return nil
-}
-
 func (c *CreateTable) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	tokens := token.Tokens{
 		token.Word(keyword.CreateTable),

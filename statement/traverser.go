@@ -16,6 +16,10 @@ type Childer interface {
 	Nodeizer
 	children() []Parenter
 	setChild(Parenter)
+}
+
+type Separatorer interface {
+	Childer
 	separator() token.Tokens
 }
 

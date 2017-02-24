@@ -20,10 +20,6 @@ func (c *SearchedCase) When(condition ComparisonOrLogicalOperation) *SearchedWhe
 	return w
 }
 
-func (c *SearchedCase) separator() token.Tokens {
-	return nil
-}
-
 func (c *SearchedCase) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.Case)),

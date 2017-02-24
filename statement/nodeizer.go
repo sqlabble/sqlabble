@@ -57,9 +57,14 @@ func Nodize(n Nodeizer) (tokenizer.Tokenizers, []interface{}) {
 				values = append(values, vals...)
 			}
 
+			if separatorer, ok := childer.(Separatorer); ok {
+				seps := separatorer.separator()
+				ts = ts.Prefix(seps...)
+			}
+
 			t12 := tokenizer.
 				NewContainer(first).
-				SetMiddle(ts.Prefix(childer.separator()...)).
+				SetMiddle(ts).
 				SetLast(last)
 			tokenizers = append(tokenizers, t12)
 			continue

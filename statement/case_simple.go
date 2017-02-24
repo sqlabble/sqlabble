@@ -23,10 +23,6 @@ func (c *SimpleCase) When(param Param) *SimpleWhen {
 	return w
 }
 
-func (c *SimpleCase) separator() token.Tokens {
-	return nil
-}
-
 func (c *SimpleCase) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	t, vals := c.param.nodeize()
 	return tokenizer.NewContainer(
