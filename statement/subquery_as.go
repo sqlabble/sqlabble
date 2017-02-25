@@ -24,9 +24,7 @@ func (a SubqueryAs) nodeize() (tokenizer.Tokenizer, []interface{}) {
 		t1,
 		t2,
 		tokenizer.NewLine(
-			token.Space,
 			token.Word(keyword.As),
-			token.Space,
 		),
 	), v1
 }

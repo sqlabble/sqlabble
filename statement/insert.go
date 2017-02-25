@@ -38,10 +38,9 @@ func (i InsertInto) self() (tokenizer.Tokenizer, []interface{}) {
 			tokenizer.NewParentheses(
 				ts.Prefix(
 					token.Comma,
-					token.Space,
 				),
 			),
-			tokenizer.NewLine(token.Space),
+			tokenizer.EmptyLine,
 		),
 	), values
 }

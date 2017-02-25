@@ -26,7 +26,7 @@ func (c *SimpleCase) When(param Param) *SimpleWhen {
 func (c *SimpleCase) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	t, vals := c.param.nodeize()
 	return tokenizer.NewContainer(
-		t.Prepend(token.Word(keyword.Case), token.Space),
+		t.Prepend(token.Word(keyword.Case)),
 	).SetLast(
 		tokenizer.NewLine(token.Word(keyword.End)),
 	), vals

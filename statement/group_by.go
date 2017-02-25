@@ -50,7 +50,6 @@ func (g *GroupBy) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	).SetMiddle(
 		ts.Prefix(
 			token.Comma,
-			token.Space,
 		),
 	), values
 }

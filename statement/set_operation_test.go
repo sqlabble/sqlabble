@@ -18,15 +18,17 @@ func TestUnionSQL(t *testing.T) {
 	}{
 		{
 			statement.NewUnion(
-				statement.NewSelect(statement.NewColumn("a")),
+				statement.NewSelect(statement.NewColumn("a")).From(statement.NewTable("aaa")),
 				statement.NewSelect(statement.NewColumn("b")),
 			).OrderBy(
 				statement.NewColumn("foo").Asc(),
 			),
-			"(SELECT a) UNION (SELECT b) ORDER BY foo ASC",
+			"(SELECT a FROM aaa) UNION (SELECT b) ORDER BY foo ASC",
 			`> (
 >   SELECT
 >     a
+>   FROM
+>     aaa
 > )
 > UNION (
 >   SELECT

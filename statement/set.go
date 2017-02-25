@@ -37,6 +37,6 @@ func (s *Set) nodeize() (tokenizer.Tokenizer, []interface{}) {
 			token.Word(keyword.Set),
 		),
 	).SetMiddle(
-		tokenizers.Prefix(token.Comma, token.Space),
+		tokenizers.Prefix(token.Comma),
 	), values
 }

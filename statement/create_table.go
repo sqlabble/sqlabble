@@ -35,12 +35,10 @@ func (c *CreateTable) Definitions(defs ...*Definition) *Definitions {
 func (c *CreateTable) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	tokens := token.Tokens{
 		token.Word(keyword.CreateTable),
-		token.Space,
 	}
 	if c.ifNotExists {
 		tokens = tokens.Append(
 			token.Word(keyword.IfNotExists),
-			token.Space,
 		)
 	}
 

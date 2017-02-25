@@ -21,7 +21,6 @@ func (d Definition) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	t, values := d.column.nodeize()
 	return t.
 		Append(
-			token.Space,
 			token.Word(d.definition),
 		), values
 }
@@ -46,6 +45,5 @@ func (d Definitions) nodeize() (tokenizer.Tokenizer, []interface{}) {
 func (d Definitions) separator() token.Tokens {
 	return token.NewTokens(
 		token.Comma,
-		token.Space,
 	)
 }

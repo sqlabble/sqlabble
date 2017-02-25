@@ -29,7 +29,6 @@ func NewBuilder(format token.Format) Builder {
 
 // Build converts a statement into a query and a slice of values.
 func (b Builder) Build(stmt statement.Statement) (string, []interface{}) {
-
 	if n, ok := stmt.(statement.Nodeizer); ok {
 		root := statement.Traverse(n)
 		tokenizers, values := statement.Nodize(root)

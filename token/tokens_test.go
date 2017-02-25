@@ -16,9 +16,9 @@ func TestToken(t *testing.T) {
 	}{
 		{
 			token.Tokens{
-				token.Quote,
+				token.QuoteStart,
 				token.Word("foo"),
-				token.Quote,
+				token.QuoteEnd,
 			},
 			`"foo"`,
 			"`foo`",

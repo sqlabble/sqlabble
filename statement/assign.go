@@ -25,9 +25,7 @@ func (a Assign) nodeize() (tokenizer.Tokenizer, []interface{}) {
 		t1,
 		t2,
 		tokenizer.NewLine(
-			token.Space,
 			token.Word(keyword.Eq),
-			token.Space,
 		),
 	), append(v1, v2...)
 }

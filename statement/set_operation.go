@@ -70,7 +70,6 @@ func (u *SetOperation) nodeize() (tokenizer.Tokenizer, []interface{}) {
 		if i != 0 {
 			t = t.Prepend(
 				token.Word(u.keyword()),
-				token.Space,
 			)
 		}
 		tokenizers[i] = t

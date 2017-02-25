@@ -38,7 +38,6 @@ func (o JoinOperation) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	}
 	return tokenizer.NewTokenizers(ts...).Prefix(
 		token.Word(o.keyword()),
-		token.Space,
 	), values
 }
 
@@ -64,7 +63,6 @@ func (o Not) nodeize() (tokenizer.Tokenizer, []interface{}) {
 		middle,
 	).Prepend(
 		token.Word(o.keyword()),
-		token.Space,
 	), values
 }
 
@@ -145,9 +143,7 @@ func (o ComparisonOperation) nodeize() (tokenizer.Tokenizer, []interface{}) {
 		t1,
 		t2,
 		tokenizer.NewLine(
-			token.Space,
 			token.Word(o.keyword()),
-			token.Space,
 		),
 	), append(v1, v2...)
 }
@@ -177,16 +173,12 @@ func (o Between) nodeize() (tokenizer.Tokenizer, []interface{}) {
 			t1,
 			t2,
 			tokenizer.NewLine(
-				token.Space,
 				token.Word(o.keyword()),
-				token.Space,
 			),
 		),
 		t3,
 		tokenizer.NewLine(
-			token.Space,
 			token.Word(keyword.And),
-			token.Space,
 		),
 	), append(append(v1, v2...), v3...)
 }
@@ -222,9 +214,7 @@ func (o ContainingOperation) nodeize() (tokenizer.Tokenizer, []interface{}) {
 		t1,
 		t2,
 		tokenizer.NewLine(
-			token.Space,
 			token.Word(o.keyword()),
-			token.Space,
 		),
 	), append(v1, v2...)
 }
@@ -256,9 +246,7 @@ func (o NullOperation) nodeize() (tokenizer.Tokenizer, []interface{}) {
 		t1,
 		tokenizer.NewLine(token.Word(keyword.Null)),
 		tokenizer.NewLine(
-			token.Space,
 			token.Word(o.keyword()),
-			token.Space,
 		),
 	), v1
 }

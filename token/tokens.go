@@ -16,7 +16,7 @@ func PlaceholderTokens(i int) Tokens {
 	tokens := Tokens{}
 	for ; i > 0; i-- {
 		if i > 1 {
-			tokens = append(tokens, Placeholder, Comma, Space)
+			tokens = append(tokens, Placeholder, Comma)
 			continue
 		}
 		tokens = append(tokens, Placeholder)

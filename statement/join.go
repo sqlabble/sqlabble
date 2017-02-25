@@ -87,7 +87,6 @@ func (j Join) self() (tokenizer.Tokenizer, []interface{}) {
 	t, v := j.table.nodeize()
 	return t.Prepend(
 		token.Word(j.joinType),
-		token.Space,
 	), v
 }
 
