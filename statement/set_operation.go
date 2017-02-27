@@ -14,38 +14,31 @@ type SetOperation struct {
 }
 
 func NewUnion(statements ...Statement) *SetOperation {
-	return &SetOperation{
-		op:         keyword.Union,
-		statements: statements,
-	}
+	return NewSetOperation(keyword.Union, statements...)
 }
 
 func NewUnionAll(statements ...Statement) *SetOperation {
-	return &SetOperation{
-		op:         keyword.UnionAll,
-		statements: statements,
-	}
+	return NewSetOperation(keyword.UnionAll, statements...)
 }
 
 func NewIntersect(statements ...Statement) *SetOperation {
-	return &SetOperation{
-		op:         keyword.Intersect,
-		statements: statements,
-	}
+	return NewSetOperation(keyword.Intersect, statements...)
 }
 
 func NewIntersectAll(statements ...Statement) *SetOperation {
-	return &SetOperation{
-		op:         keyword.IntersectAll,
-		statements: statements,
-	}
+	return NewSetOperation(keyword.IntersectAll, statements...)
 }
 
 func NewExcept(statements ...Statement) *SetOperation {
-	return &SetOperation{
-		op:         keyword.Except,
-		statements: statements,
+	return NewSetOperation(keyword.Except, statements...)
+}
+
+func NewSetOperation(op keyword.Operator, stmts ...Statement) *SetOperation {
+	s := &SetOperation{
+		op:         op,
+		statements: stmts,
 	}
+	return s
 }
 
 func NewExceptAll(statements ...Statement) *SetOperation {
@@ -62,22 +55,17 @@ func (u *SetOperation) OrderBy(os ...Order) *OrderBy {
 }
 
 func (u *SetOperation) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	tokenizers := make(tokenizer.Tokenizers, len(u.statements))
-	values := []interface{}{}
-	for i, s := range u.statements {
-		t, vals := s.nodeize()
-		t = tokenizer.NewParentheses(t)
-		if i != 0 {
-			t = t.Prepend(
-				token.Word(u.keyword()),
-			)
-		}
-		tokenizers[i] = t
-		values = append(values, vals...)
-	}
-	return tokenizers, values
+	return tokenizer.NewLine(token.Word(u.op)), nil
 }
 
-func (u *SetOperation) keyword() keyword.Operator {
-	return u.op
+func (u *SetOperation) list() []Nodeizer {
+	ns := []Nodeizer{}
+	for i, s := range u.statements {
+		if i == 0 {
+			ns = append(ns, NewSubquery(s))
+			continue
+		}
+		ns = append(ns, u, NewSubquery(s))
+	}
+	return ns
 }

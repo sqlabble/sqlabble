@@ -119,73 +119,73 @@ func (c Column) IsNotNull() NullOperation {
 	return i
 }
 
-func (c Column) EqAll(params Subquery) NonScalarOperation {
+func (c Column) EqAll(params *Subquery) NonScalarOperation {
 	n := NewEqAll(params)
 	n.column = c
 	return n
 }
 
-func (c Column) NotEqAll(params Subquery) NonScalarOperation {
+func (c Column) NotEqAll(params *Subquery) NonScalarOperation {
 	n := NewNotEqAll(params)
 	n.column = c
 	return n
 }
 
-func (c Column) GtAll(params Subquery) NonScalarOperation {
+func (c Column) GtAll(params *Subquery) NonScalarOperation {
 	n := NewGtAll(params)
 	n.column = c
 	return n
 }
 
-func (c Column) GteAll(params Subquery) NonScalarOperation {
+func (c Column) GteAll(params *Subquery) NonScalarOperation {
 	n := NewGteAll(params)
 	n.column = c
 	return n
 }
 
-func (c Column) LtAll(params Subquery) NonScalarOperation {
+func (c Column) LtAll(params *Subquery) NonScalarOperation {
 	n := NewLtAll(params)
 	n.column = c
 	return n
 }
 
-func (c Column) LteAll(params Subquery) NonScalarOperation {
+func (c Column) LteAll(params *Subquery) NonScalarOperation {
 	n := NewLteAll(params)
 	n.column = c
 	return n
 }
 
-func (c Column) EqAny(params Subquery) NonScalarOperation {
+func (c Column) EqAny(params *Subquery) NonScalarOperation {
 	n := NewEqAny(params)
 	n.column = c
 	return n
 }
 
-func (c Column) NotEqAny(params Subquery) NonScalarOperation {
+func (c Column) NotEqAny(params *Subquery) NonScalarOperation {
 	n := NewNotEqAny(params)
 	n.column = c
 	return n
 }
 
-func (c Column) GtAny(params Subquery) NonScalarOperation {
+func (c Column) GtAny(params *Subquery) NonScalarOperation {
 	n := NewGtAny(params)
 	n.column = c
 	return n
 }
 
-func (c Column) GteAny(params Subquery) NonScalarOperation {
+func (c Column) GteAny(params *Subquery) NonScalarOperation {
 	n := NewGteAny(params)
 	n.column = c
 	return n
 }
 
-func (c Column) LtAny(params Subquery) NonScalarOperation {
+func (c Column) LtAny(params *Subquery) NonScalarOperation {
 	n := NewLtAny(params)
 	n.column = c
 	return n
 }
 
-func (c Column) LteAny(params Subquery) NonScalarOperation {
+func (c Column) LteAny(params *Subquery) NonScalarOperation {
 	n := NewLteAny(params)
 	n.column = c
 	return n

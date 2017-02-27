@@ -7,7 +7,7 @@ import (
 )
 
 type SubqueryAs struct {
-	subquery Subquery
+	subquery *Subquery
 	alias    string
 }
 

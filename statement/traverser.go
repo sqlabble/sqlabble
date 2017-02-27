@@ -112,3 +112,8 @@ func Traverse(t Nodeizer) Nodeizer {
 	}
 	return t
 }
+
+type Lister interface {
+	Nodeizer
+	list() []Nodeizer
+}

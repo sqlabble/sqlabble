@@ -26,7 +26,13 @@ func Nodize(n Nodeizer) (tokenizer.Tokenizers, []interface{}) {
 			ns = append([]Nodeizer{p}, ns...)
 		}
 	}
-	ns = append(ns, n)
+
+	if c, ok := n.(Lister); ok {
+		ns = append(ns, c.list()...)
+	} else {
+		ns = append(ns, n)
+	}
+
 	{
 		p := n
 		for {

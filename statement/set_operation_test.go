@@ -30,7 +30,8 @@ func TestUnionSQL(t *testing.T) {
 >   FROM
 >     aaa
 > )
-> UNION (
+> UNION
+> (
 >   SELECT
 >     b
 > )
@@ -56,22 +57,26 @@ func TestUnionSQL(t *testing.T) {
 >   SELECT
 >     a
 > )
-> UNION (
+> UNION
+> (
 >   (
 >     (
 >       SELECT
 >         b
 >     )
->     UNION (
+>     UNION
+>     (
 >       SELECT
 >         c
 >     )
 >   )
->   UNION (
+>   UNION
+>   (
 >     SELECT
 >       d
 >   )
->   UNION (
+>   UNION
+>   (
 >     SELECT
 >       e
 >   )
@@ -125,22 +130,26 @@ func TestUnionAllSQL(t *testing.T) {
 >   SELECT
 >     a
 > )
-> UNION ALL (
+> UNION ALL
+> (
 >   (
 >     (
 >       SELECT
 >         b
 >     )
->     UNION ALL (
+>     UNION ALL
+>     (
 >       SELECT
 >         c
 >     )
 >   )
->   UNION ALL (
+>   UNION ALL
+>   (
 >     SELECT
 >       d
 >   )
->   UNION ALL (
+>   UNION ALL
+>   (
 >     SELECT
 >       e
 >   )
@@ -194,22 +203,26 @@ func TestIntersectSQL(t *testing.T) {
 >   SELECT
 >     a
 > )
-> INTERSECT (
+> INTERSECT
+> (
 >   (
 >     (
 >       SELECT
 >         b
 >     )
->     INTERSECT (
+>     INTERSECT
+>     (
 >       SELECT
 >         c
 >     )
 >   )
->   INTERSECT (
+>   INTERSECT
+>   (
 >     SELECT
 >       d
 >   )
->   INTERSECT (
+>   INTERSECT
+>   (
 >     SELECT
 >       e
 >   )
@@ -263,22 +276,26 @@ func TestIntersectAllSQL(t *testing.T) {
 >   SELECT
 >     a
 > )
-> INTERSECT ALL (
+> INTERSECT ALL
+> (
 >   (
 >     (
 >       SELECT
 >         b
 >     )
->     INTERSECT ALL (
+>     INTERSECT ALL
+>     (
 >       SELECT
 >         c
 >     )
 >   )
->   INTERSECT ALL (
+>   INTERSECT ALL
+>   (
 >     SELECT
 >       d
 >   )
->   INTERSECT ALL (
+>   INTERSECT ALL
+>   (
 >     SELECT
 >       e
 >   )
@@ -332,22 +349,26 @@ func TestExceptSQL(t *testing.T) {
 >   SELECT
 >     a
 > )
-> EXCEPT (
+> EXCEPT
+> (
 >   (
 >     (
 >       SELECT
 >         b
 >     )
->     EXCEPT (
+>     EXCEPT
+>     (
 >       SELECT
 >         c
 >     )
 >   )
->   EXCEPT (
+>   EXCEPT
+>   (
 >     SELECT
 >       d
 >   )
->   EXCEPT (
+>   EXCEPT
+>   (
 >     SELECT
 >       e
 >   )
@@ -401,22 +422,26 @@ func TestExceptAllSQL(t *testing.T) {
 >   SELECT
 >     a
 > )
-> EXCEPT ALL (
+> EXCEPT ALL
+> (
 >   (
 >     (
 >       SELECT
 >         b
 >     )
->     EXCEPT ALL (
+>     EXCEPT ALL
+>     (
 >       SELECT
 >         c
 >     )
 >   )
->   EXCEPT ALL (
+>   EXCEPT ALL
+>   (
 >     SELECT
 >       d
 >   )
->   EXCEPT ALL (
+>   EXCEPT ALL
+>   (
 >     SELECT
 >       e
 >   )
