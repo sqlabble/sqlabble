@@ -21,8 +21,8 @@ func TestOn(t *testing.T) {
 				statement.NewColumn("f.id"),
 				statement.NewColumn("b.id"),
 			),
-			" ON f.id = b.id",
-			`>  ON f.id = b.id
+			"ON f.id = b.id",
+			`> ON f.id = b.id
 `,
 			nil,
 		},
@@ -33,8 +33,8 @@ func TestOn(t *testing.T) {
 			).Join(
 				statement.NewTable("bar"),
 			),
-			" ON f.id = b.id JOIN bar",
-			`>  ON f.id = b.id
+			"ON f.id = b.id JOIN bar",
+			`> ON f.id = b.id
 > JOIN bar
 `,
 			nil,
@@ -46,8 +46,8 @@ func TestOn(t *testing.T) {
 			).InnerJoin(
 				statement.NewTable("bar"),
 			),
-			" ON f.id = b.id INNER JOIN bar",
-			`>  ON f.id = b.id
+			"ON f.id = b.id INNER JOIN bar",
+			`> ON f.id = b.id
 > INNER JOIN bar
 `,
 			nil,
@@ -59,8 +59,8 @@ func TestOn(t *testing.T) {
 			).LeftJoin(
 				statement.NewTable("bar"),
 			),
-			" ON f.id = b.id LEFT JOIN bar",
-			`>  ON f.id = b.id
+			"ON f.id = b.id LEFT JOIN bar",
+			`> ON f.id = b.id
 > LEFT JOIN bar
 `,
 			nil,
@@ -72,8 +72,8 @@ func TestOn(t *testing.T) {
 			).RightJoin(
 				statement.NewTable("bar"),
 			),
-			" ON f.id = b.id RIGHT JOIN bar",
-			`>  ON f.id = b.id
+			"ON f.id = b.id RIGHT JOIN bar",
+			`> ON f.id = b.id
 > RIGHT JOIN bar
 `,
 			nil,

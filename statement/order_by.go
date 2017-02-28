@@ -30,7 +30,7 @@ func (o OrderBy) self() (tokenizer.Tokenizer, []interface{}) {
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.OrderBy)),
 	).SetMiddle(
-		tokenizers.Prefix(token.Comma, token.Space),
+		tokenizers.Prefix(token.Comma),
 	), values
 }
 

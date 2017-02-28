@@ -42,19 +42,16 @@ func (t TableAs) nodeize() (tokenizer.Tokenizer, []interface{}) {
 func (t TableAs) self() (tokenizer.Tokenizer, []interface{}) {
 	t1, v1 := t.table.nodeize()
 	t2 := tokenizer.NewLine(
-		token.Wrap(
-			token.Word(t.alias),
-			token.Quote,
-		)...,
+		token.QuoteStart,
+		token.Word(t.alias),
+		token.QuoteEnd,
 	)
 
 	return tokenizer.ConcatTokenizers(
 		t1,
 		t2,
 		tokenizer.NewLine(
-			token.Space,
 			token.Word(keyword.As),
-			token.Space,
 		),
 	), v1
 }

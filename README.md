@@ -4,10 +4,10 @@ SQL query builder with type support.
 
 ## Features
 
-- Type support.
+- Type support:
   - Restrict method chain order.
   - Restrict expression that can be specified by  the interface type.
-- Formatter.
+- Formatter:
   - Prefix and Indent.
   - Quote the alias according to the specification of each SQL server.
     - Standard: `"`
@@ -16,13 +16,13 @@ SQL query builder with type support.
 ## Processing Layers
 
 ```
-Statement --> Root --> Nodes --> Tokens --> Query
-           ^        ^         ^          ^
-           |        |         |          |
-       Traverser Nodeizer Tokenizer  Generator
-                                         ^
-                                         |
-                                       Format
+                                   Format
+                                     |
+         Nodeizer   Tokenizer    Generator
+            |           |            |
+Statement --+-> Nodes --+-> Tokens --+-> Query
+                        |
+                        +--------------> Values
 ```
 
 ## Supports

@@ -73,3 +73,13 @@ type ComparisonOrLogicalOperation interface {
 	Statement
 	keyword() keyword.Operator
 }
+
+type SearchedThenOrElse interface {
+	Statement
+	isSearchedThenOrElse() bool
+}
+
+type SimpleThenOrElse interface {
+	Statement
+	isSimpleThenOrElse() bool
+}

@@ -33,7 +33,6 @@ func (c CreateTable) container() (tokenizer.Container, []interface{}) {
 	line := tokenizer.NewLine(token.Word(keyword.CreateTable))
 	if c.ifNotExists {
 		line = line.A(
-			token.Space,
 			token.Word(keyword.IfNotExists),
 		)
 	}

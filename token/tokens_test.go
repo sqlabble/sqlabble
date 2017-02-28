@@ -16,22 +16,22 @@ func TestToken(t *testing.T) {
 	}{
 		{
 			token.Tokens{
-				token.Quote,
+				token.QuoteStart,
 				token.Word("foo"),
-				token.Quote,
+				token.QuoteEnd,
 			},
 			`"foo"`,
 			"`foo`",
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Standard", i), func(t *testing.T) {
-			sql := c.tokens.String(token.StandardFormat)
+			sql := c.tokens.Sprint(token.StandardFormat)
 			if sql != c.standard {
 				t.Error(diff.SQL(sql, c.standard))
 			}
 		})
 		t.Run(fmt.Sprintf("%d MySQL", i), func(t *testing.T) {
-			sql := c.tokens.String(token.MySQLFormat)
+			sql := c.tokens.Sprint(token.MySQLFormat)
 			if sql != c.mySQL {
 				t.Error(diff.SQL(sql, c.mySQL))
 			}

@@ -6,6 +6,28 @@ func Nodeize(stmt Statement) (tokenizer.Tokenizer, []interface{}) {
 	return stmt.nodeize()
 }
 
+type Prever interface {
+	previous() Prever
+	nodeizeSelf() (tokenizer.Tokenizer, []interface{})
+}
+
+func nodeizePrevs(c Prever) (tokenizer.Tokenizer, []interface{}) {
+	cs := []Prever{}
+	for c != nil {
+		cs = append([]Prever{c}, cs...)
+		c = c.previous()
+	}
+
+	ts := make(tokenizer.Tokenizers, len(cs))
+	values := []interface{}{}
+	for i, c := range cs {
+		var vals []interface{}
+		ts[i], vals = c.nodeizeSelf()
+		values = append(values, vals...)
+	}
+	return ts, values
+}
+
 func nodeizeClauses(c Clause) (tokenizer.Tokenizer, []interface{}) {
 	clauses := collectClauses(c)
 	ts := make(tokenizer.Tokenizers, len(clauses))

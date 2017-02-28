@@ -21,12 +21,10 @@ func (c ColumnAs) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	if c.column == nil {
 		return tokenizer.NewLine(
 			token.Word(keyword.As),
-			token.Space,
 		).Append(
-			token.Wrap(
-				token.Word(c.alias),
-				token.Quote,
-			)...,
+			token.QuoteStart,
+			token.Word(c.alias),
+			token.QuoteEnd,
 		), nil
 	}
 
@@ -34,15 +32,12 @@ func (c ColumnAs) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return tokenizer.ConcatTokenizers(
 		t1,
 		tokenizer.NewLine(
-			token.Wrap(
-				token.Word(c.alias),
-				token.Quote,
-			)...,
+			token.QuoteStart,
+			token.Word(c.alias),
+			token.QuoteEnd,
 		),
 		tokenizer.NewLine(
-			token.Space,
 			token.Word(keyword.As),
-			token.Space,
 		),
 	), v1
 }

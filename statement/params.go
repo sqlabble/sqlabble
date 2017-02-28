@@ -50,8 +50,8 @@ func (ps Params) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	}
 	line, values := tokenizer.ParamsToLine(values...)
 	return line.
-		Prepend(token.ParenthesesStart).
-		Append(token.ParenthesesEnd), values
+		Prepend(token.ParenStart).
+		Append(token.ParenEnd), values
 }
 
 // isParamsOrSubquery always returns true.

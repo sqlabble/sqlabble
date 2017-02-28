@@ -46,14 +46,13 @@ func (s Select) self() (tokenizer.Tokenizer, []interface{}) {
 	tokens := token.NewTokens(token.Word(keyword.Select))
 	if s.distinct {
 		tokens = tokens.Append(
-			token.Space,
 			token.Word(keyword.Distinct),
 		)
 	}
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(tokens...),
 	).SetMiddle(
-		tokenizers.Prefix(token.Comma, token.Space),
+		tokenizers.Prefix(token.Comma),
 	), values
 }
 

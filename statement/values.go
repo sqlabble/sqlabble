@@ -35,7 +35,6 @@ func (v Values) self() (tokenizer.Tokenizer, []interface{}) {
 	).SetMiddle(
 		tokenizer.NewTokenizers(tokenizers...).Prefix(
 			token.Comma,
-			token.Space,
 		),
 	), values
 }

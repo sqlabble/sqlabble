@@ -101,7 +101,6 @@ func (n NonScalarOperation) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	if n.column == nil {
 		return t2.Prepend(
 			token.Word(n.keyword()),
-			token.Space,
 		), v2
 	}
 
@@ -110,9 +109,7 @@ func (n NonScalarOperation) nodeize() (tokenizer.Tokenizer, []interface{}) {
 		t1,
 		t2,
 		tokenizer.NewLine(
-			token.Space,
 			token.Word(n.keyword()),
-			token.Space,
 		),
 	), append(v1, v2...)
 }
@@ -144,7 +141,6 @@ func (e ExistanceOperation) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	t2, v2 := e.params.nodeize()
 	return t2.Prepend(
 		token.Word(e.keyword()),
-		token.Space,
 	), v2
 }
 
