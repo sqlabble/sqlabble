@@ -2,13 +2,81 @@ package token_test
 
 import (
 	"fmt"
+	"reflect"
 	"testing"
 
 	"github.com/minodisk/sqlabble/internal/diff"
 	"github.com/minodisk/sqlabble/token"
 )
 
-func TestToken(t *testing.T) {
+func TestTokensAppend(t *testing.T) {
+	for i, c := range []struct {
+		tokens1 token.Tokens
+		tokens2 token.Tokens
+		want    token.Tokens
+	}{
+		{
+			token.Tokens{},
+			token.Tokens{},
+			token.Tokens{},
+		},
+		{
+			token.Tokens{
+				token.Word("foo"),
+			},
+			token.Tokens{},
+			token.Tokens{
+				token.Word("foo"),
+			},
+		},
+		{
+			token.Tokens{},
+			token.Tokens{
+				token.Word("foo"),
+			},
+			token.Tokens{
+				token.Word("foo"),
+			},
+		},
+		{
+			token.Tokens{
+				token.Word("foo"),
+			},
+			token.Tokens{
+				token.Word("bar"),
+			},
+			token.Tokens{
+				token.Word("foo"),
+				token.Word("bar"),
+			},
+		},
+		{
+			token.Tokens{
+				token.Word("foo"),
+				token.Word("bar"),
+			},
+			token.Tokens{
+				token.Word("baz"),
+				token.Word("qux"),
+			},
+			token.Tokens{
+				token.Word("foo"),
+				token.Word("bar"),
+				token.Word("baz"),
+				token.Word("qux"),
+			},
+		},
+	} {
+		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
+			got := c.tokens1.Append(c.tokens2...)
+			if !reflect.DeepEqual(got, c.want) {
+				t.Error(diff.Values(got, c.want))
+			}
+		})
+	}
+}
+
+func TestTokensSprint(t *testing.T) {
 	for i, c := range []struct {
 		tokens   token.Tokens
 		standard string
