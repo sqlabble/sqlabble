@@ -10,10 +10,12 @@ import (
 )
 
 func TestColumnAsType(t *testing.T) {
+	t.Parallel()
 	for _, c := range []interface{}{
 		statement.ColumnAs{},
 	} {
 		t.Run(fmt.Sprintf("%T", c), func(t *testing.T) {
+			t.Parallel()
 			if _, ok := c.(statement.ColOrAliasOrSub); !ok {
 				t.Errorf("%T should implement statement.ColumnOrColumnAs", c)
 			}
@@ -22,6 +24,7 @@ func TestColumnAsType(t *testing.T) {
 }
 
 func TestColumnAsSQL(t *testing.T) {
+	t.Parallel()
 	for i, c := range []struct {
 		statement statement.Statement
 		sql       string
@@ -37,6 +40,7 @@ func TestColumnAsSQL(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
@@ -46,6 +50,7 @@ func TestColumnAsSQL(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))

@@ -10,6 +10,7 @@ import (
 )
 
 func TestOrderType(t *testing.T) {
+	t.Parallel()
 	o := statement.Order{}
 	if _, ok := interface{}(o).(statement.Statement); !ok {
 		t.Errorf("%T should implement statement.Statement", o)
@@ -17,6 +18,7 @@ func TestOrderType(t *testing.T) {
 }
 
 func TestOrderSQL(t *testing.T) {
+	t.Parallel()
 	for i, c := range []struct {
 		statement statement.Statement
 		sql       string
@@ -39,6 +41,7 @@ func TestOrderSQL(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
@@ -48,6 +51,7 @@ func TestOrderSQL(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))

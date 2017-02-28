@@ -9,13 +9,8 @@ import (
 	"github.com/minodisk/sqlabble/statement"
 )
 
-// func TestOrderByType(t *testing.T) {
-// 	if _, ok := interface{}(statement.OrderBy{}).(statement.ClauseNode); !ok {
-// 		t.Errorf("statement.OrderBy doesn't implement statement.Clause")
-// 	}
-// }
-
 func TestOrderBySQL(t *testing.T) {
+	t.Parallel()
 	for i, c := range []struct {
 		statement statement.Statement
 		sql       string
@@ -62,6 +57,7 @@ func TestOrderBySQL(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
@@ -71,6 +67,7 @@ func TestOrderBySQL(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))

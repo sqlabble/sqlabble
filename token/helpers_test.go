@@ -10,6 +10,7 @@ import (
 )
 
 func TestRepeat(t *testing.T) {
+	t.Parallel()
 	for i, c := range []struct {
 		token token.Token
 		n     int
@@ -48,6 +49,7 @@ func TestRepeat(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
+			t.Parallel()
 			got := token.Repeat(c.token, c.n)
 			if !reflect.DeepEqual(got, c.want) {
 				t.Error(diff.Values(got, c.want))
@@ -57,6 +59,7 @@ func TestRepeat(t *testing.T) {
 }
 
 func TestFlatten(t *testing.T) {
+	t.Parallel()
 	for i, c := range []struct {
 		tokensList []token.Tokens
 		want       token.Tokens
@@ -122,6 +125,7 @@ func TestFlatten(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
+			t.Parallel()
 			got := token.Flatten(c.tokensList...)
 			if !reflect.DeepEqual(got, c.want) {
 				t.Error(diff.Values(got, c.want))
@@ -131,6 +135,7 @@ func TestFlatten(t *testing.T) {
 }
 
 func TestPlaceholders(t *testing.T) {
+	t.Parallel()
 	for i, c := range []struct {
 		n    int
 		want token.Tokens
@@ -169,6 +174,7 @@ func TestPlaceholders(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
+			t.Parallel()
 			got := token.Placeholders(c.n)
 			if !reflect.DeepEqual(got, c.want) {
 				t.Error(diff.Values(got, c.want))

@@ -9,19 +9,8 @@ import (
 	"github.com/minodisk/sqlabble/statement"
 )
 
-// func TestUpdateType(t *testing.T) {
-// 	for _, c := range []interface{}{
-// 		statement.Update{},
-// 	} {
-// 		t.Run(fmt.Sprintf("Type %T", c), func(t *testing.T) {
-// 			if _, ok := c.(statement.ClauseNode); !ok {
-// 				t.Errorf("%T should implement statement.Clause", c)
-// 			}
-// 		})
-// 	}
-// }
-
 func TestUpdate(t *testing.T) {
+	t.Parallel()
 	for i, c := range []struct {
 		statement statement.Statement
 		sql       string
@@ -56,6 +45,7 @@ func TestUpdate(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
@@ -65,6 +55,7 @@ func TestUpdate(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))

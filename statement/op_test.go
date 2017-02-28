@@ -9,55 +9,8 @@ import (
 	"github.com/minodisk/sqlabble/statement"
 )
 
-// func TestLogicalCondition(t *testing.T) {
-// 	for _, c := range []interface{}{
-// 		statement.And{},
-// 		statement.Or{},
-// 		statement.Not{},
-// 	} {
-// 		t.Run(fmt.Sprintf("%T", c), func(t *testing.T) {
-// 			if _, ok := c.(statement.LogicalOperationNode); !ok {
-// 				t.Errorf("%T should implement LogicalOperationNode", c)
-// 			}
-// 			if _, ok := c.(statement.OperationNode); !ok {
-// 				t.Errorf("%T should implement Operation", c)
-// 			}
-// 			if _, ok := c.(statement.ColumnNode); ok {
-// 				t.Errorf("%T shouldn't implement Column", c)
-// 			}
-// 		})
-// 	}
-// }
-//
-// func TestConditions(t *testing.T) {
-// 	for _, c := range []interface{}{
-// 		statement.Eq{},
-// 		statement.NotEq{},
-// 		statement.Gt{},
-// 		statement.Gte{},
-// 		statement.Lt{},
-// 		statement.Lte{},
-// 		statement.Between{},
-// 		statement.In{},
-// 		statement.NotIn{},
-// 		statement.Like{},
-// 		statement.RegExp{},
-// 	} {
-// 		t.Run(fmt.Sprintf("%T", c), func(t *testing.T) {
-// 			if _, ok := c.(statement.OperationNode); !ok {
-// 				t.Errorf("%T should implement Operation", c)
-// 			}
-// 			if _, ok := c.(statement.LogicalOperationNode); ok {
-// 				t.Errorf("%T shouldn't implement LogicalOperation", c)
-// 			}
-// 			if _, ok := c.(statement.ColumnNode); ok {
-// 				t.Errorf("%T shouldn't implement Column", c)
-// 			}
-// 		})
-// 	}
-// }
-
 func TestAnd(t *testing.T) {
+	t.Parallel()
 	for i, c := range []struct {
 		statement statement.Statement
 		sql       string
@@ -140,6 +93,7 @@ func TestAnd(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
@@ -150,6 +104,7 @@ func TestAnd(t *testing.T) {
 		})
 
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
@@ -162,6 +117,7 @@ func TestAnd(t *testing.T) {
 }
 
 func TestOr(t *testing.T) {
+	t.Parallel()
 	for i, c := range []struct {
 		statement statement.Statement
 		sql       string
@@ -236,6 +192,7 @@ func TestOr(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
@@ -246,6 +203,7 @@ func TestOr(t *testing.T) {
 		})
 
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
@@ -258,6 +216,7 @@ func TestOr(t *testing.T) {
 }
 
 func TestNot(t *testing.T) {
+	t.Parallel()
 	for i, c := range []struct {
 		statement statement.Statement
 		sql       string
@@ -414,6 +373,7 @@ func TestNot(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
@@ -424,6 +384,7 @@ func TestNot(t *testing.T) {
 		})
 
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
@@ -436,6 +397,7 @@ func TestNot(t *testing.T) {
 }
 
 func TestComparisonOperators(t *testing.T) {
+	t.Parallel()
 	for i, c := range []struct {
 		statement statement.Statement
 		sql       string
@@ -507,6 +469,7 @@ func TestComparisonOperators(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
@@ -516,6 +479,7 @@ func TestComparisonOperators(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
@@ -528,6 +492,7 @@ func TestComparisonOperators(t *testing.T) {
 }
 
 func TestBetween(t *testing.T) {
+	t.Parallel()
 	for i, c := range []struct {
 		statement statement.Statement
 		sql       string
@@ -615,6 +580,7 @@ func TestBetween(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
@@ -624,6 +590,7 @@ func TestBetween(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
@@ -636,6 +603,7 @@ func TestBetween(t *testing.T) {
 }
 
 func TestContainingOperators(t *testing.T) {
+	t.Parallel()
 	for i, c := range []struct {
 		statement statement.Statement
 		sql       string
@@ -676,6 +644,7 @@ func TestContainingOperators(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
@@ -685,6 +654,7 @@ func TestContainingOperators(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
@@ -697,6 +667,7 @@ func TestContainingOperators(t *testing.T) {
 }
 
 func TestKeywordOperators(t *testing.T) {
+	t.Parallel()
 	for i, c := range []struct {
 		statement statement.Statement
 		sql       string
@@ -719,6 +690,7 @@ func TestKeywordOperators(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
@@ -728,6 +700,7 @@ func TestKeywordOperators(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
@@ -740,6 +713,7 @@ func TestKeywordOperators(t *testing.T) {
 }
 
 func TestComplexOperation(t *testing.T) {
+	t.Parallel()
 	for i, c := range []struct {
 		statement statement.Statement
 		sql       string
@@ -849,6 +823,7 @@ func TestComplexOperation(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
@@ -859,6 +834,7 @@ func TestComplexOperation(t *testing.T) {
 		})
 
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))

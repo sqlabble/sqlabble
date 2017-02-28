@@ -9,6 +9,7 @@ import (
 )
 
 func TestWord(t *testing.T) {
+	t.Parallel()
 	for i, c := range []struct {
 		token  token.Token
 		sprint string
@@ -56,12 +57,14 @@ func TestWord(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Sprint(StandardFormat)", i), func(t *testing.T) {
+			t.Parallel()
 			got := c.token.Sprint(token.StandardFormat)
 			if got != c.sprint {
 				t.Error(diff.Values(got, c.sprint))
 			}
 		})
 		t.Run(fmt.Sprintf("%d String()", i), func(t *testing.T) {
+			t.Parallel()
 			got := c.token.String()
 			if got != c.string {
 				t.Error(diff.Values(got, c.string))
@@ -71,6 +74,7 @@ func TestWord(t *testing.T) {
 }
 
 func TestSameWord(t *testing.T) {
+	t.Parallel()
 	if token.ParenStart == token.FuncParenStart {
 		t.Error("ParenStart and FuncParenStart should be different")
 	}

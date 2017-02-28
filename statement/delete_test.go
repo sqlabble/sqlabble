@@ -9,13 +9,8 @@ import (
 	"github.com/minodisk/sqlabble/statement"
 )
 
-// func TestDeleteType(t *testing.T) {
-// 	if _, ok := interface{}(statement.Delete{}).(statement.ClauseNode); !ok {
-// 		t.Errorf("statement.Delete should implement statement.Clause")
-// 	}
-// }
-
 func TestDeleteSQL(t *testing.T) {
+	t.Parallel()
 	for i, c := range []struct {
 		statement statement.Statement
 		sql       string
@@ -42,6 +37,7 @@ func TestDeleteSQL(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
@@ -51,6 +47,7 @@ func TestDeleteSQL(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))

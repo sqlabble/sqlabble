@@ -10,6 +10,7 @@ import (
 )
 
 func TestNewFormat(t *testing.T) {
+	t.Parallel()
 	for i, c := range []struct {
 		prefix  string
 		indent  string
@@ -45,6 +46,7 @@ func TestNewFormat(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
+			t.Parallel()
 			got := token.NewFormat(c.prefix, c.indent, c.quote, c.lineEnd)
 			if !reflect.DeepEqual(got, c.want) {
 				t.Error(diff.Values(got, c.want))

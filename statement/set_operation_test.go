@@ -10,6 +10,7 @@ import (
 )
 
 func TestUnionSQL(t *testing.T) {
+	t.Parallel()
 	for i, c := range []struct {
 		statement statement.Statement
 		sql       string
@@ -79,6 +80,7 @@ func TestUnionSQL(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Builder", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
@@ -88,6 +90,7 @@ func TestUnionSQL(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
@@ -100,6 +103,7 @@ func TestUnionSQL(t *testing.T) {
 }
 
 func TestUnionAllSQL(t *testing.T) {
+	t.Parallel()
 	for i, c := range []struct {
 		statement statement.Statement
 		sql       string
@@ -148,6 +152,7 @@ func TestUnionAllSQL(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Builder", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
@@ -157,6 +162,7 @@ func TestUnionAllSQL(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
@@ -169,6 +175,7 @@ func TestUnionAllSQL(t *testing.T) {
 }
 
 func TestIntersectSQL(t *testing.T) {
+	t.Parallel()
 	for i, c := range []struct {
 		statement statement.Statement
 		sql       string
@@ -217,6 +224,7 @@ func TestIntersectSQL(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Builder", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
@@ -226,6 +234,7 @@ func TestIntersectSQL(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
@@ -238,6 +247,7 @@ func TestIntersectSQL(t *testing.T) {
 }
 
 func TestIntersectAllSQL(t *testing.T) {
+	t.Parallel()
 	for i, c := range []struct {
 		statement statement.Statement
 		sql       string
@@ -286,6 +296,7 @@ func TestIntersectAllSQL(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Builder", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
@@ -295,6 +306,7 @@ func TestIntersectAllSQL(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
@@ -307,6 +319,7 @@ func TestIntersectAllSQL(t *testing.T) {
 }
 
 func TestExceptSQL(t *testing.T) {
+	t.Parallel()
 	for i, c := range []struct {
 		statement statement.Statement
 		sql       string
@@ -355,6 +368,7 @@ func TestExceptSQL(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Builder", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
@@ -364,6 +378,7 @@ func TestExceptSQL(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
@@ -376,6 +391,7 @@ func TestExceptSQL(t *testing.T) {
 }
 
 func TestExceptAllSQL(t *testing.T) {
+	t.Parallel()
 	for i, c := range []struct {
 		statement statement.Statement
 		sql       string
@@ -424,6 +440,7 @@ func TestExceptAllSQL(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("%d Builder", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := b.Build(c.statement)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
@@ -433,6 +450,7 @@ func TestExceptAllSQL(t *testing.T) {
 			}
 		})
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
+			t.Parallel()
 			sql, values := bi.Build(c.statement)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
