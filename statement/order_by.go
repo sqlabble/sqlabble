@@ -15,6 +15,12 @@ func NewOrderBy(os ...Order) OrderBy {
 	return OrderBy{orders: os}
 }
 
+func (o OrderBy) Limit(count int) Limit {
+	l := NewLimit(count)
+	l.prev = o
+	return l
+}
+
 func (o OrderBy) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizeClauses(o)
 }
@@ -36,10 +42,4 @@ func (o OrderBy) self() (tokenizer.Tokenizer, []interface{}) {
 
 func (o OrderBy) previous() Clause {
 	return o.prev
-}
-
-func (o OrderBy) Limit(count int) Limit {
-	l := NewLimit(count)
-	l.prev = o
-	return l
 }

@@ -17,6 +17,18 @@ func NewHaving(operation ComparisonOrLogicalOperation) Having {
 	}
 }
 
+func (h Having) OrderBy(orders ...Order) OrderBy {
+	o := NewOrderBy(orders...)
+	o.prev = h
+	return o
+}
+
+func (h Having) Limit(count int) Limit {
+	l := NewLimit(count)
+	l.prev = h
+	return l
+}
+
 func (h Having) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizeClauses(h)
 }
@@ -32,16 +44,4 @@ func (h Having) self() (tokenizer.Tokenizer, []interface{}) {
 
 func (h Having) previous() Clause {
 	return h.prev
-}
-
-func (h Having) OrderBy(orders ...Order) OrderBy {
-	o := NewOrderBy(orders...)
-	o.prev = h
-	return o
-}
-
-func (h Having) Limit(count int) Limit {
-	l := NewLimit(count)
-	l.prev = h
-	return l
 }

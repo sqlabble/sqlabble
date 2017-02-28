@@ -17,6 +17,12 @@ func NewSet(assigns ...Assign) Set {
 	}
 }
 
+func (s Set) Where(operation ComparisonOrLogicalOperation) Where {
+	w := NewWhere(operation)
+	w.prev = s
+	return w
+}
+
 func (s Set) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizeClauses(s)
 }
@@ -40,10 +46,4 @@ func (s Set) self() (tokenizer.Tokenizer, []interface{}) {
 
 func (s Set) previous() Clause {
 	return s.prev
-}
-
-func (s Set) Where(operation ComparisonOrLogicalOperation) Where {
-	w := NewWhere(operation)
-	w.prev = s
-	return w
 }

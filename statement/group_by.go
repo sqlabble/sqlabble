@@ -17,6 +17,24 @@ func NewGroupBy(column Column, columns ...Column) GroupBy {
 	}
 }
 
+func (g GroupBy) Having(operation ComparisonOrLogicalOperation) Having {
+	l := NewHaving(operation)
+	l.prev = g
+	return l
+}
+
+func (g GroupBy) OrderBy(orders ...Order) OrderBy {
+	o := NewOrderBy(orders...)
+	o.prev = g
+	return o
+}
+
+func (g GroupBy) Limit(count int) Limit {
+	l := NewLimit(count)
+	l.prev = g
+	return l
+}
+
 func (g GroupBy) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizeClauses(g)
 }
@@ -40,22 +58,4 @@ func (g GroupBy) self() (tokenizer.Tokenizer, []interface{}) {
 
 func (g GroupBy) previous() Clause {
 	return g.prev
-}
-
-func (g GroupBy) Having(operation ComparisonOrLogicalOperation) Having {
-	l := NewHaving(operation)
-	l.prev = g
-	return l
-}
-
-func (g GroupBy) OrderBy(orders ...Order) OrderBy {
-	o := NewOrderBy(orders...)
-	o.prev = g
-	return o
-}
-
-func (g GroupBy) Limit(count int) Limit {
-	l := NewLimit(count)
-	l.prev = g
-	return l
 }
