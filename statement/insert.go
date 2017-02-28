@@ -18,6 +18,12 @@ func NewInsertInto(table Table, columns ...Column) InsertInto {
 	}
 }
 
+func (i InsertInto) DefaultValues() DefaultValues {
+	v := NewDefaultValues()
+	v.prev = i
+	return v
+}
+
 func (i InsertInto) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizeClauses(i)
 }
@@ -51,12 +57,6 @@ func (i InsertInto) previous() Clause {
 
 func (i InsertInto) Values(paramses ...Params) Values {
 	v := NewValues(paramses...)
-	v.prev = i
-	return v
-}
-
-func (i InsertInto) DefaultValues() DefaultValues {
-	v := NewDefaultValues()
 	v.prev = i
 	return v
 }

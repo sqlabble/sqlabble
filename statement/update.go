@@ -17,6 +17,12 @@ func NewUpdate(table Table) Update {
 	}
 }
 
+func (u Update) Set(assigns ...Assign) Set {
+	s := NewSet(assigns...)
+	s.prev = u
+	return s
+}
+
 func (u Update) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizeClauses(u)
 }
@@ -32,10 +38,4 @@ func (u Update) self() (tokenizer.Tokenizer, []interface{}) {
 
 func (u Update) previous() Clause {
 	return u.prev
-}
-
-func (u Update) Set(assigns ...Assign) Set {
-	s := NewSet(assigns...)
-	s.prev = u
-	return s
 }

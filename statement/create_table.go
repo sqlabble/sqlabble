@@ -25,6 +25,12 @@ func NewCreateTableIfNotExists(joiner Joiner) CreateTable {
 	}
 }
 
+func (c CreateTable) Definitions(defs ...Definition) Definitions {
+	ds := NewDefinitions(defs...)
+	ds.createTable = c
+	return ds
+}
+
 func (c CreateTable) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return c.container()
 }
@@ -43,10 +49,4 @@ func (c CreateTable) container() (tokenizer.Container, []interface{}) {
 	).SetMiddle(
 		middle,
 	), values
-}
-
-func (c CreateTable) Definitions(defs ...Definition) Definitions {
-	ds := NewDefinitions(defs...)
-	ds.createTable = c
-	return ds
 }

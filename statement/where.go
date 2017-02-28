@@ -17,23 +17,6 @@ func NewWhere(operation ComparisonOrLogicalOperation) Where {
 	}
 }
 
-func (w Where) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	return nodeizeClauses(w)
-}
-
-func (w Where) self() (tokenizer.Tokenizer, []interface{}) {
-	middle, values := w.operation.nodeize()
-	return tokenizer.NewContainer(
-		tokenizer.NewLine(token.Word(keyword.Where)),
-	).SetMiddle(
-		middle,
-	), values
-}
-
-func (w Where) previous() Clause {
-	return w.prev
-}
-
 func (w Where) GroupBy(column Column, columns ...Column) GroupBy {
 	g := NewGroupBy(column, columns...)
 	g.prev = w
@@ -50,4 +33,21 @@ func (w Where) Limit(count int) Limit {
 	l := NewLimit(count)
 	l.prev = w
 	return l
+}
+
+func (w Where) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	return nodeizeClauses(w)
+}
+
+func (w Where) self() (tokenizer.Tokenizer, []interface{}) {
+	middle, values := w.operation.nodeize()
+	return tokenizer.NewContainer(
+		tokenizer.NewLine(token.Word(keyword.Where)),
+	).SetMiddle(
+		middle,
+	), values
+}
+
+func (w Where) previous() Clause {
+	return w.prev
 }

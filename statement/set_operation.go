@@ -53,6 +53,12 @@ func NewExceptAll(statements ...Statement) SetOperation {
 	}
 }
 
+func (u SetOperation) OrderBy(os ...Order) OrderBy {
+	o := NewOrderBy(os...)
+	o.prev = u
+	return o
+}
+
 func (u SetOperation) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return u.self()
 }
@@ -80,10 +86,4 @@ func (u SetOperation) previous() Clause {
 
 func (u SetOperation) keyword() keyword.Operator {
 	return u.op
-}
-
-func (u SetOperation) OrderBy(os ...Order) OrderBy {
-	o := NewOrderBy(os...)
-	o.prev = u
-	return o
 }
