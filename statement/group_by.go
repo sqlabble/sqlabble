@@ -34,7 +34,6 @@ func (g GroupBy) self() (tokenizer.Tokenizer, []interface{}) {
 	).SetMiddle(
 		ts.Prefix(
 			token.Comma,
-			token.Space,
 		),
 	), values
 }

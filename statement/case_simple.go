@@ -22,7 +22,7 @@ func (c SimpleCase) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	t1, v1 := c.param.nodeize()
 	t2, v2 := c.thenOrElse.nodeize()
 	return tokenizer.NewContainer(
-		t1.Prepend(token.Word(keyword.Case), token.Space),
+		t1.Prepend(token.Word(keyword.Case)),
 	).SetMiddle(
 		t2,
 	).SetLast(

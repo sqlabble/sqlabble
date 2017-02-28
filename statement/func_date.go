@@ -235,7 +235,6 @@ func (i Interval) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	t, values := i.duration.nodeize()
 	return t.Prepend(
 		token.Word("INTERVAL"),
-		token.Space,
 	), values
 }
 
@@ -247,7 +246,6 @@ type IntervalUnit struct {
 func (i IntervalUnit) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	t, values := i.interval.nodeize()
 	return t.Append(
-		token.Space,
 		token.Word(i.unit),
 	), values
 }

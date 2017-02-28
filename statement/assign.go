@@ -24,10 +24,6 @@ func (a Assign) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return tokenizer.ConcatTokenizers(
 		t1,
 		t2,
-		tokenizer.NewLine(
-			token.Space,
-			token.Word(keyword.Eq),
-			token.Space,
-		),
+		tokenizer.NewLine(token.Word(keyword.Eq)),
 	), append(v1, v2...)
 }

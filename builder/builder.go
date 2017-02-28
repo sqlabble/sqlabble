@@ -30,7 +30,7 @@ func NewBuilder(format token.Format) Builder {
 // Build converts a statement into a query and a slice of values.
 func (b Builder) Build(stmt statement.Statement) (string, []interface{}) {
 	tokenizer, values := statement.Nodeize(stmt)
-	query := token.Print(tokenizer.Tokenize(0), b.Format)
+	query := token.Generate(tokenizer.Tokenize(0), b.Format)
 	if len(values) == 0 {
 		values = nil
 	}

@@ -20,7 +20,6 @@ func (d Definition) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	t, values := d.column.nodeize()
 	return t.
 		Append(
-			token.Space,
 			token.Word(d.definition),
 		), values
 }
@@ -46,7 +45,6 @@ func (ds Definitions) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	}
 	ts = ts.Prefix(
 		token.Comma,
-		token.Space,
 	)
 
 	c, values := ds.createTable.container()
@@ -57,7 +55,7 @@ func (ds Definitions) nodeize() (tokenizer.Tokenizer, []interface{}) {
 		tokenizer.ConcatTokenizers(
 			middle,
 			def,
-			tokenizer.NewLine(token.Space),
+			tokenizer.EmptyLine,
 		),
 	), values
 }

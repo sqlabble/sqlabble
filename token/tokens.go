@@ -16,7 +16,7 @@ func PlaceholderTokens(i int) Tokens {
 	tokens := Tokens{}
 	for ; i > 0; i-- {
 		if i > 1 {
-			tokens = append(tokens, Placeholder, Comma, Space)
+			tokens = append(tokens, Placeholder, Comma)
 			continue
 		}
 		tokens = append(tokens, Placeholder)
@@ -48,10 +48,10 @@ func (ts Tokens) Append(tokens ...Token) Tokens {
 	return append(ts, tokens...)
 }
 
-func (ts Tokens) String(format Format) string {
+func (ts Tokens) Sprint(format Format) string {
 	sql := ""
 	for _, t := range ts {
-		sql += t.String(format)
+		sql += t.Sprint(format)
 	}
 	return sql
 }

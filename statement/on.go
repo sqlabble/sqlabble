@@ -56,15 +56,11 @@ func (o On) self() (tokenizer.Tokenizer, []interface{}) {
 			t1,
 			t2,
 			tokenizer.NewLine(
-				token.Space,
 				token.Word(keyword.Eq),
-				token.Space,
 			),
 		),
 		tokenizer.NewLine(
-			token.Space,
 			token.Word(keyword.On),
-			token.Space,
 		),
 	), append(append(v0, v1...), v2...)
 }

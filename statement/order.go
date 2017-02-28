@@ -26,7 +26,6 @@ func NewDesc() Order {
 func (o Order) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	t1, v1 := o.column.nodeize()
 	return t1.Append(
-		token.Space,
 		token.Word(o.keyword()),
 	), v1
 }
