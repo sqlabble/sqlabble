@@ -7,7 +7,7 @@ SQL query builder with type support.
 - Type support:
   - Restrict method chain order.
   - Restrict expression that can be specified by  the interface type.
-- Formatter:
+- Flexible formatter:
   - Prefix and Indent.
   - Quote the alias according to the specification of each SQL server.
     - Standard: `"`
