@@ -7,21 +7,17 @@ import (
 )
 
 type Values struct {
-	prev     Clause
+	Next
 	paramses []Params
 }
 
-func NewValues(paramses ...Params) Values {
-	return Values{
+func NewValues(paramses ...Params) *Values {
+	return &Values{
 		paramses: paramses,
 	}
 }
 
-func (v Values) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	return nodeizeClauses(v)
-}
-
-func (v Values) self() (tokenizer.Tokenizer, []interface{}) {
+func (v *Values) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	tokenizers := make(tokenizer.Tokenizers, len(v.paramses))
 	values := []interface{}{}
 	for i, p := range v.paramses {
@@ -39,28 +35,16 @@ func (v Values) self() (tokenizer.Tokenizer, []interface{}) {
 	), values
 }
 
-func (v Values) previous() Clause {
-	return v.prev
-}
-
 type DefaultValues struct {
-	prev Clause
+	Next
 }
 
-func NewDefaultValues() DefaultValues {
-	return DefaultValues{}
+func NewDefaultValues() *DefaultValues {
+	return &DefaultValues{}
 }
 
-func (v DefaultValues) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	return nodeizeClauses(v)
-}
-
-func (v DefaultValues) self() (tokenizer.Tokenizer, []interface{}) {
+func (v *DefaultValues) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.DefaultValues)),
 	), nil
-}
-
-func (v DefaultValues) previous() Clause {
-	return v.prev
 }
