@@ -9,6 +9,70 @@ import (
 	"github.com/minodisk/sqlabble/token"
 )
 
+func TestNewTokens(t *testing.T) {
+	for i, c := range []struct {
+		input token.Tokens
+		want  token.Tokens
+	}{
+		{
+			token.Tokens{},
+			token.Tokens{},
+		},
+		{
+			token.Tokens{nil},
+			token.Tokens{},
+		},
+		{
+			token.Tokens{
+				token.Word("foo"),
+			},
+			token.Tokens{
+				token.Word("foo"),
+			},
+		},
+		{
+			token.Tokens{
+				token.Word("foo"),
+				token.Word("bar"),
+				token.Word("baz"),
+				token.Word("qux"),
+			},
+			token.Tokens{
+				token.Word("foo"),
+				token.Word("bar"),
+				token.Word("baz"),
+				token.Word("qux"),
+			},
+		},
+		{
+			token.Tokens{
+				nil,
+				token.Word("foo"),
+				nil,
+				token.Word("bar"),
+				nil,
+				token.Word("baz"),
+				nil,
+				token.Word("qux"),
+				nil,
+			},
+			token.Tokens{
+				token.Word("foo"),
+				token.Word("bar"),
+				token.Word("baz"),
+				token.Word("qux"),
+			},
+		},
+	} {
+		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
+			got := token.NewTokens(c.input...)
+			if !reflect.DeepEqual(got, c.want) {
+				t.Error(diff.Values(got, c.want))
+			}
+		})
+	}
+}
+
 func TestTokensAppend(t *testing.T) {
 	for i, c := range []struct {
 		tokens1 token.Tokens
