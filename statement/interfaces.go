@@ -13,20 +13,12 @@ type Statement interface {
 	nodeize() (tokenizer.Tokenizer, []interface{})
 }
 
-type Clause interface {
-	Statement
-	self() (tokenizer.Tokenizer, []interface{})
-	previous() Clause
-}
-
 type Joiner interface {
 	Statement
-	Join(TableOrAlias) Join
-	InnerJoin(TableOrAlias) Join
-	LeftJoin(TableOrAlias) Join
-	RightJoin(TableOrAlias) Join
-	self() (tokenizer.Tokenizer, []interface{})
-	previous() Joiner
+	Join(TableOrAlias) *Join
+	InnerJoin(TableOrAlias) *Join
+	LeftJoin(TableOrAlias) *Join
+	RightJoin(TableOrAlias) *Join
 }
 
 type ValOrFuncOrSub interface {

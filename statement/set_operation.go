@@ -58,8 +58,8 @@ func (u *SetOperation) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return tokenizer.NewLine(token.Word(u.op)), nil
 }
 
-func (u *SetOperation) list() []Nodeizer {
-	ns := []Nodeizer{}
+func (u *SetOperation) list() []Statement {
+	ns := []Statement{}
 	for i, s := range u.statements {
 		if i == 0 {
 			ns = append(ns, NewSubquery(s))

@@ -7,39 +7,47 @@ import (
 )
 
 type TableAs struct {
-	table Table
+	Prev
+	Next
+	table *Table
 	alias string
 }
 
-func (t TableAs) Join(table TableOrAlias) Join {
-	nj := NewJoin(table)
-	nj.prev = t
-	return nj
+func NewTableAs(alias string) *TableAs {
+	return &TableAs{
+		alias: alias,
+	}
 }
 
-func (t TableAs) InnerJoin(table TableOrAlias) Join {
-	ij := NewInnerJoin(table)
-	ij.prev = t
-	return ij
+func (t *TableAs) Join(table TableOrAlias) *Join {
+	j := NewJoin(table)
+	Link(t, j)
+	return j
 }
 
-func (t TableAs) LeftJoin(table TableOrAlias) Join {
-	lj := NewLeftJoin(table)
-	lj.prev = t
-	return lj
+func (t *TableAs) InnerJoin(table TableOrAlias) *Join {
+	j := NewInnerJoin(table)
+	Link(t, j)
+	return j
 }
 
-func (t TableAs) RightJoin(table TableOrAlias) Join {
-	rj := NewRightJoin(table)
-	rj.prev = t
-	return rj
+func (t *TableAs) LeftJoin(table TableOrAlias) *Join {
+	j := NewLeftJoin(table)
+	Link(t, j)
+	return j
 }
 
-func (t TableAs) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (t *TableAs) RightJoin(table TableOrAlias) *Join {
+	j := NewRightJoin(table)
+	Link(t, j)
+	return j
+}
+
+func (t *TableAs) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return t.self()
 }
 
-func (t TableAs) self() (tokenizer.Tokenizer, []interface{}) {
+func (t *TableAs) self() (tokenizer.Tokenizer, []interface{}) {
 	t1, v1 := t.table.nodeize()
 	t2 := tokenizer.NewLine(
 		token.QuoteStart,
@@ -56,20 +64,16 @@ func (t TableAs) self() (tokenizer.Tokenizer, []interface{}) {
 	), v1
 }
 
-func (t TableAs) previous() Joiner {
-	return nil
-}
-
 // isTableOrAlias always returns true.
 // This method exists only to implement the interface TableOrAlias.
 // This is a shit of duck typing, but anyway it works.
-func (t TableAs) isTableOrAlias() bool {
+func (t *TableAs) isTableOrAlias() bool {
 	return true
 }
 
 // isTableOrAliasOrJoiner always returns true.
 // This method exists only to implement the interface TableOrAliasOrJoiner.
 // This is a shit of duck typing, but anyway it works.
-func (t TableAs) isTableOrAliasOrJoiner() bool {
+func (t *TableAs) isTableOrAliasOrJoiner() bool {
 	return true
 }

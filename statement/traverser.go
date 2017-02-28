@@ -13,7 +13,7 @@ func Link(t1 Nexter, t2 Prever) {
 }
 
 type Childer interface {
-	Nodeizer
+	Statement
 	children() []Parenter
 	setChild(Parenter)
 }
@@ -36,7 +36,7 @@ func (p *Parent) setChild(c Parenter) {
 }
 
 type Parenter interface {
-	Nodeizer
+	Statement
 	parent() Childer
 	setParent(Childer)
 }
@@ -54,7 +54,7 @@ func (c *Child) setParent(p Childer) {
 }
 
 type Prever interface {
-	Nodeizer
+	Statement
 	prev() Nexter
 	setPrev(Nexter)
 }
@@ -72,7 +72,7 @@ func (n *Next) setPrev(p Nexter) {
 }
 
 type Nexter interface {
-	Nodeizer
+	Statement
 	next() Prever
 	setNext(Prever)
 }
@@ -89,7 +89,7 @@ func (p *Prev) setNext(n Prever) {
 	p.n = n
 }
 
-func Traverse(t Nodeizer) Nodeizer {
+func Traverse(t Statement) Statement {
 	{
 		for p := t; p != nil; {
 			t = p
@@ -114,6 +114,6 @@ func Traverse(t Nodeizer) Nodeizer {
 }
 
 type Lister interface {
-	Nodeizer
-	list() []Nodeizer
+	Statement
+	list() []Statement
 }

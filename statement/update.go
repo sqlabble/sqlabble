@@ -8,10 +8,10 @@ import (
 
 type Update struct {
 	Prev
-	table Table
+	table *Table
 }
 
-func NewUpdate(table Table) *Update {
+func NewUpdate(table *Table) *Update {
 	return &Update{
 		table: table,
 	}

@@ -86,7 +86,8 @@ func TestOn(t *testing.T) {
 			),
 			`foo AS "a" JOIN bar ON a.id = bar.id`,
 			`> foo AS "a"
-> JOIN bar ON a.id = bar.id
+> JOIN bar
+> ON a.id = bar.id
 `,
 			nil,
 		},

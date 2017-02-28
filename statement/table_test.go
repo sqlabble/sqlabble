@@ -11,7 +11,7 @@ import (
 
 func TestTableType(t *testing.T) {
 	for _, c := range []interface{}{
-		statement.Table{},
+		&statement.Table{},
 	} {
 		t.Run(fmt.Sprintf("%T", c), func(t *testing.T) {
 			if _, ok := c.(statement.Joiner); !ok {

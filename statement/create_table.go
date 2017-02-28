@@ -9,17 +9,17 @@ import (
 type CreateTable struct {
 	Parent
 	ifNotExists bool
-	table       Table
+	table       *Table
 }
 
-func NewCreateTable(table Table) *CreateTable {
+func NewCreateTable(table *Table) *CreateTable {
 	return &CreateTable{
 		ifNotExists: false,
 		table:       table,
 	}
 }
 
-func NewCreateTableIfNotExists(table Table) *CreateTable {
+func NewCreateTableIfNotExists(table *Table) *CreateTable {
 	return &CreateTable{
 		ifNotExists: true,
 		table:       table,

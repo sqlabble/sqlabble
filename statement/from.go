@@ -43,7 +43,7 @@ func (f *From) Limit(count int) *Limit {
 }
 
 func (f *From) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	middle, values := f.table.nodeize()
+	middle, values := Nodize(f.table)
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.From)),
 	).SetMiddle(

@@ -78,7 +78,8 @@ func TestUsing(t *testing.T) {
 				Join(statement.NewTable("bar")).Using(statement.NewColumn("id")),
 			`foo AS "a" JOIN bar USING id`,
 			`> foo AS "a"
-> JOIN bar USING id
+> JOIN bar
+> USING id
 `,
 			nil,
 		},

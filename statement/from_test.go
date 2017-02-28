@@ -44,7 +44,21 @@ func TestFromSQL(t *testing.T) {
 			`FROM foo AS "a" JOIN bar USING id`,
 			`> FROM
 >   foo AS "a"
->   JOIN bar USING id
+>   JOIN bar
+>   USING id
+`,
+			nil,
+		},
+		{
+			statement.NewFrom(
+				statement.NewTable("foo").As("a").
+					Join(statement.NewTable("bar")).On(statement.NewColumn("a.id"), statement.NewColumn("bar.id")),
+			),
+			`FROM foo AS "a" JOIN bar ON a.id = bar.id`,
+			`> FROM
+>   foo AS "a"
+>   JOIN bar
+>   ON a.id = bar.id
 `,
 			nil,
 		},

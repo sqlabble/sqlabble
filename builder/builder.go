@@ -28,21 +28,21 @@ func NewBuilder(format token.Format) Builder {
 }
 
 // Build converts a statement into a query and a slice of values.
-func (b Builder) Build(stmt statement.Statement) (string, []interface{}) {
-	if n, ok := stmt.(statement.Nodeizer); ok {
-		root := statement.Traverse(n)
-		tokenizers, values := statement.Nodize(root)
-		sql := token.Generate(tokenizers.Tokenize(0), b.Format)
-		if len(values) == 0 {
-			values = nil
-		}
-		return sql, values
-	}
-
-	tokenizer, values := statement.Nodeize(stmt)
-	query := token.Generate(tokenizer.Tokenize(0), b.Format)
+func (b Builder) Build(n statement.Statement) (string, []interface{}) {
+	// if n, ok := stmt.(statement.Nodeizer); ok {
+	root := statement.Traverse(n)
+	tokenizers, values := statement.Nodize(root)
+	sql := token.Generate(tokenizers.Tokenize(0), b.Format)
 	if len(values) == 0 {
 		values = nil
 	}
-	return query, values
+	return sql, values
+	// }
+
+	// tokenizer, values := statement.Nodeize(stmt)
+	// query := token.Generate(tokenizer.Tokenize(0), b.Format)
+	// if len(values) == 0 {
+	// 	values = nil
+	// }
+	// return query, values
 }

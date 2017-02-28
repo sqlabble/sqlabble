@@ -14,7 +14,7 @@ func NewDelete() *Delete {
 	return &Delete{}
 }
 
-func (d *Delete) From(t Table) *From {
+func (d *Delete) From(t *Table) *From {
 	f := NewFrom(t)
 	Link(d, f)
 	return f

@@ -7,80 +7,77 @@ import (
 )
 
 type Join struct {
+	Prev
+	Next
 	joinType string
 	table    TableOrAlias
-	prev     Joiner
 }
 
-func NewJoin(table TableOrAlias) Join {
-	return Join{
+func NewJoin(table TableOrAlias) *Join {
+	return &Join{
 		joinType: keyword.Join,
 		table:    table,
 	}
 }
 
-func NewInnerJoin(table TableOrAlias) Join {
-	return Join{
+func NewInnerJoin(table TableOrAlias) *Join {
+	return &Join{
 		joinType: keyword.InnerJoin,
 		table:    table,
 	}
 }
 
-func NewLeftJoin(table TableOrAlias) Join {
-	return Join{
+func NewLeftJoin(table TableOrAlias) *Join {
+	return &Join{
 		joinType: keyword.LeftJoin,
 		table:    table,
 	}
 }
 
-func NewRightJoin(table TableOrAlias) Join {
-	return Join{
+func NewRightJoin(table TableOrAlias) *Join {
+	return &Join{
 		joinType: keyword.RightJoin,
 		table:    table,
 	}
 }
 
-func (j Join) Join(table TableOrAlias) Join {
-	j1 := NewJoin(table)
-	j1.prev = j
-	return j1
+func (j *Join) Join(table TableOrAlias) *Join {
+	nj := NewJoin(table)
+	Link(j, nj)
+	return nj
 }
 
-func (j Join) InnerJoin(table TableOrAlias) Join {
-	j1 := NewInnerJoin(table)
-	j1.prev = j
-	return j1
+func (j *Join) InnerJoin(table TableOrAlias) *Join {
+	nj := NewInnerJoin(table)
+	Link(j, nj)
+	return nj
 }
 
-func (j Join) LeftJoin(table TableOrAlias) Join {
-	j1 := NewLeftJoin(table)
-	j1.prev = j
-	return j1
+func (j *Join) LeftJoin(table TableOrAlias) *Join {
+	nj := NewLeftJoin(table)
+	Link(j, nj)
+	return nj
 }
 
-func (j Join) RightJoin(table TableOrAlias) Join {
-	j1 := NewRightJoin(table)
-	j1.prev = j
-	return j1
+func (j *Join) RightJoin(table TableOrAlias) *Join {
+	nj := NewRightJoin(table)
+	Link(j, nj)
+	return nj
 }
 
-func (j Join) On(column1, column2 Column) On {
+func (j *Join) On(column1, column2 Column) *On {
 	o := NewOn(column1, column2)
-	o.join = j
+	Link(j, o)
 	return o
 }
 
-func (j Join) Using(col Column) Using {
-	o := NewUsing(col)
-	o.join = j
-	return o
+func (j *Join) Using(col Column) *Using {
+	u := NewUsing(col)
+	Link(j, u)
+	return u
 }
 
-func (j Join) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	return nodeizeJoiners(j)
-}
-
-func (j Join) self() (tokenizer.Tokenizer, []interface{}) {
+func (j *Join) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	if j.table == nil {
 		return nil, nil
 	}
@@ -88,11 +85,4 @@ func (j Join) self() (tokenizer.Tokenizer, []interface{}) {
 	return t.Prepend(
 		token.Word(j.joinType),
 	), v
-}
-
-func (j Join) previous() Joiner {
-	if j.prev == nil {
-		return nil
-	}
-	return j.prev
 }

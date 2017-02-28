@@ -8,11 +8,11 @@ import (
 
 type InsertInto struct {
 	Prev
-	table   Table
+	table   *Table
 	columns []Column
 }
 
-func NewInsertInto(table Table, columns ...Column) *InsertInto {
+func NewInsertInto(table *Table, columns ...Column) *InsertInto {
 	return &InsertInto{
 		table:   table,
 		columns: columns,

@@ -37,7 +37,7 @@ type SimpleWhen struct {
 	Prev
 	Next
 	param Param
-	paren Nodeizer
+	paren Statement
 }
 
 func NewSimpleWhen(param Param) *SimpleWhen {
@@ -97,7 +97,7 @@ func (t SimpleThen) nodeize() (tokenizer.Tokenizer, []interface{}) {
 type Else struct {
 	Next
 	param ValOrColOrFuncOrSub
-	pre   Nodeizer
+	pre   Statement
 }
 
 func NewElse(param ValOrColOrFuncOrSub) *Else {

@@ -11,7 +11,7 @@ import (
 
 func TestTableAsType(t *testing.T) {
 	for _, c := range []interface{}{
-		statement.TableAs{},
+		&statement.TableAs{},
 	} {
 		t.Run(fmt.Sprintf("%T", c), func(t *testing.T) {
 			if _, ok := c.(statement.Joiner); !ok {

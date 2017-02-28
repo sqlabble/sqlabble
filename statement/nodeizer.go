@@ -2,18 +2,14 @@ package statement
 
 import "github.com/minodisk/sqlabble/tokenizer"
 
-type Nodeizer interface {
-	nodeize() (tokenizer.Tokenizer, []interface{})
-}
-
-func Nodize(n Nodeizer) (tokenizer.Tokenizers, []interface{}) {
+func Nodize(stmt Statement) (tokenizer.Tokenizers, []interface{}) {
 	var tokenizers tokenizer.Tokenizers
 	values := []interface{}{}
 
-	ns := []Nodeizer{}
+	ns := []Statement{}
 
 	{
-		p := n
+		p := stmt
 		for {
 			prever, ok := p.(Prever)
 			if !ok {
@@ -23,18 +19,18 @@ func Nodize(n Nodeizer) (tokenizer.Tokenizers, []interface{}) {
 			if p == nil {
 				break
 			}
-			ns = append([]Nodeizer{p}, ns...)
+			ns = append([]Statement{p}, ns...)
 		}
 	}
 
-	if c, ok := n.(Lister); ok {
+	if c, ok := stmt.(Lister); ok {
 		ns = append(ns, c.list()...)
 	} else {
-		ns = append(ns, n)
+		ns = append(ns, stmt)
 	}
 
 	{
-		p := n
+		p := stmt
 		for {
 			nexter, ok := p.(Nexter)
 			if !ok {

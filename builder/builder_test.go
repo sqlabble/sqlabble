@@ -163,7 +163,8 @@ func TestBuilder(t *testing.T) {
 >       OR title = ?
 >     )
 > )
-> UNION (
+> UNION
+> (
 >   SELECT DISTINCT
 >     open_emp_id
 >   FROM
