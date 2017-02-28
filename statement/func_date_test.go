@@ -16,7 +16,6 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 		sqlIndent string
 		values    []interface{}
 	}{
-
 		{
 			statement.NewAdddate(
 				statement.NewParam("1981-01-01"),
