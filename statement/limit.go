@@ -7,7 +7,7 @@ import (
 )
 
 type Limit struct {
-	prev  Clause
+	prev  Prever
 	count int
 }
 
@@ -24,10 +24,10 @@ func (l Limit) Offset(count int) Offset {
 }
 
 func (l Limit) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	return nodeizeClauses(l)
+	return nodeizePrevs(l)
 }
 
-func (l Limit) self() (tokenizer.Tokenizer, []interface{}) {
+func (l Limit) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	line, values := tokenizer.ParamsToLine(l.count)
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.Limit)),
@@ -36,6 +36,6 @@ func (l Limit) self() (tokenizer.Tokenizer, []interface{}) {
 	), values
 }
 
-func (l Limit) previous() Clause {
+func (l Limit) previous() Prever {
 	return l.prev
 }

@@ -42,11 +42,11 @@ func (u Using) RightJoin(table TableOrAlias) Join {
 }
 
 func (u Using) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	return nodeizeJoiners(u)
+	return nodeizePrevs(u)
 }
 
-func (u Using) self() (tokenizer.Tokenizer, []interface{}) {
-	t1, v1 := u.join.self()
+func (u Using) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
+	t1, v1 := u.join.nodeizeSelf()
 	t2, v2 := u.column.nodeize()
 	return tokenizer.ConcatTokenizers(
 		t1,
@@ -57,7 +57,7 @@ func (u Using) self() (tokenizer.Tokenizer, []interface{}) {
 	), append(v1, v2...)
 }
 
-func (u Using) previous() Joiner {
+func (u Using) previous() Prever {
 	return u.join.previous()
 }
 

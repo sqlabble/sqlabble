@@ -7,7 +7,7 @@ import (
 )
 
 type OrderBy struct {
-	prev   Clause
+	prev   Prever
 	orders []Order
 }
 
@@ -22,10 +22,10 @@ func (o OrderBy) Limit(count int) Limit {
 }
 
 func (o OrderBy) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	return nodeizeClauses(o)
+	return nodeizePrevs(o)
 }
 
-func (o OrderBy) self() (tokenizer.Tokenizer, []interface{}) {
+func (o OrderBy) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	tokenizers := make(tokenizer.Tokenizers, len(o.orders))
 	values := []interface{}{}
 	for i, o := range o.orders {
@@ -40,6 +40,6 @@ func (o OrderBy) self() (tokenizer.Tokenizer, []interface{}) {
 	), values
 }
 
-func (o OrderBy) previous() Clause {
+func (o OrderBy) previous() Prever {
 	return o.prev
 }

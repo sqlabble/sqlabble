@@ -7,7 +7,7 @@ import (
 )
 
 type Set struct {
-	prev    Clause
+	prev    Prever
 	assigns []Assign
 }
 
@@ -24,10 +24,10 @@ func (s Set) Where(operation ComparisonOrLogicalOperation) Where {
 }
 
 func (s Set) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	return nodeizeClauses(s)
+	return nodeizePrevs(s)
 }
 
-func (s Set) self() (tokenizer.Tokenizer, []interface{}) {
+func (s Set) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	tokenizers := make(tokenizer.Tokenizers, len(s.assigns))
 	values := []interface{}{}
 	for i, a := range s.assigns {
@@ -44,6 +44,6 @@ func (s Set) self() (tokenizer.Tokenizer, []interface{}) {
 	), values
 }
 
-func (s Set) previous() Clause {
+func (s Set) previous() Prever {
 	return s.prev
 }

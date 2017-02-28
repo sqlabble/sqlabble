@@ -9,13 +9,6 @@ import (
 	"github.com/minodisk/sqlabble/statement"
 )
 
-func TestSelectType(t *testing.T) {
-	s := statement.Select{}
-	if _, ok := interface{}(s).(statement.Clause); !ok {
-		t.Errorf("%T should implement statement.Clause", s)
-	}
-}
-
 func TestSelectSQL(t *testing.T) {
 	for i, c := range []struct {
 		statement statement.Statement
