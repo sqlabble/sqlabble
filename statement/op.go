@@ -45,10 +45,6 @@ func (o JoinOperation) keyword() keyword.Operator {
 	return o.op
 }
 
-func (o JoinOperation) operations() []ComparisonOrLogicalOperation {
-	return o.ops
-}
-
 type Not struct {
 	operation ComparisonOrLogicalOperation
 }
@@ -68,10 +64,6 @@ func (o Not) nodeize() (tokenizer.Tokenizer, []interface{}) {
 
 func (o Not) keyword() keyword.Operator {
 	return keyword.Not
-}
-
-func (o Not) operations() []ComparisonOrLogicalOperation {
-	return []ComparisonOrLogicalOperation{o.operation}
 }
 
 type ComparisonOperation struct {

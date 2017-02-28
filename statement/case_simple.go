@@ -30,10 +30,6 @@ func (c SimpleCase) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	), append(v1, v2...)
 }
 
-func (c SimpleCase) previous() Prever {
-	return nil
-}
-
 type SimpleWhen struct {
 	param Param
 	prev  Prever

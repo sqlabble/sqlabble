@@ -29,6 +29,12 @@ func TestTable(t *testing.T) {
 		values    []interface{}
 	}{
 		{
+			statement.NewTable(""),
+			``,
+			``,
+			nil,
+		},
+		{
 			statement.NewTable("foo"),
 			`foo`,
 			`> foo

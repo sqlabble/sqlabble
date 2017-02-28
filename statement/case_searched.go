@@ -16,11 +16,6 @@ func NewSearchedCase(thenOrElse SearchedThenOrElse) SearchedCase {
 	}
 }
 
-func (c SearchedCase) When(condition ComparisonOrLogicalOperation) SearchedWhen {
-	w := NewSearchedWhen(condition)
-	return w
-}
-
 func (c SearchedCase) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	t, v := c.thenOrElse.nodeize()
 	return tokenizer.NewContainer(

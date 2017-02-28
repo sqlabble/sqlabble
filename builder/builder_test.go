@@ -24,6 +24,13 @@ func TestBuilder(t *testing.T) {
 		values    []interface{}
 	}{
 		{
+			statement.NewSelect(),
+			`SELECT`,
+			`> SELECT
+`,
+			nil,
+		},
+		{
 			statement.NewSelect(
 				statement.NewColumn("created_at"),
 				statement.NewColumn("name").As("n"),

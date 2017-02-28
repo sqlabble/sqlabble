@@ -21,6 +21,26 @@ func TestSearchedCase(t *testing.T) {
 				statement.NewSearchedWhen(
 					statement.NewColumn("employee.title").Eq(statement.NewParam("Head Teller")),
 				).
+					Then(statement.NewParam("Head Teller")),
+			),
+			`CASE WHEN employee.title = ? THEN ? END`,
+			`> CASE
+>   WHEN
+>     employee.title = ?
+>   THEN
+>     ?
+> END
+`,
+			[]interface{}{
+				"Head Teller",
+				"Head Teller",
+			},
+		},
+		{
+			statement.NewSearchedCase(
+				statement.NewSearchedWhen(
+					statement.NewColumn("employee.title").Eq(statement.NewParam("Head Teller")),
+				).
 					Then(statement.NewParam("Head Teller")).
 					When(
 						statement.NewAnd(
