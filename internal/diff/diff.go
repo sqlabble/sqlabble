@@ -16,7 +16,7 @@ func SQL(got, want string) string {
 }
 
 // Values aligns two slices in indentation.
-func Values(got, want []interface{}) string {
+func Values(got, want interface{}) string {
 	return fmt.Sprintf(
 		"values\n got: %+v\nwant: %+v",
 		got,

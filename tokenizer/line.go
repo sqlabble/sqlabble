@@ -10,7 +10,7 @@ func ParamsToLine(values ...interface{}) (Line, []interface{}) {
 	if len(values) == 0 {
 		return EmptyLine, nil
 	}
-	return NewLine(token.PlaceholderTokens(len(values))...), values
+	return NewLine(token.Placeholders(len(values))...), values
 }
 
 type Line struct {
