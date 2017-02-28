@@ -7,56 +7,55 @@ import (
 )
 
 type SimpleCase struct {
-	Parent
-	param ValOrColOrFuncOrSub
+	param      ValOrColOrFuncOrSub
+	thenOrElse SimpleThenOrElse
 }
 
-func NewSimpleCase(param ValOrColOrFuncOrSub) *SimpleCase {
-	return &SimpleCase{
-		param: param,
+func NewSimpleCase(param ValOrColOrFuncOrSub, thenOrElse SimpleThenOrElse) SimpleCase {
+	return SimpleCase{
+		param:      param,
+		thenOrElse: thenOrElse,
 	}
 }
 
-func (c *SimpleCase) When(param Param) *SimpleWhen {
-	w := NewSimpleWhen(param)
-	Link(c, w)
-	return w
+func (c SimpleCase) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	t1, v1 := c.param.nodeize()
+	t2, v2 := c.thenOrElse.nodeize()
+	return tokenizer.NewContainer(
+		t1.Prepend(token.Word(keyword.Case), token.Space),
+	).SetMiddle(
+		t2,
+	).SetLast(
+		tokenizer.NewLine(token.Word(keyword.End)),
+	), append(v1, v2...)
 }
 
-func (c *SimpleCase) separator() token.Tokens {
+func (c SimpleCase) previous() Prever {
 	return nil
 }
 
-func (c *SimpleCase) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	t, vals := c.param.nodeize()
-	return tokenizer.NewContainer(
-		t.Prepend(token.Word(keyword.Case), token.Space),
-	).SetLast(
-		tokenizer.NewLine(token.Word(keyword.End)),
-	), vals
-}
-
 type SimpleWhen struct {
-	Child
-	Prev
-	Next
 	param Param
-	paren Nodeizer
+	prev  Prever
 }
 
-func NewSimpleWhen(param Param) *SimpleWhen {
-	return &SimpleWhen{
+func NewSimpleWhen(param Param) SimpleWhen {
+	return SimpleWhen{
 		param: param,
 	}
 }
 
-func (w *SimpleWhen) Then(param ValOrColOrFuncOrSub) *SimpleThen {
+func (w SimpleWhen) Then(param ValOrColOrFuncOrSub) SimpleThen {
 	t := NewSimpleThen(param)
-	Link(w, t)
+	t.prev = w
 	return t
 }
 
-func (w *SimpleWhen) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (w SimpleWhen) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	return nodeizePrevs(w)
+}
+
+func (w SimpleWhen) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	t, vals := w.param.nodeize()
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.When)),
@@ -65,31 +64,38 @@ func (w *SimpleWhen) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	), vals
 }
 
-type SimpleThen struct {
-	Next
-	Prev
-	param ValOrColOrFuncOrSub
+func (w SimpleWhen) previous() Prever {
+	return w.prev
 }
 
-func NewSimpleThen(param ValOrColOrFuncOrSub) *SimpleThen {
-	return &SimpleThen{
+type SimpleThen struct {
+	param ValOrColOrFuncOrSub
+	prev  Prever
+}
+
+func NewSimpleThen(param ValOrColOrFuncOrSub) SimpleThen {
+	return SimpleThen{
 		param: param,
 	}
 }
 
-func (t *SimpleThen) When(param Param) *SimpleWhen {
+func (t SimpleThen) When(param Param) SimpleWhen {
 	w := NewSimpleWhen(param)
-	Link(t, w)
+	w.prev = t
 	return w
 }
 
-func (t *SimpleThen) Else(param ValOrColOrFuncOrSub) *Else {
-	e := NewElse(param)
-	Link(t, e)
+func (t SimpleThen) Else(param ValOrColOrFuncOrSub) SimpleElse {
+	e := NewSimpleElse(param)
+	e.prev = t
 	return e
 }
 
 func (t SimpleThen) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	return nodeizePrevs(t)
+}
+
+func (t SimpleThen) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	tk, vals := t.param.nodeize()
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.Then)),
@@ -98,23 +104,42 @@ func (t SimpleThen) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	), vals
 }
 
-type Else struct {
-	Next
-	param ValOrColOrFuncOrSub
-	pre   Nodeizer
+func (t SimpleThen) previous() Prever {
+	return t.prev
 }
 
-func NewElse(param ValOrColOrFuncOrSub) *Else {
-	return &Else{
+func (t SimpleThen) isSimpleThenOrElse() bool {
+	return true
+}
+
+type SimpleElse struct {
+	param ValOrColOrFuncOrSub
+	prev  Prever
+}
+
+func NewSimpleElse(param ValOrColOrFuncOrSub) SimpleElse {
+	return SimpleElse{
 		param: param,
 	}
 }
 
-func (e Else) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (e SimpleElse) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	return nodeizePrevs(e)
+}
+
+func (e SimpleElse) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	t, vals := e.param.nodeize()
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.Else)),
 	).SetMiddle(
 		t,
 	), vals
+}
+
+func (e SimpleElse) previous() Prever {
+	return e.prev
+}
+
+func (e SimpleElse) isSimpleThenOrElse() bool {
+	return true
 }

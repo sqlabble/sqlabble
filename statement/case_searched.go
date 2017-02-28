@@ -7,51 +7,53 @@ import (
 )
 
 type SearchedCase struct {
-	Parent
+	thenOrElse SearchedThenOrElse
 }
 
-func NewSearchedCase() *SearchedCase {
-	return &SearchedCase{}
+func NewSearchedCase(thenOrElse SearchedThenOrElse) SearchedCase {
+	return SearchedCase{
+		thenOrElse: thenOrElse,
+	}
 }
 
-func (c *SearchedCase) When(condition ComparisonOrLogicalOperation) *SearchedWhen {
+func (c SearchedCase) When(condition ComparisonOrLogicalOperation) SearchedWhen {
 	w := NewSearchedWhen(condition)
-	Link(c, w)
 	return w
 }
 
-func (c *SearchedCase) separator() token.Tokens {
-	return nil
-}
-
-func (c *SearchedCase) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (c SearchedCase) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	t, v := c.thenOrElse.nodeize()
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.Case)),
+	).SetMiddle(
+		t,
 	).SetLast(
 		tokenizer.NewLine(token.Word(keyword.End)),
-	), nil
+	), v
 }
 
 type SearchedWhen struct {
-	Child
-	Prev
-	Next
 	condition ComparisonOrLogicalOperation
+	prev      Prever
 }
 
-func NewSearchedWhen(condition ComparisonOrLogicalOperation) *SearchedWhen {
-	return &SearchedWhen{
+func NewSearchedWhen(condition ComparisonOrLogicalOperation) SearchedWhen {
+	return SearchedWhen{
 		condition: condition,
 	}
 }
 
-func (w *SearchedWhen) Then(param ValOrColOrFuncOrSub) *SearchedThen {
+func (w SearchedWhen) Then(param ValOrColOrFuncOrSub) SearchedThen {
 	t := NewSearchedThen(param)
-	Link(w, t)
+	t.prev = w
 	return t
 }
 
-func (w *SearchedWhen) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (w SearchedWhen) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	return nodeizePrevs(w)
+}
+
+func (w SearchedWhen) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	t, vals := w.condition.nodeize()
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.When)),
@@ -60,35 +62,82 @@ func (w *SearchedWhen) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	), vals
 }
 
-type SearchedThen struct {
-	Prev
-	Next
-	param ValOrColOrFuncOrSub
+func (w SearchedWhen) previous() Prever {
+	return w.prev
 }
 
-func NewSearchedThen(param ValOrColOrFuncOrSub) *SearchedThen {
-	return &SearchedThen{
+type SearchedThen struct {
+	param ValOrColOrFuncOrSub
+	prev  Prever
+}
+
+func NewSearchedThen(param ValOrColOrFuncOrSub) SearchedThen {
+	return SearchedThen{
 		param: param,
 	}
 }
 
-func (t *SearchedThen) When(condition ComparisonOrLogicalOperation) *SearchedWhen {
+func (t SearchedThen) When(condition ComparisonOrLogicalOperation) SearchedWhen {
 	w := NewSearchedWhen(condition)
-	Link(t, w)
+	w.prev = t
 	return w
 }
 
-func (t *SearchedThen) Else(param ValOrColOrFuncOrSub) *Else {
-	e := NewElse(param)
-	Link(t, e)
+func (t SearchedThen) Else(param ValOrColOrFuncOrSub) SearchedElse {
+	e := NewSearchedElse(param)
+	e.prev = t
 	return e
 }
 
-func (t *SearchedThen) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (t SearchedThen) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	return nodeizePrevs(t)
+}
+
+func (t SearchedThen) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	tk, vals := t.param.nodeize()
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.Then)),
 	).SetMiddle(
 		tk,
 	), vals
+}
+
+func (t SearchedThen) previous() Prever {
+	return t.prev
+}
+
+func (t SearchedThen) isSearchedThenOrElse() bool {
+	return true
+}
+
+type SearchedElse struct {
+	param ValOrColOrFuncOrSub
+	prev  Prever
+}
+
+func NewSearchedElse(param ValOrColOrFuncOrSub) SearchedElse {
+	return SearchedElse{
+		param: param,
+	}
+}
+
+func (e SearchedElse) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	return nodeizePrevs(e)
+}
+
+func (e SearchedElse) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
+	t, vals := e.param.nodeize()
+	return tokenizer.NewContainer(
+		tokenizer.NewLine(token.Word(keyword.Else)),
+	).SetMiddle(
+		t,
+	), vals
+}
+
+func (e SearchedElse) previous() Prever {
+	return e.prev
+}
+
+func (e SearchedElse) isSearchedThenOrElse() bool {
+	return true
 }
