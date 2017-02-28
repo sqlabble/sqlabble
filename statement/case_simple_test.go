@@ -36,6 +36,48 @@ func TestSimpleCase(t *testing.T) {
 									statement.NewColumn("i.cust_id").Eq(statement.NewColumn("customer.cust_id")),
 								),
 							),
+						),
+				),
+			`CASE customer.cust_type_cd WHEN ? THEN (SELECT CONCAT(i.fname, ?, i.lname) FROM individual AS "i" WHERE i.cust_id = customer.cust_id) END`,
+			`> CASE customer.cust_type_cd
+>   WHEN
+>     ?
+>   THEN
+>     (
+>       SELECT
+>         CONCAT(i.fname, ?, i.lname)
+>       FROM
+>         individual AS "i"
+>       WHERE
+>         i.cust_id = customer.cust_id
+>     )
+> END
+`,
+			[]interface{}{
+				"I",
+				" ",
+			},
+		},
+		{
+			statement.
+				NewSimpleCase(
+					statement.NewColumn("customer.cust_type_cd"),
+					statement.
+						NewSimpleWhen(
+							statement.NewParam("I"),
+						).
+						Then(
+							statement.NewSubquery(
+								statement.NewSelect(statement.NewConcat(
+									statement.NewColumn("i.fname"),
+									statement.NewParam(" "),
+									statement.NewColumn("i.lname"),
+								)).From(
+									statement.NewTable("individual").As("i"),
+								).Where(
+									statement.NewColumn("i.cust_id").Eq(statement.NewColumn("customer.cust_id")),
+								),
+							),
 						).
 						When(
 							statement.NewParam("B"),
