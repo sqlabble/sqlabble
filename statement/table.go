@@ -47,17 +47,17 @@ func (t Table) RightJoin(table TableOrAlias) Join {
 }
 
 func (t Table) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	return nodeizeJoiners(t)
+	return nodeizePrevs(t)
 }
 
-func (t Table) self() (tokenizer.Tokenizer, []interface{}) {
+func (t Table) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	if t.name == "" {
 		return nil, nil
 	}
 	return tokenizer.NewLine(token.Word(t.name)), nil
 }
 
-func (t Table) previous() Joiner {
+func (t Table) previous() Prever {
 	return nil
 }
 

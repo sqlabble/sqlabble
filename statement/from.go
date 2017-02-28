@@ -7,7 +7,7 @@ import (
 )
 
 type From struct {
-	prev  Clause
+	prev  Prever
 	table TableOrAliasOrJoiner
 }
 
@@ -42,10 +42,10 @@ func (f From) Limit(count int) Limit {
 }
 
 func (f From) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	return nodeizeClauses(f)
+	return nodeizePrevs(f)
 }
 
-func (f From) self() (tokenizer.Tokenizer, []interface{}) {
+func (f From) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	middle, values := f.table.nodeize()
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.From)),
@@ -54,6 +54,6 @@ func (f From) self() (tokenizer.Tokenizer, []interface{}) {
 	), values
 }
 
-func (f From) previous() Clause {
+func (f From) previous() Prever {
 	return f.prev
 }

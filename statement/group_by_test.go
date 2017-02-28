@@ -9,13 +9,6 @@ import (
 	"github.com/minodisk/sqlabble/statement"
 )
 
-func TestGroupByType(t *testing.T) {
-	g := statement.GroupBy{}
-	if _, ok := interface{}(g).(statement.Clause); !ok {
-		t.Errorf("%T doesn't implement statement.Clause", g)
-	}
-}
-
 func TestGroupBySQL(t *testing.T) {
 	for i, c := range []struct {
 		statement statement.Statement

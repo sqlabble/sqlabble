@@ -12,6 +12,11 @@ var (
 	Update                 = statement.NewUpdate
 	Delete                 = statement.NewDelete
 
+	SimpleCase   = statement.NewSimpleCase
+	SimpleWhen   = statement.NewSimpleWhen
+	SearchedCase = statement.NewSearchedCase
+	SearchedWhen = statement.NewSearchedWhen
+
 	Column   = statement.NewColumn
 	C        = statement.NewColumn
 	Table    = statement.NewTable

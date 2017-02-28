@@ -9,13 +9,6 @@ import (
 	"github.com/minodisk/sqlabble/statement"
 )
 
-func TestHavingType(t *testing.T) {
-	h := statement.Having{}
-	if _, ok := interface{}(h).(statement.Clause); !ok {
-		t.Errorf("%T should implement statement.Clause", h)
-	}
-}
-
 func TestHavingSQL(t *testing.T) {
 	for i, c := range []struct {
 		statement statement.Statement

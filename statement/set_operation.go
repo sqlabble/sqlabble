@@ -53,11 +53,17 @@ func NewExceptAll(statements ...Statement) SetOperation {
 	}
 }
 
-func (u SetOperation) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	return u.self()
+func (u SetOperation) OrderBy(os ...Order) OrderBy {
+	o := NewOrderBy(os...)
+	o.prev = u
+	return o
 }
 
-func (u SetOperation) self() (tokenizer.Tokenizer, []interface{}) {
+func (u SetOperation) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	return nodeizePrevs(u)
+}
+
+func (u SetOperation) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	tokenizers := make(tokenizer.Tokenizers, len(u.statements))
 	values := []interface{}{}
 	for i, s := range u.statements {
@@ -74,16 +80,10 @@ func (u SetOperation) self() (tokenizer.Tokenizer, []interface{}) {
 	return tokenizers, values
 }
 
-func (u SetOperation) previous() Clause {
+func (u SetOperation) previous() Prever {
 	return nil
 }
 
 func (u SetOperation) keyword() keyword.Operator {
 	return u.op
-}
-
-func (u SetOperation) OrderBy(os ...Order) OrderBy {
-	o := NewOrderBy(os...)
-	o.prev = u
-	return o
 }
