@@ -25,10 +25,10 @@ func (i InsertInto) DefaultValues() DefaultValues {
 }
 
 func (i InsertInto) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	return nodeizeClauses(i)
+	return nodeizePrevs(i)
 }
 
-func (i InsertInto) self() (tokenizer.Tokenizer, []interface{}) {
+func (i InsertInto) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	tableTokenizer, values := i.table.nodeize()
 	ts := make(tokenizer.Tokenizers, len(i.columns))
 	for j, c := range i.columns {
@@ -51,7 +51,7 @@ func (i InsertInto) self() (tokenizer.Tokenizer, []interface{}) {
 	), values
 }
 
-func (i InsertInto) previous() Clause {
+func (i InsertInto) previous() Prever {
 	return nil
 }
 

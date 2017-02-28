@@ -9,13 +9,6 @@ import (
 	"github.com/minodisk/sqlabble/statement"
 )
 
-func TestOffsetType(t *testing.T) {
-	o := statement.Offset{}
-	if _, ok := interface{}(o).(statement.Clause); !ok {
-		t.Errorf("%T should implement statement.Clause", o)
-	}
-}
-
 func TestOffset(t *testing.T) {
 	for i, c := range []struct {
 		statement statement.Statement

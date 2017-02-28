@@ -9,13 +9,6 @@ import (
 	"github.com/minodisk/sqlabble/statement"
 )
 
-func TestFromType(t *testing.T) {
-	f := statement.From{}
-	if _, ok := interface{}(f).(statement.Clause); !ok {
-		t.Errorf("%T should implement statement.Clause", f)
-	}
-}
-
 func TestFromSQL(t *testing.T) {
 	for i, c := range []struct {
 		statement statement.Statement

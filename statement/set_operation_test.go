@@ -9,16 +9,6 @@ import (
 	"github.com/minodisk/sqlabble/statement"
 )
 
-func TestSetOperationType(t *testing.T) {
-	for _, s := range []interface{}{
-		statement.SetOperation{},
-	} {
-		if _, ok := s.(statement.Clause); !ok {
-			t.Errorf("%T should implement statement.Clause", s)
-		}
-	}
-}
-
 func TestUnionSQL(t *testing.T) {
 	for i, c := range []struct {
 		statement statement.Statement

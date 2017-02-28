@@ -19,15 +19,15 @@ func (d Delete) From(t Table) From {
 }
 
 func (d Delete) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	return nodeizeClauses(d)
+	return nodeizePrevs(d)
 }
 
-func (d Delete) self() (tokenizer.Tokenizer, []interface{}) {
+func (d Delete) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.Delete)),
 	), nil
 }
 
-func (d Delete) previous() Clause {
+func (d Delete) previous() Prever {
 	return nil
 }

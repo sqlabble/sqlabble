@@ -32,10 +32,10 @@ func (s Select) From(t TableOrAliasOrJoiner) From {
 }
 
 func (s Select) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	return nodeizeClauses(s)
+	return nodeizePrevs(s)
 }
 
-func (s Select) self() (tokenizer.Tokenizer, []interface{}) {
+func (s Select) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	tokenizers := make(tokenizer.Tokenizers, len(s.columns))
 	values := []interface{}{}
 	for i, c := range s.columns {
@@ -56,6 +56,6 @@ func (s Select) self() (tokenizer.Tokenizer, []interface{}) {
 	), values
 }
 
-func (s Select) previous() Clause {
+func (s Select) previous() Prever {
 	return nil
 }

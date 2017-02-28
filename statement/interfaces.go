@@ -13,10 +13,9 @@ type Statement interface {
 	nodeize() (tokenizer.Tokenizer, []interface{})
 }
 
-type Clause interface {
-	Statement
-	self() (tokenizer.Tokenizer, []interface{})
-	previous() Clause
+type Prever interface {
+	previous() Prever
+	nodeizeSelf() (tokenizer.Tokenizer, []interface{})
 }
 
 type Joiner interface {
@@ -25,8 +24,6 @@ type Joiner interface {
 	InnerJoin(TableOrAlias) Join
 	LeftJoin(TableOrAlias) Join
 	RightJoin(TableOrAlias) Join
-	self() (tokenizer.Tokenizer, []interface{})
-	previous() Joiner
 }
 
 type ValOrFuncOrSub interface {

@@ -7,7 +7,7 @@ import (
 )
 
 type GroupBy struct {
-	prev    Clause
+	prev    Prever
 	columns []Column
 }
 
@@ -36,10 +36,10 @@ func (g GroupBy) Limit(count int) Limit {
 }
 
 func (g GroupBy) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	return nodeizeClauses(g)
+	return nodeizePrevs(g)
 }
 
-func (g GroupBy) self() (tokenizer.Tokenizer, []interface{}) {
+func (g GroupBy) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	ts := make(tokenizer.Tokenizers, len(g.columns))
 	values := []interface{}{}
 	for i, c := range g.columns {
@@ -56,6 +56,6 @@ func (g GroupBy) self() (tokenizer.Tokenizer, []interface{}) {
 	), values
 }
 
-func (g GroupBy) previous() Clause {
+func (g GroupBy) previous() Prever {
 	return g.prev
 }

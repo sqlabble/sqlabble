@@ -8,7 +8,7 @@ import (
 
 // Offset skips specified rows before beginning to return rows.
 type Offset struct {
-	prev  Clause
+	prev  Prever
 	count int
 }
 
@@ -20,10 +20,10 @@ func NewOffset(count int) Offset {
 }
 
 func (o Offset) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	return nodeizeClauses(o)
+	return nodeizePrevs(o)
 }
 
-func (o Offset) self() (tokenizer.Tokenizer, []interface{}) {
+func (o Offset) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	line, values := tokenizer.ParamsToLine(o.count)
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.Offset)),
@@ -32,6 +32,6 @@ func (o Offset) self() (tokenizer.Tokenizer, []interface{}) {
 	), values
 }
 
-func (o Offset) previous() Clause {
+func (o Offset) previous() Prever {
 	return o.prev
 }

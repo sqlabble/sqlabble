@@ -7,9 +7,9 @@ import (
 )
 
 type Join struct {
+	prev     Prever
 	joinType string
 	table    TableOrAlias
-	prev     Joiner
 }
 
 func NewJoin(table TableOrAlias) Join {
@@ -77,10 +77,10 @@ func (j Join) Using(col Column) Using {
 }
 
 func (j Join) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	return nodeizeJoiners(j)
+	return nodeizePrevs(j)
 }
 
-func (j Join) self() (tokenizer.Tokenizer, []interface{}) {
+func (j Join) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	if j.table == nil {
 		return nil, nil
 	}
@@ -90,7 +90,7 @@ func (j Join) self() (tokenizer.Tokenizer, []interface{}) {
 	), v
 }
 
-func (j Join) previous() Joiner {
+func (j Join) previous() Prever {
 	if j.prev == nil {
 		return nil
 	}

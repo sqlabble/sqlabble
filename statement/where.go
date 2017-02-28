@@ -7,7 +7,7 @@ import (
 )
 
 type Where struct {
-	prev      Clause
+	prev      Prever
 	operation ComparisonOrLogicalOperation
 }
 
@@ -36,10 +36,10 @@ func (w Where) Limit(count int) Limit {
 }
 
 func (w Where) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	return nodeizeClauses(w)
+	return nodeizePrevs(w)
 }
 
-func (w Where) self() (tokenizer.Tokenizer, []interface{}) {
+func (w Where) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	middle, values := w.operation.nodeize()
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.Where)),
@@ -48,6 +48,6 @@ func (w Where) self() (tokenizer.Tokenizer, []interface{}) {
 	), values
 }
 
-func (w Where) previous() Clause {
+func (w Where) previous() Prever {
 	return w.prev
 }

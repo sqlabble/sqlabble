@@ -36,10 +36,10 @@ func (t TableAs) RightJoin(table TableOrAlias) Join {
 }
 
 func (t TableAs) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	return t.self()
+	return nodeizePrevs(t)
 }
 
-func (t TableAs) self() (tokenizer.Tokenizer, []interface{}) {
+func (t TableAs) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	t1, v1 := t.table.nodeize()
 	t2 := tokenizer.NewLine(
 		token.QuoteStart,
@@ -56,7 +56,7 @@ func (t TableAs) self() (tokenizer.Tokenizer, []interface{}) {
 	), v1
 }
 
-func (t TableAs) previous() Joiner {
+func (t TableAs) previous() Prever {
 	return nil
 }
 
