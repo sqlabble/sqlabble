@@ -1,13 +1,12 @@
 package converter
 
-// go:generate gensqlabble
-
 import (
 	"bytes"
 	"go/ast"
 	"go/format"
 	"go/parser"
 	"go/token"
+	"reflect"
 	"strings"
 
 	"github.com/alecthomas/template"
@@ -16,26 +15,18 @@ import (
 
 const implTmpl = `package {{ .Name }}
 
-import (
-	"github.com/minodisk/sqlabble/statement"
-)
+import "github.com/minodisk/sqlabble/statement"
 
 {{ range .Tables }}
 {{ $receiver := .Reciever }}
 {{ $type := .GoName }}
 func ({{ $receiver }} {{ $type }}) Table() statement.Table {
-	name = "person"
-	if tn, ok := p.(TableNamer); ok {
-		name = tn.TableName()
-	}
-	return statement.NewTable(name)
+	return statement.NewTable("{{ .DBName }}")
 }
 
 func ({{ $receiver }} {{ $type }}) Columns() []statement.Column {
-	return []statement.Column{
-{{ range .Columns }}
-		{{ $receiver }}.Column{{ .GoName }}(),
-{{ end }}
+	return []statement.Column{ {{ range .Columns }}
+		{{ $receiver }}.Column{{ .GoName }}(),{{ end }}
 	}
 }
 
@@ -59,17 +50,23 @@ func init() {
 }
 
 func Generate(input []byte) ([]byte, error) {
-	expr, err := parser.ParseFile(token.NewFileSet(), "dummy.go", input, 0)
+	fset := token.NewFileSet()
+	file, err := parser.ParseFile(fset, "dummy.go", input, parser.ParseComments)
 	if err != nil {
 		return nil, err
 	}
 
-	pkg := ParsePackage(expr)
+	if ok := ast.FileExports(file); !ok {
+		return nil, nil
+	}
+
+	pkg := ParsePackage(fset, file)
 	if len(pkg.Tables) == 0 {
 		return nil, nil
 	}
 
-	// fmt.Println(pkg)
+	// fmt.Printf("%+v\n", pkg)
+
 	var buf bytes.Buffer
 	if err := impl.Execute(&buf, pkg); err != nil {
 		return nil, err
@@ -83,6 +80,7 @@ func Generate(input []byte) ([]byte, error) {
 	return bytes, nil
 }
 
+//db:"packages"
 type Package struct {
 	Name   string
 	Tables []Table
@@ -95,28 +93,88 @@ type Table struct {
 	Reciever string
 }
 
+// db:"columns"
 type Column struct {
 	GoName string
 	DBName string
 }
 
-func ParsePackage(expr *ast.File) Package {
-	p := Package{Name: expr.Name.Name}
-	ast.Inspect(expr, func(node ast.Node) bool {
+// db:""
+type Comment struct {
+	Position  token.Position
+	TableName string
+}
+
+type Comments []Comment
+
+func (cs Comments) Find(from, to int) (Comment, bool) {
+	for _, c := range cs {
+		if from <= c.Position.Line && c.Position.Line <= to {
+			return c, true
+		}
+	}
+	return Comment{}, false
+}
+
+func ParsePackage(fset *token.FileSet, file *ast.File) Package {
+	comments := Comments{}
+	for _, comment := range file.Comments {
+		// fmt.Println("=========")
+		// fmt.Println(comment.Text(), comment.List)
+		for _, c := range comment.List {
+			// fmt.Println(c.Slash, c.Text)
+			if n, ok := ParseDB(strings.TrimPrefix(c.Text, "//")); ok {
+				comments = append(comments, Comment{
+					Position:  fset.Position(c.Pos()),
+					TableName: n,
+				})
+				// fmt.Println(c.End(), n)
+			}
+		}
+	}
+
+	// fmt.Println(comments)
+
+	p := Package{Name: file.Name.Name}
+	ast.Inspect(file, func(node ast.Node) bool {
 		switch s := node.(type) {
 		case *ast.TypeSpec:
-			ts := ParseTable(s)
-			p.Tables = append(p.Tables, ts...)
+			start := fset.Position(node.Pos()).Line
+			end := fset.Position(node.End()).Line
+			c, ok := comments.Find(start-1, end)
+			if !ok {
+				return false
+			}
+
+			t := ParseTable(fset, s)
+			if c.TableName != "" {
+				t.DBName = c.TableName
+			}
+			p.Tables = append(p.Tables, t)
+
 			return false
+			// default:
+			// 	if node == nil {
+			// 		return true
+			// 	}
+			// 	fmt.Println(node.Pos(), node.End())
 		}
 		return true
 	})
+
 	return p
 }
 
-func ParseTable(typ *ast.TypeSpec) []Table {
-	tables := []Table{}
+func ParseTable(fset *token.FileSet, typ *ast.TypeSpec) Table {
+	var (
+		table Table
+		found bool
+	)
 	ast.Inspect(typ, func(node ast.Node) bool {
+		if found {
+			return false
+		}
+
 		switch s := node.(type) {
 		case *ast.StructType:
 			// fmt.Println("============")
@@ -125,26 +183,29 @@ func ParseTable(typ *ast.TypeSpec) []Table {
 			if typ.Name.Name == "" {
 				return true
 			}
-			table := Table{
+			table = Table{
 				GoName:   typ.Name.Name,
 				Reciever: string(strings.ToLower(typ.Name.Name)[0]),
 				DBName:   caseconv.LowerSnakeCase(typ.Name.Name),
 			}
 			for _, field := range s.Fields.List {
-				column := ParseColumn(field)
+				column := ParseColumn(fset, field)
 				if column != nil {
 					table.Columns = append(table.Columns, *column)
 				}
 			}
-			tables = append(tables, table)
+
+			found = true
 			return false
 		}
+
 		return true
 	})
-	return tables
+
+	return table
 }
 
-func ParseColumn(field *ast.Field) *Column {
+func ParseColumn(fset *token.FileSet, field *ast.Field) *Column {
 	// fmt.Println("-----")
 	var (
 		ident *ast.Ident
@@ -159,6 +220,7 @@ func ParseColumn(field *ast.Field) *Column {
 		switch t := node.(type) {
 		case *ast.Ident:
 			if ident == nil {
+				// fmt.Println(t.Obj.Data, t.Obj.Decl, t.Obj.Kind, t.Obj.Name, t.Obj.Type)
 				ident = t
 			}
 		case *ast.BasicLit:
@@ -171,23 +233,8 @@ func ParseColumn(field *ast.Field) *Column {
 
 	var name string
 	if tag != nil {
-		tags := strings.Split(strings.Trim(tag.Value, "`"), ",")
-		for _, t := range tags {
-			tmp := strings.Split(t, ":")
-			if len(tmp) != 2 {
-				continue
-			}
-			key := tmp[0]
-			key = strings.TrimSpace(key)
-			if key != "db" {
-				continue
-			}
-			val := tmp[1]
-			val = strings.Trim(strings.TrimSpace(val), `"`)
-			if val != "" {
-				name = val
-				break
-			}
+		if n, ok := ParseDB(strings.Trim(tag.Value, "`")); ok {
+			name = n
 		}
 	}
 	switch name {
@@ -201,4 +248,8 @@ func ParseColumn(field *ast.Field) *Column {
 		GoName: ident.Name,
 		DBName: name,
 	}
+}
+
+func ParseDB(s string) (string, bool) {
+	return reflect.StructTag(s).Lookup("db")
 }

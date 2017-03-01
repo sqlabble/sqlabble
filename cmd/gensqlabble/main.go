@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -34,15 +33,18 @@ Options:
 `, name, name)
 		flag.PrintDefaults()
 	}
-	// out := flag.String("out", ".", "output directory")
+
 	pf := flag.String("suffix", "_sqlabble", "suffix of generated file")
+	// tn := flag.String("tablename", "", "table name using with `go generate`")
 	flag.Parse()
 
 	postfix := *pf
+	// tableName := *tn
+	// fmt.Println(os.Getenv("GOFILE"), os.Getenv("GOLINE"), os.Getenv("GOPACKAGE"))
 
 	patterns := flag.Args()
 	if len(patterns) == 0 {
-		return errors.New("requires least 1 pattern")
+		patterns = []string{"."}
 	}
 
 	pathes := []string{}
@@ -71,15 +73,17 @@ Options:
 
 		dir := filepath.Dir(p)
 
-		dist, err := converter.Generate(src)
+		distCode, err := converter.Generate(src)
 		if err != nil {
 			return err
 		}
-		if dist == nil {
+		if distCode == nil {
 			continue
 		}
 
-		fmt.Println(p, "->", filepath.Join(dir, fmt.Sprintf("%s%s%s", dir, postfix, ext)))
+		dist := filepath.Join(dir, fmt.Sprintf("%s%s%s", base, postfix, ext))
+		fmt.Println(p, "->", dist)
+		ioutil.WriteFile(dist, distCode, 0664)
 	}
 
 	return nil
