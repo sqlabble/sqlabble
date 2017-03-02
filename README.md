@@ -13,6 +13,174 @@ SQL query builder with type support.
     - Standard: `"`
     - MySQL: `` ` ``
 
+## Installation
+
+```
+go get -u github.com/minodisk/sqlabble
+```
+
+## Usage
+
+### Intro
+
+```go
+import (
+	"fmt"
+
+	q "github.com/minodisk/sqlabble"
+	"github.com/minodisk/sqlabble/builder"
+)
+
+func main() {
+	stmt := q.Select(
+		q.Column("person_id"),
+		q.Column("fname"),
+		q.Column("lname"),
+		q.Column("birth_date"),
+	).From(
+		q.Table("person"),
+	).Where(
+		q.Column("lname").Eq(q.Param("Turner")),
+	)
+
+	query, values := builder.StandardIndented.Build(stmt)
+
+	fmt.Println(query)
+	// -> SELECT
+	//      person_id
+	//      , fname
+	//      , lname
+	//      , birth_date
+	//    FROM
+	//      person
+	//    WHERE
+	//      lname = ?
+
+	fmt.Println(values)
+	// -> [Turner]
+}
+```
+
+If it is slightly redundant, there are short hands.
+
+```go
+q.Select(
+  q.C("person_id"),
+  q.C("fname"),
+  q.C("lname"),
+  q.C("birth_date"),
+).From(
+  q.T("person"),
+).Where(
+  q.C("lname").Eq(q.P("Turner")),
+)
+```
+
+If you do not want to write table names or column names many times with strings, try [the code generation tool](#code-generation-tool).
+
+### Insert
+
+### Select
+
+```go
+q.Select(
+  q.C("person_id").As("persion_id"),
+  q.C("fname").As("persion_fname"),
+  q.C("lname").As("persion_lname"),
+  q.C("birth_date").As("persion_birth_date"),
+).From(
+  q.T("user"),
+).Where(
+  q.C("id").Eq(q.Param(3)),
+),
+```
+
+### Update
+
+### Delete
+
+### Sets
+
+### Subqueries
+
+## Code Generation Tool
+
+If you write table names and column names many times with strings, you will mistype someday. It would be nonsense to spend time finding mistypes. There is a code generation tool that implements a method that returns a table or column to a struct. Is declarative coding is fun, right?
+
+First, create a file named `tables.go`:
+
+```go
+package tables
+
+// +db:"persons"
+type Person struct {
+	PersonID             int
+	FamilyName           string `db:"fname"`
+	LastName             string `db:"lname"`
+	BirthDate            time.Time
+	SocialSecurityNumber string `db:"-"`
+	password             string
+}
+```
+
+And, call the following command at the terminal:
+
+```sh
+gensqlabble tables.go
+```
+
+Then, a file named `tables_sqlabble.go` will be generated:
+
+```go
+package tables
+
+import "github.com/minodisk/sqlabble/stmt"
+
+func (p Person) Table() stmt.Table {
+	return stmt.NewTable("persons")
+}
+
+func (p Person) Columns() []stmt.Column {
+	return []stmt.Column{
+		p.ColumnPersonID(),
+		p.ColumnFamilyName(),
+		p.ColumnLastName(),
+		p.ColumnBirthDate(),
+	}
+}
+
+func (p Person) ColumnPersonID() stmt.Column {
+	return stmt.NewColumn("person_id")
+}
+
+func (p Person) ColumnFamilyName() stmt.Column {
+	return stmt.NewColumn("fname")
+}
+
+func (p Person) ColumnLastName() stmt.Column {
+	return stmt.NewColumn("lname")
+}
+
+func (p Person) ColumnBirthDate() stmt.Column {
+	return stmt.NewColumn("birth_date")
+}
+```
+
+Finally, you will be able to construct queries using the added methods:
+
+```go
+p := Person{}
+q.Select(
+    p.Columns()...,
+  ).From(
+    p.Table(),
+  ).Where(
+    p.ColumnLastName().Eq(q.P("Turner")),
+  )
+```
+
+It's simple, and you never mistype table names or column names.
+
 ## Processing Layers
 
 ```

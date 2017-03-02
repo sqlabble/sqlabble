@@ -7,7 +7,7 @@ import (
 
 	"github.com/minodisk/sqlabble/builder"
 	"github.com/minodisk/sqlabble/internal/diff"
-	"github.com/minodisk/sqlabble/statement"
+	"github.com/minodisk/sqlabble/stmt"
 	"github.com/minodisk/sqlabble/token"
 )
 
@@ -19,39 +19,39 @@ var (
 func TestBuilder(t *testing.T) {
 	t.Parallel()
 	for i, c := range []struct {
-		statement statement.Statement
+		stmt      stmt.Statement
 		sql       string
 		sqlIndent string
 		values    []interface{}
 	}{
 		{
-			statement.NewSelect(),
+			stmt.NewSelect(),
 			`SELECT`,
 			`> SELECT
 `,
 			nil,
 		},
 		{
-			statement.NewSelect(
-				statement.NewColumn("created_at"),
-				statement.NewColumn("name").As("n"),
-				statement.NewColumn("gender").As("g"),
-				statement.NewColumn("age"),
+			stmt.NewSelect(
+				stmt.NewColumn("created_at"),
+				stmt.NewColumn("name").As("n"),
+				stmt.NewColumn("gender").As("g"),
+				stmt.NewColumn("age"),
 			).From(
-				statement.NewTable("users"),
+				stmt.NewTable("users"),
 			).Where(
-				statement.NewAnd(
-					statement.NewColumn("g").Eq(statement.NewParam("male")),
-					statement.NewOr(
-						statement.NewColumn("age").Lt(statement.NewParam(20)),
-						statement.NewColumn("age").Eq(statement.NewParam(30)),
-						statement.NewColumn("age").Gte(statement.NewParam(50)),
+				stmt.NewAnd(
+					stmt.NewColumn("g").Eq(stmt.NewParam("male")),
+					stmt.NewOr(
+						stmt.NewColumn("age").Lt(stmt.NewParam(20)),
+						stmt.NewColumn("age").Eq(stmt.NewParam(30)),
+						stmt.NewColumn("age").Gte(stmt.NewParam(50)),
 					),
-					statement.NewColumn("created_at").Between(statement.NewParam("2016-01-01"), statement.NewParam("2016-12-31")),
+					stmt.NewColumn("created_at").Between(stmt.NewParam("2016-01-01"), stmt.NewParam("2016-12-31")),
 				),
 			).OrderBy(
-				statement.NewColumn("created_at").Desc(),
-				statement.NewColumn("id").Asc(),
+				stmt.NewColumn("created_at").Desc(),
+				stmt.NewColumn("id").Asc(),
 			).Limit(
 				20,
 			).Offset(
@@ -93,13 +93,13 @@ func TestBuilder(t *testing.T) {
 			},
 		},
 		{
-			statement.NewInsertInto(
-				statement.NewTable("foo"),
-				statement.NewColumn("name"),
-				statement.NewColumn("age"),
+			stmt.NewInsertInto(
+				stmt.NewTable("foo"),
+				stmt.NewColumn("name"),
+				stmt.NewColumn("age"),
 			).Values(
-				statement.NewParams(`Obi-Wan Kenobi`, 63),
-				statement.NewParams(`Luke Skywalker`, 19),
+				stmt.NewParams(`Obi-Wan Kenobi`, 63),
+				stmt.NewParams(`Luke Skywalker`, 19),
 			),
 			`INSERT INTO foo (name, age) VALUES (?, ?), (?, ?)`,
 			`> INSERT INTO
@@ -119,10 +119,10 @@ func TestBuilder(t *testing.T) {
 			},
 		},
 		{
-			statement.NewDelete().From(
-				statement.NewTable("login_history"),
+			stmt.NewDelete().From(
+				stmt.NewTable("login_history"),
 			).Where(
-				statement.NewColumn("login_date").Lt(statement.NewParam("2004-07-02 09:00:00")),
+				stmt.NewColumn("login_date").Lt(stmt.NewParam("2004-07-02 09:00:00")),
 			),
 			`DELETE FROM login_history WHERE login_date < ?`,
 			`> DELETE
@@ -136,26 +136,26 @@ func TestBuilder(t *testing.T) {
 			},
 		},
 		{
-			statement.NewUnion(
-				statement.NewSelect(
-					statement.NewColumn("emp_id"),
+			stmt.NewUnion(
+				stmt.NewSelect(
+					stmt.NewColumn("emp_id"),
 				).From(
-					statement.NewTable("employee"),
+					stmt.NewTable("employee"),
 				).Where(
-					statement.NewAnd(
-						statement.NewColumn("assigned_branch_id").Eq(statement.NewParam(2)),
-						statement.NewOr(
-							statement.NewColumn("title").Eq(statement.NewParam("Teller")),
-							statement.NewColumn("title").Eq(statement.NewParam("Head Teller")),
+					stmt.NewAnd(
+						stmt.NewColumn("assigned_branch_id").Eq(stmt.NewParam(2)),
+						stmt.NewOr(
+							stmt.NewColumn("title").Eq(stmt.NewParam("Teller")),
+							stmt.NewColumn("title").Eq(stmt.NewParam("Head Teller")),
 						),
 					),
 				),
-				statement.NewSelectDistinct(
-					statement.NewColumn("open_emp_id"),
+				stmt.NewSelectDistinct(
+					stmt.NewColumn("open_emp_id"),
 				).From(
-					statement.NewTable("account"),
+					stmt.NewTable("account"),
 				).Where(
-					statement.NewColumn("open_branch_id").Eq(statement.NewParam(2)),
+					stmt.NewColumn("open_branch_id").Eq(stmt.NewParam(2)),
 				),
 			),
 			`(SELECT emp_id FROM employee WHERE assigned_branch_id = ? AND (title = ? OR title = ?)) UNION (SELECT DISTINCT open_emp_id FROM account WHERE open_branch_id = ?)`,
@@ -190,7 +190,7 @@ func TestBuilder(t *testing.T) {
 	} {
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
 			t.Parallel()
-			sql, values := b.Build(c.statement)
+			sql, values := b.Build(c.stmt)
 			if sql != c.sql {
 				t.Error(diff.SQL(sql, c.sql))
 			}
@@ -201,7 +201,7 @@ func TestBuilder(t *testing.T) {
 
 		t.Run(fmt.Sprintf("%d BuildIndent", i), func(t *testing.T) {
 			t.Parallel()
-			sql, values := bi.Build(c.statement)
+			sql, values := bi.Build(c.stmt)
 			if sql != c.sqlIndent {
 				t.Error(diff.SQL(sql, c.sqlIndent))
 			}

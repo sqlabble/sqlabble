@@ -1,43 +1,45 @@
 package sqlabble
 
-import "github.com/minodisk/sqlabble/statement"
+import (
+	"github.com/minodisk/sqlabble/stmt"
+)
 
-// Methods exported to make statements.
+// Methods exported to make stmts.
 var (
-	CreateTable            = statement.NewCreateTable
-	CreateTableIfNotExists = statement.NewCreateTableIfNotExists
-	Select                 = statement.NewSelect
-	SelectDistinct         = statement.NewSelectDistinct
-	InsertInto             = statement.NewInsertInto
-	Update                 = statement.NewUpdate
-	Delete                 = statement.NewDelete
+	CreateTable            = stmt.NewCreateTable
+	CreateTableIfNotExists = stmt.NewCreateTableIfNotExists
+	Select                 = stmt.NewSelect
+	SelectDistinct         = stmt.NewSelectDistinct
+	InsertInto             = stmt.NewInsertInto
+	Update                 = stmt.NewUpdate
+	Delete                 = stmt.NewDelete
 
-	SimpleCase   = statement.NewSimpleCase
-	SimpleWhen   = statement.NewSimpleWhen
-	SearchedCase = statement.NewSearchedCase
-	SearchedWhen = statement.NewSearchedWhen
+	SimpleCase   = stmt.NewSimpleCase
+	SimpleWhen   = stmt.NewSimpleWhen
+	SearchedCase = stmt.NewSearchedCase
+	SearchedWhen = stmt.NewSearchedWhen
 
-	Column   = statement.NewColumn
-	C        = statement.NewColumn
-	Table    = statement.NewTable
-	T        = statement.NewTable
-	Param    = statement.NewParam
-	P        = statement.NewParam
-	Params   = statement.NewParams
-	Ps       = statement.NewParams
-	Subquery = statement.NewSubquery
-	S        = statement.NewSubquery
+	Column   = stmt.NewColumn
+	C        = stmt.NewColumn
+	Table    = stmt.NewTable
+	T        = stmt.NewTable
+	Param    = stmt.NewParam
+	P        = stmt.NewParam
+	Params   = stmt.NewParams
+	Ps       = stmt.NewParams
+	Subquery = stmt.NewSubquery
+	S        = stmt.NewSubquery
 
-	And       = statement.NewAnd
-	Or        = statement.NewOr
-	Not       = statement.NewNot
-	Exists    = statement.NewExists
-	NotExists = statement.NewNotExists
+	And       = stmt.NewAnd
+	Or        = stmt.NewOr
+	Not       = stmt.NewNot
+	Exists    = stmt.NewExists
+	NotExists = stmt.NewNotExists
 
-	Union        = statement.NewUnion
-	UnionAll     = statement.NewUnionAll
-	Intersect    = statement.NewIntersect
-	IntersectAll = statement.NewIntersectAll
-	Except       = statement.NewExcept
-	ExceptAll    = statement.NewExceptAll
+	Union        = stmt.NewUnion
+	UnionAll     = stmt.NewUnionAll
+	Intersect    = stmt.NewIntersect
+	IntersectAll = stmt.NewIntersectAll
+	Except       = stmt.NewExcept
+	ExceptAll    = stmt.NewExceptAll
 )

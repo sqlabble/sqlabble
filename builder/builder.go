@@ -1,7 +1,7 @@
 package builder
 
 import (
-	"github.com/minodisk/sqlabble/statement"
+	"github.com/minodisk/sqlabble/stmt"
 	"github.com/minodisk/sqlabble/token"
 )
 
@@ -28,8 +28,8 @@ func NewBuilder(format token.Format) Builder {
 }
 
 // Build converts a statement into a query and a slice of values.
-func (b Builder) Build(stmt statement.Statement) (string, []interface{}) {
-	tokenizer, values := statement.Nodeize(stmt)
+func (b Builder) Build(s stmt.Statement) (string, []interface{}) {
+	tokenizer, values := stmt.Nodeize(s)
 	query := token.Generate(tokenizer.Tokenize(0), b.Format)
 	if len(values) == 0 {
 		values = nil
