@@ -7,13 +7,13 @@ import (
 
 // Column is a stmt to indicate a column in a table.
 type Column struct {
-	name string
+	Name string
 }
 
 // NewColumn returns a new Column.
 func NewColumn(name string) Column {
 	return Column{
-		name: name,
+		Name: name,
 	}
 }
 
@@ -204,7 +204,7 @@ func (c Column) Desc() Order {
 }
 
 func (c Column) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	return tokenizer.NewLine(token.Word(c.name)), nil
+	return tokenizer.NewLine(token.Word(c.Name)), nil
 }
 
 // isColOrSub always returns true.

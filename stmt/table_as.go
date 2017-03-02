@@ -8,7 +8,7 @@ import (
 
 type TableAs struct {
 	table Table
-	alias string
+	Alias string
 }
 
 func (t TableAs) Join(table TableOrAlias) Join {
@@ -43,7 +43,7 @@ func (t TableAs) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	t1, v1 := t.table.nodeize()
 	t2 := tokenizer.NewLine(
 		token.QuoteStart,
-		token.Word(t.alias),
+		token.Word(t.Alias),
 		token.QuoteEnd,
 	)
 
