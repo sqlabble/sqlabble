@@ -62,13 +62,14 @@ func TestMain(m *testing.M) {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+	db.Exec("DROP TABLE IF EXISTS user, comment, post")
 	os.Exit(code)
 }
 
 func TestCreateTable(t *testing.T) {
 	{
 		sql, values := builder.Standard.Build(
-			q.CreateTable(
+			q.CreateTableIfNotExists(
 				q.T("user"),
 			).Definitions(
 				q.C("id").Define("int"),
@@ -83,7 +84,7 @@ func TestCreateTable(t *testing.T) {
 	}
 	{
 		sql, values := builder.Standard.Build(
-			q.CreateTable(
+			q.CreateTableIfNotExists(
 				q.T("comment"),
 			).Definitions(
 				q.C("id").Define("int"),
@@ -98,7 +99,7 @@ func TestCreateTable(t *testing.T) {
 	}
 	{
 		sql, values := builder.Standard.Build(
-			q.CreateTable(
+			q.CreateTableIfNotExists(
 				q.T("post"),
 			).Definitions(
 				q.C("id").Define("int"),
