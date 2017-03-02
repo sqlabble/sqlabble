@@ -6,11 +6,11 @@ import (
 	"go/format"
 	"go/parser"
 	"go/token"
+	"html/template"
 	"reflect"
 	"strings"
 
-	"github.com/alecthomas/template"
-	caseconv "github.com/minodisk/go-caseconv"
+	"github.com/minodisk/caseconv"
 )
 
 const implTmpl = `package {{ .Name }}
