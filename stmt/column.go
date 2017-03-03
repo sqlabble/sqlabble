@@ -20,8 +20,8 @@ func NewColumn(name string) Column {
 
 // As is used to give an alias name to the column.
 // Returns a new ColumnAs.
-func (c Column) As(alias string) ColumnAs {
-	a := NewColumnAs(alias)
+func (c Column) As(alias string) ColumnAlias {
+	a := NewColumnAlias(alias)
 	a.column = c
 	return a
 }

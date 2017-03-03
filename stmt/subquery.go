@@ -12,8 +12,8 @@ func NewSubquery(stmt Statement) Subquery {
 	}
 }
 
-func (s Subquery) As(alias string) SubqueryAs {
-	a := NewSubqueryAs(alias)
+func (s Subquery) As(alias string) SubqueryAlias {
+	a := NewSubqueryAlias(alias)
 	a.subquery = s
 	return a
 }

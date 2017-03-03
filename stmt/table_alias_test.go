@@ -9,10 +9,10 @@ import (
 	"github.com/minodisk/sqlabble/stmt"
 )
 
-func TestTableAsType(t *testing.T) {
+func TestTableAliasType(t *testing.T) {
 	t.Parallel()
 	for _, c := range []interface{}{
-		stmt.TableAs{},
+		stmt.TableAlias{},
 	} {
 		c := c
 		t.Run(fmt.Sprintf("%T", c), func(t *testing.T) {
@@ -24,7 +24,7 @@ func TestTableAsType(t *testing.T) {
 	}
 }
 
-func TestTableAs(t *testing.T) {
+func TestTableAlias(t *testing.T) {
 	t.Parallel()
 	for i, c := range []struct {
 		stmt      stmt.Statement
