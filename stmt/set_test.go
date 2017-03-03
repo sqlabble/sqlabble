@@ -19,7 +19,7 @@ func TestSet(t *testing.T) {
 	}{
 		{
 			stmt.NewSet(
-				stmt.NewColumn("foo").Assign(stmt.NewParam(100)),
+				stmt.NewColumn("foo").Assign(stmt.NewVal(100)),
 			),
 			"SET foo = ?",
 			`> SET
@@ -60,8 +60,8 @@ func TestSet(t *testing.T) {
 		},
 		{
 			stmt.NewSet(
-				stmt.NewColumn("foo").Assign(stmt.NewParam(100)),
-				stmt.NewColumn("bar").Assign(stmt.NewParam(200)),
+				stmt.NewColumn("foo").Assign(stmt.NewVal(100)),
+				stmt.NewColumn("bar").Assign(stmt.NewVal(200)),
 			),
 			"SET foo = ?, bar = ?",
 			`> SET
@@ -75,9 +75,9 @@ func TestSet(t *testing.T) {
 		},
 		{
 			stmt.NewSet(
-				stmt.NewColumn("foo").Assign(stmt.NewParam(100)),
-				stmt.NewColumn("bar").Assign(stmt.NewParam(200)),
-				stmt.NewColumn("baz").Assign(stmt.NewParam(300)),
+				stmt.NewColumn("foo").Assign(stmt.NewVal(100)),
+				stmt.NewColumn("bar").Assign(stmt.NewVal(200)),
+				stmt.NewColumn("baz").Assign(stmt.NewVal(300)),
 			),
 			"SET foo = ?, bar = ?, baz = ?",
 			`> SET
@@ -93,11 +93,11 @@ func TestSet(t *testing.T) {
 		},
 		{
 			stmt.NewSet(
-				stmt.NewColumn("foo").Assign(stmt.NewParam(100)),
-				stmt.NewColumn("bar").Assign(stmt.NewParam(200)),
-				stmt.NewColumn("baz").Assign(stmt.NewParam(300)),
+				stmt.NewColumn("foo").Assign(stmt.NewVal(100)),
+				stmt.NewColumn("bar").Assign(stmt.NewVal(200)),
+				stmt.NewColumn("baz").Assign(stmt.NewVal(300)),
 			).Where(
-				stmt.NewColumn("qux").Lte(stmt.NewParam(400)),
+				stmt.NewColumn("qux").Lte(stmt.NewVal(400)),
 			),
 			"SET foo = ?, bar = ?, baz = ? WHERE qux <= ?",
 			`> SET

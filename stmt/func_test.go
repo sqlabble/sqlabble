@@ -26,7 +26,7 @@ func TestFuncOperationLeftSide(t *testing.T) {
 		},
 		{
 			stmt.NewCurDate().
-				Eq(stmt.NewParam(100)),
+				Eq(stmt.NewVal(100)),
 			"CURDATE() = ?",
 			`> CURDATE() = ?
 `,
@@ -36,7 +36,7 @@ func TestFuncOperationLeftSide(t *testing.T) {
 		},
 		{
 			stmt.NewCurDate().
-				NotEq(stmt.NewParam(100)),
+				NotEq(stmt.NewVal(100)),
 			"CURDATE() != ?",
 			`> CURDATE() != ?
 `,
@@ -46,7 +46,7 @@ func TestFuncOperationLeftSide(t *testing.T) {
 		},
 		{
 			stmt.NewCurDate().
-				Gt(stmt.NewParam(100)),
+				Gt(stmt.NewVal(100)),
 			"CURDATE() > ?",
 			`> CURDATE() > ?
 `,
@@ -56,7 +56,7 @@ func TestFuncOperationLeftSide(t *testing.T) {
 		},
 		{
 			stmt.NewCurDate().
-				Gte(stmt.NewParam(100)),
+				Gte(stmt.NewVal(100)),
 			"CURDATE() >= ?",
 			`> CURDATE() >= ?
 `,
@@ -66,7 +66,7 @@ func TestFuncOperationLeftSide(t *testing.T) {
 		},
 		{
 			stmt.NewCurDate().
-				Lt(stmt.NewParam(100)),
+				Lt(stmt.NewVal(100)),
 			"CURDATE() < ?",
 			`> CURDATE() < ?
 `,
@@ -76,7 +76,7 @@ func TestFuncOperationLeftSide(t *testing.T) {
 		},
 		{
 			stmt.NewCurDate().
-				Lte(stmt.NewParam(100)),
+				Lte(stmt.NewVal(100)),
 			"CURDATE() <= ?",
 			`> CURDATE() <= ?
 `,
@@ -86,7 +86,7 @@ func TestFuncOperationLeftSide(t *testing.T) {
 		},
 		{
 			stmt.NewCurDate().
-				Like(stmt.NewParam("bar")),
+				Like(stmt.NewVal("bar")),
 			"CURDATE() LIKE ?",
 			`> CURDATE() LIKE ?
 `,
@@ -96,7 +96,7 @@ func TestFuncOperationLeftSide(t *testing.T) {
 		},
 		{
 			stmt.NewCurDate().
-				RegExp(stmt.NewParam("bar")),
+				RegExp(stmt.NewVal("bar")),
 			"CURDATE() REGEXP ?",
 			`> CURDATE() REGEXP ?
 `,
@@ -107,8 +107,8 @@ func TestFuncOperationLeftSide(t *testing.T) {
 		{
 			stmt.NewCurDate().
 				Between(
-					stmt.NewParam(100),
-					stmt.NewParam(200),
+					stmt.NewVal(100),
+					stmt.NewVal(200),
 				),
 			"CURDATE() BETWEEN ? AND ?",
 			`> CURDATE() BETWEEN ? AND ?
@@ -120,7 +120,7 @@ func TestFuncOperationLeftSide(t *testing.T) {
 		},
 		{
 			stmt.NewCurDate().
-				In(stmt.NewParams(
+				In(stmt.NewVals(
 					100, 200, 300,
 				)),
 			"CURDATE() IN (?, ?, ?)",
@@ -134,7 +134,7 @@ func TestFuncOperationLeftSide(t *testing.T) {
 		},
 		{
 			stmt.NewCurDate().
-				NotIn(stmt.NewParams(
+				NotIn(stmt.NewVals(
 					100, 200, 300,
 				)),
 			"CURDATE() NOT IN (?, ?, ?)",

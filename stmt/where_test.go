@@ -20,7 +20,7 @@ func TestWhereOperation(t *testing.T) {
 		{
 			stmt.NewWhere(
 				stmt.NewColumn("foo").
-					Eq(stmt.NewParam(100)),
+					Eq(stmt.NewVal(100)),
 			),
 			"WHERE foo = ?",
 			`> WHERE
@@ -98,7 +98,7 @@ func TestWhereSQL(t *testing.T) {
 	}{
 		{
 			stmt.NewWhere(
-				stmt.NewColumn("foo").Eq(stmt.NewParam(100)),
+				stmt.NewColumn("foo").Eq(stmt.NewVal(100)),
 			),
 			"WHERE foo = ?",
 			`> WHERE
@@ -111,8 +111,8 @@ func TestWhereSQL(t *testing.T) {
 		{
 			stmt.NewWhere(
 				stmt.NewAnd(
-					stmt.NewColumn("foo").Eq(stmt.NewParam(100)),
-					stmt.NewColumn("bar").Eq(stmt.NewParam("abc")),
+					stmt.NewColumn("foo").Eq(stmt.NewVal(100)),
+					stmt.NewColumn("bar").Eq(stmt.NewVal("abc")),
 				),
 			),
 			"WHERE foo = ? AND bar = ?",
@@ -128,8 +128,8 @@ func TestWhereSQL(t *testing.T) {
 		{
 			stmt.NewWhere(
 				stmt.NewAnd(
-					stmt.NewColumn("foo").Eq(stmt.NewParam(100)),
-					stmt.NewColumn("bar").Eq(stmt.NewParam("abc")),
+					stmt.NewColumn("foo").Eq(stmt.NewVal(100)),
+					stmt.NewColumn("bar").Eq(stmt.NewVal("abc")),
 				),
 			).GroupBy(
 				stmt.NewColumn("baz"),
@@ -149,8 +149,8 @@ func TestWhereSQL(t *testing.T) {
 		{
 			stmt.NewWhere(
 				stmt.NewAnd(
-					stmt.NewColumn("foo").Eq(stmt.NewParam(100)),
-					stmt.NewColumn("bar").Eq(stmt.NewParam("abc")),
+					stmt.NewColumn("foo").Eq(stmt.NewVal(100)),
+					stmt.NewColumn("bar").Eq(stmt.NewVal("abc")),
 				),
 			).OrderBy(
 				stmt.NewColumn("baz").Asc(),
@@ -170,8 +170,8 @@ func TestWhereSQL(t *testing.T) {
 		{
 			stmt.NewWhere(
 				stmt.NewAnd(
-					stmt.NewColumn("foo").Eq(stmt.NewParam(100)),
-					stmt.NewColumn("bar").Eq(stmt.NewParam("abc")),
+					stmt.NewColumn("foo").Eq(stmt.NewVal(100)),
+					stmt.NewColumn("bar").Eq(stmt.NewVal("abc")),
 				),
 			).Limit(20),
 			"WHERE foo = ? AND bar = ? LIMIT ?",

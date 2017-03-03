@@ -9,95 +9,95 @@ import (
 type NonScalarOperation struct {
 	op     keyword.Operator
 	column ValOrColOrFuncOrSub
-	params Subquery
+	sub    Subquery
 }
 
-func NewEqAll(params Subquery) NonScalarOperation {
+func NewEqAll(sub Subquery) NonScalarOperation {
 	return NonScalarOperation{
-		op:     keyword.EqAll,
-		params: params,
+		op:  keyword.EqAll,
+		sub: sub,
 	}
 }
 
-func NewNotEqAll(params Subquery) NonScalarOperation {
+func NewNotEqAll(sub Subquery) NonScalarOperation {
 	return NonScalarOperation{
-		op:     keyword.NotEqAll,
-		params: params,
+		op:  keyword.NotEqAll,
+		sub: sub,
 	}
 }
 
-func NewGtAll(params Subquery) NonScalarOperation {
+func NewGtAll(sub Subquery) NonScalarOperation {
 	return NonScalarOperation{
-		op:     keyword.GtAll,
-		params: params,
+		op:  keyword.GtAll,
+		sub: sub,
 	}
 }
 
-func NewGteAll(params Subquery) NonScalarOperation {
+func NewGteAll(sub Subquery) NonScalarOperation {
 	return NonScalarOperation{
-		op:     keyword.GteAll,
-		params: params,
+		op:  keyword.GteAll,
+		sub: sub,
 	}
 }
 
-func NewLtAll(params Subquery) NonScalarOperation {
+func NewLtAll(sub Subquery) NonScalarOperation {
 	return NonScalarOperation{
-		op:     keyword.LtAll,
-		params: params,
+		op:  keyword.LtAll,
+		sub: sub,
 	}
 }
 
-func NewLteAll(params Subquery) NonScalarOperation {
+func NewLteAll(sub Subquery) NonScalarOperation {
 	return NonScalarOperation{
-		op:     keyword.LteAll,
-		params: params,
+		op:  keyword.LteAll,
+		sub: sub,
 	}
 }
 
-func NewEqAny(params Subquery) NonScalarOperation {
+func NewEqAny(sub Subquery) NonScalarOperation {
 	return NonScalarOperation{
-		op:     keyword.EqAny,
-		params: params,
+		op:  keyword.EqAny,
+		sub: sub,
 	}
 }
 
-func NewNotEqAny(params Subquery) NonScalarOperation {
+func NewNotEqAny(sub Subquery) NonScalarOperation {
 	return NonScalarOperation{
-		op:     keyword.NotEqAny,
-		params: params,
+		op:  keyword.NotEqAny,
+		sub: sub,
 	}
 }
 
-func NewGtAny(params Subquery) NonScalarOperation {
+func NewGtAny(sub Subquery) NonScalarOperation {
 	return NonScalarOperation{
-		op:     keyword.GtAny,
-		params: params,
+		op:  keyword.GtAny,
+		sub: sub,
 	}
 }
 
-func NewGteAny(params Subquery) NonScalarOperation {
+func NewGteAny(sub Subquery) NonScalarOperation {
 	return NonScalarOperation{
-		op:     keyword.GteAny,
-		params: params,
+		op:  keyword.GteAny,
+		sub: sub,
 	}
 }
 
-func NewLtAny(params Subquery) NonScalarOperation {
+func NewLtAny(sub Subquery) NonScalarOperation {
 	return NonScalarOperation{
-		op:     keyword.LtAny,
-		params: params,
+		op:  keyword.LtAny,
+		sub: sub,
 	}
 }
 
-func NewLteAny(params Subquery) NonScalarOperation {
+func NewLteAny(sub Subquery) NonScalarOperation {
 	return NonScalarOperation{
-		op:     keyword.LteAny,
-		params: params,
+		op:  keyword.LteAny,
+		sub: sub,
 	}
 }
 
 func (n NonScalarOperation) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	t2, v2 := n.params.nodeize()
+	t2, v2 := n.sub.nodeize()
 	if n.column == nil {
 		return t2.Prepend(
 			token.Word(n.keyword()),
@@ -119,26 +119,26 @@ func (n NonScalarOperation) keyword() keyword.Operator {
 }
 
 type ExistanceOperation struct {
-	op     keyword.Operator
-	params Subquery
+	op  keyword.Operator
+	sub Subquery
 }
 
-func NewExists(params Subquery) ExistanceOperation {
+func NewExists(sub Subquery) ExistanceOperation {
 	return ExistanceOperation{
-		op:     keyword.Exists,
-		params: params,
+		op:  keyword.Exists,
+		sub: sub,
 	}
 }
 
-func NewNotExists(params Subquery) ExistanceOperation {
+func NewNotExists(sub Subquery) ExistanceOperation {
 	return ExistanceOperation{
-		op:     keyword.NotExists,
-		params: params,
+		op:  keyword.NotExists,
+		sub: sub,
 	}
 }
 
 func (e ExistanceOperation) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	t2, v2 := e.params.nodeize()
+	t2, v2 := e.sub.nodeize()
 	return t2.Prepend(
 		token.Word(e.keyword()),
 	), v2

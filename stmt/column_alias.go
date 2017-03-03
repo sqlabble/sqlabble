@@ -6,18 +6,18 @@ import (
 	"github.com/minodisk/sqlabble/tokenizer"
 )
 
-type ColumnAs struct {
+type ColumnAlias struct {
 	column ColOrSub
 	Alias  string
 }
 
-func NewColumnAs(alias string) ColumnAs {
-	return ColumnAs{
+func NewColumnAlias(alias string) ColumnAlias {
+	return ColumnAlias{
 		Alias: alias,
 	}
 }
 
-func (c ColumnAs) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (c ColumnAlias) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	if c.column == nil {
 		return tokenizer.NewLine(
 			token.Word(keyword.As),
@@ -45,13 +45,13 @@ func (c ColumnAs) nodeize() (tokenizer.Tokenizer, []interface{}) {
 // isColumnOrColumnAsOrSubquery always returns true.
 // This method exists only to implement the interface ColumnOrColumnAsOrSubquery.
 // This is a shit of duck typing, but anyway it works.
-func (c ColumnAs) isColOrAliasOrSub() bool {
+func (c ColumnAlias) isColOrAliasOrSub() bool {
 	return true
 }
 
 // isColOrAliasOrFuncOrSub always returns true.
 // This method exists only to implement the interface ColOrAliasOrFuncOrSub.
 // This is a shit of duck typing, but anyway it works.
-func (c ColumnAs) isColOrAliasOrFuncOrSub() bool {
+func (c ColumnAlias) isColOrAliasOrFuncOrSub() bool {
 	return true
 }

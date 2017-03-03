@@ -20,9 +20,9 @@ func TestSearchedCase(t *testing.T) {
 		{
 			stmt.NewSearchedCase(
 				stmt.NewSearchedWhen(
-					stmt.NewColumn("employee.title").Eq(stmt.NewParam("Head Teller")),
+					stmt.NewColumn("employee.title").Eq(stmt.NewVal("Head Teller")),
 				).
-					Then(stmt.NewParam("Head Teller")),
+					Then(stmt.NewVal("Head Teller")),
 			),
 			`CASE WHEN employee.title = ? THEN ? END`,
 			`> CASE
@@ -40,30 +40,30 @@ func TestSearchedCase(t *testing.T) {
 		{
 			stmt.NewSearchedCase(
 				stmt.NewSearchedWhen(
-					stmt.NewColumn("employee.title").Eq(stmt.NewParam("Head Teller")),
+					stmt.NewColumn("employee.title").Eq(stmt.NewVal("Head Teller")),
 				).
-					Then(stmt.NewParam("Head Teller")).
+					Then(stmt.NewVal("Head Teller")).
 					When(
 						stmt.NewAnd(
-							stmt.NewColumn("employee.title").Eq(stmt.NewParam("Teller")),
-							stmt.NewYear(stmt.NewColumn("employee.start_date")).Gt(stmt.NewParam(2004)),
+							stmt.NewColumn("employee.title").Eq(stmt.NewVal("Teller")),
+							stmt.NewYear(stmt.NewColumn("employee.start_date")).Gt(stmt.NewVal(2004)),
 						),
 					).
-					Then(stmt.NewParam("Teller Trainee")).
+					Then(stmt.NewVal("Teller Trainee")).
 					When(
 						stmt.NewAnd(
-							stmt.NewColumn("employee.title").Eq(stmt.NewParam("Teller")),
-							stmt.NewYear(stmt.NewColumn("employee.start_date")).Lt(stmt.NewParam(2003)),
+							stmt.NewColumn("employee.title").Eq(stmt.NewVal("Teller")),
+							stmt.NewYear(stmt.NewColumn("employee.start_date")).Lt(stmt.NewVal(2003)),
 						),
 					).
-					Then(stmt.NewParam("Experienced Teller")).
+					Then(stmt.NewVal("Experienced Teller")).
 					When(
 						stmt.NewAnd(
-							stmt.NewColumn("employee.title").Eq(stmt.NewParam("Teller")),
+							stmt.NewColumn("employee.title").Eq(stmt.NewVal("Teller")),
 						),
 					).
-					Then(stmt.NewParam("Teller")).
-					Else(stmt.NewParam("Non-Teller")),
+					Then(stmt.NewVal("Teller")).
+					Else(stmt.NewVal("Non-Teller")),
 			),
 			`CASE WHEN employee.title = ? THEN ? WHEN employee.title = ? AND YEAR(employee.start_date) > ? THEN ? WHEN employee.title = ? AND YEAR(employee.start_date) < ? THEN ? WHEN employee.title = ? THEN ? ELSE ? END`,
 			`> CASE

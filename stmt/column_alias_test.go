@@ -12,7 +12,7 @@ import (
 func TestColumnAsType(t *testing.T) {
 	t.Parallel()
 	for _, c := range []interface{}{
-		stmt.ColumnAs{},
+		stmt.ColumnAlias{},
 	} {
 		c := c
 		t.Run(fmt.Sprintf("%T", c), func(t *testing.T) {
@@ -33,7 +33,7 @@ func TestColumnAsSQL(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			stmt.NewColumnAs("foo"),
+			stmt.NewColumnAlias("foo"),
 			`AS "foo"`,
 			`> AS "foo"
 `,

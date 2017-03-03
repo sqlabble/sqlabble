@@ -5,45 +5,45 @@ import (
 	"github.com/minodisk/sqlabble/tokenizer"
 )
 
-type Param struct {
+type Val struct {
 	value interface{}
 }
 
-func NewParam(value interface{}) Param {
-	return Param{
+func NewVal(value interface{}) Val {
+	return Val{
 		value: value,
 	}
 }
 
-func (p Param) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (p Val) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return tokenizer.ParamsToLine(p.value)
 }
 
 // isValOrFuncOrSub always returns true.
 // This method exists only to implement the interface ValOrFuncOrSub.
 // This is a shit of duck typing, but anyway it works.
-func (p Param) isValOrFuncOrSub() bool {
+func (p Val) isValOrFuncOrSub() bool {
 	return true
 }
 
 // isValOrColOrFuncOrSub always returns true.
 // This method exists only to implement the interface ValOrColOrFuncOrSub.
 // This is a shit of duck typing, but anyway it works.
-func (p Param) isValOrColOrFuncOrSub() bool {
+func (p Val) isValOrColOrFuncOrSub() bool {
 	return true
 }
 
-type Params []Param
+type Vals []Val
 
-func NewParams(values ...interface{}) Params {
-	ps := make(Params, len(values))
+func NewVals(values ...interface{}) Vals {
+	ps := make(Vals, len(values))
 	for i, value := range values {
-		ps[i] = NewParam(value)
+		ps[i] = NewVal(value)
 	}
 	return ps
 }
 
-func (ps Params) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (ps Vals) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	values := make([]interface{}, len(ps))
 	for i, p := range ps {
 		values[i] = p.value
@@ -57,6 +57,6 @@ func (ps Params) nodeize() (tokenizer.Tokenizer, []interface{}) {
 // isParamsOrSubquery always returns true.
 // This method exists only to implement the interface ParamsOrSubquery.
 // This is a shit of duck typing, but anyway it works.
-func (vs Params) isValsOrSub() bool {
+func (vs Vals) isValsOrSub() bool {
 	return true
 }

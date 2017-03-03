@@ -19,8 +19,8 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 	}{
 		{
 			stmt.NewAdddate(
-				stmt.NewParam("1981-01-01"),
-				stmt.NewInterval(stmt.NewParam(30)).Day(),
+				stmt.NewVal("1981-01-01"),
+				stmt.NewInterval(stmt.NewVal(30)).Day(),
 			),
 			`ADDDATE(?, INTERVAL ? DAY)`,
 			`> ADDDATE(?, INTERVAL ? DAY)
@@ -32,8 +32,8 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 		},
 		{
 			stmt.NewAddtime(
-				stmt.NewParam("2007-12-31 23:59:59.999999"),
-				stmt.NewParam("1 1:1:1.000002"),
+				stmt.NewVal("2007-12-31 23:59:59.999999"),
+				stmt.NewVal("1 1:1:1.000002"),
 			),
 			`ADDTIME(?, ?)`,
 			`> ADDTIME(?, ?)
@@ -45,9 +45,9 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 		},
 		{
 			stmt.NewConvertTz(
-				stmt.NewParam("2004-01-01 12:00:00"),
-				stmt.NewParam("GMT"),
-				stmt.NewParam("MET"),
+				stmt.NewVal("2004-01-01 12:00:00"),
+				stmt.NewVal("GMT"),
+				stmt.NewVal("MET"),
 			),
 			`CONVERT_TZ(?, ?, ?)`,
 			`> CONVERT_TZ(?, ?, ?)
@@ -73,7 +73,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			nil,
 		},
 		{
-			stmt.NewCurrentTime(stmt.NewParam("1981-01-01")),
+			stmt.NewCurrentTime(stmt.NewVal("1981-01-01")),
 			`CURRENT_TIME(?)`,
 			`> CURRENT_TIME(?)
 `,
@@ -82,7 +82,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewCurrentTimestamp(stmt.NewParam("1981-01-01")),
+			stmt.NewCurrentTimestamp(stmt.NewVal("1981-01-01")),
 			`CURRENT_TIMESTAMP(?)`,
 			`> CURRENT_TIMESTAMP(?)
 `,
@@ -91,7 +91,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewCurtime(stmt.NewParam("1981-01-01")),
+			stmt.NewCurtime(stmt.NewVal("1981-01-01")),
 			`CURTIME(?)`,
 			`> CURTIME(?)
 `,
@@ -100,7 +100,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewDate(stmt.NewParam("1981-01-01")),
+			stmt.NewDate(stmt.NewVal("1981-01-01")),
 			`DATE(?)`,
 			`> DATE(?)
 `,
@@ -110,8 +110,8 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 		},
 		{
 			stmt.NewDateAdd(
-				stmt.NewParam("2000-12-31 23:59:59"),
-				stmt.NewInterval(stmt.NewParam(1)).Second(),
+				stmt.NewVal("2000-12-31 23:59:59"),
+				stmt.NewInterval(stmt.NewVal(1)).Second(),
 			),
 			`DATE_ADD(?, INTERVAL ? SECOND)`,
 			`> DATE_ADD(?, INTERVAL ? SECOND)
@@ -123,8 +123,8 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 		},
 		{
 			stmt.NewDateFormat(
-				stmt.NewParam("2009-10-04 22:23:00"),
-				stmt.NewParam("%W %M %Y"),
+				stmt.NewVal("2009-10-04 22:23:00"),
+				stmt.NewVal("%W %M %Y"),
 			),
 			`DATE_FORMAT(?, ?)`,
 			`> DATE_FORMAT(?, ?)
@@ -136,8 +136,8 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 		},
 		{
 			stmt.NewDateSub(
-				stmt.NewParam("2008-01-02"),
-				stmt.NewInterval(stmt.NewParam(31)).Day(),
+				stmt.NewVal("2008-01-02"),
+				stmt.NewInterval(stmt.NewVal(31)).Day(),
 			),
 			`DATE_SUB(?, INTERVAL ? DAY)`,
 			`> DATE_SUB(?, INTERVAL ? DAY)
@@ -149,8 +149,8 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 		},
 		{
 			stmt.NewDatediff(
-				stmt.NewParam("2007-12-31 23:59:59"),
-				stmt.NewParam("2007-12-30"),
+				stmt.NewVal("2007-12-31 23:59:59"),
+				stmt.NewVal("2007-12-30"),
 			),
 			`DATEDIFF(?, ?)`,
 			`> DATEDIFF(?, ?)
@@ -161,7 +161,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewDay(stmt.NewParam("1981-01-01")),
+			stmt.NewDay(stmt.NewVal("1981-01-01")),
 			`DAY(?)`,
 			`> DAY(?)
 `,
@@ -170,7 +170,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewDayname(stmt.NewParam("1981-01-01")),
+			stmt.NewDayname(stmt.NewVal("1981-01-01")),
 			`DAYNAME(?)`,
 			`> DAYNAME(?)
 `,
@@ -179,7 +179,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewDayofmonth(stmt.NewParam("1981-01-01")),
+			stmt.NewDayofmonth(stmt.NewVal("1981-01-01")),
 			`DAYOFMONTH(?)`,
 			`> DAYOFMONTH(?)
 `,
@@ -188,7 +188,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewDayofweek(stmt.NewParam("1981-01-01")),
+			stmt.NewDayofweek(stmt.NewVal("1981-01-01")),
 			`DAYOFWEEK(?)`,
 			`> DAYOFWEEK(?)
 `,
@@ -197,7 +197,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewDayofyear(stmt.NewParam("1981-01-01")),
+			stmt.NewDayofyear(stmt.NewVal("1981-01-01")),
 			`DAYOFYEAR(?)`,
 			`> DAYOFYEAR(?)
 `,
@@ -206,7 +206,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewExtract(stmt.NewParam("1981-01-01")),
+			stmt.NewExtract(stmt.NewVal("1981-01-01")),
 			`EXTRACT(?)`,
 			`> EXTRACT(?)
 `,
@@ -215,7 +215,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewFromDays(stmt.NewParam("1981-01-01")),
+			stmt.NewFromDays(stmt.NewVal("1981-01-01")),
 			`FROM_DAYS(?)`,
 			`> FROM_DAYS(?)
 `,
@@ -225,8 +225,8 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 		},
 		{
 			stmt.NewFromUnixtime(
-				stmt.NewParam(1447430881),
-				stmt.NewParam("%Y %D %M %h:%i:%s %x"),
+				stmt.NewVal(1447430881),
+				stmt.NewVal("%Y %D %M %h:%i:%s %x"),
 			),
 			`FROM_UNIXTIME(?, ?)`,
 			`> FROM_UNIXTIME(?, ?)
@@ -238,8 +238,8 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 		},
 		{
 			stmt.NewGetFormat(
-				stmt.NewParam("DATETIME"),
-				stmt.NewParam("USA"),
+				stmt.NewVal("DATETIME"),
+				stmt.NewVal("USA"),
 			),
 			`GET_FORMAT(?, ?)`,
 			`> GET_FORMAT(?, ?)
@@ -250,7 +250,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewHour(stmt.NewParam("1981-01-01")),
+			stmt.NewHour(stmt.NewVal("1981-01-01")),
 			`HOUR(?)`,
 			`> HOUR(?)
 `,
@@ -259,7 +259,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewLastDay(stmt.NewParam("1981-01-01")),
+			stmt.NewLastDay(stmt.NewVal("1981-01-01")),
 			`LAST_DAY(?)`,
 			`> LAST_DAY(?)
 `,
@@ -268,7 +268,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewLocaltime(stmt.NewParam("1981-01-01")),
+			stmt.NewLocaltime(stmt.NewVal("1981-01-01")),
 			`LOCALTIME(?)`,
 			`> LOCALTIME(?)
 `,
@@ -277,7 +277,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewLocaltimestamp(stmt.NewParam("1981-01-01")),
+			stmt.NewLocaltimestamp(stmt.NewVal("1981-01-01")),
 			`LOCALTIMESTAMP(?)`,
 			`> LOCALTIMESTAMP(?)
 `,
@@ -287,8 +287,8 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 		},
 		{
 			stmt.NewMakedate(
-				stmt.NewParam(2011),
-				stmt.NewParam(365),
+				stmt.NewVal(2011),
+				stmt.NewVal(365),
 			),
 			`MAKEDATE(?, ?)`,
 			`> MAKEDATE(?, ?)
@@ -300,9 +300,9 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 		},
 		{
 			stmt.NewMaketime(
-				stmt.NewParam(12),
-				stmt.NewParam(15),
-				stmt.NewParam(30),
+				stmt.NewVal(12),
+				stmt.NewVal(15),
+				stmt.NewVal(30),
 			),
 			`MAKETIME(?, ?, ?)`,
 			`> MAKETIME(?, ?, ?)
@@ -314,7 +314,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewMicrosecond(stmt.NewParam("1981-01-01")),
+			stmt.NewMicrosecond(stmt.NewVal("1981-01-01")),
 			`MICROSECOND(?)`,
 			`> MICROSECOND(?)
 `,
@@ -323,7 +323,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewMinute(stmt.NewParam("1981-01-01")),
+			stmt.NewMinute(stmt.NewVal("1981-01-01")),
 			`MINUTE(?)`,
 			`> MINUTE(?)
 `,
@@ -332,7 +332,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewMonth(stmt.NewParam("1981-01-01")),
+			stmt.NewMonth(stmt.NewVal("1981-01-01")),
 			`MONTH(?)`,
 			`> MONTH(?)
 `,
@@ -341,7 +341,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewMonthname(stmt.NewParam("1981-01-01")),
+			stmt.NewMonthname(stmt.NewVal("1981-01-01")),
 			`MONTHNAME(?)`,
 			`> MONTHNAME(?)
 `,
@@ -350,7 +350,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewNow(stmt.NewParam("1981-01-01")),
+			stmt.NewNow(stmt.NewVal("1981-01-01")),
 			`NOW(?)`,
 			`> NOW(?)
 `,
@@ -360,8 +360,8 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 		},
 		{
 			stmt.NewPeriodAdd(
-				stmt.NewParam(200801),
-				stmt.NewParam(2),
+				stmt.NewVal(200801),
+				stmt.NewVal(2),
 			),
 			`PERIOD_ADD(?, ?)`,
 			`> PERIOD_ADD(?, ?)
@@ -373,8 +373,8 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 		},
 		{
 			stmt.NewPeriodDiff(
-				stmt.NewParam(200802),
-				stmt.NewParam(200703),
+				stmt.NewVal(200802),
+				stmt.NewVal(200703),
 			),
 			`PERIOD_DIFF(?, ?)`,
 			`> PERIOD_DIFF(?, ?)
@@ -385,7 +385,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewQuarter(stmt.NewParam("1981-01-01")),
+			stmt.NewQuarter(stmt.NewVal("1981-01-01")),
 			`QUARTER(?)`,
 			`> QUARTER(?)
 `,
@@ -394,7 +394,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewSecToTime(stmt.NewParam("1981-01-01")),
+			stmt.NewSecToTime(stmt.NewVal("1981-01-01")),
 			`SEC_TO_TIME(?)`,
 			`> SEC_TO_TIME(?)
 `,
@@ -403,7 +403,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewSecond(stmt.NewParam("1981-01-01")),
+			stmt.NewSecond(stmt.NewVal("1981-01-01")),
 			`SECOND(?)`,
 			`> SECOND(?)
 `,
@@ -413,8 +413,8 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 		},
 		{
 			stmt.NewStrToDate(
-				stmt.NewParam("01,5,2013"),
-				stmt.NewParam("%d,%m,%Y"),
+				stmt.NewVal("01,5,2013"),
+				stmt.NewVal("%d,%m,%Y"),
 			),
 			`STR_TO_DATE(?, ?)`,
 			`> STR_TO_DATE(?, ?)
@@ -426,8 +426,8 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 		},
 		{
 			stmt.NewSubdate(
-				stmt.NewParam("1981-01-01"),
-				stmt.NewInterval(stmt.NewParam(31)).Day(),
+				stmt.NewVal("1981-01-01"),
+				stmt.NewInterval(stmt.NewVal(31)).Day(),
 			),
 			`SUBDATE(?, INTERVAL ? DAY)`,
 			`> SUBDATE(?, INTERVAL ? DAY)
@@ -439,8 +439,8 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 		},
 		{
 			stmt.NewSubtime(
-				stmt.NewParam("2007-12-31 23:59:59.999999"),
-				stmt.NewParam("1 1:1:1.000002"),
+				stmt.NewVal("2007-12-31 23:59:59.999999"),
+				stmt.NewVal("1 1:1:1.000002"),
 			),
 			`SUBTIME(?, ?)`,
 			`> SUBTIME(?, ?)
@@ -451,7 +451,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewSysdate(stmt.NewParam("1981-01-01")),
+			stmt.NewSysdate(stmt.NewVal("1981-01-01")),
 			`SYSDATE(?)`,
 			`> SYSDATE(?)
 `,
@@ -460,7 +460,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewTime(stmt.NewParam("1981-01-01")),
+			stmt.NewTime(stmt.NewVal("1981-01-01")),
 			`TIME(?)`,
 			`> TIME(?)
 `,
@@ -470,8 +470,8 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 		},
 		{
 			stmt.NewTimeFormat(
-				stmt.NewParam("100:00:00"),
-				stmt.NewParam("%H %k %h %I %l"),
+				stmt.NewVal("100:00:00"),
+				stmt.NewVal("%H %k %h %I %l"),
 			),
 			`TIME_FORMAT(?, ?)`,
 			`> TIME_FORMAT(?, ?)
@@ -482,7 +482,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewTimeToSec(stmt.NewParam("1981-01-01")),
+			stmt.NewTimeToSec(stmt.NewVal("1981-01-01")),
 			`TIME_TO_SEC(?)`,
 			`> TIME_TO_SEC(?)
 `,
@@ -492,8 +492,8 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 		},
 		{
 			stmt.NewTimediff(
-				stmt.NewParam("2000:01:01 00:00:00"),
-				stmt.NewParam("2000:01:01 00:00:00.000001"),
+				stmt.NewVal("2000:01:01 00:00:00"),
+				stmt.NewVal("2000:01:01 00:00:00.000001"),
 			),
 			`TIMEDIFF(?, ?)`,
 			`> TIMEDIFF(?, ?)
@@ -505,8 +505,8 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 		},
 		{
 			stmt.NewTimestamp(
-				stmt.NewParam("2003-12-31 12:00:00"),
-				stmt.NewParam("12:00:00"),
+				stmt.NewVal("2003-12-31 12:00:00"),
+				stmt.NewVal("12:00:00"),
 			),
 			`TIMESTAMP(?, ?)`,
 			`> TIMESTAMP(?, ?)
@@ -519,8 +519,8 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 		{
 			stmt.NewTimestampadd(
 				stmt.UnitMinute,
-				stmt.NewParam(1),
-				stmt.NewParam("2003-01-02"),
+				stmt.NewVal(1),
+				stmt.NewVal("2003-01-02"),
 			),
 			`TIMESTAMPADD(?, ?, ?)`,
 			`> TIMESTAMPADD(?, ?, ?)
@@ -534,8 +534,8 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 		{
 			stmt.NewTimestampdiff(
 				stmt.UnitMonth,
-				stmt.NewParam("2003-02-01"),
-				stmt.NewParam("2003-05-01"),
+				stmt.NewVal("2003-02-01"),
+				stmt.NewVal("2003-05-01"),
 			),
 			`TIMESTAMPDIFF(?, ?, ?)`,
 			`> TIMESTAMPDIFF(?, ?, ?)
@@ -547,7 +547,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewToDays(stmt.NewParam("1981-01-01")),
+			stmt.NewToDays(stmt.NewVal("1981-01-01")),
 			`TO_DAYS(?)`,
 			`> TO_DAYS(?)
 `,
@@ -556,7 +556,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewToSeconds(stmt.NewParam("1981-01-01")),
+			stmt.NewToSeconds(stmt.NewVal("1981-01-01")),
 			`TO_SECONDS(?)`,
 			`> TO_SECONDS(?)
 `,
@@ -565,7 +565,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewUnixTimestamp(stmt.NewParam("1981-01-01")),
+			stmt.NewUnixTimestamp(stmt.NewVal("1981-01-01")),
 			`UNIX_TIMESTAMP(?)`,
 			`> UNIX_TIMESTAMP(?)
 `,
@@ -592,7 +592,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewUtcTimestamp(stmt.NewParam("1981-01-01")),
+			stmt.NewUtcTimestamp(stmt.NewVal("1981-01-01")),
 			`UTC_TIMESTAMP(?)`,
 			`> UTC_TIMESTAMP(?)
 `,
@@ -602,7 +602,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 		},
 		{
 			stmt.NewWeek(
-				stmt.NewParam("2008-02-20"),
+				stmt.NewVal("2008-02-20"),
 				stmt.WeekMode0,
 			),
 			`WEEK(?, ?)`,
@@ -614,7 +614,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewWeekday(stmt.NewParam("1981-01-01")),
+			stmt.NewWeekday(stmt.NewVal("1981-01-01")),
 			`WEEKDAY(?)`,
 			`> WEEKDAY(?)
 `,
@@ -623,7 +623,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewWeekofyear(stmt.NewParam("1981-01-01")),
+			stmt.NewWeekofyear(stmt.NewVal("1981-01-01")),
 			`WEEKOFYEAR(?)`,
 			`> WEEKOFYEAR(?)
 `,
@@ -632,7 +632,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewYear(stmt.NewParam("1981-01-01")),
+			stmt.NewYear(stmt.NewVal("1981-01-01")),
 			`YEAR(?)`,
 			`> YEAR(?)
 `,
@@ -641,7 +641,7 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewYearweek(stmt.NewParam("1981-01-01"), stmt.NewParam(0)),
+			stmt.NewYearweek(stmt.NewVal("1981-01-01"), stmt.NewVal(0)),
 			`YEARWEEK(?, ?)`,
 			`> YEARWEEK(?, ?)
 `,
@@ -2235,7 +2235,7 @@ func TestDateAndTimeFuncsWithFunc(t *testing.T) {
 		{
 			stmt.NewAdddate(
 				stmt.NewCurDate(),
-				stmt.NewInterval(stmt.NewParam(30)).Day(),
+				stmt.NewInterval(stmt.NewVal(30)).Day(),
 			),
 			`ADDDATE(CURDATE(), INTERVAL ? DAY)`,
 			`> ADDDATE(CURDATE(), INTERVAL ? DAY)
@@ -2247,7 +2247,7 @@ func TestDateAndTimeFuncsWithFunc(t *testing.T) {
 		{
 			stmt.NewAddtime(
 				stmt.NewCurDate(),
-				stmt.NewParam("1 1:1:1.000002"),
+				stmt.NewVal("1 1:1:1.000002"),
 			),
 			`ADDTIME(CURDATE(), ?)`,
 			`> ADDTIME(CURDATE(), ?)
@@ -2259,8 +2259,8 @@ func TestDateAndTimeFuncsWithFunc(t *testing.T) {
 		{
 			stmt.NewConvertTz(
 				stmt.NewCurDate(),
-				stmt.NewParam("GMT"),
-				stmt.NewParam("MET"),
+				stmt.NewVal("GMT"),
+				stmt.NewVal("MET"),
 			),
 			`CONVERT_TZ(CURDATE(), ?, ?)`,
 			`> CONVERT_TZ(CURDATE(), ?, ?)
@@ -2323,7 +2323,7 @@ func TestDateAndTimeFuncsWithFunc(t *testing.T) {
 		{
 			stmt.NewDateAdd(
 				stmt.NewCurDate(),
-				stmt.NewInterval(stmt.NewParam(1)).Second(),
+				stmt.NewInterval(stmt.NewVal(1)).Second(),
 			),
 			`DATE_ADD(CURDATE(), INTERVAL ? SECOND)`,
 			`> DATE_ADD(CURDATE(), INTERVAL ? SECOND)
@@ -2335,7 +2335,7 @@ func TestDateAndTimeFuncsWithFunc(t *testing.T) {
 		{
 			stmt.NewDateFormat(
 				stmt.NewCurDate(),
-				stmt.NewParam("%W %M %Y"),
+				stmt.NewVal("%W %M %Y"),
 			),
 			`DATE_FORMAT(CURDATE(), ?)`,
 			`> DATE_FORMAT(CURDATE(), ?)
@@ -2347,7 +2347,7 @@ func TestDateAndTimeFuncsWithFunc(t *testing.T) {
 		{
 			stmt.NewDateSub(
 				stmt.NewCurDate(),
-				stmt.NewInterval(stmt.NewParam(31)).Day(),
+				stmt.NewInterval(stmt.NewVal(31)).Day(),
 			),
 			`DATE_SUB(CURDATE(), INTERVAL ? DAY)`,
 			`> DATE_SUB(CURDATE(), INTERVAL ? DAY)
@@ -2432,7 +2432,7 @@ func TestDateAndTimeFuncsWithFunc(t *testing.T) {
 		{
 			stmt.NewFromUnixtime(
 				stmt.NewCurDate(),
-				stmt.NewParam("%Y %D %M %h:%i:%s %x"),
+				stmt.NewVal("%Y %D %M %h:%i:%s %x"),
 			),
 			`FROM_UNIXTIME(CURDATE(), ?)`,
 			`> FROM_UNIXTIME(CURDATE(), ?)
@@ -2443,8 +2443,8 @@ func TestDateAndTimeFuncsWithFunc(t *testing.T) {
 		},
 		{
 			stmt.NewGetFormat(
-				stmt.NewParam("DATETIME"),
-				stmt.NewParam("USA"),
+				stmt.NewVal("DATETIME"),
+				stmt.NewVal("USA"),
 			),
 			`GET_FORMAT(?, ?)`,
 			`> GET_FORMAT(?, ?)
@@ -2492,8 +2492,8 @@ func TestDateAndTimeFuncsWithFunc(t *testing.T) {
 		},
 		{
 			stmt.NewMakedate(
-				stmt.NewParam(2011),
-				stmt.NewParam(365),
+				stmt.NewVal(2011),
+				stmt.NewVal(365),
 			),
 			`MAKEDATE(?, ?)`,
 			`> MAKEDATE(?, ?)
@@ -2505,9 +2505,9 @@ func TestDateAndTimeFuncsWithFunc(t *testing.T) {
 		},
 		{
 			stmt.NewMaketime(
-				stmt.NewParam(12),
-				stmt.NewParam(15),
-				stmt.NewParam(30),
+				stmt.NewVal(12),
+				stmt.NewVal(15),
+				stmt.NewVal(30),
 			),
 			`MAKETIME(?, ?, ?)`,
 			`> MAKETIME(?, ?, ?)
@@ -2565,8 +2565,8 @@ func TestDateAndTimeFuncsWithFunc(t *testing.T) {
 		},
 		{
 			stmt.NewPeriodAdd(
-				stmt.NewParam(200801),
-				stmt.NewParam(2),
+				stmt.NewVal(200801),
+				stmt.NewVal(2),
 			),
 			`PERIOD_ADD(?, ?)`,
 			`> PERIOD_ADD(?, ?)
@@ -2578,8 +2578,8 @@ func TestDateAndTimeFuncsWithFunc(t *testing.T) {
 		},
 		{
 			stmt.NewPeriodDiff(
-				stmt.NewParam(200802),
-				stmt.NewParam(200703),
+				stmt.NewVal(200802),
+				stmt.NewVal(200703),
 			),
 			`PERIOD_DIFF(?, ?)`,
 			`> PERIOD_DIFF(?, ?)
@@ -2618,8 +2618,8 @@ func TestDateAndTimeFuncsWithFunc(t *testing.T) {
 		},
 		{
 			stmt.NewStrToDate(
-				stmt.NewParam("01,5,2013"),
-				stmt.NewParam("%d,%m,%Y"),
+				stmt.NewVal("01,5,2013"),
+				stmt.NewVal("%d,%m,%Y"),
 			),
 			`STR_TO_DATE(?, ?)`,
 			`> STR_TO_DATE(?, ?)
@@ -2632,7 +2632,7 @@ func TestDateAndTimeFuncsWithFunc(t *testing.T) {
 		{
 			stmt.NewSubdate(
 				stmt.NewCurDate(),
-				stmt.NewInterval(stmt.NewParam(31)).Day(),
+				stmt.NewInterval(stmt.NewVal(31)).Day(),
 			),
 			`SUBDATE(CURDATE(), INTERVAL ? DAY)`,
 			`> SUBDATE(CURDATE(), INTERVAL ? DAY)
@@ -2644,7 +2644,7 @@ func TestDateAndTimeFuncsWithFunc(t *testing.T) {
 		{
 			stmt.NewSubtime(
 				stmt.NewCurDate(),
-				stmt.NewParam("1 1:1:1.000002"),
+				stmt.NewVal("1 1:1:1.000002"),
 			),
 			`SUBTIME(CURDATE(), ?)`,
 			`> SUBTIME(CURDATE(), ?)
@@ -2673,8 +2673,8 @@ func TestDateAndTimeFuncsWithFunc(t *testing.T) {
 		},
 		{
 			stmt.NewTimeFormat(
-				stmt.NewParam("100:00:00"),
-				stmt.NewParam("%H %k %h %I %l"),
+				stmt.NewVal("100:00:00"),
+				stmt.NewVal("%H %k %h %I %l"),
 			),
 			`TIME_FORMAT(?, ?)`,
 			`> TIME_FORMAT(?, ?)
@@ -2706,7 +2706,7 @@ func TestDateAndTimeFuncsWithFunc(t *testing.T) {
 		{
 			stmt.NewTimestamp(
 				stmt.NewCurDate(),
-				stmt.NewParam("12:00:00"),
+				stmt.NewVal("12:00:00"),
 			),
 			`TIMESTAMP(CURDATE(), ?)`,
 			`> TIMESTAMP(CURDATE(), ?)
@@ -2718,8 +2718,8 @@ func TestDateAndTimeFuncsWithFunc(t *testing.T) {
 		{
 			stmt.NewTimestampadd(
 				stmt.UnitMinute,
-				stmt.NewParam(1),
-				stmt.NewParam("2003-01-02"),
+				stmt.NewVal(1),
+				stmt.NewVal("2003-01-02"),
 			),
 			`TIMESTAMPADD(?, ?, ?)`,
 			`> TIMESTAMPADD(?, ?, ?)
@@ -2733,7 +2733,7 @@ func TestDateAndTimeFuncsWithFunc(t *testing.T) {
 		{
 			stmt.NewTimestampdiff(
 				stmt.UnitMonth,
-				stmt.NewParam("2003-02-01"),
+				stmt.NewVal("2003-02-01"),
 				stmt.NewCurDate(),
 			),
 			`TIMESTAMPDIFF(?, ?, CURDATE())`,
@@ -2840,7 +2840,7 @@ func TestDateAndTimeFuncsWithFunc(t *testing.T) {
 		{
 			stmt.NewYearweek(
 				stmt.NewCurDate(),
-				stmt.NewParam(0),
+				stmt.NewVal(0),
 			),
 			`YEARWEEK(CURDATE(), ?)`,
 			`> YEARWEEK(CURDATE(), ?)

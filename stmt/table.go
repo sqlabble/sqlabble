@@ -15,8 +15,8 @@ func NewTable(name string) Table {
 	}
 }
 
-func (t Table) As(alias string) TableAs {
-	return TableAs{
+func (t Table) As(alias string) TableAlias {
+	return TableAlias{
 		table: t,
 		Alias: alias,
 	}
