@@ -14,6 +14,7 @@ func TestJoinType(t *testing.T) {
 	for _, c := range []interface{}{
 		stmt.Join{},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%T", c), func(t *testing.T) {
 			t.Parallel()
 			if _, ok := c.(stmt.Joiner); !ok {
@@ -164,6 +165,7 @@ func TestJoin(t *testing.T) {
 			nil,
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
 			t.Parallel()
 			sql, values := b.Build(c.stmt)
@@ -285,6 +287,7 @@ func TestInnerJoin(t *testing.T) {
 			nil,
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
 			t.Parallel()
 			sql, values := b.Build(c.stmt)
@@ -401,6 +404,7 @@ func TestLeftJoin(t *testing.T) {
 			nil,
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
 			t.Parallel()
 			sql, values := b.Build(c.stmt)
@@ -517,6 +521,7 @@ func TestRightJoin(t *testing.T) {
 			nil,
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
 			t.Parallel()
 			sql, values := b.Build(c.stmt)

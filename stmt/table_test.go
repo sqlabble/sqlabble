@@ -14,6 +14,7 @@ func TestTableType(t *testing.T) {
 	for _, c := range []interface{}{
 		stmt.Table{},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%T", c), func(t *testing.T) {
 			t.Parallel()
 			if _, ok := c.(stmt.Joiner); !ok {

@@ -14,6 +14,7 @@ func TestTableAsType(t *testing.T) {
 	for _, c := range []interface{}{
 		stmt.TableAs{},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%T", c), func(t *testing.T) {
 			t.Parallel()
 			if _, ok := c.(stmt.Joiner); !ok {
@@ -75,6 +76,7 @@ func TestTableAs(t *testing.T) {
 			nil,
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
 			t.Parallel()
 			sql, values := b.Build(c.stmt)

@@ -14,6 +14,7 @@ func TestColumnAsType(t *testing.T) {
 	for _, c := range []interface{}{
 		stmt.ColumnAs{},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%T", c), func(t *testing.T) {
 			t.Parallel()
 			if _, ok := c.(stmt.ColOrAliasOrSub); !ok {
@@ -39,6 +40,7 @@ func TestColumnAsSQL(t *testing.T) {
 			nil,
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
 			t.Parallel()
 			sql, values := b.Build(c.stmt)
