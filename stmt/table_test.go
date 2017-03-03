@@ -45,6 +45,20 @@ func TestTable(t *testing.T) {
 			nil,
 		},
 		{
+			stmt.NewTable("foo").As("f"),
+			`foo AS "f"`,
+			`> foo AS "f"
+`,
+			nil,
+		},
+		{
+			stmt.NewTable("foo").Column("foo_id"),
+			`foo.foo_id`,
+			`> foo.foo_id
+`,
+			nil,
+		},
+		{
 			stmt.NewTable("foo").
 				Join(stmt.NewTable("bar")),
 			`foo JOIN bar`,
@@ -81,6 +95,7 @@ func TestTable(t *testing.T) {
 			nil,
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
 			t.Parallel()
 			sql, values := b.Build(c.stmt)

@@ -22,6 +22,12 @@ func (t Table) As(alias string) TableAs {
 	}
 }
 
+func (t Table) Column(name string) Column {
+	c := NewColumn(name)
+	c.table = t
+	return c
+}
+
 func (t Table) Join(table TableOrAlias) Join {
 	nj := NewJoin(table)
 	nj.prev = t
