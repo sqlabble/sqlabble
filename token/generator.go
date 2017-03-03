@@ -20,12 +20,12 @@ func scanWithBreaking(tokens Tokens, format Format) Tokens {
 		case LineStart, Indent, LineEnd:
 			ts = append(ts, t)
 			continue
-		case ParenStart, FuncParenStart, QuoteStart:
+		case Dot, ParenStart, FuncParenStart, QuoteStart:
 			ts = append(ts, t)
 			continue
 		default:
 			switch next {
-			case Comma, QuoteEnd, ParenEnd, FuncParenStart, FuncParenEnd, LineEnd:
+			case Dot, Comma, QuoteEnd, ParenEnd, FuncParenStart, FuncParenEnd, LineEnd:
 				ts = append(ts, t)
 				continue
 			default:
@@ -57,7 +57,7 @@ func scanWithoutBreaking(tokens Tokens, format Format) Tokens {
 			next = ts1[i+1]
 		}
 		switch t {
-		case ParenStart, FuncParenStart, QuoteStart:
+		case Dot, ParenStart, FuncParenStart, QuoteStart:
 			ts2 = append(ts2, t)
 			continue
 		default:
@@ -66,7 +66,7 @@ func scanWithoutBreaking(tokens Tokens, format Format) Tokens {
 				continue
 			}
 			switch next {
-			case Comma, QuoteEnd, ParenEnd, FuncParenStart, FuncParenEnd:
+			case Dot, Comma, QuoteEnd, ParenEnd, FuncParenStart, FuncParenEnd:
 				ts2 = append(ts2, t)
 				continue
 			default:

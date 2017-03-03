@@ -68,6 +68,7 @@ func TestHavingSQL(t *testing.T) {
 			[]interface{}{100, 20},
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
 			t.Parallel()
 			sql, values := b.Build(c.stmt)

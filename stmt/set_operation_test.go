@@ -79,6 +79,7 @@ func TestUnionSQL(t *testing.T) {
 			nil,
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d Builder", i), func(t *testing.T) {
 			t.Parallel()
 			sql, values := b.Build(c.stmt)
@@ -151,6 +152,7 @@ func TestUnionAllSQL(t *testing.T) {
 			nil,
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d Builder", i), func(t *testing.T) {
 			t.Parallel()
 			sql, values := b.Build(c.stmt)
@@ -223,6 +225,7 @@ func TestIntersectSQL(t *testing.T) {
 			nil,
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d Builder", i), func(t *testing.T) {
 			t.Parallel()
 			sql, values := b.Build(c.stmt)
@@ -295,6 +298,7 @@ func TestIntersectAllSQL(t *testing.T) {
 			nil,
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d Builder", i), func(t *testing.T) {
 			t.Parallel()
 			sql, values := b.Build(c.stmt)
@@ -367,6 +371,7 @@ func TestExceptSQL(t *testing.T) {
 			nil,
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d Builder", i), func(t *testing.T) {
 			t.Parallel()
 			sql, values := b.Build(c.stmt)
@@ -439,6 +444,7 @@ func TestExceptAllSQL(t *testing.T) {
 			nil,
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d Builder", i), func(t *testing.T) {
 			t.Parallel()
 			sql, values := b.Build(c.stmt)

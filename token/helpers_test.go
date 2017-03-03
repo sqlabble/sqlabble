@@ -48,6 +48,7 @@ func TestRepeat(t *testing.T) {
 			},
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
 			t.Parallel()
 			got := token.Repeat(c.token, c.n)
@@ -124,6 +125,7 @@ func TestFlatten(t *testing.T) {
 			},
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
 			t.Parallel()
 			got := token.Flatten(c.tokensList...)
@@ -173,6 +175,7 @@ func TestPlaceholders(t *testing.T) {
 			},
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
 			t.Parallel()
 			got := token.Placeholders(c.n)

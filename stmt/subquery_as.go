@@ -8,18 +8,18 @@ import (
 
 type SubqueryAs struct {
 	subquery Subquery
-	alias    string
+	Alias    string
 }
 
 func NewSubqueryAs(alias string) SubqueryAs {
 	return SubqueryAs{
-		alias: alias,
+		Alias: alias,
 	}
 }
 
 func (a SubqueryAs) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	t1, v1 := a.subquery.nodeize()
-	t2 := tokenizer.NewLine(token.Word(a.alias))
+	t2 := tokenizer.NewLine(token.Word(a.Alias))
 	return tokenizer.ConcatTokenizers(
 		t1,
 		t2,

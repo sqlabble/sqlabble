@@ -14,6 +14,7 @@ func TestTableType(t *testing.T) {
 	for _, c := range []interface{}{
 		stmt.Table{},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%T", c), func(t *testing.T) {
 			t.Parallel()
 			if _, ok := c.(stmt.Joiner); !ok {
@@ -41,6 +42,20 @@ func TestTable(t *testing.T) {
 			stmt.NewTable("foo"),
 			`foo`,
 			`> foo
+`,
+			nil,
+		},
+		{
+			stmt.NewTable("foo").As("f"),
+			`foo AS "f"`,
+			`> foo AS "f"
+`,
+			nil,
+		},
+		{
+			stmt.NewTable("foo").Column("foo_id"),
+			`foo.foo_id`,
+			`> foo.foo_id
 `,
 			nil,
 		},
@@ -81,6 +96,7 @@ func TestTable(t *testing.T) {
 			nil,
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
 			t.Parallel()
 			sql, values := b.Build(c.stmt)

@@ -65,6 +65,7 @@ func TestNewTokens(t *testing.T) {
 			},
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
 			t.Parallel()
 			got := token.NewTokens(c.input...)
@@ -134,6 +135,7 @@ func TestTokensAppend(t *testing.T) {
 			},
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
 			t.Parallel()
 			got := c.tokens1.Append(c.tokens2...)
@@ -161,6 +163,7 @@ func TestTokensSprint(t *testing.T) {
 			"`foo`",
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d Standard", i), func(t *testing.T) {
 			t.Parallel()
 			sql := c.tokens.Sprint(token.StandardFormat)

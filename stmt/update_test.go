@@ -44,6 +44,7 @@ func TestUpdate(t *testing.T) {
 			},
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
 			t.Parallel()
 			sql, values := b.Build(c.stmt)

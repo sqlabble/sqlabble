@@ -6,20 +6,26 @@ import (
 )
 
 type Table struct {
-	name string
+	Name string
 }
 
 func NewTable(name string) Table {
 	return Table{
-		name: name,
+		Name: name,
 	}
 }
 
 func (t Table) As(alias string) TableAs {
 	return TableAs{
 		table: t,
-		alias: alias,
+		Alias: alias,
 	}
+}
+
+func (t Table) Column(name string) Column {
+	c := NewColumn(name)
+	c.table = t
+	return c
 }
 
 func (t Table) Join(table TableOrAlias) Join {
@@ -51,10 +57,10 @@ func (t Table) nodeize() (tokenizer.Tokenizer, []interface{}) {
 }
 
 func (t Table) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
-	if t.name == "" {
+	if t.Name == "" {
 		return nil, nil
 	}
-	return tokenizer.NewLine(token.Word(t.name)), nil
+	return tokenizer.NewLine(token.Word(t.Name)), nil
 }
 
 func (t Table) previous() Prever {

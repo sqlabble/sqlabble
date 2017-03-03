@@ -158,6 +158,7 @@ func TestInterval(t *testing.T) {
 			[]interface{}{10},
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
 			t.Parallel()
 			sql, values := b.Build(c.stmt)

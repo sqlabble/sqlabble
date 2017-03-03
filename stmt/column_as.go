@@ -8,12 +8,12 @@ import (
 
 type ColumnAs struct {
 	column ColOrSub
-	alias  string
+	Alias  string
 }
 
 func NewColumnAs(alias string) ColumnAs {
 	return ColumnAs{
-		alias: alias,
+		Alias: alias,
 	}
 }
 
@@ -23,7 +23,7 @@ func (c ColumnAs) nodeize() (tokenizer.Tokenizer, []interface{}) {
 			token.Word(keyword.As),
 		).Append(
 			token.QuoteStart,
-			token.Word(c.alias),
+			token.Word(c.Alias),
 			token.QuoteEnd,
 		), nil
 	}
@@ -33,7 +33,7 @@ func (c ColumnAs) nodeize() (tokenizer.Tokenizer, []interface{}) {
 		t1,
 		tokenizer.NewLine(
 			token.QuoteStart,
-			token.Word(c.alias),
+			token.Word(c.Alias),
 			token.QuoteEnd,
 		),
 		tokenizer.NewLine(

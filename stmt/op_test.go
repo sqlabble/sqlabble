@@ -92,6 +92,7 @@ func TestAnd(t *testing.T) {
 			},
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
 			t.Parallel()
 			sql, values := b.Build(c.stmt)
@@ -191,6 +192,7 @@ func TestOr(t *testing.T) {
 			},
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
 			t.Parallel()
 			sql, values := b.Build(c.stmt)
@@ -372,6 +374,7 @@ func TestNot(t *testing.T) {
 			},
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
 			t.Parallel()
 			sql, values := b.Build(c.stmt)
@@ -468,6 +471,7 @@ func TestComparisonOperators(t *testing.T) {
 			},
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
 			t.Parallel()
 			sql, values := b.Build(c.stmt)
@@ -579,6 +583,7 @@ func TestBetween(t *testing.T) {
 			nil,
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
 			t.Parallel()
 			sql, values := b.Build(c.stmt)
@@ -643,6 +648,7 @@ func TestContainingOperators(t *testing.T) {
 			},
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
 			t.Parallel()
 			sql, values := b.Build(c.stmt)
@@ -689,6 +695,7 @@ func TestKeywordOperators(t *testing.T) {
 			nil,
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
 			t.Parallel()
 			sql, values := b.Build(c.stmt)
@@ -822,6 +829,7 @@ func TestComplexOperation(t *testing.T) {
 			},
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
 			t.Parallel()
 			sql, values := b.Build(c.stmt)

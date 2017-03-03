@@ -45,6 +45,7 @@ func TestNewFormat(t *testing.T) {
 			},
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
 			t.Parallel()
 			got := token.NewFormat(c.prefix, c.indent, c.quote, c.lineEnd)

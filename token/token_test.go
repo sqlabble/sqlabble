@@ -47,6 +47,7 @@ func TestToken(t *testing.T) {
 			"Indent",
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d Sprint(StandardFormat)", i), func(t *testing.T) {
 			t.Parallel()
 			got := c.token.Sprint(token.StandardIndentedFormat)

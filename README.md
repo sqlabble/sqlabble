@@ -1,4 +1,4 @@
-# sqlabble [ ![Codeship Status for minodisk/sqlabble](https://img.shields.io/codeship/f3642650-d5ab-0134-3d76-0246ca48a45f/master.svg?style=flat)](https://app.codeship.com/projects/202522) [![Go Report Card](https://goreportcard.com/badge/github.com/minodisk/sqlabble)](https://goreportcard.com/report/github.com/minodisk/sqlabble) [![Coverage Status](https://img.shields.io/coveralls/minodisk/sqlabble/master.svg?style=flat)](https://coveralls.io/github/minodisk/sqlabble?branch=master) [![GoDoc](https://img.shields.io/badge/godoc-reference-5272B4.svg?style=flat)](https://godoc.org/github.com/minodisk/sqlabble) [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
+# sqlabble [![Codeship Status for minodisk/sqlabble](https://img.shields.io/codeship/f3642650-d5ab-0134-3d76-0246ca48a45f/master.svg?style=flat)](https://app.codeship.com/projects/202522) [![Go Report Card](https://goreportcard.com/badge/github.com/minodisk/sqlabble)](https://goreportcard.com/report/github.com/minodisk/sqlabble) [![Coverage Status](https://img.shields.io/coveralls/minodisk/sqlabble/master.svg?style=flat)](https://coveralls.io/github/minodisk/sqlabble?branch=master) [![GoDoc](https://img.shields.io/badge/godoc-reference-5272B4.svg?style=flat)](https://godoc.org/github.com/minodisk/sqlabble) [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
 SQL query builder with type support.
 
@@ -126,44 +126,13 @@ type Person struct {
 And, call the following command at the terminal:
 
 ```sh
-gensqlabble tables.go
+sqlabble tables.go
 ```
 
 Then, a file named `tables_sqlabble.go` will be generated:
 
 ```go
-package tables
-
-import "github.com/minodisk/sqlabble/stmt"
-
-func (p Person) Table() stmt.Table {
-	return stmt.NewTable("persons")
-}
-
-func (p Person) Columns() []stmt.Column {
-	return []stmt.Column{
-		p.ColumnPersonID(),
-		p.ColumnFamilyName(),
-		p.ColumnLastName(),
-		p.ColumnBirthDate(),
-	}
-}
-
-func (p Person) ColumnPersonID() stmt.Column {
-	return stmt.NewColumn("person_id")
-}
-
-func (p Person) ColumnFamilyName() stmt.Column {
-	return stmt.NewColumn("fname")
-}
-
-func (p Person) ColumnLastName() stmt.Column {
-	return stmt.NewColumn("lname")
-}
-
-func (p Person) ColumnBirthDate() stmt.Column {
-	return stmt.NewColumn("birth_date")
-}
+N/A
 ```
 
 Finally, you will be able to construct queries using the added methods:
