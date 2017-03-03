@@ -23,7 +23,7 @@ func TestLine(t *testing.T) {
 			token.NewTokens(),
 		},
 	} {
-		i := i
+		c := c
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
 			t.Parallel()
 			got := c.line.Tokenize(c.depth)
