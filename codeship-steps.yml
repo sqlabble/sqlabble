@@ -1,6 +1,6 @@
 - name: test
   service: sqlabble
-  command: go test -v -race ./...
+  command: go test -race ./...
 - name: cover
   service: sqlabble
   command: sh cover.sh
