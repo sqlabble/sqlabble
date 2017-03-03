@@ -6,6 +6,7 @@ import "fmt"
 var (
 	Space          = NewWord(" ")
 	Placeholder    = NewWord("?")
+	Dot            = NewWord(".")
 	Comma          = NewWord(",")
 	ParenStart     = NewWord("(")
 	ParenEnd       = NewWord(")")
