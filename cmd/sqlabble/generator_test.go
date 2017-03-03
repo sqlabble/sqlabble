@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"reflect"
+	"sort"
 	"testing"
 
 	"github.com/minodisk/sqlabble/cmd/sqlabble"
@@ -28,9 +29,9 @@ func TestGlobs(t *testing.T) {
 				"fixtures/foo/*.go",
 			},
 			[]string{
-				"fixtures/foo/mapper.go",
 				"fixtures/foo/foo.go",
 				"fixtures/foo/foo_want.go",
+				"fixtures/foo/mapper.go",
 			},
 		},
 		{
@@ -38,9 +39,9 @@ func TestGlobs(t *testing.T) {
 				"fixtures/foo/**/*.go",
 			},
 			[]string{
-				"fixtures/foo/mapper.go",
 				"fixtures/foo/foo.go",
 				"fixtures/foo/foo_want.go",
+				"fixtures/foo/mapper.go",
 				"fixtures/foo/bar/bar.go",
 				"fixtures/foo/bar/baz/baz.go",
 				"fixtures/foo/bar/baz/qux/qux.go",
@@ -67,6 +68,12 @@ func TestGlobs(t *testing.T) {
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
 			t.Parallel()
 			got, err := sqlabble.Globs(c.patterns)
+			sort.SliceStable(got, func(i, j int) bool {
+				return got[i] < got[j]
+			})
+			sort.SliceStable(c.want, func(i, j int) bool {
+				return c.want[i] < c.want[j]
+			})
 			if err != nil {
 				t.Fatal(err)
 			}
