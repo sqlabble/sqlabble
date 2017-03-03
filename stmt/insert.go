@@ -55,7 +55,7 @@ func (i InsertInto) previous() Prever {
 	return nil
 }
 
-func (i InsertInto) Values(paramses ...Params) Values {
+func (i InsertInto) Values(paramses ...Vals) Values {
 	v := NewValues(paramses...)
 	v.prev = i
 	return v

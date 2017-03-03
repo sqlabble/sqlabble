@@ -23,13 +23,13 @@ func TestSimpleCase(t *testing.T) {
 					stmt.NewColumn("customer.cust_type_cd"),
 					stmt.
 						NewSimpleWhen(
-							stmt.NewParam("I"),
+							stmt.NewVal("I"),
 						).
 						Then(
 							stmt.NewSubquery(
 								stmt.NewSelect(stmt.NewConcat(
 									stmt.NewColumn("i.fname"),
-									stmt.NewParam(" "),
+									stmt.NewVal(" "),
 									stmt.NewColumn("i.lname"),
 								)).From(
 									stmt.NewTable("individual").As("i"),
@@ -65,13 +65,13 @@ func TestSimpleCase(t *testing.T) {
 					stmt.NewColumn("customer.cust_type_cd"),
 					stmt.
 						NewSimpleWhen(
-							stmt.NewParam("I"),
+							stmt.NewVal("I"),
 						).
 						Then(
 							stmt.NewSubquery(
 								stmt.NewSelect(stmt.NewConcat(
 									stmt.NewColumn("i.fname"),
-									stmt.NewParam(" "),
+									stmt.NewVal(" "),
 									stmt.NewColumn("i.lname"),
 								)).From(
 									stmt.NewTable("individual").As("i"),
@@ -81,7 +81,7 @@ func TestSimpleCase(t *testing.T) {
 							),
 						).
 						When(
-							stmt.NewParam("B"),
+							stmt.NewVal("B"),
 						).
 						Then(
 							stmt.NewSubquery(
@@ -92,7 +92,7 @@ func TestSimpleCase(t *testing.T) {
 									),
 							),
 						).
-						Else(stmt.NewParam("Unknown Customer Type")),
+						Else(stmt.NewVal("Unknown Customer Type")),
 				),
 			`CASE customer.cust_type_cd WHEN ? THEN (SELECT CONCAT(i.fname, ?, i.lname) FROM individual AS "i" WHERE i.cust_id = customer.cust_id) WHEN ? THEN (SELECT b.name FROM business AS "b" WHERE b.cust_id = customer.cust_id) ELSE ? END`,
 			`> CASE customer.cust_type_cd

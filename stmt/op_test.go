@@ -20,7 +20,7 @@ func TestAnd(t *testing.T) {
 		// 0
 		{
 			stmt.NewAnd(
-				stmt.NewColumn("foo").NotEq(stmt.NewParam(100)),
+				stmt.NewColumn("foo").NotEq(stmt.NewVal(100)),
 			),
 			"foo != ?",
 			`> foo != ?
@@ -32,8 +32,8 @@ func TestAnd(t *testing.T) {
 		// 1
 		{
 			stmt.NewAnd(
-				stmt.NewColumn("foo").NotEq(stmt.NewParam(100)),
-				stmt.NewColumn("bar").Eq(stmt.NewParam(200)),
+				stmt.NewColumn("foo").NotEq(stmt.NewVal(100)),
+				stmt.NewColumn("bar").Eq(stmt.NewVal(200)),
 			),
 			"foo != ? AND bar = ?",
 			`> foo != ?
@@ -47,9 +47,9 @@ func TestAnd(t *testing.T) {
 		// 2
 		{
 			stmt.NewAnd(
-				stmt.NewColumn("foo").NotEq(stmt.NewParam(100)),
-				stmt.NewColumn("bar").Eq(stmt.NewParam(200)),
-				stmt.NewColumn("baz").Like(stmt.NewParam("abc")),
+				stmt.NewColumn("foo").NotEq(stmt.NewVal(100)),
+				stmt.NewColumn("bar").Eq(stmt.NewVal(200)),
+				stmt.NewColumn("baz").Like(stmt.NewVal("abc")),
 			),
 			"foo != ? AND bar = ? AND baz LIKE ?",
 			`> foo != ?
@@ -66,13 +66,13 @@ func TestAnd(t *testing.T) {
 		{
 			stmt.NewAnd(
 				stmt.NewAnd(
-					stmt.NewColumn("foo").NotEq(stmt.NewParam(100)),
-					stmt.NewColumn("bar").Eq(stmt.NewParam(200)),
-					stmt.NewColumn("baz").Like(stmt.NewParam("abc")),
+					stmt.NewColumn("foo").NotEq(stmt.NewVal(100)),
+					stmt.NewColumn("bar").Eq(stmt.NewVal(200)),
+					stmt.NewColumn("baz").Like(stmt.NewVal("abc")),
 				),
 				stmt.NewColumn("foo").Between(
-					stmt.NewParam(300),
-					stmt.NewParam(400),
+					stmt.NewVal(300),
+					stmt.NewVal(400),
 				),
 			),
 			"(foo != ? AND bar = ? AND baz LIKE ?) AND foo BETWEEN ? AND ?",
@@ -127,7 +127,7 @@ func TestOr(t *testing.T) {
 	}{
 		{
 			stmt.NewOr(
-				stmt.NewColumn("foo").NotEq(stmt.NewParam(100)),
+				stmt.NewColumn("foo").NotEq(stmt.NewVal(100)),
 			),
 			"foo != ?",
 			`> foo != ?
@@ -138,8 +138,8 @@ func TestOr(t *testing.T) {
 		},
 		{
 			stmt.NewOr(
-				stmt.NewColumn("foo").NotEq(stmt.NewParam(100)),
-				stmt.NewColumn("bar").Eq(stmt.NewParam(200)),
+				stmt.NewColumn("foo").NotEq(stmt.NewVal(100)),
+				stmt.NewColumn("bar").Eq(stmt.NewVal(200)),
 			),
 			"foo != ? OR bar = ?",
 			`> foo != ?
@@ -152,9 +152,9 @@ func TestOr(t *testing.T) {
 		},
 		{
 			stmt.NewOr(
-				stmt.NewColumn("foo").NotEq(stmt.NewParam(100)),
-				stmt.NewColumn("bar").Eq(stmt.NewParam(200)),
-				stmt.NewColumn("baz").Like(stmt.NewParam("abc")),
+				stmt.NewColumn("foo").NotEq(stmt.NewVal(100)),
+				stmt.NewColumn("bar").Eq(stmt.NewVal(200)),
+				stmt.NewColumn("baz").Like(stmt.NewVal("abc")),
 			),
 			"foo != ? OR bar = ? OR baz LIKE ?",
 			`> foo != ?
@@ -170,11 +170,11 @@ func TestOr(t *testing.T) {
 		{
 			stmt.NewOr(
 				stmt.NewOr(
-					stmt.NewColumn("foo").NotEq(stmt.NewParam(100)),
-					stmt.NewColumn("bar").Eq(stmt.NewParam(200)),
-					stmt.NewColumn("baz").Like(stmt.NewParam("abc")),
+					stmt.NewColumn("foo").NotEq(stmt.NewVal(100)),
+					stmt.NewColumn("bar").Eq(stmt.NewVal(200)),
+					stmt.NewColumn("baz").Like(stmt.NewVal("abc")),
 				),
-				stmt.NewColumn("foo").Gt(stmt.NewParam(300)),
+				stmt.NewColumn("foo").Gt(stmt.NewVal(300)),
 			),
 			"(foo != ? OR bar = ? OR baz LIKE ?) OR foo > ?",
 			`> (
@@ -228,7 +228,7 @@ func TestNot(t *testing.T) {
 		// 0
 		{
 			stmt.NewNot(
-				stmt.NewColumn("foo").NotEq(stmt.NewParam(100)),
+				stmt.NewColumn("foo").NotEq(stmt.NewVal(100)),
 			),
 			"NOT (foo != ?)",
 			`> NOT (
@@ -243,7 +243,7 @@ func TestNot(t *testing.T) {
 		{
 			stmt.NewNot(
 				stmt.NewNot(
-					stmt.NewColumn("foo").NotEq(stmt.NewParam(100)),
+					stmt.NewColumn("foo").NotEq(stmt.NewVal(100)),
 				),
 			),
 			"NOT (NOT (foo != ?))",
@@ -262,7 +262,7 @@ func TestNot(t *testing.T) {
 			stmt.NewNot(
 				stmt.NewNot(
 					stmt.NewNot(
-						stmt.NewColumn("foo").NotEq(stmt.NewParam(100)),
+						stmt.NewColumn("foo").NotEq(stmt.NewVal(100)),
 					),
 				),
 			),
@@ -283,7 +283,7 @@ func TestNot(t *testing.T) {
 		{
 			stmt.NewNot(
 				stmt.NewOr(
-					stmt.NewColumn("foo").NotEq(stmt.NewParam(100)),
+					stmt.NewColumn("foo").NotEq(stmt.NewVal(100)),
 				),
 			),
 			"NOT (foo != ?)",
@@ -299,9 +299,9 @@ func TestNot(t *testing.T) {
 		{
 			stmt.NewNot(
 				stmt.NewOr(
-					stmt.NewColumn("foo").NotEq(stmt.NewParam(100)),
-					stmt.NewColumn("bar").Eq(stmt.NewParam(200)),
-					stmt.NewColumn("baz").Like(stmt.NewParam("abc")),
+					stmt.NewColumn("foo").NotEq(stmt.NewVal(100)),
+					stmt.NewColumn("bar").Eq(stmt.NewVal(200)),
+					stmt.NewColumn("baz").Like(stmt.NewVal("abc")),
 				),
 			),
 			"NOT (foo != ? OR bar = ? OR baz LIKE ?)",
@@ -322,9 +322,9 @@ func TestNot(t *testing.T) {
 			stmt.NewNot(
 				stmt.NewNot(
 					stmt.NewOr(
-						stmt.NewColumn("foo").NotEq(stmt.NewParam(100)),
-						stmt.NewColumn("bar").Eq(stmt.NewParam(200)),
-						stmt.NewColumn("baz").Like(stmt.NewParam("abc")),
+						stmt.NewColumn("foo").NotEq(stmt.NewVal(100)),
+						stmt.NewColumn("bar").Eq(stmt.NewVal(200)),
+						stmt.NewColumn("baz").Like(stmt.NewVal("abc")),
 					),
 				),
 			),
@@ -349,9 +349,9 @@ func TestNot(t *testing.T) {
 				stmt.NewNot(
 					stmt.NewNot(
 						stmt.NewOr(
-							stmt.NewColumn("foo").NotEq(stmt.NewParam(100)),
-							stmt.NewColumn("bar").Eq(stmt.NewParam(200)),
-							stmt.NewColumn("baz").Like(stmt.NewParam("abc")),
+							stmt.NewColumn("foo").NotEq(stmt.NewVal(100)),
+							stmt.NewColumn("bar").Eq(stmt.NewVal(200)),
+							stmt.NewColumn("baz").Like(stmt.NewVal("abc")),
 						),
 					),
 				),
@@ -408,7 +408,7 @@ func TestComparisonOperators(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			stmt.NewColumn("foo").Eq(stmt.NewParam(100)),
+			stmt.NewColumn("foo").Eq(stmt.NewVal(100)),
 			"foo = ?",
 			`> foo = ?
 `,
@@ -417,7 +417,7 @@ func TestComparisonOperators(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewColumn("foo").Lt(stmt.NewParam(100)),
+			stmt.NewColumn("foo").Lt(stmt.NewVal(100)),
 			"foo < ?",
 			`> foo < ?
 `,
@@ -426,7 +426,7 @@ func TestComparisonOperators(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewColumn("foo").Lte(stmt.NewParam(100)),
+			stmt.NewColumn("foo").Lte(stmt.NewVal(100)),
 			"foo <= ?",
 			`> foo <= ?
 `,
@@ -435,7 +435,7 @@ func TestComparisonOperators(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewColumn("foo").Gt(stmt.NewParam(100)),
+			stmt.NewColumn("foo").Gt(stmt.NewVal(100)),
 			"foo > ?",
 			`> foo > ?
 `,
@@ -444,7 +444,7 @@ func TestComparisonOperators(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewColumn("foo").Gte(stmt.NewParam(100)),
+			stmt.NewColumn("foo").Gte(stmt.NewVal(100)),
 			"foo >= ?",
 			`> foo >= ?
 `,
@@ -453,7 +453,7 @@ func TestComparisonOperators(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewColumn("foo").Like(stmt.NewParam("bar")),
+			stmt.NewColumn("foo").Like(stmt.NewVal("bar")),
 			"foo LIKE ?",
 			`> foo LIKE ?
 `,
@@ -462,7 +462,7 @@ func TestComparisonOperators(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewColumn("foo").RegExp(stmt.NewParam("bar")),
+			stmt.NewColumn("foo").RegExp(stmt.NewVal("bar")),
 			"foo REGEXP ?",
 			`> foo REGEXP ?
 `,
@@ -505,8 +505,8 @@ func TestBetween(t *testing.T) {
 	}{
 		{
 			stmt.NewColumn("foo").Between(
-				stmt.NewParam(100),
-				stmt.NewParam(200),
+				stmt.NewVal(100),
+				stmt.NewVal(200),
 			),
 			"foo BETWEEN ? AND ?",
 			`> foo BETWEEN ? AND ?
@@ -518,7 +518,7 @@ func TestBetween(t *testing.T) {
 		},
 		{
 			stmt.NewColumn("joined_users").Between(
-				stmt.NewParam(100),
+				stmt.NewVal(100),
 				stmt.NewSubquery(
 					stmt.NewSelect(stmt.NewColumn("count(*)")).
 						From(stmt.NewTable("users")),
@@ -542,7 +542,7 @@ func TestBetween(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("count(*)")).
 						From(stmt.NewTable("users")),
 				),
-				stmt.NewParam(500),
+				stmt.NewVal(500),
 			),
 			"joined_users BETWEEN (SELECT count(*) FROM users) AND ?",
 			`> joined_users BETWEEN (
@@ -617,7 +617,7 @@ func TestContainingOperators(t *testing.T) {
 	}{
 		{
 			stmt.NewColumn("foo").
-				In(stmt.NewParams(
+				In(stmt.NewVals(
 					100,
 					200,
 					300,
@@ -633,7 +633,7 @@ func TestContainingOperators(t *testing.T) {
 		},
 		{
 			stmt.NewColumn("foo").
-				NotIn(stmt.NewParams(
+				NotIn(stmt.NewVals(
 					100,
 					200,
 					300,
@@ -734,7 +734,7 @@ func TestComplexOperation(t *testing.T) {
 						stmt.NewAnd(
 							stmt.NewOr(
 								stmt.NewNot(
-									stmt.NewColumn("foo").Eq(stmt.NewParam(100)),
+									stmt.NewColumn("foo").Eq(stmt.NewVal(100)),
 								),
 							),
 						),
@@ -759,34 +759,34 @@ func TestComplexOperation(t *testing.T) {
 		{
 			stmt.NewOr(
 				stmt.NewNot(
-					stmt.NewColumn("baz").RegExp(stmt.NewParam("def")),
+					stmt.NewColumn("baz").RegExp(stmt.NewVal("def")),
 				),
 				stmt.NewOr(
 					stmt.NewAnd(
 						stmt.NewColumn("qux").Between(
-							stmt.NewParam(400),
-							stmt.NewParam(500),
+							stmt.NewVal(400),
+							stmt.NewVal(500),
 						),
 						stmt.NewNot(
 							stmt.NewAnd(
 								stmt.NewOr(
-									stmt.NewColumn("foo").NotEq(stmt.NewParam(100)),
-									stmt.NewColumn("bar").Eq(stmt.NewParam(200)),
-									stmt.NewColumn("baz").Like(stmt.NewParam("abc")),
+									stmt.NewColumn("foo").NotEq(stmt.NewVal(100)),
+									stmt.NewColumn("bar").Eq(stmt.NewVal(200)),
+									stmt.NewColumn("baz").Like(stmt.NewVal("abc")),
 									stmt.NewOr(
 										stmt.NewColumn("baz").
-											In(stmt.NewParams(
+											In(stmt.NewVals(
 												"a", "b", "c",
 											)),
 										stmt.NewColumn("qux").
-											NotIn(stmt.NewParams(
+											NotIn(stmt.NewVals(
 												600, 700, 800,
 											)),
 									),
 								),
 							),
 						),
-						stmt.NewColumn("foo").Gt(stmt.NewParam(300)),
+						stmt.NewColumn("foo").Gt(stmt.NewVal(300)),
 					),
 				),
 			),

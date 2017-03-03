@@ -28,7 +28,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 		},
 		{
 			stmt.NewSubquery(stmt.NewSelect()).
-				Eq(stmt.NewParam(100)),
+				Eq(stmt.NewVal(100)),
 			"(SELECT) = ?",
 			`> (
 >   SELECT
@@ -40,7 +40,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 		},
 		{
 			stmt.NewSubquery(stmt.NewSelect()).
-				NotEq(stmt.NewParam(100)),
+				NotEq(stmt.NewVal(100)),
 			"(SELECT) != ?",
 			`> (
 >   SELECT
@@ -52,7 +52,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 		},
 		{
 			stmt.NewSubquery(stmt.NewSelect()).
-				Gt(stmt.NewParam(100)),
+				Gt(stmt.NewVal(100)),
 			"(SELECT) > ?",
 			`> (
 >   SELECT
@@ -64,7 +64,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 		},
 		{
 			stmt.NewSubquery(stmt.NewSelect()).
-				Gte(stmt.NewParam(100)),
+				Gte(stmt.NewVal(100)),
 			"(SELECT) >= ?",
 			`> (
 >   SELECT
@@ -76,7 +76,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 		},
 		{
 			stmt.NewSubquery(stmt.NewSelect()).
-				Lt(stmt.NewParam(100)),
+				Lt(stmt.NewVal(100)),
 			"(SELECT) < ?",
 			`> (
 >   SELECT
@@ -88,7 +88,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 		},
 		{
 			stmt.NewSubquery(stmt.NewSelect()).
-				Lte(stmt.NewParam(100)),
+				Lte(stmt.NewVal(100)),
 			"(SELECT) <= ?",
 			`> (
 >   SELECT
@@ -100,7 +100,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 		},
 		{
 			stmt.NewSubquery(stmt.NewSelect()).
-				Like(stmt.NewParam("bar")),
+				Like(stmt.NewVal("bar")),
 			"(SELECT) LIKE ?",
 			`> (
 >   SELECT
@@ -112,7 +112,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 		},
 		{
 			stmt.NewSubquery(stmt.NewSelect()).
-				RegExp(stmt.NewParam("bar")),
+				RegExp(stmt.NewVal("bar")),
 			"(SELECT) REGEXP ?",
 			`> (
 >   SELECT
@@ -125,8 +125,8 @@ func TestSubOperationLeftSide(t *testing.T) {
 		{
 			stmt.NewSubquery(stmt.NewSelect()).
 				Between(
-					stmt.NewParam(100),
-					stmt.NewParam(200),
+					stmt.NewVal(100),
+					stmt.NewVal(200),
 				),
 			"(SELECT) BETWEEN ? AND ?",
 			`> (
@@ -160,7 +160,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 		},
 		{
 			stmt.NewSubquery(stmt.NewSelect()).
-				In(stmt.NewParams(
+				In(stmt.NewVals(
 					100, 200, 300,
 				)),
 			"(SELECT) IN (?, ?, ?)",
@@ -176,7 +176,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 		},
 		{
 			stmt.NewSubquery(stmt.NewSelect()).
-				NotIn(stmt.NewParams(
+				NotIn(stmt.NewVals(
 					100, 200, 300,
 				)),
 			"(SELECT) NOT IN (?, ?, ?)",

@@ -57,7 +57,7 @@ func TestColumn(t *testing.T) {
 			nil,
 		},
 		{
-			stmt.NewColumn("foo").Assign(stmt.NewParam(100)),
+			stmt.NewColumn("foo").Assign(stmt.NewVal(100)),
 			`foo = ?`,
 			`> foo = ?
 `,
@@ -66,7 +66,7 @@ func TestColumn(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewColumn("foo").Eq(stmt.NewParam(100)),
+			stmt.NewColumn("foo").Eq(stmt.NewVal(100)),
 			`foo = ?`,
 			`> foo = ?
 `,
@@ -75,7 +75,7 @@ func TestColumn(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewColumn("foo").NotEq(stmt.NewParam(100)),
+			stmt.NewColumn("foo").NotEq(stmt.NewVal(100)),
 			`foo != ?`,
 			`> foo != ?
 `,
@@ -84,7 +84,7 @@ func TestColumn(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewColumn("foo").Gt(stmt.NewParam(100)),
+			stmt.NewColumn("foo").Gt(stmt.NewVal(100)),
 			`foo > ?`,
 			`> foo > ?
 `,
@@ -93,7 +93,7 @@ func TestColumn(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewColumn("foo").Gte(stmt.NewParam(100)),
+			stmt.NewColumn("foo").Gte(stmt.NewVal(100)),
 			`foo >= ?`,
 			`> foo >= ?
 `,
@@ -102,7 +102,7 @@ func TestColumn(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewColumn("foo").Lt(stmt.NewParam(100)),
+			stmt.NewColumn("foo").Lt(stmt.NewVal(100)),
 			`foo < ?`,
 			`> foo < ?
 `,
@@ -111,7 +111,7 @@ func TestColumn(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewColumn("foo").Lte(stmt.NewParam(100)),
+			stmt.NewColumn("foo").Lte(stmt.NewVal(100)),
 			`foo <= ?`,
 			`> foo <= ?
 `,
@@ -120,7 +120,7 @@ func TestColumn(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewColumn("foo").Between(stmt.NewParam(100), stmt.NewParam(200)),
+			stmt.NewColumn("foo").Between(stmt.NewVal(100), stmt.NewVal(200)),
 			`foo BETWEEN ? AND ?`,
 			`> foo BETWEEN ? AND ?
 `,
@@ -131,7 +131,7 @@ func TestColumn(t *testing.T) {
 		},
 		{
 			stmt.NewColumn("foo").
-				In(stmt.NewParams(100, 200, 300)),
+				In(stmt.NewVals(100, 200, 300)),
 			`foo IN (?, ?, ?)`,
 			`> foo IN (?, ?, ?)
 `,
@@ -143,7 +143,7 @@ func TestColumn(t *testing.T) {
 		},
 		{
 			stmt.NewColumn("foo").
-				NotIn(stmt.NewParams(100, 200, 300)),
+				NotIn(stmt.NewVals(100, 200, 300)),
 			`foo NOT IN (?, ?, ?)`,
 			`> foo NOT IN (?, ?, ?)
 `,
@@ -154,7 +154,7 @@ func TestColumn(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewColumn("foo").Like(stmt.NewParam(`%bar%`)),
+			stmt.NewColumn("foo").Like(stmt.NewVal(`%bar%`)),
 			`foo LIKE ?`,
 			`> foo LIKE ?
 `,
@@ -163,7 +163,7 @@ func TestColumn(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewColumn("foo").RegExp(stmt.NewParam("^(bar|baz)")),
+			stmt.NewColumn("foo").RegExp(stmt.NewVal("^(bar|baz)")),
 			`foo REGEXP ?`,
 			`> foo REGEXP ?
 `,

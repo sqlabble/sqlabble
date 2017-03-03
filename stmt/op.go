@@ -69,68 +69,68 @@ func (o Not) keyword() keyword.Operator {
 type ComparisonOperation struct {
 	op     keyword.Operator
 	column ValOrColOrFuncOrSub
-	param  ValOrColOrFuncOrSub
+	val    ValOrColOrFuncOrSub
 }
 
-func NewEq(param ValOrColOrFuncOrSub) ComparisonOperation {
+func NewEq(val ValOrColOrFuncOrSub) ComparisonOperation {
 	return ComparisonOperation{
-		op:    keyword.Eq,
-		param: param,
+		op:  keyword.Eq,
+		val: val,
 	}
 }
 
-func NewNotEq(param ValOrColOrFuncOrSub) ComparisonOperation {
+func NewNotEq(val ValOrColOrFuncOrSub) ComparisonOperation {
 	return ComparisonOperation{
-		op:    keyword.NotEq,
-		param: param,
+		op:  keyword.NotEq,
+		val: val,
 	}
 }
 
-func NewGt(param ValOrColOrFuncOrSub) ComparisonOperation {
+func NewGt(val ValOrColOrFuncOrSub) ComparisonOperation {
 	return ComparisonOperation{
-		op:    keyword.Gt,
-		param: param,
+		op:  keyword.Gt,
+		val: val,
 	}
 }
 
-func NewGte(param ValOrColOrFuncOrSub) ComparisonOperation {
+func NewGte(val ValOrColOrFuncOrSub) ComparisonOperation {
 	return ComparisonOperation{
-		op:    keyword.Gte,
-		param: param,
+		op:  keyword.Gte,
+		val: val,
 	}
 }
 
-func NewLt(param ValOrColOrFuncOrSub) ComparisonOperation {
+func NewLt(val ValOrColOrFuncOrSub) ComparisonOperation {
 	return ComparisonOperation{
-		op:    keyword.Lt,
-		param: param,
+		op:  keyword.Lt,
+		val: val,
 	}
 }
 
-func NewLte(param ValOrColOrFuncOrSub) ComparisonOperation {
+func NewLte(val ValOrColOrFuncOrSub) ComparisonOperation {
 	return ComparisonOperation{
-		op:    keyword.Lte,
-		param: param,
+		op:  keyword.Lte,
+		val: val,
 	}
 }
 
-func NewLike(param ValOrColOrFuncOrSub) ComparisonOperation {
+func NewLike(val ValOrColOrFuncOrSub) ComparisonOperation {
 	return ComparisonOperation{
-		op:    keyword.Like,
-		param: param,
+		op:  keyword.Like,
+		val: val,
 	}
 }
 
-func NewRegExp(param ValOrColOrFuncOrSub) ComparisonOperation {
+func NewRegExp(val ValOrColOrFuncOrSub) ComparisonOperation {
 	return ComparisonOperation{
-		op:    keyword.RegExp,
-		param: param,
+		op:  keyword.RegExp,
+		val: val,
 	}
 }
 
 func (o ComparisonOperation) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	t1, v1 := o.column.nodeize()
-	t2, v2 := o.param.nodeize()
+	t2, v2 := o.val.nodeize()
 	return tokenizer.ConcatTokenizers(
 		t1,
 		t2,
@@ -182,26 +182,26 @@ func (o Between) keyword() keyword.Operator {
 type ContainingOperation struct {
 	op     keyword.Operator
 	column ValOrColOrFuncOrSub
-	params ValsOrSub
+	vals   ValsOrSub
 }
 
-func NewIn(params ValsOrSub) ContainingOperation {
+func NewIn(vals ValsOrSub) ContainingOperation {
 	return ContainingOperation{
-		op:     keyword.In,
-		params: params,
+		op:   keyword.In,
+		vals: vals,
 	}
 }
 
 func NewNotIn(vals ValsOrSub) ContainingOperation {
 	return ContainingOperation{
-		op:     keyword.NotIn,
-		params: vals,
+		op:   keyword.NotIn,
+		vals: vals,
 	}
 }
 
 func (o ContainingOperation) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	t1, v1 := o.column.nodeize()
-	t2, v2 := o.params.nodeize()
+	t2, v2 := o.vals.nodeize()
 	return tokenizer.ConcatTokenizers(
 		t1,
 		t2,

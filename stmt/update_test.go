@@ -31,7 +31,7 @@ func TestUpdate(t *testing.T) {
 			stmt.NewUpdate(
 				stmt.NewTable("foo"),
 			).Set(
-				stmt.NewColumn("bar").Assign(stmt.NewParam(100)),
+				stmt.NewColumn("bar").Assign(stmt.NewVal(100)),
 			),
 			"UPDATE foo SET bar = ?",
 			`> UPDATE

@@ -101,86 +101,86 @@ func (c Func) Between(from, to ValOrColOrFuncOrSub) Between {
 	return b
 }
 
-func (c Func) In(params ValsOrSub) ContainingOperation {
-	i := NewIn(params)
+func (c Func) In(arg ValsOrSub) ContainingOperation {
+	i := NewIn(arg)
 	i.column = c
 	return i
 }
 
-func (c Func) NotIn(params ValsOrSub) ContainingOperation {
-	n := NewNotIn(params)
+func (c Func) NotIn(arg ValsOrSub) ContainingOperation {
+	n := NewNotIn(arg)
 	n.column = c
 	return n
 }
 
-func (c Func) EqAll(params Subquery) NonScalarOperation {
-	n := NewEqAll(params)
+func (c Func) EqAll(arg Subquery) NonScalarOperation {
+	n := NewEqAll(arg)
 	n.column = c
 	return n
 }
 
-func (c Func) NotEqAll(params Subquery) NonScalarOperation {
-	n := NewNotEqAll(params)
+func (c Func) NotEqAll(arg Subquery) NonScalarOperation {
+	n := NewNotEqAll(arg)
 	n.column = c
 	return n
 }
 
-func (c Func) GtAll(params Subquery) NonScalarOperation {
-	n := NewGtAll(params)
+func (c Func) GtAll(arg Subquery) NonScalarOperation {
+	n := NewGtAll(arg)
 	n.column = c
 	return n
 }
 
-func (c Func) GteAll(params Subquery) NonScalarOperation {
-	n := NewGteAll(params)
+func (c Func) GteAll(arg Subquery) NonScalarOperation {
+	n := NewGteAll(arg)
 	n.column = c
 	return n
 }
 
-func (c Func) LtAll(params Subquery) NonScalarOperation {
-	n := NewLtAll(params)
+func (c Func) LtAll(arg Subquery) NonScalarOperation {
+	n := NewLtAll(arg)
 	n.column = c
 	return n
 }
 
-func (c Func) LteAll(params Subquery) NonScalarOperation {
-	n := NewLteAll(params)
+func (c Func) LteAll(arg Subquery) NonScalarOperation {
+	n := NewLteAll(arg)
 	n.column = c
 	return n
 }
 
-func (c Func) EqAny(params Subquery) NonScalarOperation {
-	n := NewEqAny(params)
+func (c Func) EqAny(arg Subquery) NonScalarOperation {
+	n := NewEqAny(arg)
 	n.column = c
 	return n
 }
 
-func (c Func) NotEqAny(params Subquery) NonScalarOperation {
-	n := NewNotEqAny(params)
+func (c Func) NotEqAny(arg Subquery) NonScalarOperation {
+	n := NewNotEqAny(arg)
 	n.column = c
 	return n
 }
 
-func (c Func) GtAny(params Subquery) NonScalarOperation {
-	n := NewGtAny(params)
+func (c Func) GtAny(arg Subquery) NonScalarOperation {
+	n := NewGtAny(arg)
 	n.column = c
 	return n
 }
 
-func (c Func) GteAny(params Subquery) NonScalarOperation {
-	n := NewGteAny(params)
+func (c Func) GteAny(arg Subquery) NonScalarOperation {
+	n := NewGteAny(arg)
 	n.column = c
 	return n
 }
 
-func (c Func) LtAny(params Subquery) NonScalarOperation {
-	n := NewLtAny(params)
+func (c Func) LtAny(arg Subquery) NonScalarOperation {
+	n := NewLtAny(arg)
 	n.column = c
 	return n
 }
 
-func (c Func) LteAny(params Subquery) NonScalarOperation {
-	n := NewLteAny(params)
+func (c Func) LteAny(arg Subquery) NonScalarOperation {
+	n := NewLteAny(arg)
 	n.column = c
 	return n
 }

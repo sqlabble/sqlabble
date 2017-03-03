@@ -42,50 +42,50 @@ func (c Column) Assign(param ValOrFuncOrSub) Assign {
 	return NewAssign(c, param)
 }
 
-func (c Column) Eq(value ValOrColOrFuncOrSub) ComparisonOperation {
-	e := NewEq(value)
+func (c Column) Eq(val ValOrColOrFuncOrSub) ComparisonOperation {
+	e := NewEq(val)
 	e.column = c
 	return e
 }
 
-func (c Column) NotEq(value ValOrColOrFuncOrSub) ComparisonOperation {
-	n := NewNotEq(value)
+func (c Column) NotEq(val ValOrColOrFuncOrSub) ComparisonOperation {
+	n := NewNotEq(val)
 	n.column = c
 	return n
 }
 
-func (c Column) Gt(value ValOrColOrFuncOrSub) ComparisonOperation {
-	g := NewGt(value)
+func (c Column) Gt(val ValOrColOrFuncOrSub) ComparisonOperation {
+	g := NewGt(val)
 	g.column = c
 	return g
 }
 
-func (c Column) Gte(value ValOrColOrFuncOrSub) ComparisonOperation {
-	g := NewGte(value)
+func (c Column) Gte(val ValOrColOrFuncOrSub) ComparisonOperation {
+	g := NewGte(val)
 	g.column = c
 	return g
 }
 
-func (c Column) Lt(value ValOrColOrFuncOrSub) ComparisonOperation {
-	l := NewLt(value)
+func (c Column) Lt(val ValOrColOrFuncOrSub) ComparisonOperation {
+	l := NewLt(val)
 	l.column = c
 	return l
 }
 
-func (c Column) Lte(value ValOrColOrFuncOrSub) ComparisonOperation {
-	l := NewLte(value)
+func (c Column) Lte(val ValOrColOrFuncOrSub) ComparisonOperation {
+	l := NewLte(val)
 	l.column = c
 	return l
 }
 
-func (c Column) Like(value ValOrColOrFuncOrSub) ComparisonOperation {
-	l := NewLike(value)
+func (c Column) Like(val ValOrColOrFuncOrSub) ComparisonOperation {
+	l := NewLike(val)
 	l.column = c
 	return l
 }
 
-func (c Column) RegExp(value ValOrColOrFuncOrSub) ComparisonOperation {
-	r := NewRegExp(value)
+func (c Column) RegExp(val ValOrColOrFuncOrSub) ComparisonOperation {
+	r := NewRegExp(val)
 	r.column = c
 	return r
 }

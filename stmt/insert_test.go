@@ -49,7 +49,7 @@ func TestInsertSQL(t *testing.T) {
 				stmt.NewColumn("name"),
 				stmt.NewColumn("age"),
 			).Values(
-				stmt.NewParams("Obi-Wan Kenobi", 63),
+				stmt.NewVals("Obi-Wan Kenobi", 63),
 			),
 			"INSERT INTO foo (name, age) VALUES (?, ?)",
 			`> INSERT INTO
@@ -71,8 +71,8 @@ func TestInsertSQL(t *testing.T) {
 				stmt.NewColumn("name"),
 				stmt.NewColumn("age"),
 			).Values(
-				stmt.NewParams("Obi-Wan Kenobi", 63),
-				stmt.NewParams("Luke Skywalker", 19),
+				stmt.NewVals("Obi-Wan Kenobi", 63),
+				stmt.NewVals("Luke Skywalker", 19),
 			),
 			"INSERT INTO foo (name, age) VALUES (?, ?), (?, ?)",
 			`> INSERT INTO

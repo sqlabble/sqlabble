@@ -31,11 +31,11 @@ func (c SimpleCase) nodeize() (tokenizer.Tokenizer, []interface{}) {
 }
 
 type SimpleWhen struct {
-	param Param
+	param Val
 	prev  Prever
 }
 
-func NewSimpleWhen(param Param) SimpleWhen {
+func NewSimpleWhen(param Val) SimpleWhen {
 	return SimpleWhen{
 		param: param,
 	}
@@ -75,7 +75,7 @@ func NewSimpleThen(param ValOrColOrFuncOrSub) SimpleThen {
 	}
 }
 
-func (t SimpleThen) When(param Param) SimpleWhen {
+func (t SimpleThen) When(param Val) SimpleWhen {
 	w := NewSimpleWhen(param)
 	w.prev = t
 	return w

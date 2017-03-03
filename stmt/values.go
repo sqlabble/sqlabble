@@ -7,13 +7,13 @@ import (
 )
 
 type Values struct {
-	prev     Prever
-	paramses []Params
+	prev   Prever
+	valses []Vals
 }
 
-func NewValues(paramses ...Params) Values {
+func NewValues(valses ...Vals) Values {
 	return Values{
-		paramses: paramses,
+		valses: valses,
 	}
 }
 
@@ -22,9 +22,9 @@ func (v Values) nodeize() (tokenizer.Tokenizer, []interface{}) {
 }
 
 func (v Values) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
-	tokenizers := make(tokenizer.Tokenizers, len(v.paramses))
+	tokenizers := make(tokenizer.Tokenizers, len(v.valses))
 	values := []interface{}{}
-	for i, p := range v.paramses {
+	for i, p := range v.valses {
 		var vals []interface{}
 		tokenizers[i], vals = p.nodeize()
 		values = append(values, vals...)

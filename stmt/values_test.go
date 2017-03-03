@@ -19,7 +19,7 @@ func TestValuesSQL(t *testing.T) {
 	}{
 		{
 			stmt.NewValues(
-				stmt.NewParams("Obi-Wan Kenobi", 53),
+				stmt.NewVals("Obi-Wan Kenobi", 53),
 			),
 			"VALUES (?, ?)",
 			`> VALUES
@@ -32,8 +32,8 @@ func TestValuesSQL(t *testing.T) {
 		},
 		{
 			stmt.NewValues(
-				stmt.NewParams("Obi-Wan Kenobi", 63),
-				stmt.NewParams("Luke Skywalker", 19),
+				stmt.NewVals("Obi-Wan Kenobi", 63),
+				stmt.NewVals("Luke Skywalker", 19),
 			),
 			"VALUES (?, ?), (?, ?)",
 			`> VALUES

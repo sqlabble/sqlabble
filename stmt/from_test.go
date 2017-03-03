@@ -70,7 +70,7 @@ func TestFromSQL(t *testing.T) {
 			stmt.NewFrom(
 				stmt.NewTable("foo"),
 			).Where(
-				stmt.NewColumn("age").Gt(stmt.NewParam(20)),
+				stmt.NewColumn("age").Gt(stmt.NewVal(20)),
 			),
 			`FROM foo WHERE age > ?`,
 			`> FROM

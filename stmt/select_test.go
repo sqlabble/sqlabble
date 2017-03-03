@@ -129,7 +129,7 @@ func TestSelectSQL(t *testing.T) {
 			stmt.NewSelect(
 				stmt.NewConcat(
 					stmt.NewColumn("i.fname"),
-					stmt.NewParam(" "),
+					stmt.NewVal(" "),
 					stmt.NewColumn("i.lname"),
 				),
 			),

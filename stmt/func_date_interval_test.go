@@ -18,140 +18,140 @@ func TestInterval(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			stmt.NewInterval(stmt.NewParam(10)).Microsecond(),
+			stmt.NewInterval(stmt.NewVal(10)).Microsecond(),
 			`INTERVAL ? MICROSECOND`,
 			`> INTERVAL ? MICROSECOND
 `,
 			[]interface{}{10},
 		},
 		{
-			stmt.NewInterval(stmt.NewParam(10)).Second(),
+			stmt.NewInterval(stmt.NewVal(10)).Second(),
 			`INTERVAL ? SECOND`,
 			`> INTERVAL ? SECOND
 `,
 			[]interface{}{10},
 		},
 		{
-			stmt.NewInterval(stmt.NewParam(10)).Minute(),
+			stmt.NewInterval(stmt.NewVal(10)).Minute(),
 			`INTERVAL ? MINUTE`,
 			`> INTERVAL ? MINUTE
 `,
 			[]interface{}{10},
 		},
 		{
-			stmt.NewInterval(stmt.NewParam(10)).Hour(),
+			stmt.NewInterval(stmt.NewVal(10)).Hour(),
 			`INTERVAL ? HOUR`,
 			`> INTERVAL ? HOUR
 `,
 			[]interface{}{10},
 		},
 		{
-			stmt.NewInterval(stmt.NewParam(10)).Day(),
+			stmt.NewInterval(stmt.NewVal(10)).Day(),
 			`INTERVAL ? DAY`,
 			`> INTERVAL ? DAY
 `,
 			[]interface{}{10},
 		},
 		{
-			stmt.NewInterval(stmt.NewParam(10)).Week(),
+			stmt.NewInterval(stmt.NewVal(10)).Week(),
 			`INTERVAL ? WEEK`,
 			`> INTERVAL ? WEEK
 `,
 			[]interface{}{10},
 		},
 		{
-			stmt.NewInterval(stmt.NewParam(10)).Month(),
+			stmt.NewInterval(stmt.NewVal(10)).Month(),
 			`INTERVAL ? MONTH`,
 			`> INTERVAL ? MONTH
 `,
 			[]interface{}{10},
 		},
 		{
-			stmt.NewInterval(stmt.NewParam(10)).Quarter(),
+			stmt.NewInterval(stmt.NewVal(10)).Quarter(),
 			`INTERVAL ? QUARTER`,
 			`> INTERVAL ? QUARTER
 `,
 			[]interface{}{10},
 		},
 		{
-			stmt.NewInterval(stmt.NewParam(10)).Year(),
+			stmt.NewInterval(stmt.NewVal(10)).Year(),
 			`INTERVAL ? YEAR`,
 			`> INTERVAL ? YEAR
 `,
 			[]interface{}{10},
 		},
 		{
-			stmt.NewInterval(stmt.NewParam(10)).SecondMicrosecond(),
+			stmt.NewInterval(stmt.NewVal(10)).SecondMicrosecond(),
 			`INTERVAL ? SECOND_MICROSECOND`,
 			`> INTERVAL ? SECOND_MICROSECOND
 `,
 			[]interface{}{10},
 		},
 		{
-			stmt.NewInterval(stmt.NewParam(10)).MinuteMicrosecond(),
+			stmt.NewInterval(stmt.NewVal(10)).MinuteMicrosecond(),
 			`INTERVAL ? MINUTE_MICROSECOND`,
 			`> INTERVAL ? MINUTE_MICROSECOND
 `,
 			[]interface{}{10},
 		},
 		{
-			stmt.NewInterval(stmt.NewParam(10)).MinuteSecond(),
+			stmt.NewInterval(stmt.NewVal(10)).MinuteSecond(),
 			`INTERVAL ? MINUTE_SECOND`,
 			`> INTERVAL ? MINUTE_SECOND
 `,
 			[]interface{}{10},
 		},
 		{
-			stmt.NewInterval(stmt.NewParam(10)).HourMicrosecond(),
+			stmt.NewInterval(stmt.NewVal(10)).HourMicrosecond(),
 			`INTERVAL ? HOUR_MICROSECOND`,
 			`> INTERVAL ? HOUR_MICROSECOND
 `,
 			[]interface{}{10},
 		},
 		{
-			stmt.NewInterval(stmt.NewParam(10)).HourSecond(),
+			stmt.NewInterval(stmt.NewVal(10)).HourSecond(),
 			`INTERVAL ? HOUR_SECOND`,
 			`> INTERVAL ? HOUR_SECOND
 `,
 			[]interface{}{10},
 		},
 		{
-			stmt.NewInterval(stmt.NewParam(10)).HourMinute(),
+			stmt.NewInterval(stmt.NewVal(10)).HourMinute(),
 			`INTERVAL ? HOUR_MINUTE`,
 			`> INTERVAL ? HOUR_MINUTE
 `,
 			[]interface{}{10},
 		},
 		{
-			stmt.NewInterval(stmt.NewParam(10)).DayMicrosecond(),
+			stmt.NewInterval(stmt.NewVal(10)).DayMicrosecond(),
 			`INTERVAL ? DAY_MICROSECOND`,
 			`> INTERVAL ? DAY_MICROSECOND
 `,
 			[]interface{}{10},
 		},
 		{
-			stmt.NewInterval(stmt.NewParam(10)).DaySecond(),
+			stmt.NewInterval(stmt.NewVal(10)).DaySecond(),
 			`INTERVAL ? DAY_SECOND`,
 			`> INTERVAL ? DAY_SECOND
 `,
 			[]interface{}{10},
 		},
 		{
-			stmt.NewInterval(stmt.NewParam(10)).DayMinute(),
+			stmt.NewInterval(stmt.NewVal(10)).DayMinute(),
 			`INTERVAL ? DAY_MINUTE`,
 			`> INTERVAL ? DAY_MINUTE
 `,
 			[]interface{}{10},
 		},
 		{
-			stmt.NewInterval(stmt.NewParam(10)).DayHour(),
+			stmt.NewInterval(stmt.NewVal(10)).DayHour(),
 			`INTERVAL ? DAY_HOUR`,
 			`> INTERVAL ? DAY_HOUR
 `,
 			[]interface{}{10},
 		},
 		{
-			stmt.NewInterval(stmt.NewParam(10)).YearMonth(),
+			stmt.NewInterval(stmt.NewVal(10)).YearMonth(),
 			`INTERVAL ? YEAR_MONTH`,
 			`> INTERVAL ? YEAR_MONTH
 `,
