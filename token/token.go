@@ -2,50 +2,50 @@ package token
 
 // Tokens that change behavior by setting Format.
 var (
-	QuoteStart = new(quoteStart)
-	QuoteEnd   = new(quoteEnd)
-	LineStart  = new(lineStart)
-	LineEnd    = new(lineEnd)
-	Indent     = new(indent)
+	LQuote = new(lquote)
+	RQuote = new(rquote)
+	SOL    = new(sol)
+	EOL    = new(eol)
+	Indent = new(indent)
 )
 
-type quoteStart string
+type lquote string
 
-func (q quoteStart) Sprint(format Format) string {
+func (q lquote) Sprint(format Format) string {
 	return format.Quote
 }
 
-func (q quoteStart) String() string {
+func (q lquote) String() string {
 	return "QuoteStart"
 }
 
-type quoteEnd string
+type rquote string
 
-func (q quoteEnd) Sprint(format Format) string {
+func (q rquote) Sprint(format Format) string {
 	return format.Quote
 }
 
-func (q quoteEnd) String() string {
+func (q rquote) String() string {
 	return "QuoteEnd"
 }
 
-type lineStart string
+type sol string
 
-func (l lineStart) Sprint(format Format) string {
+func (l sol) Sprint(format Format) string {
 	return format.Prefix
 }
 
-func (l lineStart) String() string {
+func (l sol) String() string {
 	return "LineStart"
 }
 
-type lineEnd string
+type eol string
 
-func (l lineEnd) Sprint(format Format) string {
+func (l eol) Sprint(format Format) string {
 	return format.LineEnd
 }
 
-func (l lineEnd) String() string {
+func (l eol) String() string {
 	return "LineEnd"
 }
 

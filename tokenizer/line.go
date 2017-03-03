@@ -28,10 +28,10 @@ func (l Line) Tokenize(depth int) token.Tokens {
 		return token.Tokens{}
 	}
 	return token.Flatten(
-		[]token.Token{token.LineStart},
+		[]token.Token{token.SOL},
 		token.Repeat(token.Indent, depth),
 		l.tokens,
-		[]token.Token{token.LineEnd},
+		[]token.Token{token.EOL},
 	)
 }
 

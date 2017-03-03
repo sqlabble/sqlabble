@@ -211,7 +211,7 @@ func (c Column) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	}
 
 	return t1.Append(
-		token.Dot,
+		token.Period,
 		token.Word(c.Name),
 	), v1
 }

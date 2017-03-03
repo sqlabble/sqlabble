@@ -31,22 +31,22 @@ func TestWord(t *testing.T) {
 			"Word(,)",
 		},
 		{
-			token.ParenStart,
+			token.LParen,
 			"(",
 			"Word(()",
 		},
 		{
-			token.ParenEnd,
+			token.RParen,
 			")",
 			"Word())",
 		},
 		{
-			token.FuncParenStart,
+			token.FuncLParen,
 			"(",
 			"Word(()",
 		},
 		{
-			token.FuncParenEnd,
+			token.FuncRParen,
 			")",
 			"Word())",
 		},
@@ -76,10 +76,10 @@ func TestWord(t *testing.T) {
 
 func TestSameWord(t *testing.T) {
 	t.Parallel()
-	if token.ParenStart == token.FuncParenStart {
+	if token.LParen == token.FuncLParen {
 		t.Error("ParenStart and FuncParenStart should be different")
 	}
-	if token.ParenEnd == token.FuncParenEnd {
+	if token.RParen == token.FuncRParen {
 		t.Error("ParenEnd and FuncParenEnd should be different")
 	}
 }

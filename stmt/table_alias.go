@@ -48,9 +48,9 @@ func (t TableAlias) nodeize() (tokenizer.Tokenizer, []interface{}) {
 func (t TableAlias) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	t1, v1 := t.table.nodeize()
 	t2 := tokenizer.NewLine(
-		token.QuoteStart,
+		token.LQuote,
 		token.Word(t.Alias),
-		token.QuoteEnd,
+		token.RQuote,
 	)
 
 	return tokenizer.ConcatTokenizers(
