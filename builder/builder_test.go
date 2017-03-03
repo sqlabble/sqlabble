@@ -41,13 +41,13 @@ func TestBuilder(t *testing.T) {
 				stmt.NewTable("users"),
 			).Where(
 				stmt.NewAnd(
-					stmt.NewColumn("g").Eq(stmt.NewParam("male")),
+					stmt.NewColumn("g").Eq(stmt.NewVal("male")),
 					stmt.NewOr(
-						stmt.NewColumn("age").Lt(stmt.NewParam(20)),
-						stmt.NewColumn("age").Eq(stmt.NewParam(30)),
-						stmt.NewColumn("age").Gte(stmt.NewParam(50)),
+						stmt.NewColumn("age").Lt(stmt.NewVal(20)),
+						stmt.NewColumn("age").Eq(stmt.NewVal(30)),
+						stmt.NewColumn("age").Gte(stmt.NewVal(50)),
 					),
-					stmt.NewColumn("created_at").Between(stmt.NewParam("2016-01-01"), stmt.NewParam("2016-12-31")),
+					stmt.NewColumn("created_at").Between(stmt.NewVal("2016-01-01"), stmt.NewVal("2016-12-31")),
 				),
 			).OrderBy(
 				stmt.NewColumn("created_at").Desc(),
@@ -98,8 +98,8 @@ func TestBuilder(t *testing.T) {
 				stmt.NewColumn("name"),
 				stmt.NewColumn("age"),
 			).Values(
-				stmt.NewParams(`Obi-Wan Kenobi`, 63),
-				stmt.NewParams(`Luke Skywalker`, 19),
+				stmt.NewVals(`Obi-Wan Kenobi`, 63),
+				stmt.NewVals(`Luke Skywalker`, 19),
 			),
 			`INSERT INTO foo (name, age) VALUES (?, ?), (?, ?)`,
 			`> INSERT INTO
@@ -122,7 +122,7 @@ func TestBuilder(t *testing.T) {
 			stmt.NewDelete().From(
 				stmt.NewTable("login_history"),
 			).Where(
-				stmt.NewColumn("login_date").Lt(stmt.NewParam("2004-07-02 09:00:00")),
+				stmt.NewColumn("login_date").Lt(stmt.NewVal("2004-07-02 09:00:00")),
 			),
 			`DELETE FROM login_history WHERE login_date < ?`,
 			`> DELETE
@@ -143,10 +143,10 @@ func TestBuilder(t *testing.T) {
 					stmt.NewTable("employee"),
 				).Where(
 					stmt.NewAnd(
-						stmt.NewColumn("assigned_branch_id").Eq(stmt.NewParam(2)),
+						stmt.NewColumn("assigned_branch_id").Eq(stmt.NewVal(2)),
 						stmt.NewOr(
-							stmt.NewColumn("title").Eq(stmt.NewParam("Teller")),
-							stmt.NewColumn("title").Eq(stmt.NewParam("Head Teller")),
+							stmt.NewColumn("title").Eq(stmt.NewVal("Teller")),
+							stmt.NewColumn("title").Eq(stmt.NewVal("Head Teller")),
 						),
 					),
 				),
@@ -155,7 +155,7 @@ func TestBuilder(t *testing.T) {
 				).From(
 					stmt.NewTable("account"),
 				).Where(
-					stmt.NewColumn("open_branch_id").Eq(stmt.NewParam(2)),
+					stmt.NewColumn("open_branch_id").Eq(stmt.NewVal(2)),
 				),
 			),
 			`(SELECT emp_id FROM employee WHERE assigned_branch_id = ? AND (title = ? OR title = ?)) UNION (SELECT DISTINCT open_emp_id FROM account WHERE open_branch_id = ?)`,

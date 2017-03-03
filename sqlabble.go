@@ -23,10 +23,10 @@ var (
 	C        = stmt.NewColumn
 	Table    = stmt.NewTable
 	T        = stmt.NewTable
-	Param    = stmt.NewParam
-	P        = stmt.NewParam
-	Params   = stmt.NewParams
-	Ps       = stmt.NewParams
+	Param    = stmt.NewVal
+	P        = stmt.NewVal
+	Params   = stmt.NewVals
+	Ps       = stmt.NewVals
 	Subquery = stmt.NewSubquery
 	S        = stmt.NewSubquery
 
