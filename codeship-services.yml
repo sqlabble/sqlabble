@@ -1,13 +1,15 @@
-sqlabble:
-  build: .
-  links:
-    - mysql
-  encrypted_env_file: coveralls.env.encrypted
-  cached: true
+services:
 
-mysql:
-  image: mysql:5.6
-  environment:
-    MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-    MYSQL_DATABASE: 'sqlabble'
-  cached: true
+  sqlabble:
+    build: .
+    links:
+      - mysql
+    encrypted_env_file: coveralls.env.encrypted
+    cached: true
+
+  mysql:
+    image: mysql:5.6
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_DATABASE: 'sqlabble'
+    cached: true
