@@ -56,6 +56,7 @@ func TestWord(t *testing.T) {
 			"Word(foo)",
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d Sprint(StandardFormat)", i), func(t *testing.T) {
 			t.Parallel()
 			got := c.token.Sprint(token.StandardFormat)

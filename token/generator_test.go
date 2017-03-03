@@ -32,6 +32,7 @@ func TestGenerate(t *testing.T) {
 			`foo bar (a, b) baz(c, d)`,
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d WithBreaking", i), func(t *testing.T) {
 			got := token.Generate(c.tokens, token.StandardIndentedFormat)
 			if got != c.withBreaking {
