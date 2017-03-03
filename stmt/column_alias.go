@@ -22,9 +22,9 @@ func (c ColumnAlias) nodeize() (tokenizer.Tokenizer, []interface{}) {
 		return tokenizer.NewLine(
 			token.Word(keyword.As),
 		).Append(
-			token.QuoteStart,
+			token.LQuote,
 			token.Word(c.Alias),
-			token.QuoteEnd,
+			token.RQuote,
 		), nil
 	}
 
@@ -32,9 +32,9 @@ func (c ColumnAlias) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return tokenizer.ConcatTokenizers(
 		t1,
 		tokenizer.NewLine(
-			token.QuoteStart,
+			token.LQuote,
 			token.Word(c.Alias),
-			token.QuoteEnd,
+			token.RQuote,
 		),
 		tokenizer.NewLine(
 			token.Word(keyword.As),

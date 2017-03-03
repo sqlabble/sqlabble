@@ -4,14 +4,14 @@ import "fmt"
 
 // Tokens that don't change behavior according to Format setting.
 var (
-	Space          = NewWord(" ")
-	Placeholder    = NewWord("?")
-	Dot            = NewWord(".")
-	Comma          = NewWord(",")
-	ParenStart     = NewWord("(")
-	ParenEnd       = NewWord(")")
-	FuncParenStart = NewWord("(")
-	FuncParenEnd   = NewWord(")")
+	Space       = NewWord(" ")
+	Placeholder = NewWord("?")
+	Period      = NewWord(".")
+	Comma       = NewWord(",")
+	LParen      = NewWord("(")
+	RParen      = NewWord(")")
+	FuncLParen  = NewWord("(")
+	FuncRParen  = NewWord(")")
 )
 
 type Word string

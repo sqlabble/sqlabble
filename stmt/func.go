@@ -10,7 +10,7 @@ type Args []Statement
 
 func (ps Args) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	if len(ps) == 0 {
-		return tokenizer.NewLine(token.FuncParenStart, token.FuncParenEnd), nil
+		return tokenizer.NewLine(token.FuncLParen, token.FuncRParen), nil
 	}
 
 	var tk tokenizer.Tokenizer
@@ -29,7 +29,7 @@ func (ps Args) nodeize() (tokenizer.Tokenizer, []interface{}) {
 		)
 		values = append(values, vals...)
 	}
-	return tk.Prepend(token.FuncParenStart).Append(token.FuncParenEnd), values
+	return tk.Prepend(token.FuncLParen).Append(token.FuncRParen), values
 }
 
 type ValOrColOrFuncOrSubs []ValOrColOrFuncOrSub

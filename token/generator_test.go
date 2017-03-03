@@ -21,9 +21,9 @@ func TestGenerate(t *testing.T) {
 		},
 		{
 			token.Tokens{
-				token.LineStart, token.Word("foo"), token.LineEnd,
-				token.LineStart, token.Indent, token.Word("bar"), token.ParenStart, token.Word("a"), token.Comma, token.Word("b"), token.ParenEnd, token.LineEnd,
-				token.LineStart, token.Indent, token.Word("baz"), token.FuncParenStart, token.Word("c"), token.Comma, token.Word("d"), token.FuncParenEnd, token.LineEnd,
+				token.SOL, token.Word("foo"), token.EOL,
+				token.SOL, token.Indent, token.Word("bar"), token.LParen, token.Word("a"), token.Comma, token.Word("b"), token.RParen, token.EOL,
+				token.SOL, token.Indent, token.Word("baz"), token.FuncLParen, token.Word("c"), token.Comma, token.Word("d"), token.FuncRParen, token.EOL,
 			},
 			`foo
   bar (a, b)

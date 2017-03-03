@@ -10,11 +10,11 @@ type Container struct {
 
 func WrapParenthesesLines(lines ...Line) Container {
 	return NewContainer(
-		NewLine(token.ParenStart),
+		NewLine(token.LParen),
 	).SetMiddle(
 		NewLines(lines...),
 	).SetLast(
-		NewLine(token.ParenEnd),
+		NewLine(token.RParen),
 	)
 }
 
@@ -26,9 +26,9 @@ func NewContainer(first Tokenizer) Container {
 
 func NewParentheses(middle Tokenizer) Container {
 	return Container{
-		first:  NewLine(token.ParenStart),
+		first:  NewLine(token.LParen),
 		middle: middle,
-		last:   NewLine(token.ParenEnd),
+		last:   NewLine(token.RParen),
 	}
 }
 

@@ -17,25 +17,25 @@ func TestToken(t *testing.T) {
 		string                   string
 	}{
 		{
-			token.QuoteStart,
+			token.LQuote,
 			`"`,
 			"`",
 			"QuoteStart",
 		},
 		{
-			token.QuoteEnd,
+			token.RQuote,
 			`"`,
 			"`",
 			"QuoteEnd",
 		},
 		{
-			token.LineStart,
+			token.SOL,
 			"",
 			"",
 			"LineStart",
 		},
 		{
-			token.LineEnd,
+			token.EOL,
 			"\n",
 			"\n",
 			"LineEnd",

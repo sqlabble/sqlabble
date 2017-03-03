@@ -89,16 +89,16 @@ func TestFlatten(t *testing.T) {
 				},
 				{
 					token.Comma,
-					token.ParenStart,
-					token.ParenEnd,
+					token.LParen,
+					token.RParen,
 				},
 			},
 			token.Tokens{
 				token.Space,
 				token.Comma,
 				token.Comma,
-				token.ParenStart,
-				token.ParenEnd,
+				token.LParen,
+				token.RParen,
 			},
 		},
 		{
@@ -114,14 +114,14 @@ func TestFlatten(t *testing.T) {
 				},
 				{},
 				{
-					token.ParenEnd,
+					token.RParen,
 				},
 			},
 			token.Tokens{
 				token.Space,
 				token.Comma,
 				token.Comma,
-				token.ParenEnd,
+				token.RParen,
 			},
 		},
 	} {

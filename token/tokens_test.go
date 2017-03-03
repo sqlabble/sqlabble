@@ -155,9 +155,9 @@ func TestTokensSprint(t *testing.T) {
 	}{
 		{
 			token.Tokens{
-				token.QuoteStart,
+				token.LQuote,
 				token.Word("foo"),
-				token.QuoteEnd,
+				token.RQuote,
 			},
 			`"foo"`,
 			"`foo`",
