@@ -2,10 +2,13 @@ package sqlabble
 
 import (
 	"bytes"
+	"fmt"
 	"go/ast"
 	"go/format"
+	"go/importer"
 	"go/parser"
 	"go/token"
+	"go/types"
 	"html/template"
 	"reflect"
 	"strings"
@@ -15,29 +18,80 @@ import (
 
 const implTmpl = `package {{ .Name }}
 
-import "github.com/minodisk/sqlabble/stmt"
+import (
+	"github.com/minodisk/sqlabble/stmt"
+)
 
 {{ range .Tables }}
 {{ $receiver := .Reciever }}
 {{ $type := .GoName }}
-func ({{ $receiver }} {{ $type }}) Table() stmt.Table {
-	return stmt.NewTable("{{ .DBName }}")
+{{ $table := .DBName }}
+{{ $name := printf "%sTable" $type }}
+type {{ $type }}Table struct{
+	stmt.Table{{ range .Columns }}{{ if .Ref }}
+	{{ .GoName }} {{ .Ref }}Table{{ end }}{{ end }}
 }
 
-func ({{ $receiver }} {{ $type }}) Columns() []stmt.Column {
-	return []stmt.Column{ {{ range .Columns }}
-		{{ $receiver }}.Column{{ .GoName }}(),{{ end }}
+func ({{ $receiver }} {{ $name }}) New{{ $name }}() {{ $name }} {
+	return {{ $name }}{
+		Table: stmt.NewTable("{{ .DBName }}"),
 	}
 }
 
 {{ range .Columns }}
-
-func ({{ $receiver }} {{ $type }}) Column{{ .GoName }}() stmt.Column {
-	return stmt.NewColumn("{{ .DBName }}")
+{{ if not .Ref }}
+func ({{ $receiver }} {{ $name }}) Column{{ .GoName }}() stmt.Column {
+	return {{ $receiver }}.Table.Column("{{ .DBName }}")
 }
 {{ end }}
 {{ end }}
+
+func ({{ $receiver }} {{ $name }}) Columns() []stmt.Column {
+	return []stmt.Column{ {{ range .Columns }}{{ if not .Ref }}
+		{{ $receiver }}.Column{{ .GoName }}(),{{ end }}{{ end }}
+	}
+}
+{{ end }}
 `
+
+// func (u UserTable) Mapper() (stmt.From, func(sql.Rows) ([]User, error)) {
+// 	return stmt.
+// 			NewSelect({{ range .Columns }}{{ if not .Ref }}
+// 				u.Column{{ .GoName }}().As("{{ $table }}.{{ .DBName }}"),{{ else }}
+// 				u.{{ .Ref }}.Column().As(), {{ end }}{{ end }}
+// 			).
+// 			From(
+// 				u.As("{{ $table }}"){{ if .Columns }}{{ range .Columns }}{{ if .Ref }}.
+// 				InnerJoin(u.{{ .Ref }}.As("")).
+// 				On(
+// 					stmt.NewColumn("{{ $table }}.{{ .DBName }}"),
+// 					stmt.NewColumn("."),
+// 				){{ end }}{{ end }}{{ end }},
+// 			),
+// 		func(rows sql.Rows) ([]{{ .GoName }}, error) {
+// 			aliases, err := rows.Columns()
+// 			if err != nil {
+// 				return nil, err
+// 			}
+// 			dist := []{{ .GoName }}{}
+// 			for rows.Next() {
+// 				d := User{}
+// 				aref := map[string]interface{}{ {{ range .Columns }}{{ if not .Ref }}
+// 					"{{ $table }}.{{ .DBName }}": &d.{{ .GoName }},{{ else }}
+// 					"": &d.{{ .Ref }},{{ end }}{{ end }}
+// 				}
+// 				refs := make([]interface{}, len(aliases))
+// 				for i, alias := range aliases {
+// 					refs[i] = aref[alias]
+// 				}
+// 				if err := rows.Scan(refs...); err != nil {
+// 					return nil, err
+// 				}
+// 				dist = append(dist, d)
+// 			}
+// 			return dist, nil
+// 		}
+// }
 
 var impl *template.Template
 
@@ -51,16 +105,33 @@ func init() {
 
 func Convert(input []byte) ([]byte, error) {
 	fset := token.NewFileSet()
-	file, err := parser.ParseFile(fset, "dummy.go", input, parser.ParseComments)
+	f, err := parser.ParseFile(fset, "dummy.go", input, parser.ParseComments)
 	if err != nil {
 		return nil, err
 	}
+	conf := &types.Config{
+		Importer: importer.Default(),
+	}
+	info := &types.Info{
+		Defs: map[*ast.Ident]types.Object{},
+		Uses: map[*ast.Ident]types.Object{},
+	}
+	conf.Check(f.Name.Name, fset, []*ast.File{f}, info)
 
-	if ok := ast.FileExports(file); !ok {
+	// fmt.Println("DEFS=====")
+	// for k, v := range info.Defs {
+	// 	fmt.Printf("%s: %+v\n", k, v)
+	// }
+	// fmt.Println("USES=====")
+	// for k, v := range info.Uses {
+	// 	fmt.Printf("%s: %+v\n", k, v)
+	// }
+
+	if ok := ast.FileExports(f); !ok {
 		return nil, nil
 	}
 
-	pkg := ParsePackage(fset, file)
+	pkg := ParsePackage(fset, info, f)
 	if len(pkg.Tables) == 0 {
 		return nil, nil
 	}
@@ -95,6 +166,7 @@ type Table struct {
 type Column struct {
 	GoName string
 	DBName string
+	Ref    string
 }
 
 type Comment struct {
@@ -113,7 +185,7 @@ func (cs Comments) Find(from, to int) (Comment, bool) {
 	return Comment{}, false
 }
 
-func ParsePackage(fset *token.FileSet, file *ast.File) Package {
+func ParsePackage(fset *token.FileSet, info *types.Info, file *ast.File) Package {
 	comments := Comments{}
 	for _, comment := range file.Comments {
 		// fmt.Println("=========")
@@ -149,7 +221,7 @@ func ParsePackage(fset *token.FileSet, file *ast.File) Package {
 				return false
 			}
 
-			t := ParseTable(fset, s)
+			t := ParseTable(fset, info, s)
 			if c.TableName != "" {
 				t.DBName = c.TableName
 			}
@@ -168,7 +240,7 @@ func ParsePackage(fset *token.FileSet, file *ast.File) Package {
 	return p
 }
 
-func ParseTable(fset *token.FileSet, typ *ast.TypeSpec) Table {
+func ParseTable(fset *token.FileSet, info *types.Info, typ *ast.TypeSpec) Table {
 	var (
 		table Table
 		found bool
@@ -192,7 +264,7 @@ func ParseTable(fset *token.FileSet, typ *ast.TypeSpec) Table {
 				DBName:   caseconv.LowerSnakeCase(typ.Name.Name),
 			}
 			for _, field := range s.Fields.List {
-				column := ParseColumn(fset, field)
+				column := ParseColumn(fset, info, field)
 				if column != nil {
 					table.Columns = append(table.Columns, *column)
 				}
@@ -208,23 +280,37 @@ func ParseTable(fset *token.FileSet, typ *ast.TypeSpec) Table {
 	return table
 }
 
-func ParseColumn(fset *token.FileSet, field *ast.Field) *Column {
+func ParseColumn(fset *token.FileSet, info *types.Info, field *ast.Field) *Column {
 	// fmt.Println("-----")
 	var (
 		ident *ast.Ident
 		tag   *ast.BasicLit
+		ref   string
 	)
 	ast.Inspect(field, func(node ast.Node) bool {
 		if node == nil {
 			return false
 		}
 		// fmt.Println("-----")
-		// fmt.Printf("[%d:%d] %T %v\n\n%s\n", node.Pos(), node.End(), node, node, input[node.Pos()-1:node.End()-1])
+		// fmt.Printf("[%d:%d] %T %v\n\n", node.Pos(), node.End(), node, node)
 		switch t := node.(type) {
 		case *ast.Ident:
 			if ident == nil {
 				// fmt.Println(t.Obj.Data, t.Obj.Decl, t.Obj.Kind, t.Obj.Name, t.Obj.Type)
+
 				ident = t
+				obj := info.Defs[ident]
+				// fmt.Println(fset.Position(obj.Pos()), ident, obj.Pkg().Name(), obj.Type(), obj.Parent())
+				for i, o := range info.Defs {
+					if o == nil || o.Parent() == nil {
+						continue
+					}
+					if o.Type() == obj.Type() {
+						fmt.Println("->", fset.Position(o.Pos()), i.Name, o.Type())
+						ref = i.Name
+						break
+					}
+				}
 			}
 		case *ast.BasicLit:
 			if t.Kind == token.STRING {
@@ -250,6 +336,7 @@ func ParseColumn(fset *token.FileSet, field *ast.Field) *Column {
 	return &Column{
 		GoName: ident.Name,
 		DBName: name,
+		Ref:    ref,
 	}
 }
 

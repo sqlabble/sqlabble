@@ -12,6 +12,7 @@ import (
 )
 
 func TestGlobs(t *testing.T) {
+	t.Parallel()
 	for i, c := range []struct {
 		patterns []string
 		want     []string
@@ -27,6 +28,7 @@ func TestGlobs(t *testing.T) {
 				"fixtures/foo/*.go",
 			},
 			[]string{
+				"fixtures/foo/mapper.go",
 				"fixtures/foo/foo.go",
 				"fixtures/foo/foo_want.go",
 			},
@@ -36,6 +38,7 @@ func TestGlobs(t *testing.T) {
 				"fixtures/foo/**/*.go",
 			},
 			[]string{
+				"fixtures/foo/mapper.go",
 				"fixtures/foo/foo.go",
 				"fixtures/foo/foo_want.go",
 				"fixtures/foo/bar/bar.go",
@@ -49,6 +52,7 @@ func TestGlobs(t *testing.T) {
 				"fixtures/foo/**/*.txt",
 			},
 			[]string{
+				"fixtures/foo/mapper.go",
 				"fixtures/foo/foo.go",
 				"fixtures/foo/foo_want.go",
 				"fixtures/foo/bar/bar.go",
@@ -59,6 +63,7 @@ func TestGlobs(t *testing.T) {
 			},
 		},
 	} {
+		c := c
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
 			t.Parallel()
 			got, err := sqlabble.Globs(c.patterns)
@@ -79,12 +84,12 @@ func TestConvertFile(t *testing.T) {
 		got    string
 		want   string
 	}{
-	// {
-	// 	"fixtures/foo/foo.go",
-	// 	"_gen",
-	// 	"fixtures/foo/foo_gen.go",
-	// 	"fixtures/foo/foo_want.go",
-	// },
+		{
+			"fixtures/foo/foo.go",
+			"_gen",
+			"fixtures/foo/foo_gen.go",
+			"fixtures/foo/foo_want.go",
+		},
 	} {
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
 			defer func() {

@@ -1,58 +1,61 @@
 package foo
 
-// func (p Post) Table() statement.Table {
-// 	return PostTable{
-// 		Name:   "posts",
-// 		PostID: statement.NewColumn("post_id"),
-// 		Author: NewUserTable(),
-// 	}
-// }
-//
-// type PostTable struct {
-// 	statement.Table
-// 	PostID statement.Column
-// 	Author UserTable
-// }
-//
-// type UserTable struct {
-// 	statement.Table
-// 	UserID statement.Column
-// }
-//
-// func (p Post) ColumnAliases() []statement.ColumnAs {
-// 	return []statement.ColumnAs{
-// 		p.ColumnPostID().As("posts.post_id"),
-// 	}
-// }
-//
-// func (p Post) Columns() []statement.Column {
-// 	return []statement.Column{
-// 		p.ColumnPostID(),
-// 	}
-// }
-//
-// func (p Post) PostIDColumn() statement.Column {
-// 	return statement.NewColumn("post_id")
-// }
-//
-// func (p Post) PostIDColumnAlias() statement.Column {
-// 	return statement.NewColumn("post_id").As("posts.post_id")
-// }
-//
-// func (p Post) AuthorColumns() []statement.Column {
-// 	return User{}.Columns()
-// }
-//
-// func (u User) Table() statement.Table {
-// 	return statement.NewTable("posts")
-// }
-//
-// func (u User) Columns() []statement.Column {
-// 	return []statement.Column{
-// 		u.ColumnUserID(),
-// 	}
-// }
-//
-// func (u User) ColumnUserID() statement.Column {
-// 	return statement.NewColumn("user_id")
-// }
+import (
+	"github.com/minodisk/sqlabble/stmt"
+)
+
+type UserTable struct {
+	stmt.Table
+	Profile ProfileTable
+}
+
+func (u UserTable) NewUserTable() UserTable {
+	return UserTable{
+		Table: stmt.NewTable("users"),
+	}
+}
+
+func (u UserTable) ColumnUserID() stmt.Column {
+	return u.Table.Column("user_id")
+}
+
+func (u UserTable) ColumnName() stmt.Column {
+	return u.Table.Column("name")
+}
+
+func (u UserTable) ColumnAvatar() stmt.Column {
+	return u.Table.Column("avatar")
+}
+
+func (u UserTable) Columns() []stmt.Column {
+	return []stmt.Column{
+		u.ColumnUserID(),
+		u.ColumnName(),
+		u.ColumnAvatar(),
+	}
+}
+
+type ProfileTable struct {
+	stmt.Table
+}
+
+func (p ProfileTable) NewProfileTable() ProfileTable {
+	return ProfileTable{
+		Table: stmt.NewTable("profiles"),
+	}
+}
+
+func (p ProfileTable) ColumnProfileID() stmt.Column {
+	return p.Table.Column("profile_id")
+}
+
+func (p ProfileTable) ColumnBody() stmt.Column {
+	return p.Table.Column("body")
+}
+
+func (p ProfileTable) Columns() []stmt.Column {
+	return []stmt.Column{
+		p.ColumnProfileID(),
+		p.ColumnBody(),
+	}
+}
