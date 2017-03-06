@@ -2,7 +2,6 @@ package sqlabble
 
 import (
 	"bytes"
-	"fmt"
 	"go/ast"
 	"go/format"
 	"go/importer"
@@ -19,17 +18,23 @@ import (
 const implTmpl = `package {{ .Name }}
 
 import (
+	"database/sql"
+
 	"github.com/minodisk/sqlabble/stmt"
 )
 
-{{ range .Tables }}
-{{ $receiver := .Reciever }}
-{{ $type := .GoName }}
-{{ $table := .DBName }}
-{{ $name := printf "%sTable" $type }}
+{{- range .Tables }}
+{{- $receiver := .Reciever }}
+{{- $type := .GoName }}
+{{- $table := .DBName }}
+{{- $name := printf "%sTable" $type }}
 type {{ $type }}Table struct{
-	stmt.Table{{ range .Columns }}{{ if .Ref }}
-	{{ .GoName }} {{ .Ref }}Table{{ end }}{{ end }}
+	stmt.Table
+{{- range .Columns }}
+	{{- if .Ref }}
+	{{ .GoName }} {{ .Ref.GoName }}Table
+	{{- end }}
+{{- end }}
 }
 
 func ({{ $receiver }} {{ $name }}) New{{ $name }}() {{ $name }} {
@@ -38,60 +43,83 @@ func ({{ $receiver }} {{ $name }}) New{{ $name }}() {{ $name }} {
 	}
 }
 
-{{ range .Columns }}
-{{ if not .Ref }}
+{{- range .Columns }}
+	{{- if not .Ref }}
+
 func ({{ $receiver }} {{ $name }}) Column{{ .GoName }}() stmt.Column {
 	return {{ $receiver }}.Table.Column("{{ .DBName }}")
 }
-{{ end }}
-{{ end }}
+	{{- end }}
+{{- end }}
 
 func ({{ $receiver }} {{ $name }}) Columns() []stmt.Column {
-	return []stmt.Column{ {{ range .Columns }}{{ if not .Ref }}
-		{{ $receiver }}.Column{{ .GoName }}(),{{ end }}{{ end }}
+	return []stmt.Column{
+{{- range .Columns }}
+	{{- if not .Ref }}
+		{{ $receiver }}.Column{{ .GoName }}(),
+	{{- end }}
+{{- end }}
 	}
 }
-{{ end }}
-`
 
-// func (u UserTable) Mapper() (stmt.From, func(sql.Rows) ([]User, error)) {
-// 	return stmt.
-// 			NewSelect({{ range .Columns }}{{ if not .Ref }}
-// 				u.Column{{ .GoName }}().As("{{ $table }}.{{ .DBName }}"),{{ else }}
-// 				u.{{ .Ref }}.Column().As(), {{ end }}{{ end }}
-// 			).
-// 			From(
-// 				u.As("{{ $table }}"){{ if .Columns }}{{ range .Columns }}{{ if .Ref }}.
-// 				InnerJoin(u.{{ .Ref }}.As("")).
-// 				On(
-// 					stmt.NewColumn("{{ $table }}.{{ .DBName }}"),
-// 					stmt.NewColumn("."),
-// 				){{ end }}{{ end }}{{ end }},
-// 			),
-// 		func(rows sql.Rows) ([]{{ .GoName }}, error) {
-// 			aliases, err := rows.Columns()
-// 			if err != nil {
-// 				return nil, err
-// 			}
-// 			dist := []{{ .GoName }}{}
-// 			for rows.Next() {
-// 				d := User{}
-// 				aref := map[string]interface{}{ {{ range .Columns }}{{ if not .Ref }}
-// 					"{{ $table }}.{{ .DBName }}": &d.{{ .GoName }},{{ else }}
-// 					"": &d.{{ .Ref }},{{ end }}{{ end }}
-// 				}
-// 				refs := make([]interface{}, len(aliases))
-// 				for i, alias := range aliases {
-// 					refs[i] = aref[alias]
-// 				}
-// 				if err := rows.Scan(refs...); err != nil {
-// 					return nil, err
-// 				}
-// 				dist = append(dist, d)
-// 			}
-// 			return dist, nil
-// 		}
-// }
+func ({{ $receiver }} {{ $name }}) Mapper() (stmt.From, func(sql.Rows) ([]{{ .GoName }}, error)) {
+	return stmt.
+			NewSelect(
+{{- range .Columns }}
+	{{- if .Ref }}
+	{{- $columnName := .GoName }}
+	{{- $refTableName := .Ref.DBName }}
+		{{- range .Ref.Columns }}
+				{{ $receiver }}.{{ $columnName }}.Column{{ .GoName }}().As("{{ $refTableName }}.{{ .DBName }}"),
+		{{- end }}
+	{{- else }}
+				{{ $receiver }}.Column{{ .GoName }}().As("{{ $table }}.{{ .DBName }}"),
+	{{- end }}
+{{- end }}
+			).
+			From(
+				{{ $receiver }}.As("{{ $table }}")
+{{- range .Columns }}
+	{{- if .Ref }}.
+				LeftJoin({{ $receiver }}.{{ .GoName }}.As("{{ .Ref.DBName }}")).
+				On(
+					stmt.NewColumn("{{ $table }}.{{ .DBName }}"),
+					stmt.NewColumn("{{ .Ref.DBName }}.{{ .DBName }}"),
+				)
+	{{- end }}
+{{- end }},
+			),
+		func(rows sql.Rows) ([]{{ .GoName }}, error) {
+			aliases, err := rows.Columns()
+			if err != nil {
+				return nil, err
+			}
+			dist := []{{ .GoName }}{}
+			for rows.Next() {
+				d := User{}
+				aref := map[string]interface{}{
+{{- range .Columns }}
+	{{- if .Ref }}
+					"": &d.{{ .GoName }},
+	{{- else }}
+					"{{ $table }}.{{ .DBName }}": &d.{{ .GoName }},
+	{{- end }}
+{{- end }}
+				}
+				refs := make([]interface{}, len(aliases))
+				for i, alias := range aliases {
+					refs[i] = aref[alias]
+				}
+				if err := rows.Scan(refs...); err != nil {
+					return nil, err
+				}
+				dist = append(dist, d)
+			}
+			return dist, nil
+		}
+}
+{{- end }}
+`
 
 var impl *template.Template
 
@@ -136,6 +164,21 @@ func Convert(input []byte) ([]byte, error) {
 		return nil, nil
 	}
 
+	for _, t := range pkg.Tables {
+		for i, c := range t.Columns {
+			if c.ident == nil {
+				continue
+			}
+			for _, t := range pkg.Tables {
+				if c.ident == t.ident {
+					c.Ref = &t
+					break
+				}
+			}
+			t.Columns[i] = c
+		}
+	}
+
 	// fmt.Printf("%+v\n", pkg)
 
 	var buf bytes.Buffer
@@ -161,12 +204,14 @@ type Table struct {
 	DBName   string
 	Columns  []Column
 	Reciever string
+	ident    *ast.Ident
 }
 
 type Column struct {
 	GoName string
 	DBName string
-	Ref    string
+	ident  *ast.Ident
+	Ref    *Table
 }
 
 type Comment struct {
@@ -194,7 +239,7 @@ func ParsePackage(fset *token.FileSet, info *types.Info, file *ast.File) Package
 			// fmt.Println(c.Slash, c.Text)
 			c := cm.Text
 			c = strings.TrimSpace(strings.TrimPrefix(c, "//"))
-			if c[0] != '+' {
+			if len(c) == 0 || c[0] != '+' {
 				continue
 			}
 			c = c[1:]
@@ -251,6 +296,8 @@ func ParseTable(fset *token.FileSet, info *types.Info, typ *ast.TypeSpec) Table 
 		}
 
 		switch s := node.(type) {
+		case *ast.Ident:
+			table.ident = s
 		case *ast.StructType:
 			// fmt.Println("============")
 			// fmt.Println(typ.Name)
@@ -258,11 +305,9 @@ func ParseTable(fset *token.FileSet, info *types.Info, typ *ast.TypeSpec) Table 
 			if typ.Name.Name == "" {
 				return true
 			}
-			table = Table{
-				GoName:   typ.Name.Name,
-				Reciever: string(strings.ToLower(typ.Name.Name)[0]),
-				DBName:   caseconv.LowerSnakeCase(typ.Name.Name),
-			}
+			table.GoName = typ.Name.Name
+			table.Reciever = string(strings.ToLower(typ.Name.Name)[0])
+			table.DBName = caseconv.LowerSnakeCase(typ.Name.Name)
 			for _, field := range s.Fields.List {
 				column := ParseColumn(fset, info, field)
 				if column != nil {
@@ -283,36 +328,31 @@ func ParseTable(fset *token.FileSet, info *types.Info, typ *ast.TypeSpec) Table 
 func ParseColumn(fset *token.FileSet, info *types.Info, field *ast.Field) *Column {
 	// fmt.Println("-----")
 	var (
-		ident *ast.Ident
-		tag   *ast.BasicLit
-		ref   string
+		column Column
+		ident  *ast.Ident
+		tag    *ast.BasicLit
 	)
 	ast.Inspect(field, func(node ast.Node) bool {
 		if node == nil {
 			return false
 		}
-		// fmt.Println("-----")
-		// fmt.Printf("[%d:%d] %T %v\n\n", node.Pos(), node.End(), node, node)
 		switch t := node.(type) {
-		case *ast.Ident:
+		case *ast.Ident: // find field type
 			if ident == nil {
-				// fmt.Println(t.Obj.Data, t.Obj.Decl, t.Obj.Kind, t.Obj.Name, t.Obj.Type)
-
 				ident = t
 				obj := info.Defs[ident]
-				// fmt.Println(fset.Position(obj.Pos()), ident, obj.Pkg().Name(), obj.Type(), obj.Parent())
 				for i, o := range info.Defs {
 					if o == nil || o.Parent() == nil {
 						continue
 					}
 					if o.Type() == obj.Type() {
-						fmt.Println("->", fset.Position(o.Pos()), i.Name, o.Type())
-						ref = i.Name
+						// fmt.Println("->", fset.Position(o.Pos()), i.Name, o.Type())
+						column.ident = i
 						break
 					}
 				}
 			}
-		case *ast.BasicLit:
+		case *ast.BasicLit: // find tag
 			if t.Kind == token.STRING {
 				tag = t
 			}
@@ -333,11 +373,11 @@ func ParseColumn(fset *token.FileSet, info *types.Info, field *ast.Field) *Colum
 		name = caseconv.LowerSnakeCase(ident.Name)
 	}
 	// fmt.Println("field name:", name)
-	return &Column{
-		GoName: ident.Name,
-		DBName: name,
-		Ref:    ref,
-	}
+
+	column.GoName = ident.Name
+	column.DBName = name
+
+	return &column
 }
 
 func ParseDB(s string) (string, bool) {
