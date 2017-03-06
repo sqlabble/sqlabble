@@ -47,145 +47,145 @@ type Func struct {
 	args Args
 }
 
-func (c Func) Eq(value ValOrColOrFuncOrSub) ComparisonOperation {
+func (c *Func) Eq(value ValOrColOrFuncOrSub) *ComparisonOperation {
 	e := NewEq(value)
 	e.column = c
 	return e
 }
 
-func (c Func) NotEq(value ValOrColOrFuncOrSub) ComparisonOperation {
+func (c *Func) NotEq(value ValOrColOrFuncOrSub) *ComparisonOperation {
 	n := NewNotEq(value)
 	n.column = c
 	return n
 }
 
-func (c Func) Gt(value ValOrColOrFuncOrSub) ComparisonOperation {
+func (c *Func) Gt(value ValOrColOrFuncOrSub) *ComparisonOperation {
 	g := NewGt(value)
 	g.column = c
 	return g
 }
 
-func (c Func) Gte(value ValOrColOrFuncOrSub) ComparisonOperation {
+func (c *Func) Gte(value ValOrColOrFuncOrSub) *ComparisonOperation {
 	g := NewGte(value)
 	g.column = c
 	return g
 }
 
-func (c Func) Lt(value ValOrColOrFuncOrSub) ComparisonOperation {
+func (c *Func) Lt(value ValOrColOrFuncOrSub) *ComparisonOperation {
 	l := NewLt(value)
 	l.column = c
 	return l
 }
 
-func (c Func) Lte(value ValOrColOrFuncOrSub) ComparisonOperation {
+func (c *Func) Lte(value ValOrColOrFuncOrSub) *ComparisonOperation {
 	l := NewLte(value)
 	l.column = c
 	return l
 }
 
-func (c Func) Like(value ValOrColOrFuncOrSub) ComparisonOperation {
+func (c *Func) Like(value ValOrColOrFuncOrSub) *ComparisonOperation {
 	l := NewLike(value)
 	l.column = c
 	return l
 }
 
-func (c Func) RegExp(value ValOrColOrFuncOrSub) ComparisonOperation {
+func (c *Func) RegExp(value ValOrColOrFuncOrSub) *ComparisonOperation {
 	r := NewRegExp(value)
 	r.column = c
 	return r
 }
 
-func (c Func) Between(from, to ValOrColOrFuncOrSub) Between {
+func (c *Func) Between(from, to ValOrColOrFuncOrSub) *Between {
 	b := NewBetween(from, to)
 	b.column = c
 	return b
 }
 
-func (c Func) In(arg ValsOrSub) ContainingOperation {
+func (c *Func) In(arg ValsOrSub) *ContainingOperation {
 	i := NewIn(arg)
 	i.column = c
 	return i
 }
 
-func (c Func) NotIn(arg ValsOrSub) ContainingOperation {
+func (c *Func) NotIn(arg ValsOrSub) *ContainingOperation {
 	n := NewNotIn(arg)
 	n.column = c
 	return n
 }
 
-func (c Func) EqAll(arg Subquery) NonScalarOperation {
+func (c *Func) EqAll(arg *Subquery) *NonScalarOperation {
 	n := NewEqAll(arg)
 	n.column = c
 	return n
 }
 
-func (c Func) NotEqAll(arg Subquery) NonScalarOperation {
+func (c *Func) NotEqAll(arg *Subquery) *NonScalarOperation {
 	n := NewNotEqAll(arg)
 	n.column = c
 	return n
 }
 
-func (c Func) GtAll(arg Subquery) NonScalarOperation {
+func (c *Func) GtAll(arg *Subquery) *NonScalarOperation {
 	n := NewGtAll(arg)
 	n.column = c
 	return n
 }
 
-func (c Func) GteAll(arg Subquery) NonScalarOperation {
+func (c *Func) GteAll(arg *Subquery) *NonScalarOperation {
 	n := NewGteAll(arg)
 	n.column = c
 	return n
 }
 
-func (c Func) LtAll(arg Subquery) NonScalarOperation {
+func (c *Func) LtAll(arg *Subquery) *NonScalarOperation {
 	n := NewLtAll(arg)
 	n.column = c
 	return n
 }
 
-func (c Func) LteAll(arg Subquery) NonScalarOperation {
+func (c *Func) LteAll(arg *Subquery) *NonScalarOperation {
 	n := NewLteAll(arg)
 	n.column = c
 	return n
 }
 
-func (c Func) EqAny(arg Subquery) NonScalarOperation {
+func (c *Func) EqAny(arg *Subquery) *NonScalarOperation {
 	n := NewEqAny(arg)
 	n.column = c
 	return n
 }
 
-func (c Func) NotEqAny(arg Subquery) NonScalarOperation {
+func (c *Func) NotEqAny(arg *Subquery) *NonScalarOperation {
 	n := NewNotEqAny(arg)
 	n.column = c
 	return n
 }
 
-func (c Func) GtAny(arg Subquery) NonScalarOperation {
+func (c *Func) GtAny(arg *Subquery) *NonScalarOperation {
 	n := NewGtAny(arg)
 	n.column = c
 	return n
 }
 
-func (c Func) GteAny(arg Subquery) NonScalarOperation {
+func (c *Func) GteAny(arg *Subquery) *NonScalarOperation {
 	n := NewGteAny(arg)
 	n.column = c
 	return n
 }
 
-func (c Func) LtAny(arg Subquery) NonScalarOperation {
+func (c *Func) LtAny(arg *Subquery) *NonScalarOperation {
 	n := NewLtAny(arg)
 	n.column = c
 	return n
 }
 
-func (c Func) LteAny(arg Subquery) NonScalarOperation {
+func (c *Func) LteAny(arg *Subquery) *NonScalarOperation {
 	n := NewLteAny(arg)
 	n.column = c
 	return n
 }
 
-func (f Func) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (f *Func) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	t, v := f.args.nodeize()
 	return t.Prepend(token.Word(f.name)), v
 }
@@ -193,20 +193,20 @@ func (f Func) nodeize() (tokenizer.Tokenizer, []interface{}) {
 // isValOrFuncOrSub always returns true.
 // This method exists only to implement the interface ValOrFuncOrSub.
 // This is a shit of duck typing, but anyway it works.
-func (f Func) isValOrFuncOrSub() bool {
+func (f *Func) isValOrFuncOrSub() bool {
 	return true
 }
 
 // isValOrColOrFuncOrSub always returns true.
 // This method exists only to implement the interface ValOrColOrFuncOrSub.
 // This is a shit of duck typing, but anyway it works.
-func (f Func) isValOrColOrFuncOrSub() bool {
+func (f *Func) isValOrColOrFuncOrSub() bool {
 	return true
 }
 
 // isColOrAliasOrFuncOrSub always returns true.
 // This method exists only to implement the interface ColOrAliasOrFuncOrSub.
 // This is a shit of duck typing, but anyway it works.
-func (f Func) isColOrAliasOrFuncOrSub() bool {
+func (f *Func) isColOrAliasOrFuncOrSub() bool {
 	return true
 }

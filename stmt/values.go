@@ -11,17 +11,17 @@ type Values struct {
 	valses []Vals
 }
 
-func NewValues(valses ...Vals) Values {
-	return Values{
+func NewValues(valses ...Vals) *Values {
+	return &Values{
 		valses: valses,
 	}
 }
 
-func (v Values) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (v *Values) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizePrevs(v)
 }
 
-func (v Values) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
+func (v *Values) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	tokenizers := make(tokenizer.Tokenizers, len(v.valses))
 	values := []interface{}{}
 	for i, p := range v.valses {
@@ -39,7 +39,7 @@ func (v Values) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	), values
 }
 
-func (v Values) previous() Prever {
+func (v *Values) previous() Prever {
 	return v.prev
 }
 
@@ -47,20 +47,20 @@ type DefaultValues struct {
 	prev Prever
 }
 
-func NewDefaultValues() DefaultValues {
-	return DefaultValues{}
+func NewDefaultValues() *DefaultValues {
+	return &DefaultValues{}
 }
 
-func (v DefaultValues) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (v *DefaultValues) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizePrevs(v)
 }
 
-func (v DefaultValues) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
+func (v *DefaultValues) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.DefaultValues)),
 	), nil
 }
 
-func (v DefaultValues) previous() Prever {
+func (v *DefaultValues) previous() Prever {
 	return v.prev
 }

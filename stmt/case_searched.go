@@ -10,13 +10,13 @@ type SearchedCase struct {
 	thenOrElse SearchedThenOrElse
 }
 
-func NewSearchedCase(thenOrElse SearchedThenOrElse) SearchedCase {
-	return SearchedCase{
+func NewSearchedCase(thenOrElse SearchedThenOrElse) *SearchedCase {
+	return &SearchedCase{
 		thenOrElse: thenOrElse,
 	}
 }
 
-func (c SearchedCase) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (c *SearchedCase) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	t, v := c.thenOrElse.nodeize()
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.Case)),
@@ -32,23 +32,23 @@ type SearchedWhen struct {
 	prev      Prever
 }
 
-func NewSearchedWhen(condition ComparisonOrLogicalOperation) SearchedWhen {
-	return SearchedWhen{
+func NewSearchedWhen(condition ComparisonOrLogicalOperation) *SearchedWhen {
+	return &SearchedWhen{
 		condition: condition,
 	}
 }
 
-func (w SearchedWhen) Then(param ValOrColOrFuncOrSub) SearchedThen {
+func (w *SearchedWhen) Then(param ValOrColOrFuncOrSub) *SearchedThen {
 	t := NewSearchedThen(param)
 	t.prev = w
 	return t
 }
 
-func (w SearchedWhen) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (w *SearchedWhen) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizePrevs(w)
 }
 
-func (w SearchedWhen) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
+func (w *SearchedWhen) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	t, vals := w.condition.nodeize()
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.When)),
@@ -57,7 +57,7 @@ func (w SearchedWhen) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	), vals
 }
 
-func (w SearchedWhen) previous() Prever {
+func (w *SearchedWhen) previous() Prever {
 	return w.prev
 }
 
@@ -66,29 +66,29 @@ type SearchedThen struct {
 	prev  Prever
 }
 
-func NewSearchedThen(param ValOrColOrFuncOrSub) SearchedThen {
-	return SearchedThen{
+func NewSearchedThen(param ValOrColOrFuncOrSub) *SearchedThen {
+	return &SearchedThen{
 		param: param,
 	}
 }
 
-func (t SearchedThen) When(condition ComparisonOrLogicalOperation) SearchedWhen {
+func (t *SearchedThen) When(condition ComparisonOrLogicalOperation) *SearchedWhen {
 	w := NewSearchedWhen(condition)
 	w.prev = t
 	return w
 }
 
-func (t SearchedThen) Else(param ValOrColOrFuncOrSub) SearchedElse {
+func (t *SearchedThen) Else(param ValOrColOrFuncOrSub) *SearchedElse {
 	e := NewSearchedElse(param)
 	e.prev = t
 	return e
 }
 
-func (t SearchedThen) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (t *SearchedThen) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizePrevs(t)
 }
 
-func (t SearchedThen) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
+func (t *SearchedThen) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	tk, vals := t.param.nodeize()
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.Then)),
@@ -97,11 +97,11 @@ func (t SearchedThen) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	), vals
 }
 
-func (t SearchedThen) previous() Prever {
+func (t *SearchedThen) previous() Prever {
 	return t.prev
 }
 
-func (t SearchedThen) isSearchedThenOrElse() bool {
+func (t *SearchedThen) isSearchedThenOrElse() bool {
 	return true
 }
 
@@ -110,17 +110,17 @@ type SearchedElse struct {
 	prev  Prever
 }
 
-func NewSearchedElse(param ValOrColOrFuncOrSub) SearchedElse {
-	return SearchedElse{
+func NewSearchedElse(param ValOrColOrFuncOrSub) *SearchedElse {
+	return &SearchedElse{
 		param: param,
 	}
 }
 
-func (e SearchedElse) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (e *SearchedElse) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizePrevs(e)
 }
 
-func (e SearchedElse) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
+func (e *SearchedElse) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	t, vals := e.param.nodeize()
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.Else)),
@@ -129,10 +129,10 @@ func (e SearchedElse) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	), vals
 }
 
-func (e SearchedElse) previous() Prever {
+func (e *SearchedElse) previous() Prever {
 	return e.prev
 }
 
-func (e SearchedElse) isSearchedThenOrElse() bool {
+func (e *SearchedElse) isSearchedThenOrElse() bool {
 	return true
 }

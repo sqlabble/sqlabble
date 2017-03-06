@@ -8,24 +8,24 @@ import (
 
 type OrderBy struct {
 	prev   Prever
-	orders []Order
+	orders []*Order
 }
 
-func NewOrderBy(os ...Order) OrderBy {
-	return OrderBy{orders: os}
+func NewOrderBy(os ...*Order) *OrderBy {
+	return &OrderBy{orders: os}
 }
 
-func (o OrderBy) Limit(count int) Limit {
+func (o *OrderBy) Limit(count int) *Limit {
 	l := NewLimit(count)
 	l.prev = o
 	return l
 }
 
-func (o OrderBy) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (o *OrderBy) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizePrevs(o)
 }
 
-func (o OrderBy) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
+func (o *OrderBy) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	tokenizers := make(tokenizer.Tokenizers, len(o.orders))
 	values := []interface{}{}
 	for i, o := range o.orders {
@@ -40,6 +40,6 @@ func (o OrderBy) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	), values
 }
 
-func (o OrderBy) previous() Prever {
+func (o *OrderBy) previous() Prever {
 	return o.prev
 }

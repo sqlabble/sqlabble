@@ -8,26 +8,26 @@ import (
 
 type Delete struct{}
 
-func NewDelete() Delete {
-	return Delete{}
+func NewDelete() *Delete {
+	return &Delete{}
 }
 
-func (d Delete) From(t Table) From {
+func (d *Delete) From(t *Table) *From {
 	f := NewFrom(t)
 	f.prev = d
 	return f
 }
 
-func (d Delete) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (d *Delete) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizePrevs(d)
 }
 
-func (d Delete) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
+func (d *Delete) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.Delete)),
 	), nil
 }
 
-func (d Delete) previous() Prever {
+func (d *Delete) previous() Prever {
 	return nil
 }

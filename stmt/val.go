@@ -9,31 +9,31 @@ type Val struct {
 	value interface{}
 }
 
-func NewVal(value interface{}) Val {
-	return Val{
+func NewVal(value interface{}) *Val {
+	return &Val{
 		value: value,
 	}
 }
 
-func (p Val) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (p *Val) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return tokenizer.ParamsToLine(p.value)
 }
 
 // isValOrFuncOrSub always returns true.
 // This method exists only to implement the interface ValOrFuncOrSub.
 // This is a shit of duck typing, but anyway it works.
-func (p Val) isValOrFuncOrSub() bool {
+func (p *Val) isValOrFuncOrSub() bool {
 	return true
 }
 
 // isValOrColOrFuncOrSub always returns true.
 // This method exists only to implement the interface ValOrColOrFuncOrSub.
 // This is a shit of duck typing, but anyway it works.
-func (p Val) isValOrColOrFuncOrSub() bool {
+func (p *Val) isValOrColOrFuncOrSub() bool {
 	return true
 }
 
-type Vals []Val
+type Vals []*Val
 
 func NewVals(values ...interface{}) Vals {
 	ps := make(Vals, len(values))

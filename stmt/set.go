@@ -8,26 +8,26 @@ import (
 
 type Set struct {
 	prev    Prever
-	assigns []Assign
+	assigns []*Assign
 }
 
-func NewSet(assigns ...Assign) Set {
-	return Set{
+func NewSet(assigns ...*Assign) *Set {
+	return &Set{
 		assigns: assigns,
 	}
 }
 
-func (s Set) Where(operation ComparisonOrLogicalOperation) Where {
+func (s *Set) Where(operation ComparisonOrLogicalOperation) *Where {
 	w := NewWhere(operation)
 	w.prev = s
 	return w
 }
 
-func (s Set) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (s *Set) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizePrevs(s)
 }
 
-func (s Set) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
+func (s *Set) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	tokenizers := make(tokenizer.Tokenizers, len(s.assigns))
 	values := []interface{}{}
 	for i, a := range s.assigns {
@@ -44,6 +44,6 @@ func (s Set) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	), values
 }
 
-func (s Set) previous() Prever {
+func (s *Set) previous() Prever {
 	return s.prev
 }

@@ -7,28 +7,28 @@ import (
 )
 
 type InsertInto struct {
-	table   Table
-	columns []Column
+	table   *Table
+	columns []*Column
 }
 
-func NewInsertInto(table Table, columns ...Column) InsertInto {
-	return InsertInto{
+func NewInsertInto(table *Table, columns ...*Column) *InsertInto {
+	return &InsertInto{
 		table:   table,
 		columns: columns,
 	}
 }
 
-func (i InsertInto) DefaultValues() DefaultValues {
+func (i *InsertInto) DefaultValues() *DefaultValues {
 	v := NewDefaultValues()
 	v.prev = i
 	return v
 }
 
-func (i InsertInto) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (i *InsertInto) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizePrevs(i)
 }
 
-func (i InsertInto) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
+func (i *InsertInto) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	tableTokenizer, values := i.table.nodeize()
 	ts := make(tokenizer.Tokenizers, len(i.columns))
 	for j, c := range i.columns {
@@ -51,11 +51,11 @@ func (i InsertInto) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	), values
 }
 
-func (i InsertInto) previous() Prever {
+func (i *InsertInto) previous() Prever {
 	return nil
 }
 
-func (i InsertInto) Values(paramses ...Vals) Values {
+func (i *InsertInto) Values(paramses ...Vals) *Values {
 	v := NewValues(paramses...)
 	v.prev = i
 	return v

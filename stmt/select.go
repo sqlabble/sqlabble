@@ -11,31 +11,31 @@ type Select struct {
 	columns  []ColOrAliasOrFuncOrSub
 }
 
-func NewSelect(columns ...ColOrAliasOrFuncOrSub) Select {
-	return Select{
+func NewSelect(columns ...ColOrAliasOrFuncOrSub) *Select {
+	return &Select{
 		distinct: false,
 		columns:  columns,
 	}
 }
 
-func NewSelectDistinct(columns ...ColOrAliasOrFuncOrSub) Select {
-	return Select{
+func NewSelectDistinct(columns ...ColOrAliasOrFuncOrSub) *Select {
+	return &Select{
 		distinct: true,
 		columns:  columns,
 	}
 }
 
-func (s Select) From(t TableOrAliasOrJoiner) From {
+func (s *Select) From(t TableOrAliasOrJoiner) *From {
 	f := NewFrom(t)
 	f.prev = s
 	return f
 }
 
-func (s Select) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (s *Select) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizePrevs(s)
 }
 
-func (s Select) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
+func (s *Select) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	tokenizers := make(tokenizer.Tokenizers, len(s.columns))
 	values := []interface{}{}
 	for i, c := range s.columns {
@@ -56,6 +56,6 @@ func (s Select) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	), values
 }
 
-func (s Select) previous() Prever {
+func (s *Select) previous() Prever {
 	return nil
 }
