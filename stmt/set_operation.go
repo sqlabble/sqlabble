@@ -11,59 +11,59 @@ type SetOperation struct {
 	stmts []Statement
 }
 
-func NewUnion(stmts ...Statement) *SetOperation {
-	return &SetOperation{
+func NewUnion(stmts ...Statement) SetOperation {
+	return SetOperation{
 		op:    keyword.Union,
 		stmts: stmts,
 	}
 }
 
-func NewUnionAll(stmts ...Statement) *SetOperation {
-	return &SetOperation{
+func NewUnionAll(stmts ...Statement) SetOperation {
+	return SetOperation{
 		op:    keyword.UnionAll,
 		stmts: stmts,
 	}
 }
 
-func NewIntersect(stmts ...Statement) *SetOperation {
-	return &SetOperation{
+func NewIntersect(stmts ...Statement) SetOperation {
+	return SetOperation{
 		op:    keyword.Intersect,
 		stmts: stmts,
 	}
 }
 
-func NewIntersectAll(stmts ...Statement) *SetOperation {
-	return &SetOperation{
+func NewIntersectAll(stmts ...Statement) SetOperation {
+	return SetOperation{
 		op:    keyword.IntersectAll,
 		stmts: stmts,
 	}
 }
 
-func NewExcept(stmts ...Statement) *SetOperation {
-	return &SetOperation{
+func NewExcept(stmts ...Statement) SetOperation {
+	return SetOperation{
 		op:    keyword.Except,
 		stmts: stmts,
 	}
 }
 
-func NewExceptAll(stmts ...Statement) *SetOperation {
-	return &SetOperation{
+func NewExceptAll(stmts ...Statement) SetOperation {
+	return SetOperation{
 		op:    keyword.ExceptAll,
 		stmts: stmts,
 	}
 }
 
-func (u *SetOperation) OrderBy(os ...*Order) *OrderBy {
+func (u SetOperation) OrderBy(os ...Order) OrderBy {
 	o := NewOrderBy(os...)
 	o.prev = u
 	return o
 }
 
-func (u *SetOperation) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (u SetOperation) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizePrevs(u)
 }
 
-func (u *SetOperation) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
+func (u SetOperation) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	tokenizers := make(tokenizer.Tokenizers, len(u.stmts))
 	values := []interface{}{}
 	for i, s := range u.stmts {
@@ -80,10 +80,10 @@ func (u *SetOperation) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	return tokenizers, values
 }
 
-func (u *SetOperation) previous() Prever {
+func (u SetOperation) previous() Prever {
 	return nil
 }
 
-func (u *SetOperation) keyword() keyword.Operator {
+func (u SetOperation) keyword() keyword.Operator {
 	return u.op
 }

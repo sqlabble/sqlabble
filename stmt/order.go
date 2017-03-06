@@ -7,33 +7,29 @@ import (
 )
 
 type Order struct {
-	column *Column
+	column Column
 	dir    keyword.Direction
 }
 
-func NewAsc() *Order {
-	return &Order{
+func NewAsc() Order {
+	return Order{
 		dir: keyword.ASC,
 	}
 }
 
-func NewDesc() *Order {
-	return &Order{
+func NewDesc() Order {
+	return Order{
 		dir: keyword.DESC,
 	}
 }
 
-func (o *Order) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	if o.column == nil {
-		return tokenizer.NewLine(token.Word(o.keyword())), nil
-	}
-
+func (o Order) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	t1, v1 := o.column.nodeize()
 	return t1.Append(
 		token.Word(o.keyword()),
 	), v1
 }
 
-func (o *Order) keyword() keyword.Direction {
+func (o Order) keyword() keyword.Direction {
 	return o.dir
 }

@@ -11,41 +11,41 @@ type From struct {
 	table TableOrAliasOrJoiner
 }
 
-func NewFrom(table TableOrAliasOrJoiner) *From {
-	return &From{
+func NewFrom(table TableOrAliasOrJoiner) From {
+	return From{
 		table: table,
 	}
 }
 
-func (f *From) Where(op ComparisonOrLogicalOperation) *Where {
+func (f From) Where(op ComparisonOrLogicalOperation) Where {
 	w := NewWhere(op)
 	w.prev = f
 	return w
 }
 
-func (f *From) GroupBy(col *Column, columns ...*Column) *GroupBy {
+func (f From) GroupBy(col Column, columns ...Column) GroupBy {
 	g := NewGroupBy(col, columns...)
 	g.prev = f
 	return g
 }
 
-func (f *From) OrderBy(orders ...*Order) *OrderBy {
+func (f From) OrderBy(orders ...Order) OrderBy {
 	o := NewOrderBy(orders...)
 	o.prev = f
 	return o
 }
 
-func (f *From) Limit(count int) *Limit {
+func (f From) Limit(count int) Limit {
 	l := NewLimit(count)
 	l.prev = f
 	return l
 }
 
-func (f *From) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (f From) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizePrevs(f)
 }
 
-func (f *From) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
+func (f From) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	middle, values := f.table.nodeize()
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.From)),
@@ -54,6 +54,6 @@ func (f *From) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	), values
 }
 
-func (f *From) previous() Prever {
+func (f From) previous() Prever {
 	return f.prev
 }

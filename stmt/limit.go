@@ -11,23 +11,23 @@ type Limit struct {
 	count int
 }
 
-func NewLimit(count int) *Limit {
-	return &Limit{
+func NewLimit(count int) Limit {
+	return Limit{
 		count: count,
 	}
 }
 
-func (l *Limit) Offset(count int) *Offset {
+func (l Limit) Offset(count int) Offset {
 	o := NewOffset(count)
 	o.prev = l
 	return o
 }
 
-func (l *Limit) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (l Limit) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizePrevs(l)
 }
 
-func (l *Limit) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
+func (l Limit) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	line, values := tokenizer.ParamsToLine(l.count)
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.Limit)),
@@ -36,6 +36,6 @@ func (l *Limit) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	), values
 }
 
-func (l *Limit) previous() Prever {
+func (l Limit) previous() Prever {
 	return l.prev
 }

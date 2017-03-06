@@ -11,14 +11,14 @@ type SimpleCase struct {
 	thenOrElse SimpleThenOrElse
 }
 
-func NewSimpleCase(param ValOrColOrFuncOrSub, thenOrElse SimpleThenOrElse) *SimpleCase {
-	return &SimpleCase{
+func NewSimpleCase(param ValOrColOrFuncOrSub, thenOrElse SimpleThenOrElse) SimpleCase {
+	return SimpleCase{
 		param:      param,
 		thenOrElse: thenOrElse,
 	}
 }
 
-func (c *SimpleCase) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (c SimpleCase) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	t1, v1 := c.param.nodeize()
 	t2, v2 := c.thenOrElse.nodeize()
 	return tokenizer.NewContainer(
@@ -31,27 +31,27 @@ func (c *SimpleCase) nodeize() (tokenizer.Tokenizer, []interface{}) {
 }
 
 type SimpleWhen struct {
-	param *Val
+	param Val
 	prev  Prever
 }
 
-func NewSimpleWhen(param *Val) *SimpleWhen {
-	return &SimpleWhen{
+func NewSimpleWhen(param Val) SimpleWhen {
+	return SimpleWhen{
 		param: param,
 	}
 }
 
-func (w *SimpleWhen) Then(param ValOrColOrFuncOrSub) *SimpleThen {
+func (w SimpleWhen) Then(param ValOrColOrFuncOrSub) SimpleThen {
 	t := NewSimpleThen(param)
 	t.prev = w
 	return t
 }
 
-func (w *SimpleWhen) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (w SimpleWhen) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizePrevs(w)
 }
 
-func (w *SimpleWhen) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
+func (w SimpleWhen) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	t, vals := w.param.nodeize()
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.When)),
@@ -60,7 +60,7 @@ func (w *SimpleWhen) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	), vals
 }
 
-func (w *SimpleWhen) previous() Prever {
+func (w SimpleWhen) previous() Prever {
 	return w.prev
 }
 
@@ -69,29 +69,29 @@ type SimpleThen struct {
 	prev  Prever
 }
 
-func NewSimpleThen(param ValOrColOrFuncOrSub) *SimpleThen {
-	return &SimpleThen{
+func NewSimpleThen(param ValOrColOrFuncOrSub) SimpleThen {
+	return SimpleThen{
 		param: param,
 	}
 }
 
-func (t *SimpleThen) When(param *Val) *SimpleWhen {
+func (t SimpleThen) When(param Val) SimpleWhen {
 	w := NewSimpleWhen(param)
 	w.prev = t
 	return w
 }
 
-func (t *SimpleThen) Else(param ValOrColOrFuncOrSub) *SimpleElse {
+func (t SimpleThen) Else(param ValOrColOrFuncOrSub) SimpleElse {
 	e := NewSimpleElse(param)
 	e.prev = t
 	return e
 }
 
-func (t *SimpleThen) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (t SimpleThen) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizePrevs(t)
 }
 
-func (t *SimpleThen) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
+func (t SimpleThen) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	tk, vals := t.param.nodeize()
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.Then)),
@@ -100,11 +100,11 @@ func (t *SimpleThen) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	), vals
 }
 
-func (t *SimpleThen) previous() Prever {
+func (t SimpleThen) previous() Prever {
 	return t.prev
 }
 
-func (t *SimpleThen) isSimpleThenOrElse() bool {
+func (t SimpleThen) isSimpleThenOrElse() bool {
 	return true
 }
 
@@ -113,17 +113,17 @@ type SimpleElse struct {
 	prev  Prever
 }
 
-func NewSimpleElse(param ValOrColOrFuncOrSub) *SimpleElse {
-	return &SimpleElse{
+func NewSimpleElse(param ValOrColOrFuncOrSub) SimpleElse {
+	return SimpleElse{
 		param: param,
 	}
 }
 
-func (e *SimpleElse) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (e SimpleElse) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizePrevs(e)
 }
 
-func (e *SimpleElse) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
+func (e SimpleElse) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	t, vals := e.param.nodeize()
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.Else)),
@@ -132,10 +132,10 @@ func (e *SimpleElse) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	), vals
 }
 
-func (e *SimpleElse) previous() Prever {
+func (e SimpleElse) previous() Prever {
 	return e.prev
 }
 
-func (e *SimpleElse) isSimpleThenOrElse() bool {
+func (e SimpleElse) isSimpleThenOrElse() bool {
 	return true
 }

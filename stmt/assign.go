@@ -7,17 +7,18 @@ import (
 )
 
 type Assign struct {
-	column *Column
+	column Column
 	param  ValOrFuncOrSub
 }
 
-func NewAssign(param ValOrFuncOrSub) *Assign {
-	return &Assign{
-		param: param,
+func NewAssign(column Column, param ValOrFuncOrSub) Assign {
+	return Assign{
+		column: column,
+		param:  param,
 	}
 }
 
-func (a *Assign) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (a Assign) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	t1, v1 := a.column.nodeize()
 	t2, v2 := a.param.nodeize()
 	return tokenizer.ConcatTokenizers(

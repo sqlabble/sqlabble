@@ -12,7 +12,7 @@ import (
 func TestJoinType(t *testing.T) {
 	t.Parallel()
 	for _, c := range []interface{}{
-		&stmt.Join{},
+		stmt.Join{},
 	} {
 		c := c
 		t.Run(fmt.Sprintf("%T", c), func(t *testing.T) {

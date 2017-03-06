@@ -12,7 +12,7 @@ import (
 func TestTableAliasType(t *testing.T) {
 	t.Parallel()
 	for _, c := range []interface{}{
-		&stmt.TableAlias{},
+		stmt.TableAlias{},
 	} {
 		c := c
 		t.Run(fmt.Sprintf("%T", c), func(t *testing.T) {

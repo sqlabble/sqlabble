@@ -12,7 +12,7 @@ import (
 func TestColumnType(t *testing.T) {
 	t.Parallel()
 	for _, c := range []interface{}{
-		&stmt.Column{},
+		stmt.Column{},
 	} {
 		c := c
 		t.Run(fmt.Sprintf("%T", c), func(t *testing.T) {

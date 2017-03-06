@@ -13,17 +13,17 @@ type Offset struct {
 }
 
 // NewOffset return a new Offset.
-func NewOffset(count int) *Offset {
-	return &Offset{
+func NewOffset(count int) Offset {
+	return Offset{
 		count: count,
 	}
 }
 
-func (o *Offset) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (o Offset) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizePrevs(o)
 }
 
-func (o *Offset) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
+func (o Offset) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	line, values := tokenizer.ParamsToLine(o.count)
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.Offset)),
@@ -32,6 +32,6 @@ func (o *Offset) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	), values
 }
 
-func (o *Offset) previous() Prever {
+func (o Offset) previous() Prever {
 	return o.prev
 }

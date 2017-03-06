@@ -20,10 +20,10 @@ type Prever interface {
 
 type Joiner interface {
 	Statement
-	Join(TableOrAlias) *Join
-	InnerJoin(TableOrAlias) *Join
-	LeftJoin(TableOrAlias) *Join
-	RightJoin(TableOrAlias) *Join
+	Join(TableOrAlias) Join
+	InnerJoin(TableOrAlias) Join
+	LeftJoin(TableOrAlias) Join
+	RightJoin(TableOrAlias) Join
 }
 
 type ValOrFuncOrSub interface {

@@ -11,7 +11,7 @@ import (
 
 func TestOrderType(t *testing.T) {
 	t.Parallel()
-	o := &stmt.Order{}
+	o := stmt.Order{}
 	if _, ok := interface{}(o).(stmt.Statement); !ok {
 		t.Errorf("%T should implement stmt.Statement", o)
 	}
@@ -27,15 +27,15 @@ func TestOrderSQL(t *testing.T) {
 	}{
 		{
 			stmt.NewAsc(),
-			"ASC",
-			`> ASC
+			" ASC",
+			`>  ASC
 `,
 			nil,
 		},
 		{
 			stmt.NewDesc(),
-			"DESC",
-			`> DESC
+			" DESC",
+			`>  DESC
 `,
 			nil,
 		},

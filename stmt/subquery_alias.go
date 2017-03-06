@@ -7,17 +7,17 @@ import (
 )
 
 type SubqueryAlias struct {
-	subquery *Subquery
+	subquery Subquery
 	Alias    string
 }
 
-func NewSubqueryAlias(alias string) *SubqueryAlias {
-	return &SubqueryAlias{
+func NewSubqueryAlias(alias string) SubqueryAlias {
+	return SubqueryAlias{
 		Alias: alias,
 	}
 }
 
-func (a *SubqueryAlias) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (a SubqueryAlias) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	t1, v1 := a.subquery.nodeize()
 	t2 := tokenizer.NewLine(token.Word(a.Alias))
 	return tokenizer.ConcatTokenizers(
@@ -32,13 +32,13 @@ func (a *SubqueryAlias) nodeize() (tokenizer.Tokenizer, []interface{}) {
 // isTableOrAlias always returns true.
 // This method exists only to implement the interface TableOrAlias.
 // This is a shit of duck typing, but anyway it works.
-func (a *SubqueryAlias) isTableOrAlias() bool {
+func (a SubqueryAlias) isTableOrAlias() bool {
 	return true
 }
 
 // isTableOrAliasOrJoiner always returns true.
 // This method exists only to implement the interface TableOrAliasOrJoiner.
 // This is a shit of duck typing, but anyway it works.
-func (a *SubqueryAlias) isTableOrAliasOrJoiner() bool {
+func (a SubqueryAlias) isTableOrAliasOrJoiner() bool {
 	return true
 }

@@ -6,17 +6,17 @@ import (
 )
 
 type Definition struct {
-	column     *Column
+	column     Column
 	definition string
 }
 
-func NewDefinition(definition string) *Definition {
-	return &Definition{
+func NewDefinition(definition string) Definition {
+	return Definition{
 		definition: definition,
 	}
 }
 
-func (d *Definition) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (d Definition) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	t, values := d.column.nodeize()
 	return t.
 		Append(
@@ -25,12 +25,12 @@ func (d *Definition) nodeize() (tokenizer.Tokenizer, []interface{}) {
 }
 
 type Definitions struct {
-	createTable *CreateTable
-	definitions []*Definition
+	createTable CreateTable
+	definitions []Definition
 }
 
-func NewDefinitions(definitions ...*Definition) *Definitions {
-	return &Definitions{
+func NewDefinitions(definitions ...Definition) Definitions {
+	return Definitions{
 		definitions: definitions,
 	}
 }

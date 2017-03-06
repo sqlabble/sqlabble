@@ -8,38 +8,38 @@ import (
 
 type GroupBy struct {
 	prev    Prever
-	columns []*Column
+	columns []Column
 }
 
-func NewGroupBy(column *Column, columns ...*Column) *GroupBy {
-	return &GroupBy{
-		columns: append([]*Column{column}, columns...),
+func NewGroupBy(column Column, columns ...Column) GroupBy {
+	return GroupBy{
+		columns: append([]Column{column}, columns...),
 	}
 }
 
-func (g *GroupBy) Having(operation ComparisonOrLogicalOperation) *Having {
+func (g GroupBy) Having(operation ComparisonOrLogicalOperation) Having {
 	l := NewHaving(operation)
 	l.prev = g
 	return l
 }
 
-func (g *GroupBy) OrderBy(orders ...*Order) *OrderBy {
+func (g GroupBy) OrderBy(orders ...Order) OrderBy {
 	o := NewOrderBy(orders...)
 	o.prev = g
 	return o
 }
 
-func (g *GroupBy) Limit(count int) *Limit {
+func (g GroupBy) Limit(count int) Limit {
 	l := NewLimit(count)
 	l.prev = g
 	return l
 }
 
-func (g *GroupBy) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (g GroupBy) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizePrevs(g)
 }
 
-func (g *GroupBy) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
+func (g GroupBy) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	ts := make(tokenizer.Tokenizers, len(g.columns))
 	values := []interface{}{}
 	for i, c := range g.columns {
@@ -56,6 +56,6 @@ func (g *GroupBy) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	), values
 }
 
-func (g *GroupBy) previous() Prever {
+func (g GroupBy) previous() Prever {
 	return g.prev
 }

@@ -8,19 +8,19 @@ import (
 // Column is a stmt to indicate a column in a table.
 type Column struct {
 	Name  string
-	table *Table
+	table Table
 }
 
 // NewColumn returns a new Column.
-func NewColumn(name string) *Column {
-	return &Column{
+func NewColumn(name string) Column {
+	return Column{
 		Name: name,
 	}
 }
 
 // As is used to give an alias name to the column.
 // Returns a new ColumnAs.
-func (c *Column) As(alias string) *ColumnAlias {
+func (c Column) As(alias string) ColumnAlias {
 	a := NewColumnAlias(alias)
 	a.column = c
 	return a
@@ -29,7 +29,7 @@ func (c *Column) As(alias string) *ColumnAlias {
 // Define is used to specify a definition for the column.
 // This constitutes a part of the table creation.
 // Returns a new Definition.
-func (c *Column) Define(definition string) *Definition {
+func (c Column) Define(definition string) Definition {
 	d := NewDefinition(definition)
 	d.column = c
 	return d
@@ -38,180 +38,178 @@ func (c *Column) Define(definition string) *Definition {
 // Assign is used to assign a params to the column.
 // This constitutes a part of the record update stmt.
 // Returns a new Assign.
-func (c *Column) Assign(param ValOrFuncOrSub) *Assign {
-	a := NewAssign(param)
-	a.column = c
-	return a
+func (c Column) Assign(param ValOrFuncOrSub) Assign {
+	return NewAssign(c, param)
 }
 
-func (c *Column) Eq(val ValOrColOrFuncOrSub) *ComparisonOperation {
+func (c Column) Eq(val ValOrColOrFuncOrSub) ComparisonOperation {
 	e := NewEq(val)
 	e.column = c
 	return e
 }
 
-func (c *Column) NotEq(val ValOrColOrFuncOrSub) *ComparisonOperation {
+func (c Column) NotEq(val ValOrColOrFuncOrSub) ComparisonOperation {
 	n := NewNotEq(val)
 	n.column = c
 	return n
 }
 
-func (c *Column) Gt(val ValOrColOrFuncOrSub) *ComparisonOperation {
+func (c Column) Gt(val ValOrColOrFuncOrSub) ComparisonOperation {
 	g := NewGt(val)
 	g.column = c
 	return g
 }
 
-func (c *Column) Gte(val ValOrColOrFuncOrSub) *ComparisonOperation {
+func (c Column) Gte(val ValOrColOrFuncOrSub) ComparisonOperation {
 	g := NewGte(val)
 	g.column = c
 	return g
 }
 
-func (c *Column) Lt(val ValOrColOrFuncOrSub) *ComparisonOperation {
+func (c Column) Lt(val ValOrColOrFuncOrSub) ComparisonOperation {
 	l := NewLt(val)
 	l.column = c
 	return l
 }
 
-func (c *Column) Lte(val ValOrColOrFuncOrSub) *ComparisonOperation {
+func (c Column) Lte(val ValOrColOrFuncOrSub) ComparisonOperation {
 	l := NewLte(val)
 	l.column = c
 	return l
 }
 
-func (c *Column) Like(val ValOrColOrFuncOrSub) *ComparisonOperation {
+func (c Column) Like(val ValOrColOrFuncOrSub) ComparisonOperation {
 	l := NewLike(val)
 	l.column = c
 	return l
 }
 
-func (c *Column) RegExp(val ValOrColOrFuncOrSub) *ComparisonOperation {
+func (c Column) RegExp(val ValOrColOrFuncOrSub) ComparisonOperation {
 	r := NewRegExp(val)
 	r.column = c
 	return r
 }
 
-func (c *Column) Between(from, to ValOrColOrFuncOrSub) *Between {
+func (c Column) Between(from, to ValOrColOrFuncOrSub) Between {
 	b := NewBetween(from, to)
 	b.column = c
 	return b
 }
 
-func (c *Column) In(params ValsOrSub) *ContainingOperation {
+func (c Column) In(params ValsOrSub) ContainingOperation {
 	i := NewIn(params)
 	i.column = c
 	return i
 }
 
-func (c *Column) NotIn(params ValsOrSub) *ContainingOperation {
+func (c Column) NotIn(params ValsOrSub) ContainingOperation {
 	n := NewNotIn(params)
 	n.column = c
 	return n
 }
 
-func (c *Column) IsNull() *NullOperation {
+func (c Column) IsNull() NullOperation {
 	i := NewIsNull()
 	i.column = c
 	return i
 }
 
-func (c *Column) IsNotNull() *NullOperation {
+func (c Column) IsNotNull() NullOperation {
 	i := NewIsNotNull()
 	i.column = c
 	return i
 }
 
-func (c *Column) EqAll(params *Subquery) *NonScalarOperation {
+func (c Column) EqAll(params Subquery) NonScalarOperation {
 	n := NewEqAll(params)
 	n.column = c
 	return n
 }
 
-func (c *Column) NotEqAll(params *Subquery) *NonScalarOperation {
+func (c Column) NotEqAll(params Subquery) NonScalarOperation {
 	n := NewNotEqAll(params)
 	n.column = c
 	return n
 }
 
-func (c *Column) GtAll(params *Subquery) *NonScalarOperation {
+func (c Column) GtAll(params Subquery) NonScalarOperation {
 	n := NewGtAll(params)
 	n.column = c
 	return n
 }
 
-func (c *Column) GteAll(params *Subquery) *NonScalarOperation {
+func (c Column) GteAll(params Subquery) NonScalarOperation {
 	n := NewGteAll(params)
 	n.column = c
 	return n
 }
 
-func (c *Column) LtAll(params *Subquery) *NonScalarOperation {
+func (c Column) LtAll(params Subquery) NonScalarOperation {
 	n := NewLtAll(params)
 	n.column = c
 	return n
 }
 
-func (c *Column) LteAll(params *Subquery) *NonScalarOperation {
+func (c Column) LteAll(params Subquery) NonScalarOperation {
 	n := NewLteAll(params)
 	n.column = c
 	return n
 }
 
-func (c *Column) EqAny(params *Subquery) *NonScalarOperation {
+func (c Column) EqAny(params Subquery) NonScalarOperation {
 	n := NewEqAny(params)
 	n.column = c
 	return n
 }
 
-func (c *Column) NotEqAny(params *Subquery) *NonScalarOperation {
+func (c Column) NotEqAny(params Subquery) NonScalarOperation {
 	n := NewNotEqAny(params)
 	n.column = c
 	return n
 }
 
-func (c *Column) GtAny(params *Subquery) *NonScalarOperation {
+func (c Column) GtAny(params Subquery) NonScalarOperation {
 	n := NewGtAny(params)
 	n.column = c
 	return n
 }
 
-func (c *Column) GteAny(params *Subquery) *NonScalarOperation {
+func (c Column) GteAny(params Subquery) NonScalarOperation {
 	n := NewGteAny(params)
 	n.column = c
 	return n
 }
 
-func (c *Column) LtAny(params *Subquery) *NonScalarOperation {
+func (c Column) LtAny(params Subquery) NonScalarOperation {
 	n := NewLtAny(params)
 	n.column = c
 	return n
 }
 
-func (c *Column) LteAny(params *Subquery) *NonScalarOperation {
+func (c Column) LteAny(params Subquery) NonScalarOperation {
 	n := NewLteAny(params)
 	n.column = c
 	return n
 }
 
-func (c *Column) Asc() *Order {
+func (c Column) Asc() Order {
 	o := NewAsc()
 	o.column = c
 	return o
 }
 
-func (c *Column) Desc() *Order {
+func (c Column) Desc() Order {
 	o := NewDesc()
 	o.column = c
 	return o
 }
 
-func (c *Column) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	if c.table == nil {
+func (c Column) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	t1, v1 := c.table.nodeizeSelf()
+	if t1 == nil {
 		return tokenizer.NewLine(token.Word(c.Name)), nil
 	}
 
-	t1, v1 := c.table.nodeizeSelf()
 	return t1.Append(
 		token.Period,
 		token.Word(c.Name),
@@ -221,27 +219,27 @@ func (c *Column) nodeize() (tokenizer.Tokenizer, []interface{}) {
 // isColOrSub always returns true.
 // This method exists only to implement the interface ColOrSub.
 // This is a shit of duck typing, but anyway it works.
-func (c *Column) isColOrSub() bool {
+func (c Column) isColOrSub() bool {
 	return true
 }
 
 // isColOrAliasOrSub always returns true.
 // This method exists only to implement the interface ColOrAliasOrSub.
 // This is a shit of duck typing, but anyway it works.
-func (c *Column) isColOrAliasOrSub() bool {
+func (c Column) isColOrAliasOrSub() bool {
 	return true
 }
 
 // isColOrAliasOrFuncOrSub always returns true.
 // This method exists only to implement the interface ColOrAliasOrFuncOrSub.
 // This is a shit of duck typing, but anyway it works.
-func (c *Column) isColOrAliasOrFuncOrSub() bool {
+func (c Column) isColOrAliasOrFuncOrSub() bool {
 	return true
 }
 
 // isValOrColOrFuncOrSub always returns true.
 // This method exists only to implement the interface ValOrColOrFuncOrSub.
 // This is a shit of duck typing, but anyway it works.
-func (c *Column) isValOrColOrFuncOrSub() bool {
+func (c Column) isValOrColOrFuncOrSub() bool {
 	return true
 }

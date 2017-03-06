@@ -11,35 +11,35 @@ type Where struct {
 	operation ComparisonOrLogicalOperation
 }
 
-func NewWhere(operation ComparisonOrLogicalOperation) *Where {
-	return &Where{
+func NewWhere(operation ComparisonOrLogicalOperation) Where {
+	return Where{
 		operation: operation,
 	}
 }
 
-func (w *Where) GroupBy(column *Column, columns ...*Column) *GroupBy {
+func (w Where) GroupBy(column Column, columns ...Column) GroupBy {
 	g := NewGroupBy(column, columns...)
 	g.prev = w
 	return g
 }
 
-func (w *Where) OrderBy(orders ...*Order) *OrderBy {
+func (w Where) OrderBy(orders ...Order) OrderBy {
 	o := NewOrderBy(orders...)
 	o.prev = w
 	return o
 }
 
-func (w *Where) Limit(count int) *Limit {
+func (w Where) Limit(count int) Limit {
 	l := NewLimit(count)
 	l.prev = w
 	return l
 }
 
-func (w *Where) nodeize() (tokenizer.Tokenizer, []interface{}) {
+func (w Where) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	return nodeizePrevs(w)
 }
 
-func (w *Where) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
+func (w Where) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	middle, values := w.operation.nodeize()
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(token.Word(keyword.Where)),
@@ -48,6 +48,6 @@ func (w *Where) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	), values
 }
 
-func (w *Where) previous() Prever {
+func (w Where) previous() Prever {
 	return w.prev
 }
