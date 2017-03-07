@@ -27,6 +27,9 @@ func (c ColumnAlias) nodeize() (tokenizer.Tokenizer, []interface{}) {
 			token.RQuote,
 		), nil
 	}
+	if c.Alias == "" {
+		return c.column.nodeize()
+	}
 
 	t1, v1 := c.column.nodeize()
 	return tokenizer.ConcatTokenizers(
@@ -40,6 +43,21 @@ func (c ColumnAlias) nodeize() (tokenizer.Tokenizer, []interface{}) {
 			token.Word(keyword.As),
 		),
 	), v1
+}
+
+func (c ColumnAlias) nodeizeAlias() (tokenizer.Tokenizer, []interface{}) {
+	return tokenizer.NewLine(
+		token.LQuote,
+		token.Word(c.Alias),
+		token.RQuote,
+	), nil
+}
+
+// isColOrAlias always returns true.
+// This method exists only to implement the interface ColOrAlias.
+// This is a shit of duck typing, but anyway it works.
+func (c ColumnAlias) isColOrAlias() bool {
+	return true
 }
 
 // isColumnOrColumnAsOrSubquery always returns true.

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
+	"reflect"
 	"testing"
 	"time"
 
@@ -11,6 +12,7 @@ import (
 	q "github.com/minodisk/sqlabble"
 	"github.com/minodisk/sqlabble/builder"
 	"github.com/minodisk/sqlabble/cmd/sqlabble/fixtures/foo"
+	"github.com/minodisk/sqlabble/internal/diff"
 )
 
 var (
@@ -42,97 +44,183 @@ func TestMain(m *testing.M) {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	db.Exec("DROP TABLE IF EXISTS user, comment, post")
+	db.Exec("DROP TABLE IF EXISTS users, profiles")
 	os.Exit(code)
 }
 
 func TestMapper(t *testing.T) {
-	ut := foo.NewUserTable()
+	u := foo.NewUserDB()
 	{
-		sql, values := builder.Standard.Build(
+		query, values := builder.Standard.Build(
 			q.CreateTableIfNotExists(
-				ut.Table(),
+				u.Table,
 			).Definitions(
-				ut.ColumnUserID().Define("int"),
-				ut.ColumnName().Define("varchar(20)"),
-				ut.ColumnAvatar().Define("varchar(255)"),
+				u.UserIDColumn.Define("int"),
+				u.NameColumn.Define("varchar(20)"),
+				u.AvatarColumn.Define("varchar(255)"),
 			),
 		)
-		_, err := db.Exec(sql, values...)
+		_, err := db.Exec(query, values...)
 		if err != nil {
 			t.Fatal(err)
 		}
 	}
 
-	pt := foo.NewProfileTable()
+	pt := foo.NewProfileDB()
 	{
-		sql, values := builder.Standard.Build(
+		query, values := builder.Standard.Build(
 			q.CreateTableIfNotExists(
-				pt.Table(),
+				pt.Table,
 			).Definitions(
-				pt.ColumnProfileID().Define("int"),
-				pt.ColumnBody().Define("varchar(255)"),
-				pt.ColumnUserID().Define("int"),
+				pt.ProfileIDColumn.Define("int"),
+				pt.BodyColumn.Define("varchar(255)"),
+				pt.UserIDColumn.Define("int"),
 			),
 		)
-		_, err := db.Exec(sql, values...)
+		_, err := db.Exec(query, values...)
 		if err != nil {
 			t.Fatal(err)
 		}
 	}
 
 	{
-		sql, values := builder.Standard.Build(
+		query, values := builder.MySQLIndented.Build(
 			q.InsertInto(
-				ut.Table(),
-				ut.Columns()...,
+				u.Table,
+				u.Columns()...,
 			).Values(
 				q.Params(1, "foo", "http://example.com/foo.jpg"),
 				q.Params(2, "bar", "http://example.com/bar.jpg"),
 				q.Params(3, "baz", "http://example.com/baz.jpg"),
 			),
 		)
-		_, err := db.Exec(sql, values...)
+		_, err := db.Exec(query, values...)
 		if err != nil {
 			t.Fatal(err)
 		}
 	}
 	{
-		sql, values := builder.Standard.Build(
+		query, values := builder.MySQLIndented.Build(
 			q.InsertInto(
-				pt.Table(),
+				pt.Table,
 				pt.Columns()...,
 			).Values(
 				q.Params(1, "foo's profile", 1),
-				q.Params(2, "bar's profile", 3),
-				q.Params(3, "baz's profile", 2),
+				q.Params(2, "baz's profile", 3),
+				q.Params(3, "bar's profile", 2),
 			),
 		)
-		_, err := db.Exec(sql, values...)
+		_, err := db.Exec(query, values...)
 		if err != nil {
 			t.Fatal(err)
 		}
 	}
 
 	{
-		mapper := foo.NewUserMapper()
-		query, values := builder.MySQL.Build(
-			q.Select(mapper.Columns()...).
+		u := foo.NewUserDB()
+		query, values := builder.MySQLIndented.Build(
+			q.Select(u.Selectors()...).
 				From(
-					mapper.UserTable.
-						LeftJoin(mapper.ProfileTable).
-						On(mapper.UserColumns.UserID, mapper.ProfileColumns.UserID),
+					u.TableAlias.
+						LeftJoin(u.Prof.TableAlias).
+						On(
+							u.UserIDColumn,
+							u.Prof.UserIDColumn,
+						),
+				).
+				OrderBy(
+					u.UserIDColumn.Asc(),
 				),
 		)
-		fmt.Println(query)
+
 		rows, err := db.Query(query, values...)
 		if err != nil {
 			t.Fatal(err)
 		}
-		users, err := mapUsers(rows)
+		got, err := u.Map(rows)
 		if err != nil {
 			t.Fatal(err)
 		}
-		fmt.Println(users)
+
+		want := []foo.User{
+			{
+				UserID: 1,
+				Name:   "foo",
+				Avatar: "http://example.com/foo.jpg",
+				Prof: foo.Profile{
+					ProfileID: 1,
+					Body:      "foo's profile",
+					UserID:    1,
+				},
+			},
+			{
+				UserID: 2,
+				Name:   "bar",
+				Avatar: "http://example.com/bar.jpg",
+				Prof: foo.Profile{
+					ProfileID: 3,
+					Body:      "bar's profile",
+					UserID:    2,
+				},
+			},
+			{
+				UserID: 3,
+				Name:   "baz",
+				Avatar: "http://example.com/baz.jpg",
+				Prof: foo.Profile{
+					ProfileID: 2,
+					Body:      "baz's profile",
+					UserID:    3,
+				},
+			},
+		}
+
+		if !reflect.DeepEqual(got, want) {
+			t.Error(diff.Values(got, want))
+		}
+	}
+
+	{
+		p := foo.NewProfileDB()
+		query, values := builder.MySQLIndented.Build(
+			q.Select(p.Selectors()...).
+				From(
+					p.TableAlias,
+				).
+				OrderBy(
+					p.ProfileIDColumn.Asc(),
+				),
+		)
+
+		rows, err := db.Query(query, values...)
+		if err != nil {
+			t.Fatal(err)
+		}
+		got, err := p.Map(rows)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		want := []foo.Profile{
+			{
+				ProfileID: 1,
+				Body:      "foo's profile",
+				UserID:    1,
+			},
+			{
+				ProfileID: 2,
+				Body:      "baz's profile",
+				UserID:    3,
+			},
+			{
+				ProfileID: 3,
+				Body:      "bar's profile",
+				UserID:    2,
+			},
+		}
+
+		if !reflect.DeepEqual(got, want) {
+			t.Error(diff.Values(got, want))
+		}
 	}
 }

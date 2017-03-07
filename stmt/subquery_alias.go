@@ -36,9 +36,9 @@ func (a SubqueryAlias) isTableOrAlias() bool {
 	return true
 }
 
-// isTableOrAliasOrJoiner always returns true.
+// isJoinerOrAlias always returns true.
 // This method exists only to implement the interface TableOrAliasOrJoiner.
 // This is a shit of duck typing, but anyway it works.
-func (a SubqueryAlias) isTableOrAliasOrJoiner() bool {
+func (a SubqueryAlias) isJoinerOrAlias() bool {
 	return true
 }

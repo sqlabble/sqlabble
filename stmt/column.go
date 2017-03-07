@@ -8,7 +8,7 @@ import (
 // Column is a stmt to indicate a column in a table.
 type Column struct {
 	Name  string
-	table Table
+	namer Namer
 }
 
 // NewColumn returns a new Column.
@@ -205,15 +205,22 @@ func (c Column) Desc() Order {
 }
 
 func (c Column) nodeize() (tokenizer.Tokenizer, []interface{}) {
-	t1, v1 := c.table.nodeizeSelf()
-	if t1 == nil {
+	if c.namer == nil || c.namer.name() == "" {
 		return tokenizer.NewLine(token.Word(c.Name)), nil
 	}
 
-	return t1.Append(
+	return tokenizer.NewLine(
+		token.Word(c.namer.name()),
 		token.Period,
 		token.Word(c.Name),
-	), v1
+	), nil
+}
+
+// isColOrAlias always returns true.
+// This method exists only to implement the interface ColOrAlias.
+// This is a shit of duck typing, but anyway it works.
+func (c Column) isColOrAlias() bool {
+	return true
 }
 
 // isColOrSub always returns true.

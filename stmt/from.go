@@ -8,10 +8,10 @@ import (
 
 type From struct {
 	prev  Prever
-	table TableOrAliasOrJoiner
+	table JoinerOrAlias
 }
 
-func NewFrom(table TableOrAliasOrJoiner) From {
+func NewFrom(table JoinerOrAlias) From {
 	return From{
 		table: table,
 	}

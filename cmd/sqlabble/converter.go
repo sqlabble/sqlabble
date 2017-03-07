@@ -19,105 +19,116 @@ const implTmpl = `package {{ .Name }}
 
 import (
 	"database/sql"
+	"strings"
 
 	"github.com/minodisk/sqlabble/stmt"
 )
 
 {{- range .Tables }}
 {{- $receiver := .Reciever }}
-{{- $type := .GoName }}
-{{- $table := .DBName }}
-{{- $name := printf "%sTable" $type }}
-type {{ $type }}Table struct{
-	stmt.Table
+{{- $baseType := .GoName }}
+{{- $tableName := .DBName }}
+{{- $tableType := printf "%sDB" $baseType }}
+{{- $mapperType := printf "%sMapper" $baseType }}
+type {{ $tableType }} struct{
+	Table stmt.Table
+	TableAlias stmt.TableAlias
 {{- range .Columns }}
 	{{- if .Ref }}
-	{{ .GoName }} {{ .Ref.GoName }}Table
+	{{ .GoName }} {{ .Ref.GoName }}DB
+	{{- else }}
+	{{ .GoName }}Column      stmt.Column
+	{{ .GoName }}ColumnAlias stmt.ColumnAlias
 	{{- end }}
 {{- end }}
 }
 
-func ({{ $receiver }} {{ $name }}) New{{ $name }}() {{ $name }} {
-	return {{ $name }}{
+func New{{ $tableType }}(aliases ...string) {{ $tableType }} {
+	alias := strings.Join(aliases, ".")
+	if alias == "" {
+		alias = "{{ $tableName }}"
+	}
+	return {{ $tableType }}{
 		Table: stmt.NewTable("{{ .DBName }}"),
+		TableAlias: stmt.NewTable("{{ .DBName }}").As(alias),
+{{- range .Columns }}
+	{{- if .Ref }}
+	{{ .GoName }}: New{{ .Ref.GoName }}DB(append(aliases, "{{ .GoName }}")...),
+	{{- else }}
+	{{ .GoName }}Column:      stmt.NewTableAlias(alias).Column("{{ .DBName }}"),
+	{{ .GoName }}ColumnAlias: stmt.NewTableAlias(alias).Column("{{ .DBName }}").As(strings.Join(append(aliases, "{{ .GoName }}"), ".")),
+	{{- end }}
+{{- end }}
 	}
 }
 
+func ({{ $receiver }} {{ $tableType }}) Register(mapper map[string]interface{}, d *{{ $baseType }}, aliases ...string) {
 {{- range .Columns }}
-	{{- if not .Ref }}
-
-func ({{ $receiver }} {{ $name }}) Column{{ .GoName }}() stmt.Column {
-	return {{ $receiver }}.Table.Column("{{ .DBName }}")
-}
+	{{- if .Ref }}
+	{{ $receiver }}.{{ .GoName }}.Register(mapper, &d.{{ .GoName }}, append(aliases, "{{ .GoName }}")...)
+	{{- else }}
+	mapper[strings.Join(append(aliases, "{{ .GoName }}"), ".")] = &d.{{ .GoName }}
 	{{- end }}
 {{- end }}
+}
 
-func ({{ $receiver }} {{ $name }}) Columns() []stmt.Column {
+func ({{ $receiver }} {{ $tableType }}) Columns() []stmt.Column {
 	return []stmt.Column{
 {{- range .Columns }}
 	{{- if not .Ref }}
-		{{ $receiver }}.Column{{ .GoName }}(),
+		{{ $receiver }}.{{ .GoName }}Column,
 	{{- end }}
 {{- end }}
 	}
 }
 
-func ({{ $receiver }} {{ $name }}) Mapper() (stmt.From, func(sql.Rows) ([]{{ .GoName }}, error)) {
-	return stmt.
-			NewSelect(
+func ({{ $receiver }} {{ $tableType }}) ColumnAliases() []stmt.ColumnAlias {
+	aliases := []stmt.ColumnAlias{
 {{- range .Columns }}
-	{{- if .Ref }}
-	{{- $columnName := .GoName }}
-	{{- $refTableName := .Ref.DBName }}
-		{{- range .Ref.Columns }}
-				{{ $receiver }}.{{ $columnName }}.Column{{ .GoName }}().As("{{ $refTableName }}.{{ .DBName }}"),
-		{{- end }}
-	{{- else }}
-				{{ $receiver }}.Column{{ .GoName }}().As("{{ $table }}.{{ .DBName }}"),
+	{{- if not .Ref }}
+		{{ $receiver }}.{{ .GoName }}ColumnAlias,
 	{{- end }}
 {{- end }}
-			).
-			From(
-				{{ $receiver }}.As("{{ $table }}")
-{{- range .Columns }}
-	{{- if .Ref }}.
-				LeftJoin({{ $receiver }}.{{ .GoName }}.As("{{ .Ref.DBName }}")).
-				On(
-					stmt.NewColumn("{{ $table }}.{{ .DBName }}"),
-					stmt.NewColumn("{{ .Ref.DBName }}.{{ .DBName }}"),
-				)
-	{{- end }}
-{{- end }},
-			),
-		func(rows sql.Rows) ([]{{ .GoName }}, error) {
-			aliases, err := rows.Columns()
-			if err != nil {
-				return nil, err
-			}
-			dist := []{{ .GoName }}{}
-			for rows.Next() {
-				d := User{}
-				aref := map[string]interface{}{
+	}
 {{- range .Columns }}
 	{{- if .Ref }}
-					"": &d.{{ .GoName }},
-	{{- else }}
-					"{{ $table }}.{{ .DBName }}": &d.{{ .GoName }},
+	aliases = append(aliases, {{ $receiver }}.{{ .GoName }}.ColumnAliases()...)
 	{{- end }}
 {{- end }}
-				}
-				refs := make([]interface{}, len(aliases))
-				for i, alias := range aliases {
-					refs[i] = aref[alias]
-				}
-				if err := rows.Scan(refs...); err != nil {
-					return nil, err
-				}
-				dist = append(dist, d)
-			}
-			return dist, nil
-		}
+	return aliases
 }
+
+func ({{ $receiver }} {{ $tableType }}) Selectors() []stmt.ColOrAliasOrFuncOrSub {
+	as := {{ $receiver }}.ColumnAliases()
+	is := make([]stmt.ColOrAliasOrFuncOrSub, len(as))
+	for i, a := range as {
+		is[i] = a
+	}
+	return is
+}
+
+func ({{ $receiver }} {{ $tableType }}) Map(rows *sql.Rows) ([]{{ $baseType }}, error) {
+	cols, err := rows.Columns()
+	if err != nil {
+		return nil, err
+	}
+	dist := []{{ $baseType }}{}
+	for rows.Next() {
+		mapper := make(map[string]interface{})
+		di := {{ $baseType }}{}
+		{{ $receiver }}.Register(mapper, &di)
+		refs := make([]interface{}, len(cols))
+		for i, c := range cols {
+			refs[i] = mapper[c]
+		}
+		if err := rows.Scan(refs...); err != nil {
+			return nil, err
+		}
+		dist = append(dist, di)
+	}
+	return dist, nil
+}
+
 {{- end }}
 `
 

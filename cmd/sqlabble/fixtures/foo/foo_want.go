@@ -2,146 +2,175 @@ package foo
 
 import (
 	"database/sql"
-	"fmt"
+	"strings"
 
 	"github.com/minodisk/sqlabble/stmt"
 )
 
-type UserTable struct {
-	Prof *ProfileTable
+type UserDB struct {
+	Table             stmt.Table
+	TableAlias        stmt.TableAlias
+	UserIDColumn      stmt.Column
+	UserIDColumnAlias stmt.ColumnAlias
+	NameColumn        stmt.Column
+	NameColumnAlias   stmt.ColumnAlias
+	AvatarColumn      stmt.Column
+	AvatarColumnAlias stmt.ColumnAlias
+	Prof              ProfileDB
 }
 
-func NewUserTable() *UserTable {
-	return &UserTable{}
-}
-
-func (u *UserTable) Table() *stmt.Table {
-	return stmt.NewTable("users")
-}
-
-func (u *UserTable) ColumnUserID() *stmt.Column {
-	return u.Table().Column("user_id")
-}
-
-func (u *UserTable) ColumnName() *stmt.Column {
-	return u.Table().Column("name")
-}
-
-func (u *UserTable) ColumnAvatar() *stmt.Column {
-	return u.Table().Column("avatar")
-}
-
-func (u *UserTable) Columns() []*stmt.Column {
-	return []*stmt.Column{
-		u.ColumnUserID(),
-		u.ColumnName(),
-		u.ColumnAvatar(),
+func NewUserDB(aliases ...string) UserDB {
+	alias := strings.Join(aliases, ".")
+	if alias == "" {
+		alias = "users"
+	}
+	return UserDB{
+		Table:             stmt.NewTable("users"),
+		TableAlias:        stmt.NewTable("users").As(alias),
+		UserIDColumn:      stmt.NewTableAlias(alias).Column("user_id"),
+		UserIDColumnAlias: stmt.NewTableAlias(alias).Column("user_id").As(strings.Join(append(aliases, "UserID"), ".")),
+		NameColumn:        stmt.NewTableAlias(alias).Column("name"),
+		NameColumnAlias:   stmt.NewTableAlias(alias).Column("name").As(strings.Join(append(aliases, "Name"), ".")),
+		AvatarColumn:      stmt.NewTableAlias(alias).Column("avatar"),
+		AvatarColumnAlias: stmt.NewTableAlias(alias).Column("avatar").As(strings.Join(append(aliases, "Avatar"), ".")),
+		Prof:              NewProfileDB(append(aliases, "Prof")...),
 	}
 }
 
-type UserMapper struct {
-	UserTable      *stmt.TableAlias
-	ProfileTable   *stmt.TableAlias
-	UserColumns    UserMapperUserColumns
-	ProfileColumns UserMapperProfileColumns
+func (u UserDB) Register(mapper map[string]interface{}, d *User, aliases ...string) {
+	mapper[strings.Join(append(aliases, "UserID"), ".")] = &d.UserID
+	mapper[strings.Join(append(aliases, "Name"), ".")] = &d.Name
+	mapper[strings.Join(append(aliases, "Avatar"), ".")] = &d.Avatar
+	u.Prof.Register(mapper, &d.Prof, append(aliases, "Prof")...)
 }
 
-type UserMapperUserColumns struct {
-	UserID *stmt.ColumnAlias
-	Name   *stmt.ColumnAlias
-	Avatar *stmt.ColumnAlias
-}
-
-type UserMapperProfileColumns struct {
-	ProfileID *stmt.ColumnAlias
-	Body      *stmt.ColumnAlias
-	UserID    *stmt.ColumnAlias
-}
-
-func NewUserMapper() *UserMapper {
-	u := NewUserTable()
-	return &UserMapper{
-		UserTable:    u.Table().As("users"),
-		ProfileTable: u.Prof.Table().As("profiles"),
-		UserColumns: UserMapperUserColumns{
-			UserID: u.ColumnUserID().As("users.user_id"),
-			Name:   u.ColumnName().As("users.name"),
-			Avatar: u.ColumnAvatar().As("users.avatar"),
-		},
-		ProfileColumns: UserMapperProfileColumns{
-			ProfileID: u.Prof.ColumnProfileID().As("profiles.profile_id"),
-			Body:      u.Prof.ColumnBody().As("profiles.body"),
-			UserID:    u.Prof.ColumnUserID().As("profiles.user_id"),
-		},
+func (u UserDB) Columns() []stmt.Column {
+	return []stmt.Column{
+		u.UserIDColumn,
+		u.NameColumn,
+		u.AvatarColumn,
 	}
 }
 
-func (u *UserMapper) Columns() []*stmt.ColumnAlias {
-	return []*stmt.ColumnAlias{
-		u.UserColumns.UserID,
-		u.UserColumns.Name,
-		u.UserColumns.Avatar,
-		u.ProfileColumns.ProfileID,
-		u.ProfileColumns.Body,
-		u.ProfileColumns.UserID,
+func (u UserDB) ColumnAliases() []stmt.ColumnAlias {
+	aliases := []stmt.ColumnAlias{
+		u.UserIDColumnAlias,
+		u.NameColumnAlias,
+		u.AvatarColumnAlias,
 	}
+	aliases = append(aliases, u.Prof.ColumnAliases()...)
+	return aliases
 }
 
-func (u *UserMapper) Map(rows *sql.Rows) ([]User, error) {
+func (u UserDB) Selectors() []stmt.ColOrAliasOrFuncOrSub {
+	as := u.ColumnAliases()
+	is := make([]stmt.ColOrAliasOrFuncOrSub, len(as))
+	for i, a := range as {
+		is[i] = a
+	}
+	return is
+}
+
+func (u UserDB) Map(rows *sql.Rows) ([]User, error) {
 	cols, err := rows.Columns()
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(cols)
 	dist := []User{}
 	for rows.Next() {
-		d := User{}
-		ar := map[string]interface{}{
-			"users.user_id":       &d.UserID,
-			"users.name":          &d.Name,
-			"users.avatar":        &d.Avatar,
-			"profiles.profile_id": &d.Prof.ProfileID,
-			"profiles.body":       &d.Prof.Body,
-			"profiles.user_id":    &d.Prof.UserID,
-		}
+		mapper := make(map[string]interface{})
+		di := User{}
+		u.Register(mapper, &di)
 		refs := make([]interface{}, len(cols))
 		for i, c := range cols {
-			refs[i] = ar[c]
+			refs[i] = mapper[c]
 		}
 		if err := rows.Scan(refs...); err != nil {
 			return nil, err
 		}
-		dist = append(dist, d)
+		dist = append(dist, di)
 	}
 	return dist, nil
 }
 
-type ProfileTable struct{}
-
-func NewProfileTable() *ProfileTable {
-	return &ProfileTable{}
+type ProfileDB struct {
+	Table                stmt.Table
+	TableAlias           stmt.TableAlias
+	ProfileIDColumn      stmt.Column
+	ProfileIDColumnAlias stmt.ColumnAlias
+	BodyColumn           stmt.Column
+	BodyColumnAlias      stmt.ColumnAlias
+	UserIDColumn         stmt.Column
+	UserIDColumnAlias    stmt.ColumnAlias
 }
 
-func (p *ProfileTable) Table() *stmt.Table {
-	return stmt.NewTable("profiles")
-}
-
-func (p *ProfileTable) ColumnProfileID() *stmt.Column {
-	return p.Table().Column("profile_id")
-}
-
-func (p *ProfileTable) ColumnBody() *stmt.Column {
-	return p.Table().Column("body")
-}
-
-func (p *ProfileTable) ColumnUserID() *stmt.Column {
-	return p.Table().Column("user_id")
-}
-
-func (p *ProfileTable) Columns() []*stmt.Column {
-	return []*stmt.Column{
-		p.ColumnProfileID(),
-		p.ColumnBody(),
-		p.ColumnUserID(),
+func NewProfileDB(aliases ...string) ProfileDB {
+	alias := strings.Join(aliases, ".")
+	if alias == "" {
+		alias = "profiles"
 	}
+	return ProfileDB{
+		Table:                stmt.NewTable("profiles"),
+		TableAlias:           stmt.NewTable("profiles").As(alias),
+		ProfileIDColumn:      stmt.NewTableAlias(alias).Column("profile_id"),
+		ProfileIDColumnAlias: stmt.NewTableAlias(alias).Column("profile_id").As(strings.Join(append(aliases, "ProfileID"), ".")),
+		BodyColumn:           stmt.NewTableAlias(alias).Column("body"),
+		BodyColumnAlias:      stmt.NewTableAlias(alias).Column("body").As(strings.Join(append(aliases, "Body"), ".")),
+		UserIDColumn:         stmt.NewTableAlias(alias).Column("user_id"),
+		UserIDColumnAlias:    stmt.NewTableAlias(alias).Column("user_id").As(strings.Join(append(aliases, "UserID"), ".")),
+	}
+}
+
+func (p ProfileDB) Register(mapper map[string]interface{}, d *Profile, aliases ...string) {
+	mapper[strings.Join(append(aliases, "ProfileID"), ".")] = &d.ProfileID
+	mapper[strings.Join(append(aliases, "Body"), ".")] = &d.Body
+	mapper[strings.Join(append(aliases, "UserID"), ".")] = &d.UserID
+}
+
+func (p ProfileDB) Columns() []stmt.Column {
+	return []stmt.Column{
+		p.ProfileIDColumn,
+		p.BodyColumn,
+		p.UserIDColumn,
+	}
+}
+
+func (p ProfileDB) ColumnAliases() []stmt.ColumnAlias {
+	aliases := []stmt.ColumnAlias{
+		p.ProfileIDColumnAlias,
+		p.BodyColumnAlias,
+		p.UserIDColumnAlias,
+	}
+	return aliases
+}
+
+func (p ProfileDB) Selectors() []stmt.ColOrAliasOrFuncOrSub {
+	as := p.ColumnAliases()
+	is := make([]stmt.ColOrAliasOrFuncOrSub, len(as))
+	for i, a := range as {
+		is[i] = a
+	}
+	return is
+}
+
+func (p ProfileDB) Map(rows *sql.Rows) ([]Profile, error) {
+	cols, err := rows.Columns()
+	if err != nil {
+		return nil, err
+	}
+	dist := []Profile{}
+	for rows.Next() {
+		mapper := make(map[string]interface{})
+		di := Profile{}
+		p.Register(mapper, &di)
+		refs := make([]interface{}, len(cols))
+		for i, c := range cols {
+			refs[i] = mapper[c]
+		}
+		if err := rows.Scan(refs...); err != nil {
+			return nil, err
+		}
+		dist = append(dist, di)
+	}
+	return dist, nil
 }

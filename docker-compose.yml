@@ -6,6 +6,7 @@ services:
     build: .
     depends_on:
       - mysql
+    command: go test -race ./...
 
   mysql:
     image: mysql:5.6
