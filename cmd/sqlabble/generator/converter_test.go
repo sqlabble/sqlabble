@@ -1,10 +1,10 @@
-package sqlabble_test
+package generator_test
 
 import (
 	"fmt"
 	"testing"
 
-	"github.com/minodisk/sqlabble/cmd/sqlabble"
+	"github.com/minodisk/sqlabble/cmd/sqlabble/generator"
 )
 
 func TestTableTagPosition(t *testing.T) {
@@ -53,7 +53,7 @@ type Person struct {
 		c := c
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
 			t.Parallel()
-			g, err := sqlabble.Convert([]byte(c.input))
+			g, err := generator.Convert([]byte(c.input), "dummy.go")
 			if err != nil {
 				t.Fatal(err)
 			}

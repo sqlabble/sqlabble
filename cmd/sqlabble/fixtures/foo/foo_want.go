@@ -37,11 +37,11 @@ func NewUserDB(aliases ...string) UserDB {
 	}
 }
 
-func (u UserDB) Register(mapper map[string]interface{}, d *User, aliases ...string) {
-	mapper[strings.Join(append(aliases, "UserID"), ".")] = &d.UserID
-	mapper[strings.Join(append(aliases, "Name"), ".")] = &d.Name
-	mapper[strings.Join(append(aliases, "Avatar"), ".")] = &d.Avatar
-	u.Prof.Register(mapper, &d.Prof, append(aliases, "Prof")...)
+func (u UserDB) Register(mapper map[string]interface{}, dist *User, aliases ...string) {
+	mapper[strings.Join(append(aliases, "UserID"), ".")] = &dist.UserID
+	mapper[strings.Join(append(aliases, "Name"), ".")] = &dist.Name
+	mapper[strings.Join(append(aliases, "Avatar"), ".")] = &dist.Avatar
+	u.Prof.Register(mapper, &dist.Prof, append(aliases, "Prof")...)
 }
 
 func (u UserDB) Columns() []stmt.Column {
@@ -121,10 +121,10 @@ func NewProfileDB(aliases ...string) ProfileDB {
 	}
 }
 
-func (p ProfileDB) Register(mapper map[string]interface{}, d *Profile, aliases ...string) {
-	mapper[strings.Join(append(aliases, "ProfileID"), ".")] = &d.ProfileID
-	mapper[strings.Join(append(aliases, "Body"), ".")] = &d.Body
-	mapper[strings.Join(append(aliases, "UserID"), ".")] = &d.UserID
+func (p ProfileDB) Register(mapper map[string]interface{}, dist *Profile, aliases ...string) {
+	mapper[strings.Join(append(aliases, "ProfileID"), ".")] = &dist.ProfileID
+	mapper[strings.Join(append(aliases, "Body"), ".")] = &dist.Body
+	mapper[strings.Join(append(aliases, "UserID"), ".")] = &dist.UserID
 }
 
 func (p ProfileDB) Columns() []stmt.Column {

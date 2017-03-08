@@ -1,7 +1,8 @@
-package sqlabble
+package generator
 
 import (
 	"bytes"
+	"fmt"
 	"go/ast"
 	"go/format"
 	"go/importer"
@@ -11,6 +12,8 @@ import (
 	"html/template"
 	"reflect"
 	"strings"
+
+	"golang.org/x/tools/imports"
 
 	"github.com/minodisk/caseconv"
 )
@@ -34,8 +37,8 @@ type {{ $tableType }} struct{
 	Table stmt.Table
 	TableAlias stmt.TableAlias
 {{- range .Columns }}
-	{{- if .Ref }}
-	{{ .GoName }} {{ .Ref.GoName }}DB
+	{{- if .GoRefName }}
+	{{ .GoName }} {{ .GoRefPkgName }}{{ .GoRefName }}DB
 	{{- else }}
 	{{ .GoName }}Column      stmt.Column
 	{{ .GoName }}ColumnAlias stmt.ColumnAlias
@@ -52,8 +55,8 @@ func New{{ $tableType }}(aliases ...string) {{ $tableType }} {
 		Table: stmt.NewTable("{{ .DBName }}"),
 		TableAlias: stmt.NewTable("{{ .DBName }}").As(alias),
 {{- range .Columns }}
-	{{- if .Ref }}
-	{{ .GoName }}: New{{ .Ref.GoName }}DB(append(aliases, "{{ .GoName }}")...),
+	{{- if .GoRefName }}
+	{{ .GoName }}: {{ .GoRefPkgName }}New{{ .GoRefName }}DB(append(aliases, "{{ .GoName }}")...),
 	{{- else }}
 	{{ .GoName }}Column:      stmt.NewTableAlias(alias).Column("{{ .DBName }}"),
 	{{ .GoName }}ColumnAlias: stmt.NewTableAlias(alias).Column("{{ .DBName }}").As(strings.Join(append(aliases, "{{ .GoName }}"), ".")),
@@ -62,12 +65,12 @@ func New{{ $tableType }}(aliases ...string) {{ $tableType }} {
 	}
 }
 
-func ({{ $receiver }} {{ $tableType }}) Register(mapper map[string]interface{}, d *{{ $baseType }}, aliases ...string) {
+func ({{ $receiver }} {{ $tableType }}) Register(mapper map[string]interface{}, dist *{{ $baseType }}, aliases ...string) {
 {{- range .Columns }}
-	{{- if .Ref }}
-	{{ $receiver }}.{{ .GoName }}.Register(mapper, &d.{{ .GoName }}, append(aliases, "{{ .GoName }}")...)
+	{{- if .GoRefName }}
+	{{ $receiver }}.{{ .GoName }}.Register(mapper, &dist.{{ .GoName }}, append(aliases, "{{ .GoName }}")...)
 	{{- else }}
-	mapper[strings.Join(append(aliases, "{{ .GoName }}"), ".")] = &d.{{ .GoName }}
+	mapper[strings.Join(append(aliases, "{{ .GoName }}"), ".")] = &dist.{{ .GoName }}
 	{{- end }}
 {{- end }}
 }
@@ -75,7 +78,7 @@ func ({{ $receiver }} {{ $tableType }}) Register(mapper map[string]interface{}, 
 func ({{ $receiver }} {{ $tableType }}) Columns() []stmt.Column {
 	return []stmt.Column{
 {{- range .Columns }}
-	{{- if not .Ref }}
+	{{- if not .GoRefName }}
 		{{ $receiver }}.{{ .GoName }}Column,
 	{{- end }}
 {{- end }}
@@ -85,13 +88,13 @@ func ({{ $receiver }} {{ $tableType }}) Columns() []stmt.Column {
 func ({{ $receiver }} {{ $tableType }}) ColumnAliases() []stmt.ColumnAlias {
 	aliases := []stmt.ColumnAlias{
 {{- range .Columns }}
-	{{- if not .Ref }}
+	{{- if not .GoRefName }}
 		{{ $receiver }}.{{ .GoName }}ColumnAlias,
 	{{- end }}
 {{- end }}
 	}
 {{- range .Columns }}
-	{{- if .Ref }}
+	{{- if .GoRefName }}
 	aliases = append(aliases, {{ $receiver }}.{{ .GoName }}.ColumnAliases()...)
 	{{- end }}
 {{- end }}
@@ -142,7 +145,7 @@ func init() {
 	}
 }
 
-func Convert(input []byte) ([]byte, error) {
+func Convert(input []byte, filename string) ([]byte, error) {
 	fset := token.NewFileSet()
 	f, err := parser.ParseFile(fset, "dummy.go", input, parser.ParseComments)
 	if err != nil {
@@ -155,8 +158,12 @@ func Convert(input []byte) ([]byte, error) {
 		Defs: map[*ast.Ident]types.Object{},
 		Uses: map[*ast.Ident]types.Object{},
 	}
-	conf.Check(f.Name.Name, fset, []*ast.File{f}, info)
+	if _, err := conf.Check(f.Name.Name, fset, []*ast.File{f}, info); err != nil {
+		return nil, err
+	}
 
+	// fmt.Println("==================")
+	// fmt.Println(p)
 	// fmt.Println("DEFS=====")
 	// for k, v := range info.Defs {
 	// 	fmt.Printf("%s: %+v\n", k, v)
@@ -175,20 +182,20 @@ func Convert(input []byte) ([]byte, error) {
 		return nil, nil
 	}
 
-	for _, t := range pkg.Tables {
-		for i, c := range t.Columns {
-			if c.ident == nil {
-				continue
-			}
-			for _, t := range pkg.Tables {
-				if c.ident == t.ident {
-					c.Ref = &t
-					break
-				}
-			}
-			t.Columns[i] = c
-		}
-	}
+	// for _, t := range pkg.Tables {
+	// 	for i, c := range t.Columns {
+	// 		if c.ident == nil {
+	// 			continue
+	// 		}
+	// 		for _, t := range pkg.Tables {
+	// 			if c.ident == t.ident {
+	// 				c.Ref = &t
+	// 				break
+	// 			}
+	// 		}
+	// 		t.Columns[i] = c
+	// 	}
+	// }
 
 	// fmt.Printf("%+v\n", pkg)
 
@@ -197,12 +204,16 @@ func Convert(input []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	bytes, err := format.Source(buf.Bytes())
+	code := buf.Bytes()
+	code, err = imports.Process(filename, code, nil)
 	if err != nil {
 		return nil, err
 	}
-
-	return bytes, nil
+	code, err = format.Source(code)
+	if err != nil {
+		return nil, err
+	}
+	return code, nil
 }
 
 type Package struct {
@@ -219,10 +230,11 @@ type Table struct {
 }
 
 type Column struct {
-	GoName string
-	DBName string
-	ident  *ast.Ident
-	Ref    *Table
+	GoName       string
+	GoRefPkgName string
+	GoRefName    string
+	DBName       string
+	// ident      *ast.Ident
 }
 
 type Comment struct {
@@ -352,16 +364,39 @@ func ParseColumn(fset *token.FileSet, info *types.Info, field *ast.Field) *Colum
 			if ident == nil {
 				ident = t
 				obj := info.Defs[ident]
-				for i, o := range info.Defs {
-					if o == nil || o.Parent() == nil {
-						continue
-					}
-					if o.Type() == obj.Type() {
-						// fmt.Println("->", fset.Position(o.Pos()), i.Name, o.Type())
-						column.ident = i
-						break
+
+				myType := obj.Type()
+				parentType := myType.Underlying()
+				if myType == parentType {
+					return false
+				}
+
+				myPkg := obj.Pkg()
+				if myTypeNamed, ok := myType.(*types.Named); ok {
+					refPkg := myTypeNamed.Obj().Pkg()
+					if myPkg == refPkg {
+						// fmt.Println(obj.Name(), myTypeNamed.Obj().Name())
+						column.GoRefName = myTypeNamed.Obj().Name()
+					} else {
+						fmt.Println(obj.Name(), refPkg.Name(), myTypeNamed.Obj().Name())
+						column.GoRefPkgName = refPkg.Name() + "."
+						column.GoRefName = myTypeNamed.Obj().Name()
 					}
 				}
+
+				// for _, o := range info.Defs {
+				// 	if o == nil {
+				// 		continue
+				// 	}
+				// 	if o.Type() == obj.Type() {
+				// 		// fmt.Println("->", fset.Position(o.Pos()), i.Name, o.Type())
+				// 		// column.ident = i
+				//
+				// 		tmp := strings.Split(o.Type().String(), "/")
+				// 		column.GoRefName = tmp[len(tmp)-1]
+				// 		break
+				// 	}
+				// }
 			}
 		case *ast.BasicLit: // find tag
 			if t.Kind == token.STRING {
