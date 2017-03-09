@@ -16,7 +16,7 @@ SQL query builder with type support.
 ## Installation
 
 ```
-go get -u github.com/minodisk/sqlabble
+go get -u github.com/minodisk/sqlabble/...
 ```
 
 ## Usage
