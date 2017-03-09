@@ -34,6 +34,30 @@ func TestConvertFile(t *testing.T) {
 			"../fixtures/foo/bar/bar_gen.go",
 			"../fixtures/foo/bar/bar_want.go",
 		},
+		{
+			"../fixtures/foo/bar/baz/article.go",
+			generator.Options{
+				Suffix: "_gen",
+			},
+			"../fixtures/foo/bar/baz/article_gen.go",
+			"../fixtures/foo/bar/baz/article_want.go",
+		},
+		{
+			"../fixtures/foo/bar/baz/post.go",
+			generator.Options{
+				Suffix: "_gen",
+			},
+			"../fixtures/foo/bar/baz/post_gen.go",
+			"../fixtures/foo/bar/baz/post_want.go",
+		},
+		{
+			"../fixtures/foo/bar/baz/comment.go",
+			generator.Options{
+				Suffix: "_gen",
+			},
+			"../fixtures/foo/bar/baz/comment_gen.go",
+			"../fixtures/foo/bar/baz/comment_want.go",
+		},
 	} {
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
 			defer func() {

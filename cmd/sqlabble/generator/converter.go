@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"go/ast"
 	"go/format"
-	"go/importer"
 	"go/parser"
 	"go/token"
 	"go/types"
@@ -37,7 +36,7 @@ type {{ $tableType }} struct{
 	TableAlias stmt.TableAlias
 {{- range .Columns }}
 	{{- if .GoRefName }}
-	{{ .GoName }} {{ .GoRefPkgName }}{{ .GoRefName }}DB
+	{{ .GoName }} {{ if .GoRefPkgName }}{{ .GoRefPkgName }}.{{ end }}{{ .GoRefName }}DB
 	{{- else }}
 	{{ .GoName }}Column      stmt.Column
 	{{ .GoName }}ColumnAlias stmt.ColumnAlias
@@ -55,7 +54,7 @@ func New{{ $tableType }}(aliases ...string) {{ $tableType }} {
 		TableAlias: stmt.NewTable("{{ .DBName }}").As(alias),
 {{- range .Columns }}
 	{{- if .GoRefName }}
-	{{ .GoName }}: {{ .GoRefPkgName }}New{{ .GoRefName }}DB(append(aliases, "{{ .GoName }}")...),
+	{{ .GoName }}: {{ if .GoRefPkgName }}{{ .GoRefPkgName }}.{{ end }}New{{ .GoRefName }}DB(append(aliases, "{{ .GoName }}")...),
 	{{- else }}
 	{{ .GoName }}Column:      stmt.NewTableAlias(alias).Column("{{ .DBName }}"),
 	{{ .GoName }}ColumnAlias: stmt.NewTableAlias(alias).Column("{{ .DBName }}").As(strings.Join(append(aliases, "{{ .GoName }}"), ".")),
@@ -150,16 +149,18 @@ func Convert(input []byte, srcFilename string, destFilename string) ([]byte, err
 	if err != nil {
 		return nil, err
 	}
-	conf := &types.Config{
-		Importer: importer.Default(),
-	}
-	info := &types.Info{
-		Defs: map[*ast.Ident]types.Object{},
-		Uses: map[*ast.Ident]types.Object{},
-	}
-	if _, err := conf.Check(f.Name.Name, fset, []*ast.File{f}, info); err != nil {
-		return nil, err
-	}
+	// conf := &types.Config{
+	// 	Importer: importer.Default(),
+	// }
+	// info := &types.Info{
+	// 	Defs: map[*ast.Ident]types.Object{},
+	// 	Uses: map[*ast.Ident]types.Object{},
+	// }
+	// fmt.Println("=>", f.Name)
+	// if _, err := conf.Check(f.Name.Name, fset, []*ast.File{f}, info); err != nil {
+	// 	fmt.Println("->", err)
+	// 	return nil, err
+	// }
 
 	// fmt.Println("==================")
 	// fmt.Println(p)
@@ -176,7 +177,7 @@ func Convert(input []byte, srcFilename string, destFilename string) ([]byte, err
 		return nil, nil
 	}
 
-	pkg := ParsePackage(fset, info, f)
+	pkg := ParsePackage(fset, nil, f)
 	if len(pkg.Tables) == 0 {
 		return nil, nil
 	}
@@ -352,6 +353,33 @@ func ParseColumn(fset *token.FileSet, info *types.Info, field *ast.Field) *Colum
 		ident  *ast.Ident
 		tag    *ast.BasicLit
 	)
+
+	primitiveTypes := []string{
+		"bool",
+		"uint8",
+		"uint16",
+		"uint32",
+		"uint64",
+		"int8",
+		"int16",
+		"int32",
+		"int64",
+		"float32",
+		"float64",
+		"complex64",
+		"complex128",
+		"byte",
+		"rune",
+		"uint",
+		"int",
+		"uintptr",
+		"string",
+	}
+	primitiveTypeMap := make(map[string]bool)
+	for _, t := range primitiveTypes {
+		primitiveTypeMap[t] = true
+	}
+
 	ast.Inspect(field, func(node ast.Node) bool {
 		if node == nil {
 			return false
@@ -360,26 +388,42 @@ func ParseColumn(fset *token.FileSet, info *types.Info, field *ast.Field) *Colum
 		case *ast.Ident: // find field type
 			if ident == nil {
 				ident = t
-				obj := info.Defs[ident]
 
-				myType := obj.Type()
-				parentType := myType.Underlying()
-				if myType == parentType {
+				f, ok := t.Obj.Decl.(*ast.Field)
+				if !ok {
 					return false
 				}
-
-				myPkg := obj.Pkg()
-				if myTypeNamed, ok := myType.(*types.Named); ok {
-					refPkg := myTypeNamed.Obj().Pkg()
-					if myPkg == refPkg {
-						// fmt.Println(obj.Name(), myTypeNamed.Obj().Name())
-						column.GoRefName = myTypeNamed.Obj().Name()
-					} else {
-						// fmt.Println(obj.Name(), refPkg.Name(), myTypeNamed.Obj().Name())
-						column.GoRefPkgName = refPkg.Name() + "."
-						column.GoRefName = myTypeNamed.Obj().Name()
+				switch s := f.Type.(type) {
+				default:
+					return false
+				case *ast.SelectorExpr:
+					if i, ok := s.X.(*ast.Ident); ok {
+						column.GoRefPkgName = i.Name
 					}
+					column.GoRefName = s.Sel.Name
+				case *ast.Ident:
+					if _, ok := primitiveTypeMap[s.Name]; ok {
+						return true
+					}
+					column.GoRefName = s.Name
 				}
+
+				// obj := info.Defs[ident]
+				// myType := obj.Type()
+				// parentType := myType.Underlying()
+				// if myType == parentType {
+				// 	return false
+				// }
+				// myPkg := obj.Pkg()
+				// if myTypeNamed, ok := myType.(*types.Named); ok {
+				// 	refPkg := myTypeNamed.Obj().Pkg()
+				// 	if myPkg == refPkg {
+				// 		column.GoRefName = myTypeNamed.Obj().Name()
+				// 	} else {
+				// 		column.GoRefPkgName = refPkg.Name() + "."
+				// 		column.GoRefName = myTypeNamed.Obj().Name()
+				// 	}
+				// }
 
 				// for _, o := range info.Defs {
 				// 	if o == nil {
