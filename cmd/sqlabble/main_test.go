@@ -1,4 +1,4 @@
-package sqlabble_test
+package main_test
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/minodisk/sqlabble/cmd/sqlabble"
+	main "github.com/minodisk/sqlabble/cmd/sqlabble"
 	"github.com/minodisk/sqlabble/internal/diff"
 )
 
@@ -64,7 +64,7 @@ func TestGlobs(t *testing.T) {
 		c := c
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
 			t.Parallel()
-			got, err := sqlabble.Globs(c.patterns)
+			got, err := main.Globs(c.patterns)
 			sort.SliceStable(got, func(i, j int) bool {
 				return got[i] < got[j]
 			})

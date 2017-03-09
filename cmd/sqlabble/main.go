@@ -1,4 +1,4 @@
-package sqlabble
+package main
 
 import (
 	"flag"

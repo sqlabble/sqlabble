@@ -1,4 +1,4 @@
-package sqlabble_test
+package main_test
 
 import (
 	"database/sql"
