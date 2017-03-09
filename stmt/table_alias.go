@@ -17,6 +17,12 @@ func NewTableAlias(alias string) TableAlias {
 	}
 }
 
+func (t TableAlias) Column(name string) Column {
+	c := NewColumn(name)
+	c.namer = t
+	return c
+}
+
 func (t TableAlias) Join(table TableOrAlias) Join {
 	nj := NewJoin(table)
 	nj.prev = t
@@ -46,6 +52,10 @@ func (t TableAlias) nodeize() (tokenizer.Tokenizer, []interface{}) {
 }
 
 func (t TableAlias) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
+	if t.Alias == "" {
+		return t.table.nodeizeSelf()
+	}
+
 	t1, v1 := t.table.nodeize()
 	t2 := tokenizer.NewLine(
 		token.LQuote,
@@ -62,6 +72,10 @@ func (t TableAlias) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	), v1
 }
 
+func (t TableAlias) name() string {
+	return t.Alias
+}
+
 func (t TableAlias) previous() Prever {
 	return nil
 }
@@ -73,9 +87,9 @@ func (t TableAlias) isTableOrAlias() bool {
 	return true
 }
 
-// isTableOrAliasOrJoiner always returns true.
+// isJoinerOrAlias always returns true.
 // This method exists only to implement the interface TableOrAliasOrJoiner.
 // This is a shit of duck typing, but anyway it works.
-func (t TableAlias) isTableOrAliasOrJoiner() bool {
+func (t TableAlias) isJoinerOrAlias() bool {
 	return true
 }

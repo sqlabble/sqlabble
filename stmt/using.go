@@ -61,9 +61,9 @@ func (u Using) previous() Prever {
 	return u.join.previous()
 }
 
-// isTableOrAliasOrJoiner always returns true.
+// isJoinerOrAlias always returns true.
 // This method exists only to implement the interface TableOrAliasOrJoiner.
 // This is a shit of duck typing, but anyway it works.
-func (u Using) isTableOrAliasOrJoiner() bool {
+func (u Using) isJoinerOrAlias() bool {
 	return true
 }

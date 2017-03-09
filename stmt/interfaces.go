@@ -26,6 +26,11 @@ type Joiner interface {
 	RightJoin(TableOrAlias) Join
 }
 
+type Namer interface {
+	Statement
+	name() string
+}
+
 type ValOrFuncOrSub interface {
 	Statement
 	isValOrFuncOrSub() bool
@@ -46,9 +51,14 @@ type TableOrAlias interface {
 	isTableOrAlias() bool
 }
 
-type TableOrAliasOrJoiner interface {
+type ColOrAlias interface {
 	Statement
-	isTableOrAliasOrJoiner() bool
+	isColOrAlias() bool
+}
+
+type JoinerOrAlias interface {
+	Statement
+	isJoinerOrAlias() bool
 }
 
 type ColOrSub interface {

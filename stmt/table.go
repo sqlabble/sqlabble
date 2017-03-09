@@ -24,7 +24,7 @@ func (t Table) As(alias string) TableAlias {
 
 func (t Table) Column(name string) Column {
 	c := NewColumn(name)
-	c.table = t
+	c.namer = t
 	return c
 }
 
@@ -63,6 +63,10 @@ func (t Table) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	return tokenizer.NewLine(token.Word(t.Name)), nil
 }
 
+func (t Table) name() string {
+	return t.Name
+}
+
 func (t Table) previous() Prever {
 	return nil
 }
@@ -74,9 +78,9 @@ func (t Table) isTableOrAlias() bool {
 	return true
 }
 
-// isTableOrAliasOrJoiner always returns true.
+// isJoinerOrAlias always returns true.
 // This method exists only to implement the interface TableOrAliasOrJoiner.
 // This is a shit of duck typing, but anyway it works.
-func (t Table) isTableOrAliasOrJoiner() bool {
+func (t Table) isJoinerOrAlias() bool {
 	return true
 }

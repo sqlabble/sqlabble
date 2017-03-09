@@ -9,7 +9,6 @@ RUN go get -u \
       github.com/sergi/go-diff/diffmatchpatch
 
 COPY . .
-
-RUN go version
+RUN go install ./...
 
 CMD go test -v -race ./...
