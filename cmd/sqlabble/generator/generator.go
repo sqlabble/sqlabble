@@ -22,7 +22,7 @@ func ConvertFile(srcPath string, op Options) error {
 	base := strings.TrimSuffix(srcFilename, ext)
 	destDir := filepath.Dir(srcPath)
 	destFilename := fmt.Sprintf("%s%s%s", base, op.Suffix, ext)
-	destCode, err := Convert(srcCode, srcFilename, destFilename)
+	destCode, err := Convert(srcCode, srcPath, destFilename)
 	if err != nil {
 		return err
 	}

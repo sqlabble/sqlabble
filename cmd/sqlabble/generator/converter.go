@@ -4,10 +4,13 @@ import (
 	"bytes"
 	"go/ast"
 	"go/format"
+	"go/importer"
 	"go/parser"
 	"go/token"
 	"go/types"
 	"html/template"
+	"os"
+	"path/filepath"
 	"reflect"
 	"strings"
 
@@ -143,24 +146,111 @@ func init() {
 	}
 }
 
-func Convert(input []byte, srcFilename string, destFilename string) ([]byte, error) {
+func Convert(input []byte, srcPath, destFilename string) ([]byte, error) {
+	var scanner *types.Interface
+
+	{
+		fset := token.NewFileSet()
+		file, err := parser.ParseFile(fset, "database/sql", `package sql
+type Scanner interface {
+	Scan(src interface{}) error
+}
+`, 0)
+		if err != nil {
+			return nil, err
+		}
+		// ast.Inspect(file, func(node ast.Node) bool {
+		// 	fmt.Printf("%T %+v\n", node, node)
+		// 	switch t := node.(type) {
+		// 	case *ast.InterfaceType:
+		// 		fmt.Println(t)
+		// 	}
+		// 	return true
+		// })
+		conf := &types.Config{
+			Importer: importer.Default(),
+		}
+		info := &types.Info{
+			Types: map[ast.Expr]types.TypeAndValue{},
+			Defs:  map[*ast.Ident]types.Object{},
+			Uses:  map[*ast.Ident]types.Object{},
+		}
+		// fmt.Println("=>", f.Name.Name)
+		if _, err := conf.Check("database/sql", fset, []*ast.File{file}, info); err != nil {
+			// fmt.Println("->", err)
+			return nil, err
+		}
+		for _, t := range info.Types {
+			if i, ok := t.Type.(*types.Interface); ok {
+				for j := 0; j < i.NumMethods(); j++ {
+					f := i.Method(j)
+					if f.Name() == "Scan" {
+						scanner = i
+					}
+				}
+			}
+		}
+	}
+
+	srcDir := filepath.Dir(srcPath)
+	srcFilename := filepath.Base(srcPath)
+	// fmt.Println(srcDir, srcFilename)
+
 	fset := token.NewFileSet()
-	f, err := parser.ParseFile(fset, srcFilename, input, parser.ParseComments)
+	// f, err := parser.ParseFile(fset, srcFilename, input, parser.ParseComments)
+	pkgs, err := parser.ParseDir(fset, srcDir, func(fi os.FileInfo) bool {
+		return true
+	}, parser.ParseComments)
 	if err != nil {
 		return nil, err
 	}
-	// conf := &types.Config{
-	// 	Importer: importer.Default(),
+
+	// var f *token.File
+	// fset.Iterate(func(file *token.File) bool {
+	// 	if file.Name() == srcPath {
+	// 		f = file
+	// 		return false
+	// 	}
+	// 	return true
+	// })
+	// if f == nil {
+	// 	return nil, nil
 	// }
-	// info := &types.Info{
-	// 	Defs: map[*ast.Ident]types.Object{},
-	// 	Uses: map[*ast.Ident]types.Object{},
-	// }
-	// fmt.Println("=>", f.Name)
-	// if _, err := conf.Check(f.Name.Name, fset, []*ast.File{f}, info); err != nil {
-	// 	fmt.Println("->", err)
-	// 	return nil, err
-	// }
+
+	var (
+		fs []*ast.File
+		f  *ast.File
+	)
+	for _, pkg := range pkgs {
+		// fmt.Println(pkgName, pkg)
+		fs = []*ast.File{}
+		for fileName, file := range pkg.Files {
+			fs = append(fs, file)
+			// fmt.Println("  ", fileName, file)
+			if fileName == srcPath {
+				f = file
+			}
+		}
+		if f != nil {
+			break
+		}
+	}
+	if f == nil {
+		return nil, nil
+	}
+
+	conf := &types.Config{
+		Importer: importer.Default(),
+	}
+	info := &types.Info{
+		Defs: map[*ast.Ident]types.Object{},
+		Uses: map[*ast.Ident]types.Object{},
+	}
+	// fmt.Println("=>", f.Name.Name)
+	if _, err := conf.Check("github.com/minodisk/sqlabble/cmd/sqlabble/foo/bar/baz/"+srcFilename, fset, fs, info); err != nil {
+		// fmt.Println("->", err)
+		return nil, err
+	}
 
 	// fmt.Println("==================")
 	// fmt.Println(p)
@@ -177,7 +267,7 @@ func Convert(input []byte, srcFilename string, destFilename string) ([]byte, err
 		return nil, nil
 	}
 
-	pkg := ParsePackage(fset, nil, f)
+	pkg := ParsePackage(fset, info, f, scanner)
 	if len(pkg.Tables) == 0 {
 		return nil, nil
 	}
@@ -251,7 +341,7 @@ func (cs Comments) Find(from, to int) (Comment, bool) {
 	return Comment{}, false
 }
 
-func ParsePackage(fset *token.FileSet, info *types.Info, file *ast.File) Package {
+func ParsePackage(fset *token.FileSet, info *types.Info, file *ast.File, scanner *types.Interface) Package {
 	comments := Comments{}
 	for _, comment := range file.Comments {
 		// fmt.Println("=========")
@@ -287,7 +377,7 @@ func ParsePackage(fset *token.FileSet, info *types.Info, file *ast.File) Package
 				return false
 			}
 
-			t := ParseTable(fset, info, s)
+			t := ParseTable(fset, info, s, scanner)
 			if c.TableName != "" {
 				t.DBName = c.TableName
 			}
@@ -306,7 +396,7 @@ func ParsePackage(fset *token.FileSet, info *types.Info, file *ast.File) Package
 	return p
 }
 
-func ParseTable(fset *token.FileSet, info *types.Info, typ *ast.TypeSpec) Table {
+func ParseTable(fset *token.FileSet, info *types.Info, typ *ast.TypeSpec, scanner *types.Interface) Table {
 	var (
 		table Table
 		found bool
@@ -330,7 +420,7 @@ func ParseTable(fset *token.FileSet, info *types.Info, typ *ast.TypeSpec) Table 
 			table.Reciever = string(strings.ToLower(typ.Name.Name)[0])
 			table.DBName = caseconv.LowerSnakeCase(typ.Name.Name)
 			for _, field := range s.Fields.List {
-				column := ParseColumn(fset, info, field)
+				column := ParseColumn(fset, info, field, scanner)
 				if column != nil {
 					table.Columns = append(table.Columns, *column)
 				}
@@ -346,7 +436,7 @@ func ParseTable(fset *token.FileSet, info *types.Info, typ *ast.TypeSpec) Table 
 	return table
 }
 
-func ParseColumn(fset *token.FileSet, info *types.Info, field *ast.Field) *Column {
+func ParseColumn(fset *token.FileSet, info *types.Info, field *ast.Field, scanner *types.Interface) *Column {
 	// fmt.Println("-----")
 	var (
 		column Column
@@ -354,31 +444,31 @@ func ParseColumn(fset *token.FileSet, info *types.Info, field *ast.Field) *Colum
 		tag    *ast.BasicLit
 	)
 
-	primitiveTypes := []string{
-		"bool",
-		"uint8",
-		"uint16",
-		"uint32",
-		"uint64",
-		"int8",
-		"int16",
-		"int32",
-		"int64",
-		"float32",
-		"float64",
-		"complex64",
-		"complex128",
-		"byte",
-		"rune",
-		"uint",
-		"int",
-		"uintptr",
-		"string",
-	}
-	primitiveTypeMap := make(map[string]bool)
-	for _, t := range primitiveTypes {
-		primitiveTypeMap[t] = true
-	}
+	// primitiveTypes := []string{
+	// 	"bool",
+	// 	"uint8",
+	// 	"uint16",
+	// 	"uint32",
+	// 	"uint64",
+	// 	"int8",
+	// 	"int16",
+	// 	"int32",
+	// 	"int64",
+	// 	"float32",
+	// 	"float64",
+	// 	"complex64",
+	// 	"complex128",
+	// 	"byte",
+	// 	"rune",
+	// 	"uint",
+	// 	"int",
+	// 	"uintptr",
+	// 	"string",
+	// }
+	// primitiveTypeMap := make(map[string]bool)
+	// for _, t := range primitiveTypes {
+	// 	primitiveTypeMap[t] = true
+	// }
 
 	ast.Inspect(field, func(node ast.Node) bool {
 		if node == nil {
@@ -389,41 +479,56 @@ func ParseColumn(fset *token.FileSet, info *types.Info, field *ast.Field) *Colum
 			if ident == nil {
 				ident = t
 
-				f, ok := t.Obj.Decl.(*ast.Field)
-				if !ok {
-					return false
-				}
-				switch s := f.Type.(type) {
-				default:
-					return false
-				case *ast.SelectorExpr:
-					if i, ok := s.X.(*ast.Ident); ok {
-						column.GoRefPkgName = i.Name
-					}
-					column.GoRefName = s.Sel.Name
-				case *ast.Ident:
-					if _, ok := primitiveTypeMap[s.Name]; ok {
-						return true
-					}
-					column.GoRefName = s.Name
-				}
-
-				// obj := info.Defs[ident]
-				// myType := obj.Type()
-				// parentType := myType.Underlying()
-				// if myType == parentType {
+				// f, ok := t.Obj.Decl.(*ast.Field)
+				// if !ok {
 				// 	return false
 				// }
-				// myPkg := obj.Pkg()
-				// if myTypeNamed, ok := myType.(*types.Named); ok {
-				// 	refPkg := myTypeNamed.Obj().Pkg()
-				// 	if myPkg == refPkg {
-				// 		column.GoRefName = myTypeNamed.Obj().Name()
-				// 	} else {
-				// 		column.GoRefPkgName = refPkg.Name() + "."
-				// 		column.GoRefName = myTypeNamed.Obj().Name()
+				// switch s := f.Type.(type) {
+				// default:
+				// 	return false
+				// case *ast.SelectorExpr:
+				// 	if i, ok := s.X.(*ast.Ident); ok {
+				// 		column.GoRefPkgName = i.Name
 				// 	}
+				// 	column.GoRefName = s.Sel.Name
+				// case *ast.Ident:
+				// 	if _, ok := primitiveTypeMap[s.Name]; ok {
+				// 		return true
+				// 	}
+				// 	column.GoRefName = s.Name
 				// }
+
+				obj := info.Defs[ident]
+				myType := obj.Type()
+				parentType := myType.Underlying()
+				// fmt.Println("----------")
+				// fmt.Println(types.Implements(obj.Type(), scanner), myType, scanner)
+				// fmt.Println(types.Implements(myType, scanner), myType, scanner)
+				// fmt.Println(types.Implements(parentType, scanner), parentType, scanner)
+				// if types.Implements(parentType, scanner) {
+				// 	return true
+				// }
+				if myType == parentType {
+					return false
+				}
+				myPkg := obj.Pkg()
+				if myTypeNamed, ok := myType.(*types.Named); ok {
+					for i := 0; i < myTypeNamed.NumMethods(); i++ {
+						fun := myTypeNamed.Method(i)
+						// this is bad operation
+						// should check implements Scanner using with types.Implements()
+						if fun.Name() == "Scan" {
+							return false
+						}
+					}
+					refPkg := myTypeNamed.Obj().Pkg()
+					if myPkg == refPkg {
+						column.GoRefName = myTypeNamed.Obj().Name()
+					} else {
+						column.GoRefPkgName = refPkg.Name()
+						column.GoRefName = myTypeNamed.Obj().Name()
+					}
+				}
 
 				// for _, o := range info.Defs {
 				// 	if o == nil {
