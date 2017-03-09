@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	if err := _main; err != nil {
+	if err := _main(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(2)
 	}
@@ -54,7 +54,7 @@ Examples:
 `)
 	}
 	fs.StringVar(&op.Suffix, "suffix", "_sqlabble", "suffix of the file to be generated")
-	if err := fs.Parse(args); err != nil {
+	if err := fs.Parse(args[1:]); err != nil {
 		return op, nil, err
 	}
 
