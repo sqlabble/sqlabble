@@ -18,17 +18,18 @@ func ConvertFile(srcPath string, op Options) error {
 		return err
 	}
 
-	base := strings.TrimSuffix(filepath.Base(srcPath), ext)
-	distDir := filepath.Dir(srcPath)
-	distFileName := fmt.Sprintf("%s%s%s", base, op.Suffix, ext)
-	distCode, err := Convert(srcCode, distFileName)
+	srcFilename := filepath.Base(srcPath)
+	base := strings.TrimSuffix(srcFilename, ext)
+	destDir := filepath.Dir(srcPath)
+	destFilename := fmt.Sprintf("%s%s%s", base, op.Suffix, ext)
+	destCode, err := Convert(srcCode, srcFilename, destFilename)
 	if err != nil {
 		return err
 	}
-	if distCode == nil {
+	if destCode == nil {
 		return nil
 	}
 
-	distPath := filepath.Join(distDir, distFileName)
-	return ioutil.WriteFile(distPath, distCode, 0664)
+	destPath := filepath.Join(destDir, destFilename)
+	return ioutil.WriteFile(destPath, destCode, 0664)
 }

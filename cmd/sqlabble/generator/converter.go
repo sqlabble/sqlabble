@@ -2,7 +2,6 @@ package generator
 
 import (
 	"bytes"
-	"fmt"
 	"go/ast"
 	"go/format"
 	"go/importer"
@@ -145,9 +144,9 @@ func init() {
 	}
 }
 
-func Convert(input []byte, filename string) ([]byte, error) {
+func Convert(input []byte, srcFilename string, destFilename string) ([]byte, error) {
 	fset := token.NewFileSet()
-	f, err := parser.ParseFile(fset, "dummy.go", input, parser.ParseComments)
+	f, err := parser.ParseFile(fset, srcFilename, input, parser.ParseComments)
 	if err != nil {
 		return nil, err
 	}
@@ -197,15 +196,13 @@ func Convert(input []byte, filename string) ([]byte, error) {
 	// 	}
 	// }
 
-	// fmt.Printf("%+v\n", pkg)
-
 	var buf bytes.Buffer
 	if err := impl.Execute(&buf, pkg); err != nil {
 		return nil, err
 	}
 
 	code := buf.Bytes()
-	code, err = imports.Process(filename, code, nil)
+	code, err = imports.Process(destFilename, code, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -378,7 +375,7 @@ func ParseColumn(fset *token.FileSet, info *types.Info, field *ast.Field) *Colum
 						// fmt.Println(obj.Name(), myTypeNamed.Obj().Name())
 						column.GoRefName = myTypeNamed.Obj().Name()
 					} else {
-						fmt.Println(obj.Name(), refPkg.Name(), myTypeNamed.Obj().Name())
+						// fmt.Println(obj.Name(), refPkg.Name(), myTypeNamed.Obj().Name())
 						column.GoRefPkgName = refPkg.Name() + "."
 						column.GoRefName = myTypeNamed.Obj().Name()
 					}

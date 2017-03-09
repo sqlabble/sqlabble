@@ -53,7 +53,7 @@ type Person struct {
 		c := c
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
 			t.Parallel()
-			g, err := generator.Convert([]byte(c.input), "dummy.go")
+			g, err := generator.Convert([]byte(c.input), "src.go", "dest.go")
 			if err != nil {
 				t.Fatal(err)
 			}
