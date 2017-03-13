@@ -1,5 +1,42 @@
 package generator_test
 
+import (
+	"fmt"
+	"testing"
+
+	"github.com/minodisk/sqlabble/cmd/sqlabble/generator"
+)
+
+func TestParseDBTag(t *testing.T) {
+	t.Parallel()
+	for i, c := range []struct {
+		input string
+		want  string
+		ok    bool
+	}{
+		{
+			`db:"-"`,
+			"-",
+			true,
+		},
+		{
+			`foo:"xxx" db:"-"`,
+			"-",
+			true,
+		},
+	} {
+		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
+			got, ok := generator.ParseDBTag(c.input)
+			if got != c.want {
+				t.Errorf("got %s, want %s", got, c.want)
+			}
+			if ok != c.ok {
+				t.Errorf("got ng, want ok")
+			}
+		})
+	}
+}
+
 // func TestTableTagPosition(t *testing.T) {
 // 	t.Parallel()
 // 	for i, c := range []struct {

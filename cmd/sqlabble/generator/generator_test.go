@@ -18,46 +18,46 @@ func TestConvertFile(t *testing.T) {
 		got     string
 		want    string
 	}{
-		// {
-		// 	"../fixtures/foo/foo.go",
-		// 	generator.Options{
-		// 		Suffix: "_gen",
-		// 	},
-		// 	"../fixtures/foo/foo_gen.go",
-		// 	"../fixtures/foo/foo_want.go",
-		// },
-		// {
-		// 	"../fixtures/foo/bar/bar.go",
-		// 	generator.Options{
-		// 		Suffix: "_gen",
-		// 	},
-		// 	"../fixtures/foo/bar/bar_gen.go",
-		// 	"../fixtures/foo/bar/bar_want.go",
-		// },
-		// {
-		// 	"../fixtures/foo/bar/baz/article.go",
-		// 	generator.Options{
-		// 		Suffix: "_gen",
-		// 	},
-		// 	"../fixtures/foo/bar/baz/article_gen.go",
-		// 	"../fixtures/foo/bar/baz/article_want.go",
-		// },
-		// {
-		// 	"../fixtures/foo/bar/baz/post.go",
-		// 	generator.Options{
-		// 		Suffix: "_gen",
-		// 	},
-		// 	"../fixtures/foo/bar/baz/post_gen.go",
-		// 	"../fixtures/foo/bar/baz/post_want.go",
-		// },
-		// {
-		// 	"../fixtures/foo/bar/baz/comment.go",
-		// 	generator.Options{
-		// 		Suffix: "_gen",
-		// 	},
-		// 	"../fixtures/foo/bar/baz/comment_gen.go",
-		// 	"../fixtures/foo/bar/baz/comment_want.go",
-		// },
+		{
+			"../fixtures/foo/foo.go",
+			generator.Options{
+				Suffix: "_gen",
+			},
+			"../fixtures/foo/foo_gen.go",
+			"../fixtures/foo/foo_want.go",
+		},
+		{
+			"../fixtures/foo/bar/bar.go",
+			generator.Options{
+				Suffix: "_gen",
+			},
+			"../fixtures/foo/bar/bar_gen.go",
+			"../fixtures/foo/bar/bar_want.go",
+		},
+		{
+			"../fixtures/foo/bar/baz/article.go",
+			generator.Options{
+				Suffix: "_gen",
+			},
+			"../fixtures/foo/bar/baz/article_gen.go",
+			"../fixtures/foo/bar/baz/article_want.go",
+		},
+		{
+			"../fixtures/foo/bar/baz/post.go",
+			generator.Options{
+				Suffix: "_gen",
+			},
+			"../fixtures/foo/bar/baz/post_gen.go",
+			"../fixtures/foo/bar/baz/post_want.go",
+		},
+		{
+			"../fixtures/foo/bar/baz/comment.go",
+			generator.Options{
+				Suffix: "_gen",
+			},
+			"../fixtures/foo/bar/baz/comment_gen.go",
+			"../fixtures/foo/bar/baz/comment_want.go",
+		},
 		{
 			"../fixtures/foo/bar/baz/qux/null.go",
 			generator.Options{

@@ -2,6 +2,7 @@ package generator
 
 import (
 	"bytes"
+	"errors"
 	"go/ast"
 	"go/format"
 	"go/importer"
@@ -148,6 +149,13 @@ func init() {
 
 func Convert(input []byte, srcPath, destFilename string) ([]byte, error) {
 	var scanner *types.Interface
+	if !filepath.IsAbs(srcPath) {
+		var err error
+		srcPath, err = filepath.Abs(srcPath)
+		if err != nil {
+			return nil, err
+		}
+	}
 
 	{
 		fset := token.NewFileSet()
@@ -207,28 +215,14 @@ type Scanner interface {
 		return nil, err
 	}
 
-	// var f *token.File
-	// fset.Iterate(func(file *token.File) bool {
-	// 	if file.Name() == srcPath {
-	// 		f = file
-	// 		return false
-	// 	}
-	// 	return true
-	// })
-	// if f == nil {
-	// 	return nil, nil
-	// }
-
 	var (
 		fs []*ast.File
 		f  *ast.File
 	)
 	for _, pkg := range pkgs {
-		// fmt.Println(pkgName, pkg)
 		fs = []*ast.File{}
 		for fileName, file := range pkg.Files {
 			fs = append(fs, file)
-			// fmt.Println("  ", fileName, file)
 			if fileName == srcPath {
 				f = file
 			}
@@ -238,7 +232,7 @@ type Scanner interface {
 		}
 	}
 	if f == nil {
-		return nil, nil
+		return nil, errors.New("can't find source file")
 	}
 
 	conf := &types.Config{
@@ -266,12 +260,12 @@ type Scanner interface {
 	// }
 
 	if ok := ast.FileExports(f); !ok {
-		return nil, nil
+		return nil, errors.New("nothing to export")
 	}
 
 	pkg := ParsePackage(fset, info, f, scanner)
 	if len(pkg.Tables) == 0 {
-		return nil, nil
+		return nil, errors.New("no table found in package")
 	}
 
 	// for _, t := range pkg.Tables {
@@ -356,7 +350,7 @@ func ParsePackage(fset *token.FileSet, info *types.Info, file *ast.File, scanner
 				continue
 			}
 			c = c[1:]
-			if n, ok := ParseDB(c); ok {
+			if n, ok := ParseDBTag(c); ok {
 				comments = append(comments, Comment{
 					Position:  fset.Position(cm.Pos()),
 					TableName: n,
@@ -439,38 +433,11 @@ func ParseTable(fset *token.FileSet, info *types.Info, typ *ast.TypeSpec, scanne
 }
 
 func ParseColumn(fset *token.FileSet, info *types.Info, field *ast.Field, scanner *types.Interface) *Column {
-	// fmt.Println("-----")
 	var (
 		column Column
 		ident  *ast.Ident
 		tag    *ast.BasicLit
 	)
-
-	// primitiveTypes := []string{
-	// 	"bool",
-	// 	"uint8",
-	// 	"uint16",
-	// 	"uint32",
-	// 	"uint64",
-	// 	"int8",
-	// 	"int16",
-	// 	"int32",
-	// 	"int64",
-	// 	"float32",
-	// 	"float64",
-	// 	"complex64",
-	// 	"complex128",
-	// 	"byte",
-	// 	"rune",
-	// 	"uint",
-	// 	"int",
-	// 	"uintptr",
-	// 	"string",
-	// }
-	// primitiveTypeMap := make(map[string]bool)
-	// for _, t := range primitiveTypes {
-	// 	primitiveTypeMap[t] = true
-	// }
 
 	ast.Inspect(field, func(node ast.Node) bool {
 		if node == nil {
@@ -480,31 +447,8 @@ func ParseColumn(fset *token.FileSet, info *types.Info, field *ast.Field, scanne
 		case *ast.Ident: // find field type
 			if ident == nil {
 				ident = t
-
-				// f, ok := t.Obj.Decl.(*ast.Field)
-				// if !ok {
-				// 	return false
-				// }
-				// switch s := f.Type.(type) {
-				// default:
-				// 	return false
-				// case *ast.SelectorExpr:
-				// 	if i, ok := s.X.(*ast.Ident); ok {
-				// 		column.GoRefPkgName = i.Name
-				// 	}
-				// 	column.GoRefName = s.Sel.Name
-				// case *ast.Ident:
-				// 	if _, ok := primitiveTypeMap[s.Name]; ok {
-				// 		return true
-				// 	}
-				// 	column.GoRefName = s.Name
-				// }
-
 				obj := info.Defs[ident]
 				typ := obj.Type()
-				// fmt.Println("----------")
-				// fmt.Println(types.Implements(obj.Type(), scanner), myType, scanner)
-				// fmt.Println(types.Implements(myType, scanner), myType, scanner)
 				if types.Implements(types.NewPointer(typ).Underlying(), scanner) {
 					return false
 				}
@@ -518,20 +462,6 @@ func ParseColumn(fset *token.FileSet, info *types.Info, field *ast.Field, scanne
 						column.GoRefName = myTypeNamed.Obj().Name()
 					}
 				}
-
-				// for _, o := range info.Defs {
-				// 	if o == nil {
-				// 		continue
-				// 	}
-				// 	if o.Type() == obj.Type() {
-				// 		// fmt.Println("->", fset.Position(o.Pos()), i.Name, o.Type())
-				// 		// column.ident = i
-				//
-				// 		tmp := strings.Split(o.Type().String(), "/")
-				// 		column.GoRefName = tmp[len(tmp)-1]
-				// 		break
-				// 	}
-				// }
 			}
 		case *ast.BasicLit: // find tag
 			if t.Kind == token.STRING {
@@ -543,7 +473,7 @@ func ParseColumn(fset *token.FileSet, info *types.Info, field *ast.Field, scanne
 
 	var name string
 	if tag != nil {
-		if n, ok := ParseDB(strings.Trim(tag.Value, "`")); ok {
+		if n, ok := ParseDBTag(strings.Trim(tag.Value, "`")); ok {
 			name = n
 		}
 	}
@@ -553,7 +483,6 @@ func ParseColumn(fset *token.FileSet, info *types.Info, field *ast.Field, scanne
 	case "":
 		name = caseconv.LowerSnakeCase(ident.Name)
 	}
-	// fmt.Println("field name:", name)
 
 	column.GoName = ident.Name
 	column.DBName = name
@@ -561,6 +490,6 @@ func ParseColumn(fset *token.FileSet, info *types.Info, field *ast.Field, scanne
 	return &column
 }
 
-func ParseDB(s string) (string, bool) {
+func ParseDBTag(s string) (string, bool) {
 	return reflect.StructTag(s).Lookup("db")
 }
