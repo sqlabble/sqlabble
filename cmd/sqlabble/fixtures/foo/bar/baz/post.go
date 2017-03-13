@@ -2,7 +2,7 @@ package baz
 
 // +db:"posts"
 type Post struct {
-	PostID    int
-	ArticleID int
+	PostID    int `db:"post_id"`
+	ArticleID int `db:"article_id"`
 	Article   Article
 }

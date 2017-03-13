@@ -42,3 +42,10 @@ func (a SubqueryAlias) isTableOrAlias() bool {
 func (a SubqueryAlias) isJoinerOrAlias() bool {
 	return true
 }
+
+// isColOrAliasOrFuncOrSub always returns true.
+// This method exists only to implement the interface ColOrAliasOrFuncOrSub.
+// This is a shit of duck typing, but anyway it works.
+func (a SubqueryAlias) isColOrAliasOrFuncOrSub() bool {
+	return true
+}
