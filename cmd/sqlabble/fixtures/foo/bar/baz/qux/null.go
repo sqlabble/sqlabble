@@ -1,6 +1,8 @@
 package qux
 
-import "database/sql"
+import (
+	"database/sql"
+)
 
 // +db:"articles"
 type Article struct {

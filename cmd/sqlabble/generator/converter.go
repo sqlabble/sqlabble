@@ -176,20 +176,22 @@ type Scanner interface {
 			Uses:  map[*ast.Ident]types.Object{},
 		}
 		// fmt.Println("=>", f.Name.Name)
-		if _, err := conf.Check("database/sql", fset, []*ast.File{file}, info); err != nil {
+		pkg, err := conf.Check("database/sql", fset, []*ast.File{file}, info)
+		if err != nil {
 			// fmt.Println("->", err)
 			return nil, err
 		}
-		for _, t := range info.Types {
-			if i, ok := t.Type.(*types.Interface); ok {
-				for j := 0; j < i.NumMethods(); j++ {
-					f := i.Method(j)
-					if f.Name() == "Scan" {
-						scanner = i
-					}
-				}
-			}
-		}
+		scanner = pkg.Scope().Lookup("Scanner").Type().Underlying().(*types.Interface)
+		// for _, t := range info.Types {
+		// 	if i, ok := t.Type.(*types.Interface); ok {
+		// 		for j := 0; j < i.NumMethods(); j++ {
+		// 			f := i.Method(j)
+		// 			if f.Name() == "Scan" {
+		// 				scanner = i
+		// 			}
+		// 		}
+		// 	}
+		// }
 	}
 
 	srcDir := filepath.Dir(srcPath)
@@ -499,28 +501,15 @@ func ParseColumn(fset *token.FileSet, info *types.Info, field *ast.Field, scanne
 				// }
 
 				obj := info.Defs[ident]
-				myType := obj.Type()
-				parentType := myType.Underlying()
+				typ := obj.Type()
 				// fmt.Println("----------")
 				// fmt.Println(types.Implements(obj.Type(), scanner), myType, scanner)
 				// fmt.Println(types.Implements(myType, scanner), myType, scanner)
-				// fmt.Println(types.Implements(parentType, scanner), parentType, scanner)
-				// if types.Implements(parentType, scanner) {
-				// 	return true
-				// }
-				if myType == parentType {
+				if types.Implements(types.NewPointer(typ).Underlying(), scanner) {
 					return false
 				}
 				myPkg := obj.Pkg()
-				if myTypeNamed, ok := myType.(*types.Named); ok {
-					for i := 0; i < myTypeNamed.NumMethods(); i++ {
-						fun := myTypeNamed.Method(i)
-						// this is bad operation
-						// should check implements Scanner using with types.Implements()
-						if fun.Name() == "Scan" {
-							return false
-						}
-					}
+				if myTypeNamed, ok := typ.(*types.Named); ok {
 					refPkg := myTypeNamed.Obj().Pkg()
 					if myPkg == refPkg {
 						column.GoRefName = myTypeNamed.Obj().Name()
