@@ -123,9 +123,9 @@ func TestInsertInto(t *testing.T) {
 				q.T("user"),
 				q.C("id"), q.C("name"), q.C("avatar"),
 			).Values(
-				q.Params(1, "foo", "http://example.com/foo.jpg"),
-				q.Params(2, "bar", "http://example.com/bar.jpg"),
-				q.Params(3, "baz", "http://example.com/baz.jpg"),
+				q.Vals(1, "foo", "http://example.com/foo.jpg"),
+				q.Vals(2, "bar", "http://example.com/bar.jpg"),
+				q.Vals(3, "baz", "http://example.com/baz.jpg"),
 			),
 		)
 		_, err := db.Exec(sql, values...)
@@ -139,7 +139,7 @@ func TestInsertInto(t *testing.T) {
 				q.T("comment"),
 				q.C("id"), q.C("body"), q.C("author_id"),
 			).Values(
-				q.Params(1, "abcdefg", 3),
+				q.Vals(1, "abcdefg", 3),
 			),
 		)
 		_, err := db.Exec(sql, values...)
@@ -153,7 +153,7 @@ func TestInsertInto(t *testing.T) {
 				q.T("post"),
 				q.C("id"), q.C("title"), q.C("body"), q.C("author_id"), q.C("comment_id"),
 			).Values(
-				q.Params(1, "this is title", "this is body", 2, 1),
+				q.Vals(1, "this is title", "this is body", 2, 1),
 			),
 		)
 		_, err := db.Exec(sql, values...)
@@ -172,7 +172,7 @@ func TestSelect(t *testing.T) {
 		).From(
 			q.T("user"),
 		).Where(
-			q.C("id").Eq(q.Param(3)),
+			q.C("id").Eq(q.Val(3)),
 		),
 	)
 

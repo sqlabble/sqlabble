@@ -89,9 +89,9 @@ func TestMapper(t *testing.T) {
 				u.Table,
 				u.Columns()...,
 			).Values(
-				q.Params(1, "foo", "http://example.com/foo.jpg"),
-				q.Params(2, "bar", "http://example.com/bar.jpg"),
-				q.Params(3, "baz", "http://example.com/baz.jpg"),
+				q.Vals(1, "foo", "http://example.com/foo.jpg"),
+				q.Vals(2, "bar", "http://example.com/bar.jpg"),
+				q.Vals(3, "baz", "http://example.com/baz.jpg"),
 			),
 		)
 		_, err := db.Exec(query, values...)
@@ -105,9 +105,9 @@ func TestMapper(t *testing.T) {
 				pt.Table,
 				pt.Columns()...,
 			).Values(
-				q.Params(1, "foo's profile", 1),
-				q.Params(2, "baz's profile", 3),
-				q.Params(3, "bar's profile", 2),
+				q.Vals(1, "foo's profile", 1),
+				q.Vals(2, "baz's profile", 3),
+				q.Vals(3, "bar's profile", 2),
 			),
 		)
 		_, err := db.Exec(query, values...)
