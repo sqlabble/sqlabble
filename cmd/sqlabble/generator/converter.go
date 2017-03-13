@@ -3,7 +3,6 @@ package generator
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"go/ast"
 	"go/format"
 	"go/importer"
@@ -424,7 +423,6 @@ func ParseColumn(fset *token.FileSet, info *types.Info, field *ast.Field, scanne
 			column.DBName = name
 		}
 	}
-	fmt.Printf("%+v\n", column)
 
 	return &column
 }
