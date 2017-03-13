@@ -39,11 +39,13 @@ type {{ $tableType }} struct{
 	Table stmt.Table
 	TableAlias stmt.TableAlias
 {{- range .Columns }}
-	{{- if .GoRefName }}
-		{{ .GoName }} {{ if .GoRefPkgName }}{{ .GoRefPkgName }}.{{ end }}{{ .GoRefName }}DB
-	{{- else if .DBName }}
-		{{ .GoName }}Column      stmt.Column
-		{{ .GoName }}ColumnAlias stmt.ColumnAlias
+	{{- if not .Omit }}
+		{{- if .GoRefName }}
+			{{ .GoName }} {{ if .GoRefPkgName }}{{ .GoRefPkgName }}.{{ end }}{{ .GoRefName }}DB
+		{{- else }}
+			{{ .GoName }}Column      stmt.Column
+			{{ .GoName }}ColumnAlias stmt.ColumnAlias
+		{{- end }}
 	{{- end }}
 {{- end }}
 }
@@ -57,11 +59,13 @@ func New{{ $tableType }}(aliases ...string) {{ $tableType }} {
 		Table: stmt.NewTable("{{ .DBName }}"),
 		TableAlias: stmt.NewTable("{{ .DBName }}").As(alias),
 {{- range .Columns }}
-	{{- if .GoRefName }}
-		{{ .GoName }}: {{ if .GoRefPkgName }}{{ .GoRefPkgName }}.{{ end }}New{{ .GoRefName }}DB(append(aliases, "{{ .GoName }}")...),
-	{{- else if .DBName }}
-		{{ .GoName }}Column:      stmt.NewTableAlias(alias).Column("{{ .DBName }}"),
-		{{ .GoName }}ColumnAlias: stmt.NewTableAlias(alias).Column("{{ .DBName }}").As(strings.Join(append(aliases, "{{ .GoName }}"), ".")),
+	{{- if not .Omit }}
+		{{- if .GoRefName }}
+			{{ .GoName }}: {{ if .GoRefPkgName }}{{ .GoRefPkgName }}.{{ end }}New{{ .GoRefName }}DB(append(aliases, "{{ .GoName }}")...),
+		{{- else }}
+			{{ .GoName }}Column:      stmt.NewTableAlias(alias).Column("{{ .DBName }}"),
+			{{ .GoName }}ColumnAlias: stmt.NewTableAlias(alias).Column("{{ .DBName }}").As(strings.Join(append(aliases, "{{ .GoName }}"), ".")),
+		{{- end }}
 	{{- end }}
 {{- end }}
 	}
@@ -70,7 +74,9 @@ func New{{ $tableType }}(aliases ...string) {{ $tableType }} {
 func ({{ $receiver }} {{ $tableType }}) Register(mapper map[string]interface{}, dist *{{ $baseType }}, aliases ...string) {
 {{- range .Columns }}
 	{{- if .GoRefName }}
-		{{ $receiver }}.{{ .GoName }}.Register(mapper, &dist.{{ .GoName }}, append(aliases, "{{ .GoName }}")...)
+		{{- if not .Omit }}
+			{{ $receiver }}.{{ .GoName }}.Register(mapper, &dist.{{ .GoName }}, append(aliases, "{{ .GoName }}")...)
+		{{- end }}
 	{{- else }}
 		mapper[strings.Join(append(aliases, "{{ .GoName }}"), ".")] = &dist.{{ .GoName }}
 	{{- end }}
@@ -80,8 +86,10 @@ func ({{ $receiver }} {{ $tableType }}) Register(mapper map[string]interface{}, 
 func ({{ $receiver }} {{ $tableType }}) Columns() []stmt.Column {
 	return []stmt.Column{
 {{- range .Columns }}
-	{{- if (and (not .GoRefName) .DBName) }}
-		{{ $receiver }}.{{ .GoName }}Column,
+	{{- if not .Omit }}
+		{{- if not .GoRefName }}
+			{{ $receiver }}.{{ .GoName }}Column,
+		{{- end }}
 	{{- end }}
 {{- end }}
 	}
@@ -90,14 +98,18 @@ func ({{ $receiver }} {{ $tableType }}) Columns() []stmt.Column {
 func ({{ $receiver }} {{ $tableType }}) ColumnAliases() []stmt.ColumnAlias {
 	aliases := []stmt.ColumnAlias{
 {{- range .Columns }}
-	{{- if (and (not .GoRefName) .DBName) }}
-		{{ $receiver }}.{{ .GoName }}ColumnAlias,
+	{{- if not .Omit }}
+		{{- if not .GoRefName }}
+			{{ $receiver }}.{{ .GoName }}ColumnAlias,
+		{{- end }}
 	{{- end }}
 {{- end }}
 	}
 {{- range .Columns }}
-	{{- if (and .GoRefName (not .DBName)) }}
-		aliases = append(aliases, {{ $receiver }}.{{ .GoName }}.ColumnAliases()...)
+	{{- if not .Omit }}
+		{{- if .GoRefName }}
+			aliases = append(aliases, {{ $receiver }}.{{ .GoName }}.ColumnAliases()...)
+		{{- end }}
 	{{- end }}
 {{- end }}
 	return aliases
@@ -275,6 +287,7 @@ type Table struct {
 }
 
 type Column struct {
+	Omit         bool
 	GoName       string
 	GoRefPkgName string
 	GoRefName    string
@@ -419,8 +432,12 @@ func ParseColumn(fset *token.FileSet, info *types.Info, field *ast.Field, scanne
 
 	column.GoName = ident.Name
 	if tag != nil {
-		if name, ok := ParseDBTag(strings.Trim(tag.Value, "`")); ok && (name != "" && name != "-") {
-			column.DBName = name
+		if name, ok := ParseDBTag(strings.Trim(tag.Value, "`")); ok {
+			if name == "-" {
+				column.Omit = true
+			} else {
+				column.DBName = name
+			}
 		}
 	}
 

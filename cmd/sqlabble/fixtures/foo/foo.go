@@ -6,7 +6,8 @@ type User struct {
 	Name       string `db:"name"`
 	Avatar     string `db:"avatar"`
 	Prof       Profile
-	NumFriends int `db:"-"`
+	ProfDummy  Profile `db:"-"`
+	NumFriends int     `db:"-"`
 }
 
 // +db:"profiles"
