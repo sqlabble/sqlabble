@@ -3,6 +3,7 @@ package generator
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"go/ast"
 	"go/format"
 	"go/importer"
@@ -40,10 +41,10 @@ type {{ $tableType }} struct{
 	TableAlias stmt.TableAlias
 {{- range .Columns }}
 	{{- if .GoRefName }}
-	{{ .GoName }} {{ if .GoRefPkgName }}{{ .GoRefPkgName }}.{{ end }}{{ .GoRefName }}DB
-	{{- else }}
-	{{ .GoName }}Column      stmt.Column
-	{{ .GoName }}ColumnAlias stmt.ColumnAlias
+		{{ .GoName }} {{ if .GoRefPkgName }}{{ .GoRefPkgName }}.{{ end }}{{ .GoRefName }}DB
+	{{- else if .DBName }}
+		{{ .GoName }}Column      stmt.Column
+		{{ .GoName }}ColumnAlias stmt.ColumnAlias
 	{{- end }}
 {{- end }}
 }
@@ -58,10 +59,10 @@ func New{{ $tableType }}(aliases ...string) {{ $tableType }} {
 		TableAlias: stmt.NewTable("{{ .DBName }}").As(alias),
 {{- range .Columns }}
 	{{- if .GoRefName }}
-	{{ .GoName }}: {{ if .GoRefPkgName }}{{ .GoRefPkgName }}.{{ end }}New{{ .GoRefName }}DB(append(aliases, "{{ .GoName }}")...),
-	{{- else }}
-	{{ .GoName }}Column:      stmt.NewTableAlias(alias).Column("{{ .DBName }}"),
-	{{ .GoName }}ColumnAlias: stmt.NewTableAlias(alias).Column("{{ .DBName }}").As(strings.Join(append(aliases, "{{ .GoName }}"), ".")),
+		{{ .GoName }}: {{ if .GoRefPkgName }}{{ .GoRefPkgName }}.{{ end }}New{{ .GoRefName }}DB(append(aliases, "{{ .GoName }}")...),
+	{{- else if .DBName }}
+		{{ .GoName }}Column:      stmt.NewTableAlias(alias).Column("{{ .DBName }}"),
+		{{ .GoName }}ColumnAlias: stmt.NewTableAlias(alias).Column("{{ .DBName }}").As(strings.Join(append(aliases, "{{ .GoName }}"), ".")),
 	{{- end }}
 {{- end }}
 	}
@@ -70,9 +71,9 @@ func New{{ $tableType }}(aliases ...string) {{ $tableType }} {
 func ({{ $receiver }} {{ $tableType }}) Register(mapper map[string]interface{}, dist *{{ $baseType }}, aliases ...string) {
 {{- range .Columns }}
 	{{- if .GoRefName }}
-	{{ $receiver }}.{{ .GoName }}.Register(mapper, &dist.{{ .GoName }}, append(aliases, "{{ .GoName }}")...)
+		{{ $receiver }}.{{ .GoName }}.Register(mapper, &dist.{{ .GoName }}, append(aliases, "{{ .GoName }}")...)
 	{{- else }}
-	mapper[strings.Join(append(aliases, "{{ .GoName }}"), ".")] = &dist.{{ .GoName }}
+		mapper[strings.Join(append(aliases, "{{ .GoName }}"), ".")] = &dist.{{ .GoName }}
 	{{- end }}
 {{- end }}
 }
@@ -80,7 +81,7 @@ func ({{ $receiver }} {{ $tableType }}) Register(mapper map[string]interface{}, 
 func ({{ $receiver }} {{ $tableType }}) Columns() []stmt.Column {
 	return []stmt.Column{
 {{- range .Columns }}
-	{{- if not .GoRefName }}
+	{{- if (and (not .GoRefName) .DBName) }}
 		{{ $receiver }}.{{ .GoName }}Column,
 	{{- end }}
 {{- end }}
@@ -90,14 +91,14 @@ func ({{ $receiver }} {{ $tableType }}) Columns() []stmt.Column {
 func ({{ $receiver }} {{ $tableType }}) ColumnAliases() []stmt.ColumnAlias {
 	aliases := []stmt.ColumnAlias{
 {{- range .Columns }}
-	{{- if not .GoRefName }}
+	{{- if (and (not .GoRefName) .DBName) }}
 		{{ $receiver }}.{{ .GoName }}ColumnAlias,
 	{{- end }}
 {{- end }}
 	}
 {{- range .Columns }}
-	{{- if .GoRefName }}
-	aliases = append(aliases, {{ $receiver }}.{{ .GoName }}.ColumnAliases()...)
+	{{- if (and .GoRefName (not .DBName)) }}
+		aliases = append(aliases, {{ $receiver }}.{{ .GoName }}.ColumnAliases()...)
 	{{- end }}
 {{- end }}
 	return aliases
@@ -167,14 +168,6 @@ type Scanner interface {
 		if err != nil {
 			return nil, err
 		}
-		// ast.Inspect(file, func(node ast.Node) bool {
-		// 	fmt.Printf("%T %+v\n", node, node)
-		// 	switch t := node.(type) {
-		// 	case *ast.InterfaceType:
-		// 		fmt.Println(t)
-		// 	}
-		// 	return true
-		// })
 		conf := &types.Config{
 			Importer: importer.Default(),
 		}
@@ -183,31 +176,17 @@ type Scanner interface {
 			Defs:  map[*ast.Ident]types.Object{},
 			Uses:  map[*ast.Ident]types.Object{},
 		}
-		// fmt.Println("=>", f.Name.Name)
 		pkg, err := conf.Check("database/sql", fset, []*ast.File{file}, info)
 		if err != nil {
-			// fmt.Println("->", err)
 			return nil, err
 		}
 		scanner = pkg.Scope().Lookup("Scanner").Type().Underlying().(*types.Interface)
-		// for _, t := range info.Types {
-		// 	if i, ok := t.Type.(*types.Interface); ok {
-		// 		for j := 0; j < i.NumMethods(); j++ {
-		// 			f := i.Method(j)
-		// 			if f.Name() == "Scan" {
-		// 				scanner = i
-		// 			}
-		// 		}
-		// 	}
-		// }
 	}
 
 	srcDir := filepath.Dir(srcPath)
 	srcFilename := filepath.Base(srcPath)
-	// fmt.Println(srcDir, srcFilename)
 
 	fset := token.NewFileSet()
-	// f, err := parser.ParseFile(fset, srcFilename, input, parser.ParseComments)
 	pkgs, err := parser.ParseDir(fset, srcDir, func(fi os.FileInfo) bool {
 		return true
 	}, parser.ParseComments)
@@ -242,9 +221,7 @@ type Scanner interface {
 		Defs: map[*ast.Ident]types.Object{},
 		Uses: map[*ast.Ident]types.Object{},
 	}
-	// fmt.Println("=>", f.Name.Name)
 	if _, err := conf.Check("github.com/minodisk/sqlabble/cmd/sqlabble/foo/bar/baz/"+srcFilename, fset, fs, info); err != nil {
-		// fmt.Println("->", err)
 		return nil, err
 	}
 
@@ -267,21 +244,6 @@ type Scanner interface {
 	if len(pkg.Tables) == 0 {
 		return nil, errors.New("no table found in package")
 	}
-
-	// for _, t := range pkg.Tables {
-	// 	for i, c := range t.Columns {
-	// 		if c.ident == nil {
-	// 			continue
-	// 		}
-	// 		for _, t := range pkg.Tables {
-	// 			if c.ident == t.ident {
-	// 				c.Ref = &t
-	// 				break
-	// 			}
-	// 		}
-	// 		t.Columns[i] = c
-	// 	}
-	// }
 
 	var buf bytes.Buffer
 	if err := impl.Execute(&buf, pkg); err != nil {
@@ -318,7 +280,6 @@ type Column struct {
 	GoRefPkgName string
 	GoRefName    string
 	DBName       string
-	// ident      *ast.Ident
 }
 
 type Comment struct {
@@ -340,10 +301,7 @@ func (cs Comments) Find(from, to int) (Comment, bool) {
 func ParsePackage(fset *token.FileSet, info *types.Info, file *ast.File, scanner *types.Interface) Package {
 	comments := Comments{}
 	for _, comment := range file.Comments {
-		// fmt.Println("=========")
-		// fmt.Println(comment.Text(), comment.List)
 		for _, cm := range comment.List {
-			// fmt.Println(c.Slash, c.Text)
 			c := cm.Text
 			c = strings.TrimSpace(strings.TrimPrefix(c, "//"))
 			if len(c) == 0 || c[0] != '+' {
@@ -355,12 +313,9 @@ func ParsePackage(fset *token.FileSet, info *types.Info, file *ast.File, scanner
 					Position:  fset.Position(cm.Pos()),
 					TableName: n,
 				})
-				// fmt.Println(c.End(), n)
 			}
 		}
 	}
-
-	// fmt.Println(comments)
 
 	p := Package{Name: file.Name.Name}
 	ast.Inspect(file, func(node ast.Node) bool {
@@ -380,11 +335,6 @@ func ParsePackage(fset *token.FileSet, info *types.Info, file *ast.File, scanner
 			p.Tables = append(p.Tables, t)
 
 			return false
-			// default:
-			// 	if node == nil {
-			// 		return true
-			// 	}
-			// 	fmt.Println(node.Pos(), node.End())
 		}
 		return true
 	})
@@ -406,9 +356,6 @@ func ParseTable(fset *token.FileSet, info *types.Info, typ *ast.TypeSpec, scanne
 		case *ast.Ident:
 			table.ident = s
 		case *ast.StructType:
-			// fmt.Println("============")
-			// fmt.Println(typ.Name)
-			// fmt.Println(typ.Comment)
 			if typ.Name.Name == "" {
 				return true
 			}
@@ -471,21 +418,13 @@ func ParseColumn(fset *token.FileSet, info *types.Info, field *ast.Field, scanne
 		return true
 	})
 
-	var name string
+	column.GoName = ident.Name
 	if tag != nil {
-		if n, ok := ParseDBTag(strings.Trim(tag.Value, "`")); ok {
-			name = n
+		if name, ok := ParseDBTag(strings.Trim(tag.Value, "`")); ok && (name != "" && name != "-") {
+			column.DBName = name
 		}
 	}
-	switch name {
-	case "-":
-		return nil
-	case "":
-		name = caseconv.LowerSnakeCase(ident.Name)
-	}
-
-	column.GoName = ident.Name
-	column.DBName = name
+	fmt.Printf("%+v\n", column)
 
 	return &column
 }

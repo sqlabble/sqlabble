@@ -83,6 +83,22 @@ func TestMapper(t *testing.T) {
 		}
 	}
 
+	ft := foo.NewFriendDB()
+	{
+		query, values := builder.Standard.Build(
+			q.CreateTableIfNotExists(
+				ft.Table,
+			).Definitions(
+				ft.UserID1Column.Define("int"),
+				ft.UserID2Column.Define("int"),
+			),
+		)
+		_, err := db.Exec(query, values...)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+
 	{
 		query, values := builder.MySQLIndented.Build(
 			q.InsertInto(
@@ -115,11 +131,41 @@ func TestMapper(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
+	{
+		query, values := builder.MySQLIndented.Build(
+			q.InsertInto(
+				ft.Table,
+				ft.Columns()...,
+			).Values(
+				q.Vals(1, 2),
+				q.Vals(1, 3),
+			),
+		)
+		_, err := db.Exec(query, values...)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
 
 	{
 		u := foo.NewUserDB()
 		query, values := builder.MySQLIndented.Build(
-			q.Select(u.Selectors()...).
+			q.
+				Select(
+					append(
+						u.Selectors(),
+						q.S(
+							q.Select(q.C("COUNT(*)")).
+								From(ft.TableAlias).
+								Where(
+									q.Or(
+										ft.UserID1Column.Eq(u.UserIDColumn),
+										ft.UserID2Column.Eq(u.UserIDColumn),
+									),
+								),
+						).As("NumFriends"),
+					)...,
+				).
 				From(
 					u.TableAlias.
 						LeftJoin(u.Prof.TableAlias).
@@ -152,6 +198,7 @@ func TestMapper(t *testing.T) {
 					Body:      "foo's profile",
 					UserID:    1,
 				},
+				NumFriends: 2,
 			},
 			{
 				UserID: 2,
@@ -162,6 +209,7 @@ func TestMapper(t *testing.T) {
 					Body:      "bar's profile",
 					UserID:    2,
 				},
+				NumFriends: 1,
 			},
 			{
 				UserID: 3,
@@ -172,6 +220,7 @@ func TestMapper(t *testing.T) {
 					Body:      "baz's profile",
 					UserID:    3,
 				},
+				NumFriends: 1,
 			},
 		}
 

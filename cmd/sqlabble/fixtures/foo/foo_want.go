@@ -42,6 +42,7 @@ func (u UserDB) Register(mapper map[string]interface{}, dist *User, aliases ...s
 	mapper[strings.Join(append(aliases, "Name"), ".")] = &dist.Name
 	mapper[strings.Join(append(aliases, "Avatar"), ".")] = &dist.Avatar
 	u.Prof.Register(mapper, &dist.Prof, append(aliases, "Prof")...)
+	mapper[strings.Join(append(aliases, "NumFriends"), ".")] = &dist.NumFriends
 }
 
 func (u UserDB) Columns() []stmt.Column {
@@ -163,6 +164,81 @@ func (p ProfileDB) Map(rows *sql.Rows) ([]Profile, error) {
 		mapper := make(map[string]interface{})
 		di := Profile{}
 		p.Register(mapper, &di)
+		refs := make([]interface{}, len(cols))
+		for i, c := range cols {
+			refs[i] = mapper[c]
+		}
+		if err := rows.Scan(refs...); err != nil {
+			return nil, err
+		}
+		dist = append(dist, di)
+	}
+	return dist, nil
+}
+
+type FriendDB struct {
+	Table              stmt.Table
+	TableAlias         stmt.TableAlias
+	UserID1Column      stmt.Column
+	UserID1ColumnAlias stmt.ColumnAlias
+	UserID2Column      stmt.Column
+	UserID2ColumnAlias stmt.ColumnAlias
+}
+
+func NewFriendDB(aliases ...string) FriendDB {
+	alias := strings.Join(aliases, ".")
+	if alias == "" {
+		alias = "friends"
+	}
+	return FriendDB{
+		Table:              stmt.NewTable("friends"),
+		TableAlias:         stmt.NewTable("friends").As(alias),
+		UserID1Column:      stmt.NewTableAlias(alias).Column("user_id_1"),
+		UserID1ColumnAlias: stmt.NewTableAlias(alias).Column("user_id_1").As(strings.Join(append(aliases, "UserID1"), ".")),
+		UserID2Column:      stmt.NewTableAlias(alias).Column("user_id_2"),
+		UserID2ColumnAlias: stmt.NewTableAlias(alias).Column("user_id_2").As(strings.Join(append(aliases, "UserID2"), ".")),
+	}
+}
+
+func (f FriendDB) Register(mapper map[string]interface{}, dist *Friend, aliases ...string) {
+	mapper[strings.Join(append(aliases, "UserID1"), ".")] = &dist.UserID1
+	mapper[strings.Join(append(aliases, "UserID2"), ".")] = &dist.UserID2
+}
+
+func (f FriendDB) Columns() []stmt.Column {
+	return []stmt.Column{
+		f.UserID1Column,
+		f.UserID2Column,
+	}
+}
+
+func (f FriendDB) ColumnAliases() []stmt.ColumnAlias {
+	aliases := []stmt.ColumnAlias{
+		f.UserID1ColumnAlias,
+		f.UserID2ColumnAlias,
+	}
+	return aliases
+}
+
+func (f FriendDB) Selectors() []stmt.ColOrAliasOrFuncOrSub {
+	as := f.ColumnAliases()
+	is := make([]stmt.ColOrAliasOrFuncOrSub, len(as))
+	for i, a := range as {
+		is[i] = a
+	}
+	return is
+}
+
+func (f FriendDB) Map(rows *sql.Rows) ([]Friend, error) {
+	cols, err := rows.Columns()
+	if err != nil {
+		return nil, err
+	}
+	dist := []Friend{}
+	for rows.Next() {
+		mapper := make(map[string]interface{})
+		di := Friend{}
+		f.Register(mapper, &di)
 		refs := make([]interface{}, len(cols))
 		for i, c := range cols {
 			refs[i] = mapper[c]
