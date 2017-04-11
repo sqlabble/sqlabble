@@ -4,7 +4,7 @@ import (
 	"github.com/minodisk/sqlabble/stmt"
 )
 
-// Methods exported to make stmts.
+// Methods exported to make statements.
 var (
 	CreateTable            = stmt.NewCreateTable
 	CreateTableIfNotExists = stmt.NewCreateTableIfNotExists
@@ -20,15 +20,10 @@ var (
 	SearchedWhen = stmt.NewSearchedWhen
 
 	Column   = stmt.NewColumn
-	C        = stmt.NewColumn
 	Table    = stmt.NewTable
-	T        = stmt.NewTable
 	Val      = stmt.NewVal
-	V        = stmt.NewVal
 	Vals     = stmt.NewVals
-	Vs       = stmt.NewVals
 	Subquery = stmt.NewSubquery
-	S        = stmt.NewSubquery
 
 	And       = stmt.NewAnd
 	Or        = stmt.NewOr

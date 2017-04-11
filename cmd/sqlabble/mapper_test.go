@@ -154,8 +154,8 @@ func TestMapper(t *testing.T) {
 				Select(
 					append(
 						u.Selectors(),
-						q.S(
-							q.Select(q.C("COUNT(*)")).
+						q.Subquery(
+							q.Select(q.Column("COUNT(*)")).
 								From(ft.TableAlias).
 								Where(
 									q.Or(
