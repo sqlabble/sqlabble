@@ -25,6 +25,7 @@ var (
 	Vals     = stmt.NewVals
 	Subquery = stmt.NewSubquery
 
+	Assign    = stmt.NewAssign
 	And       = stmt.NewAnd
 	Or        = stmt.NewOr
 	Not       = stmt.NewNot
