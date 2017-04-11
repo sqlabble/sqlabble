@@ -4,7 +4,7 @@ services:
     build: .
     links:
       - mysql
-    encrypted_env_file: coveralls.env.encrypted
+    encrypted_env_file: secret.env.encrypted
     cached: true
 
   mysql:
