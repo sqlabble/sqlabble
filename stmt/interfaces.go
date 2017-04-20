@@ -90,3 +90,31 @@ type SimpleThenOrElse interface {
 	Statement
 	isSimpleThenOrElse() bool
 }
+
+type Selector interface {
+	Select(columns ...ColOrAliasOrFuncOrSub) Select
+}
+
+type Fromer interface {
+	From(table JoinerOrAlias) From
+}
+
+type Wherer interface {
+	Where(op ComparisonOrLogicalOperation) Where
+}
+
+type GroupByer interface {
+	GroupBy(col Column, columns ...Column) GroupBy
+}
+
+type OrderByer interface {
+	OrderBy(orders ...Order) OrderBy
+}
+
+type Limiter interface {
+	Limit(count int) Limit
+}
+
+type Offsetter interface {
+	Offset(count int) Offset
+}
