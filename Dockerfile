@@ -2,13 +2,9 @@ FROM golang:1.8
 
 WORKDIR /go/src/github.com/minodisk/sqlabble
 RUN go get -u \
-      github.com/minodisk/caseconv \
-      github.com/go-sql-driver/mysql \
-      github.com/mattn/go-zglob \
-      github.com/mattn/goveralls \
-      github.com/sergi/go-diff/diffmatchpatch
-
+      github.com/golang/dep/...
 COPY . .
-RUN go install ./...
+RUN dep ensure
+RUN go install ./cmd/...
 
-CMD go test -race ./...
+CMD sh test.sh
