@@ -17,7 +17,35 @@ func NewSubqueryAlias(alias string) SubqueryAlias {
 	}
 }
 
+func (a SubqueryAlias) Join(table TableOrAlias) Join {
+	nj := NewJoin(table)
+	nj.prev = a
+	return nj
+}
+
+func (a SubqueryAlias) InnerJoin(table TableOrAlias) Join {
+	ij := NewInnerJoin(table)
+	ij.prev = a
+	return ij
+}
+
+func (a SubqueryAlias) LeftJoin(table TableOrAlias) Join {
+	lj := NewLeftJoin(table)
+	lj.prev = a
+	return lj
+}
+
+func (a SubqueryAlias) RightJoin(table TableOrAlias) Join {
+	rj := NewRightJoin(table)
+	rj.prev = a
+	return rj
+}
+
 func (a SubqueryAlias) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	return nodeizePrevs(a)
+}
+
+func (a SubqueryAlias) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	t1, v1 := a.subquery.nodeize()
 	t2 := tokenizer.NewLine(token.Word(a.Alias))
 	return tokenizer.ConcatTokenizers(
@@ -27,6 +55,10 @@ func (a SubqueryAlias) nodeize() (tokenizer.Tokenizer, []interface{}) {
 			token.Word(keyword.As),
 		),
 	), v1
+}
+
+func (a SubqueryAlias) previous() Prever {
+	return nil
 }
 
 // isTableOrAlias always returns true.
