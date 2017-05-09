@@ -18,6 +18,30 @@ func (s Subquery) As(alias string) SubqueryAlias {
 	return a
 }
 
+func (s Subquery) Join(table TableOrAlias) Join {
+	nj := NewJoin(table)
+	nj.prev = s
+	return nj
+}
+
+func (s Subquery) InnerJoin(table TableOrAlias) Join {
+	ij := NewInnerJoin(table)
+	ij.prev = s
+	return ij
+}
+
+func (s Subquery) LeftJoin(table TableOrAlias) Join {
+	lj := NewLeftJoin(table)
+	lj.prev = s
+	return lj
+}
+
+func (s Subquery) RightJoin(table TableOrAlias) Join {
+	rj := NewRightJoin(table)
+	rj.prev = s
+	return rj
+}
+
 func (s Subquery) Eq(value ValOrColOrFuncOrSub) ComparisonOperation {
 	e := NewEq(value)
 	e.column = s
@@ -97,8 +121,16 @@ func (s Subquery) IsNotNull() NullOperation {
 }
 
 func (s Subquery) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	return nodeizePrevs(s)
+}
+
+func (s Subquery) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	t, values := s.stmt.nodeize()
 	return tokenizer.NewParentheses(t), values
+}
+
+func (s Subquery) previous() Prever {
+	return nil
 }
 
 // isValsOrSub always returns true.
