@@ -38,4 +38,8 @@ var (
 	IntersectAll = stmt.NewIntersectAll
 	Except       = stmt.NewExcept
 	ExceptAll    = stmt.NewExceptAll
+
+	Wildcard = stmt.NewWildcard()
+
+	Count = stmt.NewCount
 )

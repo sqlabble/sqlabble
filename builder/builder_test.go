@@ -101,11 +101,11 @@ func TestBuilder(t *testing.T) {
 				stmt.NewVals(`Obi-Wan Kenobi`, 63),
 				stmt.NewVals(`Luke Skywalker`, 19),
 			),
-			`INSERT INTO foo (name, age) VALUES (?, ?), (?, ?)`,
+			`INSERT INTO foo ("name", "age") VALUES (?, ?), (?, ?)`,
 			`> INSERT INTO
 >   foo (
->     name
->     , age
+>     "name"
+>     , "age"
 >   )
 > VALUES
 >   (?, ?)
@@ -158,26 +158,26 @@ func TestBuilder(t *testing.T) {
 					stmt.NewColumn("open_branch_id").Eq(stmt.NewVal(2)),
 				),
 			),
-			`(SELECT emp_id FROM employee WHERE assigned_branch_id = ? AND (title = ? OR title = ?)) UNION (SELECT DISTINCT open_emp_id FROM account WHERE open_branch_id = ?)`,
+			`(SELECT "emp_id" FROM "employee" WHERE "assigned_branch_id" = ? AND ("title" = ? OR "title" = ?)) UNION (SELECT DISTINCT "open_emp_id" FROM "account" WHERE "open_branch_id" = ?)`,
 			`> (
 >   SELECT
->     emp_id
+>     "emp_id"
 >   FROM
->     employee
+>     "employee"
 >   WHERE
->     assigned_branch_id = ?
+>     "assigned_branch_id" = ?
 >     AND (
->       title = ?
->       OR title = ?
+>       "title" = ?
+>       OR "title" = ?
 >     )
 > )
 > UNION (
 >   SELECT DISTINCT
->     open_emp_id
+>     "open_emp_id"
 >   FROM
->     account
+>     "account"
 >   WHERE
->     open_branch_id = ?
+>     "open_branch_id" = ?
 > )
 `,
 			[]interface{}{

@@ -206,13 +206,21 @@ func (c Column) Desc() Order {
 
 func (c Column) nodeize() (tokenizer.Tokenizer, []interface{}) {
 	if c.namer == nil || c.namer.name() == "" {
-		return tokenizer.NewLine(token.Word(c.Name)), nil
+		return tokenizer.NewLine(
+			token.LQuote,
+			token.Word(c.Name),
+			token.RQuote,
+		), nil
 	}
 
 	return tokenizer.NewLine(
+		token.LQuote,
 		token.Word(c.namer.name()),
+		token.RQuote,
 		token.Period,
+		token.LQuote,
 		token.Word(c.Name),
+		token.RQuote,
 	), nil
 }
 

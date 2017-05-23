@@ -25,10 +25,10 @@ func TestNonScalarAll(t *testing.T) {
 					),
 				),
 			),
-			`= ALL (SELECT foo)`,
+			`= ALL (SELECT "foo")`,
 			`> = ALL (
 >   SELECT
->     foo
+>     "foo"
 > )
 `,
 			nil,
@@ -41,10 +41,10 @@ func TestNonScalarAll(t *testing.T) {
 					),
 				),
 			),
-			`!= ALL (SELECT foo)`,
+			`!= ALL (SELECT "foo")`,
 			`> != ALL (
 >   SELECT
->     foo
+>     "foo"
 > )
 `,
 			nil,
@@ -57,10 +57,10 @@ func TestNonScalarAll(t *testing.T) {
 					),
 				),
 			),
-			`> ALL (SELECT foo)`,
+			`> ALL (SELECT "foo")`,
 			`> > ALL (
 >   SELECT
->     foo
+>     "foo"
 > )
 `,
 			nil,
@@ -73,10 +73,10 @@ func TestNonScalarAll(t *testing.T) {
 					),
 				),
 			),
-			`>= ALL (SELECT foo)`,
+			`>= ALL (SELECT "foo")`,
 			`> >= ALL (
 >   SELECT
->     foo
+>     "foo"
 > )
 `,
 			nil,
@@ -89,10 +89,10 @@ func TestNonScalarAll(t *testing.T) {
 					),
 				),
 			),
-			`< ALL (SELECT foo)`,
+			`< ALL (SELECT "foo")`,
 			`> < ALL (
 >   SELECT
->     foo
+>     "foo"
 > )
 `,
 			nil,
@@ -105,10 +105,10 @@ func TestNonScalarAll(t *testing.T) {
 					),
 				),
 			),
-			`<= ALL (SELECT foo)`,
+			`<= ALL (SELECT "foo")`,
 			`> <= ALL (
 >   SELECT
->     foo
+>     "foo"
 > )
 `,
 			nil,
@@ -155,10 +155,10 @@ func TestNonScalarAny(t *testing.T) {
 					),
 				),
 			),
-			`= ANY (SELECT foo)`,
+			`= ANY (SELECT "foo")`,
 			`> = ANY (
 >   SELECT
->     foo
+>     "foo"
 > )
 `,
 			nil,
@@ -171,10 +171,10 @@ func TestNonScalarAny(t *testing.T) {
 					),
 				),
 			),
-			`!= ANY (SELECT foo)`,
+			`!= ANY (SELECT "foo")`,
 			`> != ANY (
 >   SELECT
->     foo
+>     "foo"
 > )
 `,
 			nil,
@@ -187,10 +187,10 @@ func TestNonScalarAny(t *testing.T) {
 					),
 				),
 			),
-			`> ANY (SELECT foo)`,
+			`> ANY (SELECT "foo")`,
 			`> > ANY (
 >   SELECT
->     foo
+>     "foo"
 > )
 `,
 			nil,
@@ -203,10 +203,10 @@ func TestNonScalarAny(t *testing.T) {
 					),
 				),
 			),
-			`>= ANY (SELECT foo)`,
+			`>= ANY (SELECT "foo")`,
 			`> >= ANY (
 >   SELECT
->     foo
+>     "foo"
 > )
 `,
 			nil,
@@ -219,10 +219,10 @@ func TestNonScalarAny(t *testing.T) {
 					),
 				),
 			),
-			`< ANY (SELECT foo)`,
+			`< ANY (SELECT "foo")`,
 			`> < ANY (
 >   SELECT
->     foo
+>     "foo"
 > )
 `,
 			nil,
@@ -235,10 +235,10 @@ func TestNonScalarAny(t *testing.T) {
 					),
 				),
 			),
-			`<= ANY (SELECT foo)`,
+			`<= ANY (SELECT "foo")`,
 			`> <= ANY (
 >   SELECT
->     foo
+>     "foo"
 > )
 `,
 			nil,

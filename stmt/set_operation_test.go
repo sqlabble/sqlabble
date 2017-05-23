@@ -24,17 +24,17 @@ func TestUnionSQL(t *testing.T) {
 			).OrderBy(
 				stmt.NewColumn("foo").Asc(),
 			),
-			"(SELECT a) UNION (SELECT b) ORDER BY foo ASC",
+			`(SELECT "a") UNION (SELECT "b") ORDER BY "foo" ASC`,
 			`> (
 >   SELECT
->     a
+>     "a"
 > )
 > UNION (
 >   SELECT
->     b
+>     "b"
 > )
 > ORDER BY
->   foo ASC
+>   "foo" ASC
 `,
 			nil,
 		},
@@ -50,29 +50,29 @@ func TestUnionSQL(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("e")),
 				),
 			),
-			"(SELECT a) UNION (((SELECT b) UNION (SELECT c)) UNION (SELECT d) UNION (SELECT e))",
+			`(SELECT "a") UNION (((SELECT "b") UNION (SELECT "c")) UNION (SELECT "d") UNION (SELECT "e"))`,
 			`> (
 >   SELECT
->     a
+>     "a"
 > )
 > UNION (
 >   (
 >     (
 >       SELECT
->         b
+>         "b"
 >     )
 >     UNION (
 >       SELECT
->         c
+>         "c"
 >     )
 >   )
 >   UNION (
 >     SELECT
->       d
+>       "d"
 >   )
 >   UNION (
 >     SELECT
->       e
+>       "e"
 >   )
 > )
 `,
@@ -123,29 +123,29 @@ func TestUnionAllSQL(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("e")),
 				),
 			),
-			"(SELECT a) UNION ALL (((SELECT b) UNION ALL (SELECT c)) UNION ALL (SELECT d) UNION ALL (SELECT e))",
+			`(SELECT "a") UNION ALL (((SELECT "b") UNION ALL (SELECT "c")) UNION ALL (SELECT "d") UNION ALL (SELECT "e"))`,
 			`> (
 >   SELECT
->     a
+>     "a"
 > )
 > UNION ALL (
 >   (
 >     (
 >       SELECT
->         b
+>         "b"
 >     )
 >     UNION ALL (
 >       SELECT
->         c
+>         "c"
 >     )
 >   )
 >   UNION ALL (
 >     SELECT
->       d
+>       "d"
 >   )
 >   UNION ALL (
 >     SELECT
->       e
+>       "e"
 >   )
 > )
 `,
@@ -196,29 +196,29 @@ func TestIntersectSQL(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("e")),
 				),
 			),
-			"(SELECT a) INTERSECT (((SELECT b) INTERSECT (SELECT c)) INTERSECT (SELECT d) INTERSECT (SELECT e))",
+			`(SELECT "a") INTERSECT (((SELECT "b") INTERSECT (SELECT "c")) INTERSECT (SELECT "d") INTERSECT (SELECT "e"))`,
 			`> (
 >   SELECT
->     a
+>     "a"
 > )
 > INTERSECT (
 >   (
 >     (
 >       SELECT
->         b
+>         "b"
 >     )
 >     INTERSECT (
 >       SELECT
->         c
+>         "c"
 >     )
 >   )
 >   INTERSECT (
 >     SELECT
->       d
+>       "d"
 >   )
 >   INTERSECT (
 >     SELECT
->       e
+>       "e"
 >   )
 > )
 `,
@@ -269,29 +269,29 @@ func TestIntersectAllSQL(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("e")),
 				),
 			),
-			"(SELECT a) INTERSECT ALL (((SELECT b) INTERSECT ALL (SELECT c)) INTERSECT ALL (SELECT d) INTERSECT ALL (SELECT e))",
+			`(SELECT "a") INTERSECT ALL (((SELECT "b") INTERSECT ALL (SELECT "c")) INTERSECT ALL (SELECT "d") INTERSECT ALL (SELECT "e"))`,
 			`> (
 >   SELECT
->     a
+>     "a"
 > )
 > INTERSECT ALL (
 >   (
 >     (
 >       SELECT
->         b
+>         "b"
 >     )
 >     INTERSECT ALL (
 >       SELECT
->         c
+>         "c"
 >     )
 >   )
 >   INTERSECT ALL (
 >     SELECT
->       d
+>       "d"
 >   )
 >   INTERSECT ALL (
 >     SELECT
->       e
+>       "e"
 >   )
 > )
 `,
@@ -342,29 +342,29 @@ func TestExceptSQL(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("e")),
 				),
 			),
-			"(SELECT a) EXCEPT (((SELECT b) EXCEPT (SELECT c)) EXCEPT (SELECT d) EXCEPT (SELECT e))",
+			`(SELECT "a") EXCEPT (((SELECT "b") EXCEPT (SELECT "c")) EXCEPT (SELECT "d") EXCEPT (SELECT "e"))`,
 			`> (
 >   SELECT
->     a
+>     "a"
 > )
 > EXCEPT (
 >   (
 >     (
 >       SELECT
->         b
+>         "b"
 >     )
 >     EXCEPT (
 >       SELECT
->         c
+>         "c"
 >     )
 >   )
 >   EXCEPT (
 >     SELECT
->       d
+>       "d"
 >   )
 >   EXCEPT (
 >     SELECT
->       e
+>       "e"
 >   )
 > )
 `,
@@ -415,29 +415,29 @@ func TestExceptAllSQL(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("e")),
 				),
 			),
-			"(SELECT a) EXCEPT ALL (((SELECT b) EXCEPT ALL (SELECT c)) EXCEPT ALL (SELECT d) EXCEPT ALL (SELECT e))",
+			`(SELECT "a") EXCEPT ALL (((SELECT "b") EXCEPT ALL (SELECT "c")) EXCEPT ALL (SELECT "d") EXCEPT ALL (SELECT "e"))`,
 			`> (
 >   SELECT
->     a
+>     "a"
 > )
 > EXCEPT ALL (
 >   (
 >     (
 >       SELECT
->         b
+>         "b"
 >     )
 >     EXCEPT ALL (
 >       SELECT
->         c
+>         "c"
 >     )
 >   )
 >   EXCEPT ALL (
 >     SELECT
->       d
+>       "d"
 >   )
 >   EXCEPT ALL (
 >     SELECT
->       e
+>       "e"
 >   )
 > )
 `,

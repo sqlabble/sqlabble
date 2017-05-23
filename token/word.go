@@ -5,6 +5,7 @@ import "fmt"
 // Tokens that don't change behavior according to Format setting.
 var (
 	Space       = NewWord(" ")
+	Wildcard    = NewWord("*")
 	Placeholder = NewWord("?")
 	Period      = NewWord(".")
 	Comma       = NewWord(",")

@@ -37,29 +37,29 @@ func TestColumn(t *testing.T) {
 	}{
 		{
 			stmt.NewColumn("foo"),
-			`foo`,
-			`> foo
+			`"foo"`,
+			`> "foo"
 `,
 			nil,
 		},
 		{
 			stmt.NewColumn("foo").As("f"),
-			`foo AS "f"`,
-			`> foo AS "f"
+			`"foo" AS "f"`,
+			`> "foo" AS "f"
 `,
 			nil,
 		},
 		{
 			stmt.NewColumn("foo").Define("VARCHAR(20)"),
-			`foo VARCHAR(20)`,
-			`> foo VARCHAR(20)
+			`"foo" VARCHAR(20)`,
+			`> "foo" VARCHAR(20)
 `,
 			nil,
 		},
 		{
 			stmt.NewColumn("foo").Assign(stmt.NewVal(100)),
-			`foo = ?`,
-			`> foo = ?
+			`"foo" = ?`,
+			`> "foo" = ?
 `,
 			[]interface{}{
 				100,
@@ -67,8 +67,8 @@ func TestColumn(t *testing.T) {
 		},
 		{
 			stmt.NewColumn("foo").Eq(stmt.NewVal(100)),
-			`foo = ?`,
-			`> foo = ?
+			`"foo" = ?`,
+			`> "foo" = ?
 `,
 			[]interface{}{
 				100,
@@ -76,8 +76,8 @@ func TestColumn(t *testing.T) {
 		},
 		{
 			stmt.NewColumn("foo").NotEq(stmt.NewVal(100)),
-			`foo != ?`,
-			`> foo != ?
+			`"foo" != ?`,
+			`> "foo" != ?
 `,
 			[]interface{}{
 				100,
@@ -85,8 +85,8 @@ func TestColumn(t *testing.T) {
 		},
 		{
 			stmt.NewColumn("foo").Gt(stmt.NewVal(100)),
-			`foo > ?`,
-			`> foo > ?
+			`"foo" > ?`,
+			`> "foo" > ?
 `,
 			[]interface{}{
 				100,
@@ -94,8 +94,8 @@ func TestColumn(t *testing.T) {
 		},
 		{
 			stmt.NewColumn("foo").Gte(stmt.NewVal(100)),
-			`foo >= ?`,
-			`> foo >= ?
+			`"foo" >= ?`,
+			`> "foo" >= ?
 `,
 			[]interface{}{
 				100,
@@ -103,8 +103,8 @@ func TestColumn(t *testing.T) {
 		},
 		{
 			stmt.NewColumn("foo").Lt(stmt.NewVal(100)),
-			`foo < ?`,
-			`> foo < ?
+			`"foo" < ?`,
+			`> "foo" < ?
 `,
 			[]interface{}{
 				100,
@@ -112,8 +112,8 @@ func TestColumn(t *testing.T) {
 		},
 		{
 			stmt.NewColumn("foo").Lte(stmt.NewVal(100)),
-			`foo <= ?`,
-			`> foo <= ?
+			`"foo" <= ?`,
+			`> "foo" <= ?
 `,
 			[]interface{}{
 				100,
@@ -121,8 +121,8 @@ func TestColumn(t *testing.T) {
 		},
 		{
 			stmt.NewColumn("foo").Between(stmt.NewVal(100), stmt.NewVal(200)),
-			`foo BETWEEN ? AND ?`,
-			`> foo BETWEEN ? AND ?
+			`"foo" BETWEEN ? AND ?`,
+			`> "foo" BETWEEN ? AND ?
 `,
 			[]interface{}{
 				100,
@@ -132,8 +132,8 @@ func TestColumn(t *testing.T) {
 		{
 			stmt.NewColumn("foo").
 				In(stmt.NewVals(100, 200, 300)),
-			`foo IN (?, ?, ?)`,
-			`> foo IN (?, ?, ?)
+			`"foo" IN (?, ?, ?)`,
+			`> "foo" IN (?, ?, ?)
 `,
 			[]interface{}{
 				100,
@@ -144,8 +144,8 @@ func TestColumn(t *testing.T) {
 		{
 			stmt.NewColumn("foo").
 				NotIn(stmt.NewVals(100, 200, 300)),
-			`foo NOT IN (?, ?, ?)`,
-			`> foo NOT IN (?, ?, ?)
+			`"foo" NOT IN (?, ?, ?)`,
+			`> "foo" NOT IN (?, ?, ?)
 `,
 			[]interface{}{
 				100,
@@ -155,8 +155,8 @@ func TestColumn(t *testing.T) {
 		},
 		{
 			stmt.NewColumn("foo").Like(stmt.NewVal(`%bar%`)),
-			`foo LIKE ?`,
-			`> foo LIKE ?
+			`"foo" LIKE ?`,
+			`> "foo" LIKE ?
 `,
 			[]interface{}{
 				`%bar%`,
@@ -164,8 +164,8 @@ func TestColumn(t *testing.T) {
 		},
 		{
 			stmt.NewColumn("foo").RegExp(stmt.NewVal("^(bar|baz)")),
-			`foo REGEXP ?`,
-			`> foo REGEXP ?
+			`"foo" REGEXP ?`,
+			`> "foo" REGEXP ?
 `,
 			[]interface{}{
 				`^(bar|baz)`,
@@ -173,15 +173,15 @@ func TestColumn(t *testing.T) {
 		},
 		{
 			stmt.NewColumn("foo").IsNull(),
-			`foo IS NULL`,
-			`> foo IS NULL
+			`"foo" IS NULL`,
+			`> "foo" IS NULL
 `,
 			nil,
 		},
 		{
 			stmt.NewColumn("foo").IsNotNull(),
-			`foo IS NOT NULL`,
-			`> foo IS NOT NULL
+			`"foo" IS NOT NULL`,
+			`> "foo" IS NOT NULL
 `,
 			nil,
 		},
@@ -191,8 +191,8 @@ func TestColumn(t *testing.T) {
 					stmt.NewSelect(),
 				),
 			),
-			`foo = ALL (SELECT)`,
-			`> foo = ALL (
+			`"foo" = ALL (SELECT)`,
+			`> "foo" = ALL (
 >   SELECT
 > )
 `,
@@ -204,8 +204,8 @@ func TestColumn(t *testing.T) {
 					stmt.NewSelect(),
 				),
 			),
-			`foo != ALL (SELECT)`,
-			`> foo != ALL (
+			`"foo" != ALL (SELECT)`,
+			`> "foo" != ALL (
 >   SELECT
 > )
 `,
@@ -217,8 +217,8 @@ func TestColumn(t *testing.T) {
 					stmt.NewSelect(),
 				),
 			),
-			`foo > ALL (SELECT)`,
-			`> foo > ALL (
+			`"foo" > ALL (SELECT)`,
+			`> "foo" > ALL (
 >   SELECT
 > )
 `,
@@ -230,8 +230,8 @@ func TestColumn(t *testing.T) {
 					stmt.NewSelect(),
 				),
 			),
-			`foo >= ALL (SELECT)`,
-			`> foo >= ALL (
+			`"foo" >= ALL (SELECT)`,
+			`> "foo" >= ALL (
 >   SELECT
 > )
 `,
@@ -243,8 +243,8 @@ func TestColumn(t *testing.T) {
 					stmt.NewSelect(),
 				),
 			),
-			`foo < ALL (SELECT)`,
-			`> foo < ALL (
+			`"foo" < ALL (SELECT)`,
+			`> "foo" < ALL (
 >   SELECT
 > )
 `,
@@ -256,8 +256,8 @@ func TestColumn(t *testing.T) {
 					stmt.NewSelect(),
 				),
 			),
-			`foo <= ALL (SELECT)`,
-			`> foo <= ALL (
+			`"foo" <= ALL (SELECT)`,
+			`> "foo" <= ALL (
 >   SELECT
 > )
 `,
@@ -269,8 +269,8 @@ func TestColumn(t *testing.T) {
 					stmt.NewSelect(),
 				),
 			),
-			`foo = ANY (SELECT)`,
-			`> foo = ANY (
+			`"foo" = ANY (SELECT)`,
+			`> "foo" = ANY (
 >   SELECT
 > )
 `,
@@ -282,8 +282,8 @@ func TestColumn(t *testing.T) {
 					stmt.NewSelect(),
 				),
 			),
-			`foo != ANY (SELECT)`,
-			`> foo != ANY (
+			`"foo" != ANY (SELECT)`,
+			`> "foo" != ANY (
 >   SELECT
 > )
 `,
@@ -295,8 +295,8 @@ func TestColumn(t *testing.T) {
 					stmt.NewSelect(),
 				),
 			),
-			`foo > ANY (SELECT)`,
-			`> foo > ANY (
+			`"foo" > ANY (SELECT)`,
+			`> "foo" > ANY (
 >   SELECT
 > )
 `,
@@ -308,8 +308,8 @@ func TestColumn(t *testing.T) {
 					stmt.NewSelect(),
 				),
 			),
-			`foo >= ANY (SELECT)`,
-			`> foo >= ANY (
+			`"foo" >= ANY (SELECT)`,
+			`> "foo" >= ANY (
 >   SELECT
 > )
 `,
@@ -321,8 +321,8 @@ func TestColumn(t *testing.T) {
 					stmt.NewSelect(),
 				),
 			),
-			`foo < ANY (SELECT)`,
-			`> foo < ANY (
+			`"foo" < ANY (SELECT)`,
+			`> "foo" < ANY (
 >   SELECT
 > )
 `,
@@ -334,8 +334,8 @@ func TestColumn(t *testing.T) {
 					stmt.NewSelect(),
 				),
 			),
-			`foo <= ANY (SELECT)`,
-			`> foo <= ANY (
+			`"foo" <= ANY (SELECT)`,
+			`> "foo" <= ANY (
 >   SELECT
 > )
 `,
@@ -343,15 +343,15 @@ func TestColumn(t *testing.T) {
 		},
 		{
 			stmt.NewColumn("foo").Asc(),
-			`foo ASC`,
-			`> foo ASC
+			`"foo" ASC`,
+			`> "foo" ASC
 `,
 			nil,
 		},
 		{
 			stmt.NewColumn("foo").Desc(),
-			`foo DESC`,
-			`> foo DESC
+			`"foo" DESC`,
+			`> "foo" DESC
 `,
 			nil,
 		},

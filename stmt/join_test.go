@@ -36,8 +36,8 @@ func TestJoin(t *testing.T) {
 			stmt.NewJoin(
 				stmt.NewTable("foo"),
 			),
-			`JOIN foo`,
-			`> JOIN foo
+			`JOIN "foo"`,
+			`> JOIN "foo"
 `,
 			nil,
 		},
@@ -45,8 +45,8 @@ func TestJoin(t *testing.T) {
 			stmt.NewJoin(
 				stmt.NewTable("foo").As("f"),
 			),
-			`JOIN foo AS "f"`,
-			`> JOIN foo AS "f"
+			`JOIN "foo" AS "f"`,
+			`> JOIN "foo" AS "f"
 `,
 			nil,
 		},
@@ -60,13 +60,13 @@ func TestJoin(t *testing.T) {
 					),
 				).As("e"),
 			),
-			`JOIN (SELECT emp_id FROM employee) AS e`,
+			`JOIN (SELECT "emp_id" FROM "employee") AS "e"`,
 			`> JOIN (
 >   SELECT
->     emp_id
+>     "emp_id"
 >   FROM
->     employee
-> ) AS e
+>     "employee"
+> ) AS "e"
 `,
 			nil,
 		},
@@ -76,9 +76,9 @@ func TestJoin(t *testing.T) {
 			).Join(
 				stmt.NewTable("bar").As("b"),
 			),
-			`JOIN foo AS "f" JOIN bar AS "b"`,
-			`> JOIN foo AS "f"
-> JOIN bar AS "b"
+			`JOIN "foo" AS "f" JOIN "bar" AS "b"`,
+			`> JOIN "foo" AS "f"
+> JOIN "bar" AS "b"
 `,
 			nil,
 		},
@@ -88,9 +88,9 @@ func TestJoin(t *testing.T) {
 			).InnerJoin(
 				stmt.NewTable("bar").As("b"),
 			),
-			`JOIN foo AS "f" INNER JOIN bar AS "b"`,
-			`> JOIN foo AS "f"
-> INNER JOIN bar AS "b"
+			`JOIN "foo" AS "f" INNER JOIN "bar" AS "b"`,
+			`> JOIN "foo" AS "f"
+> INNER JOIN "bar" AS "b"
 `,
 			nil,
 		},
@@ -100,9 +100,9 @@ func TestJoin(t *testing.T) {
 			).LeftJoin(
 				stmt.NewTable("bar").As("b"),
 			),
-			`JOIN foo AS "f" LEFT JOIN bar AS "b"`,
-			`> JOIN foo AS "f"
-> LEFT JOIN bar AS "b"
+			`JOIN "foo" AS "f" LEFT JOIN "bar" AS "b"`,
+			`> JOIN "foo" AS "f"
+> LEFT JOIN "bar" AS "b"
 `,
 			nil,
 		},
@@ -112,9 +112,9 @@ func TestJoin(t *testing.T) {
 			).RightJoin(
 				stmt.NewTable("bar").As("b"),
 			),
-			`JOIN foo AS "f" RIGHT JOIN bar AS "b"`,
-			`> JOIN foo AS "f"
-> RIGHT JOIN bar AS "b"
+			`JOIN "foo" AS "f" RIGHT JOIN "bar" AS "b"`,
+			`> JOIN "foo" AS "f"
+> RIGHT JOIN "bar" AS "b"
 `,
 			nil,
 		},
@@ -122,11 +122,11 @@ func TestJoin(t *testing.T) {
 			stmt.NewJoin(
 				stmt.NewTable("foo"),
 			).On(
-				stmt.NewColumn("foo.id"),
-				stmt.NewColumn("bar.id"),
+				stmt.NewTable("foo").Column("id"),
+				stmt.NewTable("bar").Column("id"),
 			),
-			`JOIN foo ON foo.id = bar.id`,
-			`> JOIN foo ON foo.id = bar.id
+			`JOIN "foo" ON "foo"."id" = "bar"."id"`,
+			`> JOIN "foo" ON "foo"."id" = "bar"."id"
 `,
 			nil,
 		},
@@ -134,11 +134,11 @@ func TestJoin(t *testing.T) {
 			stmt.NewJoin(
 				stmt.NewTable("foo").As("f"),
 			).On(
-				stmt.NewColumn("f.id"),
-				stmt.NewColumn("b.id"),
+				stmt.NewTable("f").Column("id"),
+				stmt.NewTable("b").Column("id"),
 			),
-			`JOIN foo AS "f" ON f.id = b.id`,
-			`> JOIN foo AS "f" ON f.id = b.id
+			`JOIN "foo" AS "f" ON "f"."id" = "b"."id"`,
+			`> JOIN "foo" AS "f" ON "f"."id" = "b"."id"
 `,
 			nil,
 		},
@@ -148,8 +148,8 @@ func TestJoin(t *testing.T) {
 			).Using(
 				stmt.NewColumn("id"),
 			),
-			`JOIN foo USING id`,
-			`> JOIN foo USING id
+			`JOIN "foo" USING "id"`,
+			`> JOIN "foo" USING "id"
 `,
 			nil,
 		},
@@ -159,8 +159,8 @@ func TestJoin(t *testing.T) {
 			).Using(
 				stmt.NewColumn("id"),
 			),
-			`JOIN foo AS "f" USING id`,
-			`> JOIN foo AS "f" USING id
+			`JOIN "foo" AS "f" USING "id"`,
+			`> JOIN "foo" AS "f" USING "id"
 `,
 			nil,
 		},
@@ -202,8 +202,8 @@ func TestInnerJoin(t *testing.T) {
 			stmt.NewInnerJoin(
 				stmt.NewTable("foo"),
 			),
-			`INNER JOIN foo`,
-			`> INNER JOIN foo
+			`INNER JOIN "foo"`,
+			`> INNER JOIN "foo"
 `,
 			nil,
 		},
@@ -212,8 +212,8 @@ func TestInnerJoin(t *testing.T) {
 			stmt.NewInnerJoin(
 				stmt.NewTable("foo").As("f"),
 			),
-			`INNER JOIN foo AS "f"`,
-			`> INNER JOIN foo AS "f"
+			`INNER JOIN "foo" AS "f"`,
+			`> INNER JOIN "foo" AS "f"
 `,
 			nil,
 		},
@@ -227,13 +227,13 @@ func TestInnerJoin(t *testing.T) {
 					),
 				).As("e"),
 			),
-			`INNER JOIN (SELECT emp_id FROM employee) AS e`,
+			`INNER JOIN (SELECT "emp_id" FROM "employee") AS "e"`,
 			`> INNER JOIN (
 >   SELECT
->     emp_id
+>     "emp_id"
 >   FROM
->     employee
-> ) AS e
+>     "employee"
+> ) AS "e"
 `,
 			nil,
 		},
@@ -241,11 +241,11 @@ func TestInnerJoin(t *testing.T) {
 			stmt.NewInnerJoin(
 				stmt.NewTable("foo"),
 			).On(
-				stmt.NewColumn("foo.id"),
-				stmt.NewColumn("bar.id"),
+				stmt.NewTable("foo").Column("id"),
+				stmt.NewTable("bar").Column("id"),
 			),
-			`INNER JOIN foo ON foo.id = bar.id`,
-			`> INNER JOIN foo ON foo.id = bar.id
+			`INNER JOIN "foo" ON "foo"."id" = "bar"."id"`,
+			`> INNER JOIN "foo" ON "foo"."id" = "bar"."id"
 `,
 			nil,
 		},
@@ -254,11 +254,11 @@ func TestInnerJoin(t *testing.T) {
 			stmt.NewInnerJoin(
 				stmt.NewTable("foo").As("f"),
 			).On(
-				stmt.NewColumn("f.id"),
-				stmt.NewColumn("b.id"),
+				stmt.NewTable("f").Column("id"),
+				stmt.NewTable("b").Column("id"),
 			),
-			`INNER JOIN foo AS "f" ON f.id = b.id`,
-			`> INNER JOIN foo AS "f" ON f.id = b.id
+			`INNER JOIN "foo" AS "f" ON "f"."id" = "b"."id"`,
+			`> INNER JOIN "foo" AS "f" ON "f"."id" = "b"."id"
 `,
 			nil,
 		},
@@ -269,8 +269,8 @@ func TestInnerJoin(t *testing.T) {
 			).Using(
 				stmt.NewColumn("id"),
 			),
-			`INNER JOIN foo USING id`,
-			`> INNER JOIN foo USING id
+			`INNER JOIN "foo" USING "id"`,
+			`> INNER JOIN "foo" USING "id"
 `,
 			nil,
 		},
@@ -281,8 +281,8 @@ func TestInnerJoin(t *testing.T) {
 			).Using(
 				stmt.NewColumn("id"),
 			),
-			`INNER JOIN foo AS "f" USING id`,
-			`> INNER JOIN foo AS "f" USING id
+			`INNER JOIN "foo" AS "f" USING "id"`,
+			`> INNER JOIN "foo" AS "f" USING "id"
 `,
 			nil,
 		},
@@ -323,8 +323,8 @@ func TestLeftJoin(t *testing.T) {
 			stmt.NewLeftJoin(
 				stmt.NewTable("foo"),
 			),
-			`LEFT JOIN foo`,
-			`> LEFT JOIN foo
+			`LEFT JOIN "foo"`,
+			`> LEFT JOIN "foo"
 `,
 			nil,
 		},
@@ -332,8 +332,8 @@ func TestLeftJoin(t *testing.T) {
 			stmt.NewLeftJoin(
 				stmt.NewTable("foo").As("f"),
 			),
-			`LEFT JOIN foo AS "f"`,
-			`> LEFT JOIN foo AS "f"
+			`LEFT JOIN "foo" AS "f"`,
+			`> LEFT JOIN "foo" AS "f"
 `,
 			nil,
 		},
@@ -347,13 +347,13 @@ func TestLeftJoin(t *testing.T) {
 					),
 				).As("e"),
 			),
-			`LEFT JOIN (SELECT emp_id FROM employee) AS e`,
+			`LEFT JOIN (SELECT "emp_id" FROM "employee") AS "e"`,
 			`> LEFT JOIN (
 >   SELECT
->     emp_id
+>     "emp_id"
 >   FROM
->     employee
-> ) AS e
+>     "employee"
+> ) AS "e"
 `,
 			nil,
 		},
@@ -361,11 +361,11 @@ func TestLeftJoin(t *testing.T) {
 			stmt.NewLeftJoin(
 				stmt.NewTable("foo"),
 			).On(
-				stmt.NewColumn("foo.id"),
-				stmt.NewColumn("bar.id"),
+				stmt.NewTable("foo").Column("id"),
+				stmt.NewTable("bar").Column("id"),
 			),
-			`LEFT JOIN foo ON foo.id = bar.id`,
-			`> LEFT JOIN foo ON foo.id = bar.id
+			`LEFT JOIN "foo" ON "foo"."id" = "bar"."id"`,
+			`> LEFT JOIN "foo" ON "foo"."id" = "bar"."id"
 `,
 			nil,
 		},
@@ -373,11 +373,11 @@ func TestLeftJoin(t *testing.T) {
 			stmt.NewLeftJoin(
 				stmt.NewTable("foo").As("f"),
 			).On(
-				stmt.NewColumn("f.id"),
-				stmt.NewColumn("b.id"),
+				stmt.NewTable("f").Column("id"),
+				stmt.NewTable("b").Column("id"),
 			),
-			`LEFT JOIN foo AS "f" ON f.id = b.id`,
-			`> LEFT JOIN foo AS "f" ON f.id = b.id
+			`LEFT JOIN "foo" AS "f" ON "f"."id" = "b"."id"`,
+			`> LEFT JOIN "foo" AS "f" ON "f"."id" = "b"."id"
 `,
 			nil,
 		},
@@ -387,8 +387,8 @@ func TestLeftJoin(t *testing.T) {
 			).Using(
 				stmt.NewColumn("id"),
 			),
-			`LEFT JOIN foo USING id`,
-			`> LEFT JOIN foo USING id
+			`LEFT JOIN "foo" USING "id"`,
+			`> LEFT JOIN "foo" USING "id"
 `,
 			nil,
 		},
@@ -398,8 +398,8 @@ func TestLeftJoin(t *testing.T) {
 			).Using(
 				stmt.NewColumn("id"),
 			),
-			`LEFT JOIN foo AS "f" USING id`,
-			`> LEFT JOIN foo AS "f" USING id
+			`LEFT JOIN "foo" AS "f" USING "id"`,
+			`> LEFT JOIN "foo" AS "f" USING "id"
 `,
 			nil,
 		},
@@ -440,8 +440,8 @@ func TestRightJoin(t *testing.T) {
 			stmt.NewRightJoin(
 				stmt.NewTable("foo"),
 			),
-			`RIGHT JOIN foo`,
-			`> RIGHT JOIN foo
+			`RIGHT JOIN "foo"`,
+			`> RIGHT JOIN "foo"
 `,
 			nil,
 		},
@@ -449,8 +449,8 @@ func TestRightJoin(t *testing.T) {
 			stmt.NewRightJoin(
 				stmt.NewTable("foo").As("f"),
 			),
-			`RIGHT JOIN foo AS "f"`,
-			`> RIGHT JOIN foo AS "f"
+			`RIGHT JOIN "foo" AS "f"`,
+			`> RIGHT JOIN "foo" AS "f"
 `,
 			nil,
 		},
@@ -464,13 +464,13 @@ func TestRightJoin(t *testing.T) {
 					),
 				).As("e"),
 			),
-			`RIGHT JOIN (SELECT emp_id FROM employee) AS e`,
+			`RIGHT JOIN (SELECT "emp_id" FROM "employee") AS "e"`,
 			`> RIGHT JOIN (
 >   SELECT
->     emp_id
+>     "emp_id"
 >   FROM
->     employee
-> ) AS e
+>     "employee"
+> ) AS "e"
 `,
 			nil,
 		},
@@ -478,11 +478,11 @@ func TestRightJoin(t *testing.T) {
 			stmt.NewRightJoin(
 				stmt.NewTable("foo"),
 			).On(
-				stmt.NewColumn("foo.id"),
-				stmt.NewColumn("bar.id"),
+				stmt.NewTable("foo").Column("id"),
+				stmt.NewTable("bar").Column("id"),
 			),
-			`RIGHT JOIN foo ON foo.id = bar.id`,
-			`> RIGHT JOIN foo ON foo.id = bar.id
+			`RIGHT JOIN "foo" ON "foo"."id" = "bar"."id"`,
+			`> RIGHT JOIN "foo" ON "foo"."id" = "bar"."id"
 `,
 			nil,
 		},
@@ -490,11 +490,11 @@ func TestRightJoin(t *testing.T) {
 			stmt.NewRightJoin(
 				stmt.NewTable("foo").As("f"),
 			).On(
-				stmt.NewColumn("f.id"),
-				stmt.NewColumn("b.id"),
+				stmt.NewTable("f").Column("id"),
+				stmt.NewTable("b").Column("id"),
 			),
-			`RIGHT JOIN foo AS "f" ON f.id = b.id`,
-			`> RIGHT JOIN foo AS "f" ON f.id = b.id
+			`RIGHT JOIN "foo" AS "f" ON "f"."id" = "b"."id"`,
+			`> RIGHT JOIN "foo" AS "f" ON "f"."id" = "b"."id"
 `,
 			nil,
 		},
@@ -504,8 +504,8 @@ func TestRightJoin(t *testing.T) {
 			).Using(
 				stmt.NewColumn("id"),
 			),
-			`RIGHT JOIN foo USING id`,
-			`> RIGHT JOIN foo USING id
+			`RIGHT JOIN "foo" USING "id"`,
+			`> RIGHT JOIN "foo" USING "id"
 `,
 			nil,
 		},
@@ -515,8 +515,8 @@ func TestRightJoin(t *testing.T) {
 			).Using(
 				stmt.NewColumn("id"),
 			),
-			`RIGHT JOIN foo AS "f" USING id`,
-			`> RIGHT JOIN foo AS "f" USING id
+			`RIGHT JOIN "foo" AS "f" USING "id"`,
+			`> RIGHT JOIN "foo" AS "f" USING "id"
 `,
 			nil,
 		},

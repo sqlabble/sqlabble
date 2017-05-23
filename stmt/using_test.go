@@ -21,8 +21,8 @@ func TestUsing(t *testing.T) {
 			stmt.NewUsing(
 				stmt.NewColumn("id"),
 			),
-			"USING id",
-			`> USING id
+			`USING "id"`,
+			`> USING "id"
 `,
 			nil,
 		},
@@ -32,9 +32,9 @@ func TestUsing(t *testing.T) {
 			).Join(
 				stmt.NewTable("bar"),
 			),
-			"USING id JOIN bar",
-			`> USING id
-> JOIN bar
+			`USING "id" JOIN "bar"`,
+			`> USING "id"
+> JOIN "bar"
 `,
 			nil,
 		},
@@ -44,9 +44,9 @@ func TestUsing(t *testing.T) {
 			).InnerJoin(
 				stmt.NewTable("bar"),
 			),
-			"USING id INNER JOIN bar",
-			`> USING id
-> INNER JOIN bar
+			`USING "id" INNER JOIN "bar"`,
+			`> USING "id"
+> INNER JOIN "bar"
 `,
 			nil,
 		},
@@ -56,9 +56,9 @@ func TestUsing(t *testing.T) {
 			).LeftJoin(
 				stmt.NewTable("bar"),
 			),
-			"USING id LEFT JOIN bar",
-			`> USING id
-> LEFT JOIN bar
+			`USING "id" LEFT JOIN "bar"`,
+			`> USING "id"
+> LEFT JOIN "bar"
 `,
 			nil,
 		},
@@ -68,18 +68,18 @@ func TestUsing(t *testing.T) {
 			).RightJoin(
 				stmt.NewTable("bar"),
 			),
-			"USING id RIGHT JOIN bar",
-			`> USING id
-> RIGHT JOIN bar
+			`USING "id" RIGHT JOIN "bar"`,
+			`> USING "id"
+> RIGHT JOIN "bar"
 `,
 			nil,
 		},
 		{
 			stmt.NewTable("foo").As("a").
 				Join(stmt.NewTable("bar")).Using(stmt.NewColumn("id")),
-			`foo AS "a" JOIN bar USING id`,
-			`> foo AS "a"
-> JOIN bar USING id
+			`"foo" AS "a" JOIN "bar" USING "id"`,
+			`> "foo" AS "a"
+> JOIN "bar" USING "id"
 `,
 			nil,
 		},

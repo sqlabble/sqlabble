@@ -28,7 +28,7 @@ func TestSelectSQL(t *testing.T) {
 		// 1
 		{
 			stmt.NewSelect(
-				stmt.NewColumn("*"),
+				stmt.NewWildcard(),
 			),
 			`SELECT *`,
 			`> SELECT
@@ -41,9 +41,9 @@ func TestSelectSQL(t *testing.T) {
 			stmt.NewSelect(
 				stmt.NewColumn("foo"),
 			),
-			`SELECT foo`,
+			`SELECT "foo"`,
 			`> SELECT
->   foo
+>   "foo"
 `,
 			nil,
 		},
@@ -52,9 +52,9 @@ func TestSelectSQL(t *testing.T) {
 			stmt.NewSelect(
 				stmt.NewColumn("foo").As("a"),
 			),
-			`SELECT foo AS "a"`,
+			`SELECT "foo" AS "a"`,
 			`> SELECT
->   foo AS "a"
+>   "foo" AS "a"
 `,
 			nil,
 		},
@@ -65,11 +65,11 @@ func TestSelectSQL(t *testing.T) {
 				stmt.NewColumn("bar").As("b"),
 				stmt.NewColumn("baz").As("c"),
 			),
-			`SELECT foo AS "a", bar AS "b", baz AS "c"`,
+			`SELECT "foo" AS "a", "bar" AS "b", "baz" AS "c"`,
 			`> SELECT
->   foo AS "a"
->   , bar AS "b"
->   , baz AS "c"
+>   "foo" AS "a"
+>   , "bar" AS "b"
+>   , "baz" AS "c"
 `,
 			nil,
 		},
@@ -80,11 +80,11 @@ func TestSelectSQL(t *testing.T) {
 				stmt.NewColumn("bar").As("b"),
 				stmt.NewColumn("baz").As("c"),
 			),
-			`SELECT DISTINCT foo AS "a", bar AS "b", baz AS "c"`,
+			`SELECT DISTINCT "foo" AS "a", "bar" AS "b", "baz" AS "c"`,
 			`> SELECT DISTINCT
->   foo AS "a"
->   , bar AS "b"
->   , baz AS "c"
+>   "foo" AS "a"
+>   , "bar" AS "b"
+>   , "baz" AS "c"
 `,
 			nil,
 		},
@@ -95,11 +95,11 @@ func TestSelectSQL(t *testing.T) {
 			).From(
 				stmt.NewTable("bar"),
 			),
-			`SELECT foo FROM bar`,
+			`SELECT "foo" FROM "bar"`,
 			`> SELECT
->   foo
+>   "foo"
 > FROM
->   bar
+>   "bar"
 `,
 			nil,
 		},
@@ -114,28 +114,28 @@ func TestSelectSQL(t *testing.T) {
 			).From(
 				stmt.NewTable("bar"),
 			),
-			`SELECT (SELECT foo) FROM bar`,
+			`SELECT (SELECT "foo") FROM "bar"`,
 			`> SELECT
 >   (
 >     SELECT
->       foo
+>       "foo"
 >   )
 > FROM
->   bar
+>   "bar"
 `,
 			nil,
 		},
 		{
 			stmt.NewSelect(
 				stmt.NewConcat(
-					stmt.NewColumn("i.fname"),
+					stmt.NewColumn("fname"),
 					stmt.NewVal(" "),
-					stmt.NewColumn("i.lname"),
+					stmt.NewColumn("lname"),
 				),
 			),
-			`SELECT CONCAT(i.fname, ?, i.lname)`,
+			`SELECT CONCAT("fname", ?, "lname")`,
 			`> SELECT
->   CONCAT(i.fname, ?, i.lname)
+>   CONCAT("fname", ?, "lname")
 `,
 			[]interface{}{
 				" ",

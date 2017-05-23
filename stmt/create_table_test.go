@@ -25,9 +25,9 @@ func TestCreateTableSQL(t *testing.T) {
 			stmt.NewCreateTable(
 				stmt.NewTable("foo"),
 			),
-			"CREATE TABLE foo",
+			`CREATE TABLE "foo"`,
 			`> CREATE TABLE
->   foo
+>   "foo"
 `,
 			nil,
 		},
@@ -35,9 +35,9 @@ func TestCreateTableSQL(t *testing.T) {
 			stmt.NewCreateTableIfNotExists(
 				stmt.NewTable("foo"),
 			),
-			"CREATE TABLE IF NOT EXISTS foo",
+			`CREATE TABLE IF NOT EXISTS "foo"`,
 			`> CREATE TABLE IF NOT EXISTS
->   foo
+>   "foo"
 `,
 			nil,
 		},
@@ -45,9 +45,9 @@ func TestCreateTableSQL(t *testing.T) {
 			stmt.NewCreateTable(
 				stmt.NewTable("foo"),
 			).Definitions(),
-			"CREATE TABLE foo ()",
+			`CREATE TABLE "foo" ()`,
 			`> CREATE TABLE
->   foo (
+>   "foo" (
 >   )
 `,
 			nil,
@@ -58,10 +58,10 @@ func TestCreateTableSQL(t *testing.T) {
 			).Definitions(
 				stmt.NewColumn("name").Define("VARCHAR(255)"),
 			),
-			"CREATE TABLE foo (name VARCHAR(255))",
+			`CREATE TABLE "foo" ("name" VARCHAR(255))`,
 			`> CREATE TABLE
->   foo (
->     name VARCHAR(255)
+>   "foo" (
+>     "name" VARCHAR(255)
 >   )
 `,
 			nil,
@@ -73,11 +73,11 @@ func TestCreateTableSQL(t *testing.T) {
 				stmt.NewColumn("name").Define("VARCHAR(255)"),
 				stmt.NewColumn("gender").Define("ENUM('M', 'F')"),
 			),
-			"CREATE TABLE foo (name VARCHAR(255), gender ENUM('M', 'F'))",
+			`CREATE TABLE "foo" ("name" VARCHAR(255), "gender" ENUM('M', 'F'))`,
 			`> CREATE TABLE
->   foo (
->     name VARCHAR(255)
->     , gender ENUM('M', 'F')
+>   "foo" (
+>     "name" VARCHAR(255)
+>     , "gender" ENUM('M', 'F')
 >   )
 `,
 			nil,
@@ -90,12 +90,12 @@ func TestCreateTableSQL(t *testing.T) {
 				stmt.NewColumn("gender").Define("ENUM('M', 'F')"),
 				stmt.NewColumn("birth_date").Define("DATE"),
 			),
-			"CREATE TABLE foo (name VARCHAR(255), gender ENUM('M', 'F'), birth_date DATE)",
+			`CREATE TABLE "foo" ("name" VARCHAR(255), "gender" ENUM('M', 'F'), "birth_date" DATE)`,
 			`> CREATE TABLE
->   foo (
->     name VARCHAR(255)
->     , gender ENUM('M', 'F')
->     , birth_date DATE
+>   "foo" (
+>     "name" VARCHAR(255)
+>     , "gender" ENUM('M', 'F')
+>     , "birth_date" DATE
 >   )
 `,
 			nil,

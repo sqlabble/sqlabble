@@ -7,7 +7,7 @@ import (
 )
 
 type Order struct {
-	column Column
+	column ColOrAliasOrFuncOrSub
 	dir    keyword.Direction
 }
 
@@ -24,6 +24,11 @@ func NewDesc() Order {
 }
 
 func (o Order) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	if o.column == nil {
+		return tokenizer.NewLine(
+			token.Word(o.keyword()),
+		), nil
+	}
 	t1, v1 := o.column.nodeize()
 	return t1.Append(
 		token.Word(o.keyword()),

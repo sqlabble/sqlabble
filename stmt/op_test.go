@@ -22,8 +22,8 @@ func TestAnd(t *testing.T) {
 			stmt.NewAnd(
 				stmt.NewColumn("foo").NotEq(stmt.NewVal(100)),
 			),
-			"foo != ?",
-			`> foo != ?
+			`"foo" != ?`,
+			`> "foo" != ?
 `,
 			[]interface{}{
 				100,
@@ -35,9 +35,9 @@ func TestAnd(t *testing.T) {
 				stmt.NewColumn("foo").NotEq(stmt.NewVal(100)),
 				stmt.NewColumn("bar").Eq(stmt.NewVal(200)),
 			),
-			"foo != ? AND bar = ?",
-			`> foo != ?
-> AND bar = ?
+			`"foo" != ? AND "bar" = ?`,
+			`> "foo" != ?
+> AND "bar" = ?
 `,
 			[]interface{}{
 				100,
@@ -51,10 +51,10 @@ func TestAnd(t *testing.T) {
 				stmt.NewColumn("bar").Eq(stmt.NewVal(200)),
 				stmt.NewColumn("baz").Like(stmt.NewVal("abc")),
 			),
-			"foo != ? AND bar = ? AND baz LIKE ?",
-			`> foo != ?
-> AND bar = ?
-> AND baz LIKE ?
+			`"foo" != ? AND "bar" = ? AND "baz" LIKE ?`,
+			`> "foo" != ?
+> AND "bar" = ?
+> AND "baz" LIKE ?
 `,
 			[]interface{}{
 				100,
@@ -75,13 +75,13 @@ func TestAnd(t *testing.T) {
 					stmt.NewVal(400),
 				),
 			),
-			"(foo != ? AND bar = ? AND baz LIKE ?) AND foo BETWEEN ? AND ?",
+			`("foo" != ? AND "bar" = ? AND "baz" LIKE ?) AND "foo" BETWEEN ? AND ?`,
 			`> (
->   foo != ?
->   AND bar = ?
->   AND baz LIKE ?
+>   "foo" != ?
+>   AND "bar" = ?
+>   AND "baz" LIKE ?
 > )
-> AND foo BETWEEN ? AND ?
+> AND "foo" BETWEEN ? AND ?
 `,
 			[]interface{}{
 				100,
@@ -129,8 +129,8 @@ func TestOr(t *testing.T) {
 			stmt.NewOr(
 				stmt.NewColumn("foo").NotEq(stmt.NewVal(100)),
 			),
-			"foo != ?",
-			`> foo != ?
+			`"foo" != ?`,
+			`> "foo" != ?
 `,
 			[]interface{}{
 				100,
@@ -141,9 +141,9 @@ func TestOr(t *testing.T) {
 				stmt.NewColumn("foo").NotEq(stmt.NewVal(100)),
 				stmt.NewColumn("bar").Eq(stmt.NewVal(200)),
 			),
-			"foo != ? OR bar = ?",
-			`> foo != ?
-> OR bar = ?
+			`"foo" != ? OR "bar" = ?`,
+			`> "foo" != ?
+> OR "bar" = ?
 `,
 			[]interface{}{
 				100,
@@ -156,10 +156,10 @@ func TestOr(t *testing.T) {
 				stmt.NewColumn("bar").Eq(stmt.NewVal(200)),
 				stmt.NewColumn("baz").Like(stmt.NewVal("abc")),
 			),
-			"foo != ? OR bar = ? OR baz LIKE ?",
-			`> foo != ?
-> OR bar = ?
-> OR baz LIKE ?
+			`"foo" != ? OR "bar" = ? OR "baz" LIKE ?`,
+			`> "foo" != ?
+> OR "bar" = ?
+> OR "baz" LIKE ?
 `,
 			[]interface{}{
 				100,
@@ -176,13 +176,13 @@ func TestOr(t *testing.T) {
 				),
 				stmt.NewColumn("foo").Gt(stmt.NewVal(300)),
 			),
-			"(foo != ? OR bar = ? OR baz LIKE ?) OR foo > ?",
+			`("foo" != ? OR "bar" = ? OR "baz" LIKE ?) OR "foo" > ?`,
 			`> (
->   foo != ?
->   OR bar = ?
->   OR baz LIKE ?
+>   "foo" != ?
+>   OR "bar" = ?
+>   OR "baz" LIKE ?
 > )
-> OR foo > ?
+> OR "foo" > ?
 `,
 			[]interface{}{
 				100,
@@ -230,9 +230,9 @@ func TestNot(t *testing.T) {
 			stmt.NewNot(
 				stmt.NewColumn("foo").NotEq(stmt.NewVal(100)),
 			),
-			"NOT (foo != ?)",
+			`NOT ("foo" != ?)`,
 			`> NOT (
->   foo != ?
+>   "foo" != ?
 > )
 `,
 			[]interface{}{
@@ -246,10 +246,10 @@ func TestNot(t *testing.T) {
 					stmt.NewColumn("foo").NotEq(stmt.NewVal(100)),
 				),
 			),
-			"NOT (NOT (foo != ?))",
+			`NOT (NOT ("foo" != ?))`,
 			`> NOT (
 >   NOT (
->     foo != ?
+>     "foo" != ?
 >   )
 > )
 `,
@@ -266,11 +266,11 @@ func TestNot(t *testing.T) {
 					),
 				),
 			),
-			"NOT (NOT (NOT (foo != ?)))",
+			`NOT (NOT (NOT ("foo" != ?)))`,
 			`> NOT (
 >   NOT (
 >     NOT (
->       foo != ?
+>       "foo" != ?
 >     )
 >   )
 > )
@@ -286,9 +286,9 @@ func TestNot(t *testing.T) {
 					stmt.NewColumn("foo").NotEq(stmt.NewVal(100)),
 				),
 			),
-			"NOT (foo != ?)",
+			`NOT ("foo" != ?)`,
 			`> NOT (
->   foo != ?
+>   "foo" != ?
 > )
 `,
 			[]interface{}{
@@ -304,11 +304,11 @@ func TestNot(t *testing.T) {
 					stmt.NewColumn("baz").Like(stmt.NewVal("abc")),
 				),
 			),
-			"NOT (foo != ? OR bar = ? OR baz LIKE ?)",
+			`NOT ("foo" != ? OR "bar" = ? OR "baz" LIKE ?)`,
 			`> NOT (
->   foo != ?
->   OR bar = ?
->   OR baz LIKE ?
+>   "foo" != ?
+>   OR "bar" = ?
+>   OR "baz" LIKE ?
 > )
 `,
 			[]interface{}{
@@ -328,12 +328,12 @@ func TestNot(t *testing.T) {
 					),
 				),
 			),
-			"NOT (NOT (foo != ? OR bar = ? OR baz LIKE ?))",
+			`NOT (NOT ("foo" != ? OR "bar" = ? OR "baz" LIKE ?))`,
 			`> NOT (
 >   NOT (
->     foo != ?
->     OR bar = ?
->     OR baz LIKE ?
+>     "foo" != ?
+>     OR "bar" = ?
+>     OR "baz" LIKE ?
 >   )
 > )
 `,
@@ -356,13 +356,13 @@ func TestNot(t *testing.T) {
 					),
 				),
 			),
-			"NOT (NOT (NOT (foo != ? OR bar = ? OR baz LIKE ?)))",
+			`NOT (NOT (NOT ("foo" != ? OR "bar" = ? OR "baz" LIKE ?)))`,
 			`> NOT (
 >   NOT (
 >     NOT (
->       foo != ?
->       OR bar = ?
->       OR baz LIKE ?
+>       "foo" != ?
+>       OR "bar" = ?
+>       OR "baz" LIKE ?
 >     )
 >   )
 > )
@@ -409,8 +409,8 @@ func TestComparisonOperators(t *testing.T) {
 	}{
 		{
 			stmt.NewColumn("foo").Eq(stmt.NewVal(100)),
-			"foo = ?",
-			`> foo = ?
+			`"foo" = ?`,
+			`> "foo" = ?
 `,
 			[]interface{}{
 				100,
@@ -418,8 +418,8 @@ func TestComparisonOperators(t *testing.T) {
 		},
 		{
 			stmt.NewColumn("foo").Lt(stmt.NewVal(100)),
-			"foo < ?",
-			`> foo < ?
+			`"foo" < ?`,
+			`> "foo" < ?
 `,
 			[]interface{}{
 				100,
@@ -427,8 +427,8 @@ func TestComparisonOperators(t *testing.T) {
 		},
 		{
 			stmt.NewColumn("foo").Lte(stmt.NewVal(100)),
-			"foo <= ?",
-			`> foo <= ?
+			`"foo" <= ?`,
+			`> "foo" <= ?
 `,
 			[]interface{}{
 				100,
@@ -436,8 +436,8 @@ func TestComparisonOperators(t *testing.T) {
 		},
 		{
 			stmt.NewColumn("foo").Gt(stmt.NewVal(100)),
-			"foo > ?",
-			`> foo > ?
+			`"foo" > ?`,
+			`> "foo" > ?
 `,
 			[]interface{}{
 				100,
@@ -445,8 +445,8 @@ func TestComparisonOperators(t *testing.T) {
 		},
 		{
 			stmt.NewColumn("foo").Gte(stmt.NewVal(100)),
-			"foo >= ?",
-			`> foo >= ?
+			`"foo" >= ?`,
+			`> "foo" >= ?
 `,
 			[]interface{}{
 				100,
@@ -454,8 +454,8 @@ func TestComparisonOperators(t *testing.T) {
 		},
 		{
 			stmt.NewColumn("foo").Like(stmt.NewVal("bar")),
-			"foo LIKE ?",
-			`> foo LIKE ?
+			`"foo" LIKE ?`,
+			`> "foo" LIKE ?
 `,
 			[]interface{}{
 				"bar",
@@ -463,8 +463,8 @@ func TestComparisonOperators(t *testing.T) {
 		},
 		{
 			stmt.NewColumn("foo").RegExp(stmt.NewVal("bar")),
-			"foo REGEXP ?",
-			`> foo REGEXP ?
+			`"foo" REGEXP ?`,
+			`> "foo" REGEXP ?
 `,
 			[]interface{}{
 				"bar",
@@ -508,8 +508,8 @@ func TestBetween(t *testing.T) {
 				stmt.NewVal(100),
 				stmt.NewVal(200),
 			),
-			"foo BETWEEN ? AND ?",
-			`> foo BETWEEN ? AND ?
+			`"foo" BETWEEN ? AND ?`,
+			`> "foo" BETWEEN ? AND ?
 `,
 			[]interface{}{
 				100,
@@ -520,16 +520,16 @@ func TestBetween(t *testing.T) {
 			stmt.NewColumn("joined_users").Between(
 				stmt.NewVal(100),
 				stmt.NewSubquery(
-					stmt.NewSelect(stmt.NewColumn("count(*)")).
+					stmt.NewSelect(stmt.NewCount(stmt.NewWildcard())).
 						From(stmt.NewTable("users")),
 				),
 			),
-			"joined_users BETWEEN ? AND (SELECT count(*) FROM users)",
-			`> joined_users BETWEEN ? AND (
+			`"joined_users" BETWEEN ? AND (SELECT COUNT(*) FROM "users")`,
+			`> "joined_users" BETWEEN ? AND (
 >   SELECT
->     count(*)
+>     COUNT(*)
 >   FROM
->     users
+>     "users"
 > )
 `,
 			[]interface{}{
@@ -539,17 +539,17 @@ func TestBetween(t *testing.T) {
 		{
 			stmt.NewColumn("joined_users").Between(
 				stmt.NewSubquery(
-					stmt.NewSelect(stmt.NewColumn("count(*)")).
+					stmt.NewSelect(stmt.NewCount(stmt.NewWildcard())).
 						From(stmt.NewTable("users")),
 				),
 				stmt.NewVal(500),
 			),
-			"joined_users BETWEEN (SELECT count(*) FROM users) AND ?",
-			`> joined_users BETWEEN (
+			`"joined_users" BETWEEN (SELECT COUNT(*) FROM "users") AND ?`,
+			`> "joined_users" BETWEEN (
 >   SELECT
->     count(*)
+>     COUNT(*)
 >   FROM
->     users
+>     "users"
 > ) AND ?
 `,
 			[]interface{}{
@@ -559,25 +559,25 @@ func TestBetween(t *testing.T) {
 		{
 			stmt.NewColumn("joined_users").Between(
 				stmt.NewSubquery(
-					stmt.NewSelect(stmt.NewColumn("count(*)")).
+					stmt.NewSelect(stmt.NewCount(stmt.NewWildcard())).
 						From(stmt.NewTable("super_users")),
 				),
 				stmt.NewSubquery(
-					stmt.NewSelect(stmt.NewColumn("count(*)")).
+					stmt.NewSelect(stmt.NewCount(stmt.NewWildcard())).
 						From(stmt.NewTable("users")),
 				),
 			),
-			"joined_users BETWEEN (SELECT count(*) FROM super_users) AND (SELECT count(*) FROM users)",
-			`> joined_users BETWEEN (
+			`"joined_users" BETWEEN (SELECT COUNT(*) FROM "super_users") AND (SELECT COUNT(*) FROM "users")`,
+			`> "joined_users" BETWEEN (
 >   SELECT
->     count(*)
+>     COUNT(*)
 >   FROM
->     super_users
+>     "super_users"
 > ) AND (
 >   SELECT
->     count(*)
+>     COUNT(*)
 >   FROM
->     users
+>     "users"
 > )
 `,
 			nil,
@@ -622,8 +622,8 @@ func TestContainingOperators(t *testing.T) {
 					200,
 					300,
 				)),
-			"foo IN (?, ?, ?)",
-			`> foo IN (?, ?, ?)
+			`"foo" IN (?, ?, ?)`,
+			`> "foo" IN (?, ?, ?)
 `,
 			[]interface{}{
 				100,
@@ -638,8 +638,8 @@ func TestContainingOperators(t *testing.T) {
 					200,
 					300,
 				)),
-			"foo NOT IN (?, ?, ?)",
-			`> foo NOT IN (?, ?, ?)
+			`"foo" NOT IN (?, ?, ?)`,
+			`> "foo" NOT IN (?, ?, ?)
 `,
 			[]interface{}{
 				100,
@@ -682,15 +682,15 @@ func TestKeywordOperators(t *testing.T) {
 	}{
 		{
 			stmt.NewColumn("foo").IsNull(),
-			"foo IS NULL",
-			`> foo IS NULL
+			`"foo" IS NULL`,
+			`> "foo" IS NULL
 `,
 			nil,
 		},
 		{
 			stmt.NewColumn("foo").IsNotNull(),
-			"foo IS NOT NULL",
-			`> foo IS NOT NULL
+			`"foo" IS NOT NULL`,
+			`> "foo" IS NOT NULL
 `,
 			nil,
 		},
@@ -741,12 +741,12 @@ func TestComplexOperation(t *testing.T) {
 					),
 				),
 			),
-			"(NOT ((NOT (foo = ?))))",
+			`(NOT ((NOT ("foo" = ?))))`,
 			`> (
 >   NOT (
 >     (
 >       NOT (
->         foo = ?
+>         "foo" = ?
 >       )
 >     )
 >   )
@@ -790,25 +790,25 @@ func TestComplexOperation(t *testing.T) {
 					),
 				),
 			),
-			"NOT (baz REGEXP ?) OR ((qux BETWEEN ? AND ? AND NOT ((foo != ? OR bar = ? OR baz LIKE ? OR (baz IN (?, ?, ?) OR qux NOT IN (?, ?, ?)))) AND foo > ?))",
+			`NOT ("baz" REGEXP ?) OR (("qux" BETWEEN ? AND ? AND NOT (("foo" != ? OR "bar" = ? OR "baz" LIKE ? OR ("baz" IN (?, ?, ?) OR "qux" NOT IN (?, ?, ?)))) AND "foo" > ?))`,
 			`> NOT (
->   baz REGEXP ?
+>   "baz" REGEXP ?
 > )
 > OR (
 >   (
->     qux BETWEEN ? AND ?
+>     "qux" BETWEEN ? AND ?
 >     AND NOT (
 >       (
->         foo != ?
->         OR bar = ?
->         OR baz LIKE ?
+>         "foo" != ?
+>         OR "bar" = ?
+>         OR "baz" LIKE ?
 >         OR (
->           baz IN (?, ?, ?)
->           OR qux NOT IN (?, ?, ?)
+>           "baz" IN (?, ?, ?)
+>           OR "qux" NOT IN (?, ?, ?)
 >         )
 >       )
 >     )
->     AND foo > ?
+>     AND "foo" > ?
 >   )
 > )
 `,

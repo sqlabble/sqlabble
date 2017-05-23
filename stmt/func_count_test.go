@@ -9,7 +9,7 @@ import (
 	"github.com/minodisk/sqlabble/stmt"
 )
 
-func TestOrderBySQL(t *testing.T) {
+func TestCount(t *testing.T) {
 	t.Parallel()
 	for i, c := range []struct {
 		stmt      stmt.Statement
@@ -18,42 +18,18 @@ func TestOrderBySQL(t *testing.T) {
 		values    []interface{}
 	}{
 		{
-			stmt.NewOrderBy(
-				stmt.NewColumn("foo").Asc(),
-			),
-			`ORDER BY "foo" ASC`,
-			`> ORDER BY
->   "foo" ASC
+			stmt.NewCount(stmt.NewWildcard()),
+			`COUNT(*)`,
+			`> COUNT(*)
 `,
 			nil,
 		},
 		{
-			stmt.NewOrderBy(
-				stmt.NewColumn("foo").Desc(),
-				stmt.NewColumn("bar").Asc(),
-				stmt.NewColumn("baz").Desc(),
-			),
-			`ORDER BY "foo" DESC, "bar" ASC, "baz" DESC`,
-			`> ORDER BY
->   "foo" DESC
->   , "bar" ASC
->   , "baz" DESC
+			stmt.NewCount(stmt.NewColumn("foo")),
+			`COUNT("foo")`,
+			`> COUNT("foo")
 `,
 			nil,
-		},
-		{
-			stmt.NewOrderBy(
-				stmt.NewColumn("foo").Asc(),
-			).Limit(10),
-			`ORDER BY "foo" ASC LIMIT ?`,
-			`> ORDER BY
->   "foo" ASC
-> LIMIT
->   ?
-`,
-			[]interface{}{
-				10,
-			},
 		},
 	} {
 		c := c

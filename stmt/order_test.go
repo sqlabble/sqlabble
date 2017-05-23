@@ -27,15 +27,29 @@ func TestOrderSQL(t *testing.T) {
 	}{
 		{
 			stmt.NewAsc(),
-			" ASC",
-			`>  ASC
+			`ASC`,
+			`> ASC
 `,
 			nil,
 		},
 		{
 			stmt.NewDesc(),
-			" DESC",
-			`>  DESC
+			`DESC`,
+			`> DESC
+`,
+			nil,
+		},
+		{
+			stmt.NewColumn("foo").Asc(),
+			`"foo" ASC`,
+			`> "foo" ASC
+`,
+			nil,
+		},
+		{
+			stmt.NewColumn("foo").Desc(),
+			`"foo" DESC`,
+			`> "foo" DESC
 `,
 			nil,
 		},

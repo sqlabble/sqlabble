@@ -21,9 +21,9 @@ func TestHavingSQL(t *testing.T) {
 			stmt.NewHaving(
 				stmt.NewColumn("foo").Eq(stmt.NewVal(100)),
 			),
-			"HAVING foo = ?",
+			`HAVING "foo" = ?`,
 			`> HAVING
->   foo = ?
+>   "foo" = ?
 `,
 			[]interface{}{100},
 		},
@@ -34,10 +34,10 @@ func TestHavingSQL(t *testing.T) {
 					stmt.NewColumn("bar").Eq(stmt.NewVal("abc")),
 				),
 			),
-			"HAVING foo = ? AND bar = ?",
+			`HAVING "foo" = ? AND "bar" = ?`,
 			`> HAVING
->   foo = ?
->   AND bar = ?
+>   "foo" = ?
+>   AND "bar" = ?
 `,
 			[]interface{}{100, "abc"},
 		},
@@ -47,11 +47,11 @@ func TestHavingSQL(t *testing.T) {
 			).OrderBy(
 				stmt.NewColumn("age").Asc(),
 			),
-			"HAVING foo = ? ORDER BY age ASC",
+			`HAVING "foo" = ? ORDER BY "age" ASC`,
 			`> HAVING
->   foo = ?
+>   "foo" = ?
 > ORDER BY
->   age ASC
+>   "age" ASC
 `,
 			[]interface{}{100},
 		},
@@ -59,9 +59,9 @@ func TestHavingSQL(t *testing.T) {
 			stmt.NewHaving(
 				stmt.NewColumn("foo").Eq(stmt.NewVal(100)),
 			).Limit(20),
-			"HAVING foo = ? LIMIT ?",
+			`HAVING "foo" = ? LIMIT ?`,
 			`> HAVING
->   foo = ?
+>   "foo" = ?
 > LIMIT
 >   ?
 `,

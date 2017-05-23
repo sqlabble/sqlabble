@@ -21,9 +21,9 @@ func TestUpdate(t *testing.T) {
 			stmt.NewUpdate(
 				stmt.NewTable("foo"),
 			),
-			"UPDATE foo",
+			`UPDATE "foo"`,
 			`> UPDATE
->   foo
+>   "foo"
 `,
 			nil,
 		},
@@ -33,11 +33,11 @@ func TestUpdate(t *testing.T) {
 			).Set(
 				stmt.NewColumn("bar").Assign(stmt.NewVal(100)),
 			),
-			"UPDATE foo SET bar = ?",
+			`UPDATE "foo" SET "bar" = ?`,
 			`> UPDATE
->   foo
+>   "foo"
 > SET
->   bar = ?
+>   "bar" = ?
 `,
 			[]interface{}{
 				100,

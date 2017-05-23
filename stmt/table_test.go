@@ -40,58 +40,58 @@ func TestTable(t *testing.T) {
 		},
 		{
 			stmt.NewTable("foo"),
-			`foo`,
-			`> foo
+			`"foo"`,
+			`> "foo"
 `,
 			nil,
 		},
 		{
 			stmt.NewTable("foo").As("f"),
-			`foo AS "f"`,
-			`> foo AS "f"
+			`"foo" AS "f"`,
+			`> "foo" AS "f"
 `,
 			nil,
 		},
 		{
 			stmt.NewTable("foo").Column("foo_id"),
-			`foo.foo_id`,
-			`> foo.foo_id
+			`"foo"."foo_id"`,
+			`> "foo"."foo_id"
 `,
 			nil,
 		},
 		{
 			stmt.NewTable("foo").
 				Join(stmt.NewTable("bar")),
-			`foo JOIN bar`,
-			`> foo
-> JOIN bar
+			`"foo" JOIN "bar"`,
+			`> "foo"
+> JOIN "bar"
 `,
 			nil,
 		},
 		{
 			stmt.NewTable("foo").
 				InnerJoin(stmt.NewTable("bar")),
-			`foo INNER JOIN bar`,
-			`> foo
-> INNER JOIN bar
+			`"foo" INNER JOIN "bar"`,
+			`> "foo"
+> INNER JOIN "bar"
 `,
 			nil,
 		},
 		{
 			stmt.NewTable("foo").
 				LeftJoin(stmt.NewTable("bar")),
-			`foo LEFT JOIN bar`,
-			`> foo
-> LEFT JOIN bar
+			`"foo" LEFT JOIN "bar"`,
+			`> "foo"
+> LEFT JOIN "bar"
 `,
 			nil,
 		},
 		{
 			stmt.NewTable("foo").
 				RightJoin(stmt.NewTable("bar")),
-			`foo RIGHT JOIN bar`,
-			`> foo
-> RIGHT JOIN bar
+			`"foo" RIGHT JOIN "bar"`,
+			`> "foo"
+> RIGHT JOIN "bar"
 `,
 			nil,
 		},

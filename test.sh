@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -e
+# set -e
 
 echo "" > coverage.txt
 for d in $(go list ./... | grep -v vendor); do

@@ -20,7 +20,7 @@ func TestSimpleCase(t *testing.T) {
 		{
 			stmt.
 				NewSimpleCase(
-					stmt.NewColumn("customer.cust_type_cd"),
+					stmt.NewTable("customer").Column("cust_type_cd"),
 					stmt.
 						NewSimpleWhen(
 							stmt.NewVal("I"),
@@ -28,29 +28,29 @@ func TestSimpleCase(t *testing.T) {
 						Then(
 							stmt.NewSubquery(
 								stmt.NewSelect(stmt.NewConcat(
-									stmt.NewColumn("i.fname"),
+									stmt.NewTable("i").Column("fname"),
 									stmt.NewVal(" "),
-									stmt.NewColumn("i.lname"),
+									stmt.NewTable("i").Column("lname"),
 								)).From(
 									stmt.NewTable("individual").As("i"),
 								).Where(
-									stmt.NewColumn("i.cust_id").Eq(stmt.NewColumn("customer.cust_id")),
+									stmt.NewTable("i").Column("cust_id").Eq(stmt.NewTable("customer").Column("cust_id")),
 								),
 							),
 						),
 				),
-			`CASE customer.cust_type_cd WHEN ? THEN (SELECT CONCAT(i.fname, ?, i.lname) FROM individual AS "i" WHERE i.cust_id = customer.cust_id) END`,
-			`> CASE customer.cust_type_cd
+			`CASE "customer"."cust_type_cd" WHEN ? THEN (SELECT CONCAT("i"."fname", ?, "i"."lname") FROM "individual" AS "i" WHERE "i"."cust_id" = "customer"."cust_id") END`,
+			`> CASE "customer"."cust_type_cd"
 >   WHEN
 >     ?
 >   THEN
 >     (
 >       SELECT
->         CONCAT(i.fname, ?, i.lname)
+>         CONCAT("i"."fname", ?, "i"."lname")
 >       FROM
->         individual AS "i"
+>         "individual" AS "i"
 >       WHERE
->         i.cust_id = customer.cust_id
+>         "i"."cust_id" = "customer"."cust_id"
 >     )
 > END
 `,
@@ -62,7 +62,7 @@ func TestSimpleCase(t *testing.T) {
 		{
 			stmt.
 				NewSimpleCase(
-					stmt.NewColumn("customer.cust_type_cd"),
+					stmt.NewTable("customer").Column("cust_type_cd"),
 					stmt.
 						NewSimpleWhen(
 							stmt.NewVal("I"),
@@ -70,13 +70,13 @@ func TestSimpleCase(t *testing.T) {
 						Then(
 							stmt.NewSubquery(
 								stmt.NewSelect(stmt.NewConcat(
-									stmt.NewColumn("i.fname"),
+									stmt.NewTable("i").Column("fname"),
 									stmt.NewVal(" "),
-									stmt.NewColumn("i.lname"),
+									stmt.NewTable("i").Column("lname"),
 								)).From(
 									stmt.NewTable("individual").As("i"),
 								).Where(
-									stmt.NewColumn("i.cust_id").Eq(stmt.NewColumn("customer.cust_id")),
+									stmt.NewTable("i").Column("cust_id").Eq(stmt.NewTable("customer").Column("cust_id")),
 								),
 							),
 						).
@@ -85,38 +85,38 @@ func TestSimpleCase(t *testing.T) {
 						).
 						Then(
 							stmt.NewSubquery(
-								stmt.NewSelect(stmt.NewColumn("b.name")).
+								stmt.NewSelect(stmt.NewTable("b").Column("name")).
 									From(stmt.NewTable("business").As("b")).
 									Where(
-										stmt.NewColumn("b.cust_id").Eq(stmt.NewColumn("customer.cust_id")),
+										stmt.NewTable("b").Column("cust_id").Eq(stmt.NewTable("customer").Column("cust_id")),
 									),
 							),
 						).
 						Else(stmt.NewVal("Unknown Customer Type")),
 				),
-			`CASE customer.cust_type_cd WHEN ? THEN (SELECT CONCAT(i.fname, ?, i.lname) FROM individual AS "i" WHERE i.cust_id = customer.cust_id) WHEN ? THEN (SELECT b.name FROM business AS "b" WHERE b.cust_id = customer.cust_id) ELSE ? END`,
-			`> CASE customer.cust_type_cd
+			`CASE "customer"."cust_type_cd" WHEN ? THEN (SELECT CONCAT("i"."fname", ?, "i"."lname") FROM "individual" AS "i" WHERE "i"."cust_id" = "customer"."cust_id") WHEN ? THEN (SELECT "b"."name" FROM "business" AS "b" WHERE "b"."cust_id" = "customer"."cust_id") ELSE ? END`,
+			`> CASE "customer"."cust_type_cd"
 >   WHEN
 >     ?
 >   THEN
 >     (
 >       SELECT
->         CONCAT(i.fname, ?, i.lname)
+>         CONCAT("i"."fname", ?, "i"."lname")
 >       FROM
->         individual AS "i"
+>         "individual" AS "i"
 >       WHERE
->         i.cust_id = customer.cust_id
+>         "i"."cust_id" = "customer"."cust_id"
 >     )
 >   WHEN
 >     ?
 >   THEN
 >     (
 >       SELECT
->         b.name
+>         "b"."name"
 >       FROM
->         business AS "b"
+>         "business" AS "b"
 >       WHERE
->         b.cust_id = customer.cust_id
+>         "b"."cust_id" = "customer"."cust_id"
 >     )
 >   ELSE
 >     ?
