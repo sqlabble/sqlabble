@@ -47,7 +47,11 @@ func (a SubqueryAlias) nodeize() (tokenizer.Tokenizer, []interface{}) {
 
 func (a SubqueryAlias) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	t1, v1 := a.subquery.nodeize()
-	t2 := tokenizer.NewLine(token.Word(a.Alias))
+	t2 := tokenizer.NewLine(
+		token.LQuote,
+		token.Word(a.Alias),
+		token.RQuote,
+	)
 	return tokenizer.ConcatTokenizers(
 		t1,
 		t2,

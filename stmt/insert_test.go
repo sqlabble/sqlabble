@@ -21,9 +21,9 @@ func TestInsertSQL(t *testing.T) {
 			stmt.NewInsertInto(
 				stmt.NewTable("foo"),
 			),
-			"INSERT INTO foo ()",
+			`INSERT INTO "foo" ()`,
 			`> INSERT INTO
->   foo (
+>   "foo" (
 >   )
 `,
 			nil,
@@ -34,11 +34,11 @@ func TestInsertSQL(t *testing.T) {
 				stmt.NewColumn("name"),
 				stmt.NewColumn("age"),
 			),
-			"INSERT INTO foo (name, age)",
+			`INSERT INTO "foo" ("name", "age")`,
 			`> INSERT INTO
->   foo (
->     name
->     , age
+>   "foo" (
+>     "name"
+>     , "age"
 >   )
 `,
 			nil,
@@ -51,11 +51,11 @@ func TestInsertSQL(t *testing.T) {
 			).Values(
 				stmt.NewVals("Obi-Wan Kenobi", 63),
 			),
-			"INSERT INTO foo (name, age) VALUES (?, ?)",
+			`INSERT INTO "foo" ("name", "age") VALUES (?, ?)`,
 			`> INSERT INTO
->   foo (
->     name
->     , age
+>   "foo" (
+>     "name"
+>     , "age"
 >   )
 > VALUES
 >   (?, ?)
@@ -74,11 +74,11 @@ func TestInsertSQL(t *testing.T) {
 				stmt.NewVals("Obi-Wan Kenobi", 63),
 				stmt.NewVals("Luke Skywalker", 19),
 			),
-			"INSERT INTO foo (name, age) VALUES (?, ?), (?, ?)",
+			`INSERT INTO "foo" ("name", "age") VALUES (?, ?), (?, ?)`,
 			`> INSERT INTO
->   foo (
->     name
->     , age
+>   "foo" (
+>     "name"
+>     , "age"
 >   )
 > VALUES
 >   (?, ?)
@@ -97,11 +97,11 @@ func TestInsertSQL(t *testing.T) {
 				stmt.NewColumn("name"),
 				stmt.NewColumn("age"),
 			).DefaultValues(),
-			"INSERT INTO foo (name, age) DEFAULT VALUES",
+			`INSERT INTO "foo" ("name", "age") DEFAULT VALUES`,
 			`> INSERT INTO
->   foo (
->     name
->     , age
+>   "foo" (
+>     "name"
+>     , "age"
 >   )
 > DEFAULT VALUES
 `,

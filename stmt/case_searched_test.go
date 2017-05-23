@@ -24,10 +24,10 @@ func TestSearchedCase(t *testing.T) {
 				).
 					Then(stmt.NewVal("Head Teller")),
 			),
-			`CASE WHEN employee.title = ? THEN ? END`,
+			`CASE WHEN "employee.title" = ? THEN ? END`,
 			`> CASE
 >   WHEN
->     employee.title = ?
+>     "employee.title" = ?
 >   THEN
 >     ?
 > END
@@ -65,24 +65,24 @@ func TestSearchedCase(t *testing.T) {
 					Then(stmt.NewVal("Teller")).
 					Else(stmt.NewVal("Non-Teller")),
 			),
-			`CASE WHEN employee.title = ? THEN ? WHEN employee.title = ? AND YEAR(employee.start_date) > ? THEN ? WHEN employee.title = ? AND YEAR(employee.start_date) < ? THEN ? WHEN employee.title = ? THEN ? ELSE ? END`,
+			`CASE WHEN "employee.title" = ? THEN ? WHEN "employee.title" = ? AND YEAR("employee.start_date") > ? THEN ? WHEN "employee.title" = ? AND YEAR("employee.start_date") < ? THEN ? WHEN "employee.title" = ? THEN ? ELSE ? END`,
 			`> CASE
 >   WHEN
->     employee.title = ?
+>     "employee.title" = ?
 >   THEN
 >     ?
 >   WHEN
->     employee.title = ?
->     AND YEAR(employee.start_date) > ?
+>     "employee.title" = ?
+>     AND YEAR("employee.start_date") > ?
 >   THEN
 >     ?
 >   WHEN
->     employee.title = ?
->     AND YEAR(employee.start_date) < ?
+>     "employee.title" = ?
+>     AND YEAR("employee.start_date") < ?
 >   THEN
 >     ?
 >   WHEN
->     employee.title = ?
+>     "employee.title" = ?
 >   THEN
 >     ?
 >   ELSE

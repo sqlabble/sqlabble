@@ -68,7 +68,7 @@ func TestMain(m *testing.M) {
 
 func TestCreateTable(t *testing.T) {
 	{
-		sql, values := builder.Standard.Build(
+		sql, values := builder.MySQL.Build(
 			q.CreateTableIfNotExists(
 				q.Table("user"),
 			).Definitions(
@@ -83,7 +83,7 @@ func TestCreateTable(t *testing.T) {
 		}
 	}
 	{
-		sql, values := builder.Standard.Build(
+		sql, values := builder.MySQL.Build(
 			q.CreateTableIfNotExists(
 				q.Table("comment"),
 			).Definitions(
@@ -98,7 +98,7 @@ func TestCreateTable(t *testing.T) {
 		}
 	}
 	{
-		sql, values := builder.Standard.Build(
+		sql, values := builder.MySQL.Build(
 			q.CreateTableIfNotExists(
 				q.Table("post"),
 			).Definitions(
@@ -118,7 +118,7 @@ func TestCreateTable(t *testing.T) {
 
 func TestInsertInto(t *testing.T) {
 	{
-		sql, values := builder.Standard.Build(
+		sql, values := builder.MySQL.Build(
 			q.InsertInto(
 				q.Table("user"),
 				q.Column("id"), q.Column("name"), q.Column("avatar"),
@@ -134,7 +134,7 @@ func TestInsertInto(t *testing.T) {
 		}
 	}
 	{
-		sql, values := builder.Standard.Build(
+		sql, values := builder.MySQL.Build(
 			q.InsertInto(
 				q.Table("comment"),
 				q.Column("id"), q.Column("body"), q.Column("author_id"),
@@ -148,7 +148,7 @@ func TestInsertInto(t *testing.T) {
 		}
 	}
 	{
-		sql, values := builder.Standard.Build(
+		sql, values := builder.MySQL.Build(
 			q.InsertInto(
 				q.Table("post"),
 				q.Column("id"), q.Column("title"), q.Column("body"), q.Column("author_id"), q.Column("comment_id"),
@@ -164,7 +164,7 @@ func TestInsertInto(t *testing.T) {
 }
 
 func TestSelect(t *testing.T) {
-	sql, values := builder.Standard.Build(
+	sql, values := builder.MySQL.Build(
 		q.Select(
 			q.Column("id").As("User.ID"),
 			q.Column("name").As("User.Name"),

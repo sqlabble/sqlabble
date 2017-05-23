@@ -22,9 +22,9 @@ func TestWhereOperation(t *testing.T) {
 				stmt.NewColumn("foo").
 					Eq(stmt.NewVal(100)),
 			),
-			"WHERE foo = ?",
+			`WHERE "foo" = ?`,
 			`> WHERE
->   foo = ?
+>   "foo" = ?
 `,
 			[]interface{}{
 				100,
@@ -39,9 +39,9 @@ func TestWhereOperation(t *testing.T) {
 						),
 					),
 			),
-			"WHERE foo = ALL (SELECT)",
+			`WHERE "foo" = ALL (SELECT)`,
 			`> WHERE
->   foo = ALL (
+>   "foo" = ALL (
 >     SELECT
 >   )
 `,
@@ -55,7 +55,7 @@ func TestWhereOperation(t *testing.T) {
 					),
 				),
 			),
-			"WHERE EXISTS (SELECT)",
+			`WHERE EXISTS (SELECT)`,
 			`> WHERE
 >   EXISTS (
 >     SELECT
@@ -100,9 +100,9 @@ func TestWhereSQL(t *testing.T) {
 			stmt.NewWhere(
 				stmt.NewColumn("foo").Eq(stmt.NewVal(100)),
 			),
-			"WHERE foo = ?",
+			`WHERE "foo" = ?`,
 			`> WHERE
->   foo = ?
+>   "foo" = ?
 `,
 			[]interface{}{
 				100,
@@ -115,10 +115,10 @@ func TestWhereSQL(t *testing.T) {
 					stmt.NewColumn("bar").Eq(stmt.NewVal("abc")),
 				),
 			),
-			"WHERE foo = ? AND bar = ?",
+			`WHERE "foo" = ? AND "bar" = ?`,
 			`> WHERE
->   foo = ?
->   AND bar = ?
+>   "foo" = ?
+>   AND "bar" = ?
 `,
 			[]interface{}{
 				100,
@@ -134,12 +134,12 @@ func TestWhereSQL(t *testing.T) {
 			).GroupBy(
 				stmt.NewColumn("baz"),
 			),
-			"WHERE foo = ? AND bar = ? GROUP BY baz",
+			`WHERE "foo" = ? AND "bar" = ? GROUP BY "baz"`,
 			`> WHERE
->   foo = ?
->   AND bar = ?
+>   "foo" = ?
+>   AND "bar" = ?
 > GROUP BY
->   baz
+>   "baz"
 `,
 			[]interface{}{
 				100,
@@ -155,12 +155,12 @@ func TestWhereSQL(t *testing.T) {
 			).OrderBy(
 				stmt.NewColumn("baz").Asc(),
 			),
-			"WHERE foo = ? AND bar = ? ORDER BY baz ASC",
+			`WHERE "foo" = ? AND "bar" = ? ORDER BY "baz" ASC`,
 			`> WHERE
->   foo = ?
->   AND bar = ?
+>   "foo" = ?
+>   AND "bar" = ?
 > ORDER BY
->   baz ASC
+>   "baz" ASC
 `,
 			[]interface{}{
 				100,
@@ -174,10 +174,10 @@ func TestWhereSQL(t *testing.T) {
 					stmt.NewColumn("bar").Eq(stmt.NewVal("abc")),
 				),
 			).Limit(20),
-			"WHERE foo = ? AND bar = ? LIMIT ?",
+			`WHERE "foo" = ? AND "bar" = ? LIMIT ?`,
 			`> WHERE
->   foo = ?
->   AND bar = ?
+>   "foo" = ?
+>   AND "bar" = ?
 > LIMIT
 >   ?
 `,

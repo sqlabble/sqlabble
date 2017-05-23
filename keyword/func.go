@@ -65,4 +65,5 @@ const (
 	Weekofyear            = "WEEKOFYEAR"
 	Year                  = "YEAR"
 	Yearweek              = "YEARWEEK"
+	Count                 = "COUNT"
 )

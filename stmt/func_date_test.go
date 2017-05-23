@@ -688,8 +688,8 @@ func TestDateAndTimeFuncsWithCol(t *testing.T) {
 				stmt.NewColumn("foo"),
 				stmt.NewInterval(stmt.NewColumn("bar")).Day(),
 			),
-			`ADDDATE(foo, INTERVAL bar DAY)`,
-			`> ADDDATE(foo, INTERVAL bar DAY)
+			`ADDDATE("foo", INTERVAL "bar" DAY)`,
+			`> ADDDATE("foo", INTERVAL "bar" DAY)
 `,
 			nil,
 		},
@@ -699,8 +699,8 @@ func TestDateAndTimeFuncsWithCol(t *testing.T) {
 				stmt.NewColumn("foo"),
 				stmt.NewColumn("bar"),
 			),
-			`ADDTIME(foo, bar)`,
-			`> ADDTIME(foo, bar)
+			`ADDTIME("foo", "bar")`,
+			`> ADDTIME("foo", "bar")
 `,
 			nil,
 		},
@@ -710,8 +710,8 @@ func TestDateAndTimeFuncsWithCol(t *testing.T) {
 				stmt.NewColumn("bar"),
 				stmt.NewColumn("baz"),
 			),
-			`CONVERT_TZ(foo, bar, baz)`,
-			`> CONVERT_TZ(foo, bar, baz)
+			`CONVERT_TZ("foo", "bar", "baz")`,
+			`> CONVERT_TZ("foo", "bar", "baz")
 `,
 			nil,
 		},
@@ -731,29 +731,29 @@ func TestDateAndTimeFuncsWithCol(t *testing.T) {
 		},
 		{
 			stmt.NewCurrentTime(stmt.NewColumn("foo")),
-			`CURRENT_TIME(foo)`,
-			`> CURRENT_TIME(foo)
+			`CURRENT_TIME("foo")`,
+			`> CURRENT_TIME("foo")
 `,
 			nil,
 		},
 		{
 			stmt.NewCurrentTimestamp(stmt.NewColumn("foo")),
-			`CURRENT_TIMESTAMP(foo)`,
-			`> CURRENT_TIMESTAMP(foo)
+			`CURRENT_TIMESTAMP("foo")`,
+			`> CURRENT_TIMESTAMP("foo")
 `,
 			nil,
 		},
 		{
 			stmt.NewCurtime(stmt.NewColumn("foo")),
-			`CURTIME(foo)`,
-			`> CURTIME(foo)
+			`CURTIME("foo")`,
+			`> CURTIME("foo")
 `,
 			nil,
 		},
 		{
 			stmt.NewDate(stmt.NewColumn("foo")),
-			`DATE(foo)`,
-			`> DATE(foo)
+			`DATE("foo")`,
+			`> DATE("foo")
 `,
 			nil,
 		},
@@ -762,8 +762,8 @@ func TestDateAndTimeFuncsWithCol(t *testing.T) {
 				stmt.NewColumn("foo"),
 				stmt.NewInterval(stmt.NewColumn("bar")).Day(),
 			),
-			`DATE_ADD(foo, INTERVAL bar DAY)`,
-			`> DATE_ADD(foo, INTERVAL bar DAY)
+			`DATE_ADD("foo", INTERVAL "bar" DAY)`,
+			`> DATE_ADD("foo", INTERVAL "bar" DAY)
 `,
 			nil,
 		},
@@ -772,8 +772,8 @@ func TestDateAndTimeFuncsWithCol(t *testing.T) {
 				stmt.NewColumn("foo"),
 				stmt.NewColumn("bar"),
 			),
-			`DATE_FORMAT(foo, bar)`,
-			`> DATE_FORMAT(foo, bar)
+			`DATE_FORMAT("foo", "bar")`,
+			`> DATE_FORMAT("foo", "bar")
 `,
 			nil,
 		},
@@ -782,8 +782,8 @@ func TestDateAndTimeFuncsWithCol(t *testing.T) {
 				stmt.NewColumn("foo"),
 				stmt.NewInterval(stmt.NewColumn("bar")).Day(),
 			),
-			`DATE_SUB(foo, INTERVAL bar DAY)`,
-			`> DATE_SUB(foo, INTERVAL bar DAY)
+			`DATE_SUB("foo", INTERVAL "bar" DAY)`,
+			`> DATE_SUB("foo", INTERVAL "bar" DAY)
 `,
 			nil,
 		},
@@ -792,57 +792,57 @@ func TestDateAndTimeFuncsWithCol(t *testing.T) {
 				stmt.NewColumn("foo"),
 				stmt.NewColumn("bar"),
 			),
-			`DATEDIFF(foo, bar)`,
-			`> DATEDIFF(foo, bar)
+			`DATEDIFF("foo", "bar")`,
+			`> DATEDIFF("foo", "bar")
 `,
 			nil,
 		},
 		{
 			stmt.NewDay(stmt.NewColumn("foo")),
-			`DAY(foo)`,
-			`> DAY(foo)
+			`DAY("foo")`,
+			`> DAY("foo")
 `,
 			nil,
 		},
 		{
 			stmt.NewDayname(stmt.NewColumn("foo")),
-			`DAYNAME(foo)`,
-			`> DAYNAME(foo)
+			`DAYNAME("foo")`,
+			`> DAYNAME("foo")
 `,
 			nil,
 		},
 		{
 			stmt.NewDayofmonth(stmt.NewColumn("foo")),
-			`DAYOFMONTH(foo)`,
-			`> DAYOFMONTH(foo)
+			`DAYOFMONTH("foo")`,
+			`> DAYOFMONTH("foo")
 `,
 			nil,
 		},
 		{
 			stmt.NewDayofweek(stmt.NewColumn("foo")),
-			`DAYOFWEEK(foo)`,
-			`> DAYOFWEEK(foo)
+			`DAYOFWEEK("foo")`,
+			`> DAYOFWEEK("foo")
 `,
 			nil,
 		},
 		{
 			stmt.NewDayofyear(stmt.NewColumn("foo")),
-			`DAYOFYEAR(foo)`,
-			`> DAYOFYEAR(foo)
+			`DAYOFYEAR("foo")`,
+			`> DAYOFYEAR("foo")
 `,
 			nil,
 		},
 		{
 			stmt.NewExtract(stmt.NewColumn("foo")),
-			`EXTRACT(foo)`,
-			`> EXTRACT(foo)
+			`EXTRACT("foo")`,
+			`> EXTRACT("foo")
 `,
 			nil,
 		},
 		{
 			stmt.NewFromDays(stmt.NewColumn("foo")),
-			`FROM_DAYS(foo)`,
-			`> FROM_DAYS(foo)
+			`FROM_DAYS("foo")`,
+			`> FROM_DAYS("foo")
 `,
 			nil,
 		},
@@ -851,8 +851,8 @@ func TestDateAndTimeFuncsWithCol(t *testing.T) {
 				stmt.NewColumn("foo"),
 				stmt.NewColumn("bar"),
 			),
-			`FROM_UNIXTIME(foo, bar)`,
-			`> FROM_UNIXTIME(foo, bar)
+			`FROM_UNIXTIME("foo", "bar")`,
+			`> FROM_UNIXTIME("foo", "bar")
 `,
 			nil,
 		},
@@ -861,36 +861,36 @@ func TestDateAndTimeFuncsWithCol(t *testing.T) {
 				stmt.NewColumn("foo"),
 				stmt.NewColumn("bar"),
 			),
-			`GET_FORMAT(foo, bar)`,
-			`> GET_FORMAT(foo, bar)
+			`GET_FORMAT("foo", "bar")`,
+			`> GET_FORMAT("foo", "bar")
 `,
 			nil,
 		},
 		{
 			stmt.NewHour(stmt.NewColumn("foo")),
-			`HOUR(foo)`,
-			`> HOUR(foo)
+			`HOUR("foo")`,
+			`> HOUR("foo")
 `,
 			nil,
 		},
 		{
 			stmt.NewLastDay(stmt.NewColumn("foo")),
-			`LAST_DAY(foo)`,
-			`> LAST_DAY(foo)
+			`LAST_DAY("foo")`,
+			`> LAST_DAY("foo")
 `,
 			nil,
 		},
 		{
 			stmt.NewLocaltime(stmt.NewColumn("foo")),
-			`LOCALTIME(foo)`,
-			`> LOCALTIME(foo)
+			`LOCALTIME("foo")`,
+			`> LOCALTIME("foo")
 `,
 			nil,
 		},
 		{
 			stmt.NewLocaltimestamp(stmt.NewColumn("foo")),
-			`LOCALTIMESTAMP(foo)`,
-			`> LOCALTIMESTAMP(foo)
+			`LOCALTIMESTAMP("foo")`,
+			`> LOCALTIMESTAMP("foo")
 `,
 			nil,
 		},
@@ -899,8 +899,8 @@ func TestDateAndTimeFuncsWithCol(t *testing.T) {
 				stmt.NewColumn("foo"),
 				stmt.NewColumn("bar"),
 			),
-			`MAKEDATE(foo, bar)`,
-			`> MAKEDATE(foo, bar)
+			`MAKEDATE("foo", "bar")`,
+			`> MAKEDATE("foo", "bar")
 `,
 			nil,
 		},
@@ -910,43 +910,43 @@ func TestDateAndTimeFuncsWithCol(t *testing.T) {
 				stmt.NewColumn("bar"),
 				stmt.NewColumn("baz"),
 			),
-			`MAKETIME(foo, bar, baz)`,
-			`> MAKETIME(foo, bar, baz)
+			`MAKETIME("foo", "bar", "baz")`,
+			`> MAKETIME("foo", "bar", "baz")
 `,
 			nil,
 		},
 		{
 			stmt.NewMicrosecond(stmt.NewColumn("foo")),
-			`MICROSECOND(foo)`,
-			`> MICROSECOND(foo)
+			`MICROSECOND("foo")`,
+			`> MICROSECOND("foo")
 `,
 			nil,
 		},
 		{
 			stmt.NewMinute(stmt.NewColumn("foo")),
-			`MINUTE(foo)`,
-			`> MINUTE(foo)
+			`MINUTE("foo")`,
+			`> MINUTE("foo")
 `,
 			nil,
 		},
 		{
 			stmt.NewMonth(stmt.NewColumn("foo")),
-			`MONTH(foo)`,
-			`> MONTH(foo)
+			`MONTH("foo")`,
+			`> MONTH("foo")
 `,
 			nil,
 		},
 		{
 			stmt.NewMonthname(stmt.NewColumn("foo")),
-			`MONTHNAME(foo)`,
-			`> MONTHNAME(foo)
+			`MONTHNAME("foo")`,
+			`> MONTHNAME("foo")
 `,
 			nil,
 		},
 		{
 			stmt.NewNow(stmt.NewColumn("foo")),
-			`NOW(foo)`,
-			`> NOW(foo)
+			`NOW("foo")`,
+			`> NOW("foo")
 `,
 			nil,
 		},
@@ -955,8 +955,8 @@ func TestDateAndTimeFuncsWithCol(t *testing.T) {
 				stmt.NewColumn("foo"),
 				stmt.NewColumn("bar"),
 			),
-			`PERIOD_ADD(foo, bar)`,
-			`> PERIOD_ADD(foo, bar)
+			`PERIOD_ADD("foo", "bar")`,
+			`> PERIOD_ADD("foo", "bar")
 `,
 			nil,
 		},
@@ -965,29 +965,29 @@ func TestDateAndTimeFuncsWithCol(t *testing.T) {
 				stmt.NewColumn("foo"),
 				stmt.NewColumn("bar"),
 			),
-			`PERIOD_DIFF(foo, bar)`,
-			`> PERIOD_DIFF(foo, bar)
+			`PERIOD_DIFF("foo", "bar")`,
+			`> PERIOD_DIFF("foo", "bar")
 `,
 			nil,
 		},
 		{
 			stmt.NewQuarter(stmt.NewColumn("foo")),
-			`QUARTER(foo)`,
-			`> QUARTER(foo)
+			`QUARTER("foo")`,
+			`> QUARTER("foo")
 `,
 			nil,
 		},
 		{
 			stmt.NewSecToTime(stmt.NewColumn("foo")),
-			`SEC_TO_TIME(foo)`,
-			`> SEC_TO_TIME(foo)
+			`SEC_TO_TIME("foo")`,
+			`> SEC_TO_TIME("foo")
 `,
 			nil,
 		},
 		{
 			stmt.NewSecond(stmt.NewColumn("foo")),
-			`SECOND(foo)`,
-			`> SECOND(foo)
+			`SECOND("foo")`,
+			`> SECOND("foo")
 `,
 			nil,
 		},
@@ -996,8 +996,8 @@ func TestDateAndTimeFuncsWithCol(t *testing.T) {
 				stmt.NewColumn("foo"),
 				stmt.NewColumn("bar"),
 			),
-			`STR_TO_DATE(foo, bar)`,
-			`> STR_TO_DATE(foo, bar)
+			`STR_TO_DATE("foo", "bar")`,
+			`> STR_TO_DATE("foo", "bar")
 `,
 			nil,
 		},
@@ -1006,8 +1006,8 @@ func TestDateAndTimeFuncsWithCol(t *testing.T) {
 				stmt.NewColumn("foo"),
 				stmt.NewInterval(stmt.NewColumn("bar")).Day(),
 			),
-			`SUBDATE(foo, INTERVAL bar DAY)`,
-			`> SUBDATE(foo, INTERVAL bar DAY)
+			`SUBDATE("foo", INTERVAL "bar" DAY)`,
+			`> SUBDATE("foo", INTERVAL "bar" DAY)
 `,
 			nil,
 		},
@@ -1016,22 +1016,22 @@ func TestDateAndTimeFuncsWithCol(t *testing.T) {
 				stmt.NewColumn("foo"),
 				stmt.NewColumn("bar"),
 			),
-			`SUBTIME(foo, bar)`,
-			`> SUBTIME(foo, bar)
+			`SUBTIME("foo", "bar")`,
+			`> SUBTIME("foo", "bar")
 `,
 			nil,
 		},
 		{
 			stmt.NewSysdate(stmt.NewColumn("foo")),
-			`SYSDATE(foo)`,
-			`> SYSDATE(foo)
+			`SYSDATE("foo")`,
+			`> SYSDATE("foo")
 `,
 			nil,
 		},
 		{
 			stmt.NewTime(stmt.NewColumn("foo")),
-			`TIME(foo)`,
-			`> TIME(foo)
+			`TIME("foo")`,
+			`> TIME("foo")
 `,
 			nil,
 		},
@@ -1040,15 +1040,15 @@ func TestDateAndTimeFuncsWithCol(t *testing.T) {
 				stmt.NewColumn("foo"),
 				stmt.NewColumn("bar"),
 			),
-			`TIME_FORMAT(foo, bar)`,
-			`> TIME_FORMAT(foo, bar)
+			`TIME_FORMAT("foo", "bar")`,
+			`> TIME_FORMAT("foo", "bar")
 `,
 			nil,
 		},
 		{
 			stmt.NewTimeToSec(stmt.NewColumn("foo")),
-			`TIME_TO_SEC(foo)`,
-			`> TIME_TO_SEC(foo)
+			`TIME_TO_SEC("foo")`,
+			`> TIME_TO_SEC("foo")
 `,
 			nil,
 		},
@@ -1057,8 +1057,8 @@ func TestDateAndTimeFuncsWithCol(t *testing.T) {
 				stmt.NewColumn("foo"),
 				stmt.NewColumn("bar"),
 			),
-			`TIMEDIFF(foo, bar)`,
-			`> TIMEDIFF(foo, bar)
+			`TIMEDIFF("foo", "bar")`,
+			`> TIMEDIFF("foo", "bar")
 `,
 			nil,
 		},
@@ -1067,8 +1067,8 @@ func TestDateAndTimeFuncsWithCol(t *testing.T) {
 				stmt.NewColumn("foo"),
 				stmt.NewColumn("bar"),
 			),
-			`TIMESTAMP(foo, bar)`,
-			`> TIMESTAMP(foo, bar)
+			`TIMESTAMP("foo", "bar")`,
+			`> TIMESTAMP("foo", "bar")
 `,
 			nil,
 		},
@@ -1078,8 +1078,8 @@ func TestDateAndTimeFuncsWithCol(t *testing.T) {
 				stmt.NewColumn("bar"),
 				stmt.NewColumn("baz"),
 			),
-			`TIMESTAMPADD(foo, bar, baz)`,
-			`> TIMESTAMPADD(foo, bar, baz)
+			`TIMESTAMPADD("foo", "bar", "baz")`,
+			`> TIMESTAMPADD("foo", "bar", "baz")
 `,
 			nil,
 		},
@@ -1089,29 +1089,29 @@ func TestDateAndTimeFuncsWithCol(t *testing.T) {
 				stmt.NewColumn("bar"),
 				stmt.NewColumn("baz"),
 			),
-			`TIMESTAMPDIFF(foo, bar, baz)`,
-			`> TIMESTAMPDIFF(foo, bar, baz)
+			`TIMESTAMPDIFF("foo", "bar", "baz")`,
+			`> TIMESTAMPDIFF("foo", "bar", "baz")
 `,
 			nil,
 		},
 		{
 			stmt.NewToDays(stmt.NewColumn("foo")),
-			`TO_DAYS(foo)`,
-			`> TO_DAYS(foo)
+			`TO_DAYS("foo")`,
+			`> TO_DAYS("foo")
 `,
 			nil,
 		},
 		{
 			stmt.NewToSeconds(stmt.NewColumn("foo")),
-			`TO_SECONDS(foo)`,
-			`> TO_SECONDS(foo)
+			`TO_SECONDS("foo")`,
+			`> TO_SECONDS("foo")
 `,
 			nil,
 		},
 		{
 			stmt.NewUnixTimestamp(stmt.NewColumn("foo")),
-			`UNIX_TIMESTAMP(foo)`,
-			`> UNIX_TIMESTAMP(foo)
+			`UNIX_TIMESTAMP("foo")`,
+			`> UNIX_TIMESTAMP("foo")
 `,
 			nil,
 		},
@@ -1124,15 +1124,15 @@ func TestDateAndTimeFuncsWithCol(t *testing.T) {
 		},
 		{
 			stmt.NewUtcTime(stmt.NewColumn("foo")),
-			`UTC_TIME(foo)`,
-			`> UTC_TIME(foo)
+			`UTC_TIME("foo")`,
+			`> UTC_TIME("foo")
 `,
 			nil,
 		},
 		{
 			stmt.NewUtcTimestamp(stmt.NewColumn("foo")),
-			`UTC_TIMESTAMP(foo)`,
-			`> UTC_TIMESTAMP(foo)
+			`UTC_TIMESTAMP("foo")`,
+			`> UTC_TIMESTAMP("foo")
 `,
 			nil,
 		},
@@ -1141,36 +1141,36 @@ func TestDateAndTimeFuncsWithCol(t *testing.T) {
 				stmt.NewColumn("foo"),
 				stmt.NewColumn("bar"),
 			),
-			`WEEK(foo, bar)`,
-			`> WEEK(foo, bar)
+			`WEEK("foo", "bar")`,
+			`> WEEK("foo", "bar")
 `,
 			nil,
 		},
 		{
 			stmt.NewWeekday(stmt.NewColumn("foo")),
-			`WEEKDAY(foo)`,
-			`> WEEKDAY(foo)
+			`WEEKDAY("foo")`,
+			`> WEEKDAY("foo")
 `,
 			nil,
 		},
 		{
 			stmt.NewWeekofyear(stmt.NewColumn("foo")),
-			`WEEKOFYEAR(foo)`,
-			`> WEEKOFYEAR(foo)
+			`WEEKOFYEAR("foo")`,
+			`> WEEKOFYEAR("foo")
 `,
 			nil,
 		},
 		{
 			stmt.NewYear(stmt.NewColumn("foo")),
-			`YEAR(foo)`,
-			`> YEAR(foo)
+			`YEAR("foo")`,
+			`> YEAR("foo")
 `,
 			nil,
 		},
 		{
 			stmt.NewYearweek(stmt.NewColumn("foo"), stmt.NewColumn("bar")),
-			`YEARWEEK(foo, bar)`,
-			`> YEARWEEK(foo, bar)
+			`YEARWEEK("foo", "bar")`,
+			`> YEARWEEK("foo", "bar")
 `,
 			nil,
 		},
@@ -1219,13 +1219,13 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					),
 				).Day(),
 			),
-			`ADDDATE((SELECT a), INTERVAL (SELECT b) DAY)`,
+			`ADDDATE((SELECT "a"), INTERVAL (SELECT "b") DAY)`,
 			`> ADDDATE((
 >   SELECT
->     a
+>     "a"
 > ), INTERVAL (
 >   SELECT
->     b
+>     "b"
 > ) DAY)
 `,
 			nil,
@@ -1239,13 +1239,13 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("b")),
 				),
 			),
-			`ADDTIME((SELECT a), (SELECT b))`,
+			`ADDTIME((SELECT "a"), (SELECT "b"))`,
 			`> ADDTIME((
 >   SELECT
->     a
+>     "a"
 > ), (
 >   SELECT
->     b
+>     "b"
 > ))
 `,
 			nil,
@@ -1262,16 +1262,16 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("c")),
 				),
 			),
-			`CONVERT_TZ((SELECT a), (SELECT b), (SELECT c))`,
+			`CONVERT_TZ((SELECT "a"), (SELECT "b"), (SELECT "c"))`,
 			`> CONVERT_TZ((
 >   SELECT
->     a
+>     "a"
 > ), (
 >   SELECT
->     b
+>     "b"
 > ), (
 >   SELECT
->     c
+>     "c"
 > ))
 `,
 			nil,
@@ -1296,10 +1296,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`CURRENT_TIME((SELECT a))`,
+			`CURRENT_TIME((SELECT "a"))`,
 			`> CURRENT_TIME((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -1310,10 +1310,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`CURRENT_TIMESTAMP((SELECT a))`,
+			`CURRENT_TIMESTAMP((SELECT "a"))`,
 			`> CURRENT_TIMESTAMP((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -1324,10 +1324,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`CURTIME((SELECT a))`,
+			`CURTIME((SELECT "a"))`,
 			`> CURTIME((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -1338,10 +1338,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`DATE((SELECT a))`,
+			`DATE((SELECT "a"))`,
 			`> DATE((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -1357,13 +1357,13 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					),
 				).Day(),
 			),
-			`DATE_ADD((SELECT a), INTERVAL (SELECT b) DAY)`,
+			`DATE_ADD((SELECT "a"), INTERVAL (SELECT "b") DAY)`,
 			`> DATE_ADD((
 >   SELECT
->     a
+>     "a"
 > ), INTERVAL (
 >   SELECT
->     b
+>     "b"
 > ) DAY)
 `,
 			nil,
@@ -1377,13 +1377,13 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("b")),
 				),
 			),
-			`DATE_FORMAT((SELECT a), (SELECT b))`,
+			`DATE_FORMAT((SELECT "a"), (SELECT "b"))`,
 			`> DATE_FORMAT((
 >   SELECT
->     a
+>     "a"
 > ), (
 >   SELECT
->     b
+>     "b"
 > ))
 `,
 			nil,
@@ -1399,13 +1399,13 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					),
 				).Day(),
 			),
-			`DATE_SUB((SELECT a), INTERVAL (SELECT b) DAY)`,
+			`DATE_SUB((SELECT "a"), INTERVAL (SELECT "b") DAY)`,
 			`> DATE_SUB((
 >   SELECT
->     a
+>     "a"
 > ), INTERVAL (
 >   SELECT
->     b
+>     "b"
 > ) DAY)
 `,
 			nil,
@@ -1419,13 +1419,13 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("b")),
 				),
 			),
-			`DATEDIFF((SELECT a), (SELECT b))`,
+			`DATEDIFF((SELECT "a"), (SELECT "b"))`,
 			`> DATEDIFF((
 >   SELECT
->     a
+>     "a"
 > ), (
 >   SELECT
->     b
+>     "b"
 > ))
 `,
 			nil,
@@ -1436,10 +1436,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`DAY((SELECT a))`,
+			`DAY((SELECT "a"))`,
 			`> DAY((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -1450,10 +1450,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`DAYNAME((SELECT a))`,
+			`DAYNAME((SELECT "a"))`,
 			`> DAYNAME((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -1464,10 +1464,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`DAYOFMONTH((SELECT a))`,
+			`DAYOFMONTH((SELECT "a"))`,
 			`> DAYOFMONTH((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -1478,10 +1478,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`DAYOFWEEK((SELECT a))`,
+			`DAYOFWEEK((SELECT "a"))`,
 			`> DAYOFWEEK((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -1492,10 +1492,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`DAYOFYEAR((SELECT a))`,
+			`DAYOFYEAR((SELECT "a"))`,
 			`> DAYOFYEAR((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -1506,10 +1506,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`EXTRACT((SELECT a))`,
+			`EXTRACT((SELECT "a"))`,
 			`> EXTRACT((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -1520,10 +1520,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`FROM_DAYS((SELECT a))`,
+			`FROM_DAYS((SELECT "a"))`,
 			`> FROM_DAYS((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -1537,13 +1537,13 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("b")),
 				),
 			),
-			`FROM_UNIXTIME((SELECT a), (SELECT b))`,
+			`FROM_UNIXTIME((SELECT "a"), (SELECT "b"))`,
 			`> FROM_UNIXTIME((
 >   SELECT
->     a
+>     "a"
 > ), (
 >   SELECT
->     b
+>     "b"
 > ))
 `,
 			nil,
@@ -1557,13 +1557,13 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("b")),
 				),
 			),
-			`GET_FORMAT((SELECT a), (SELECT b))`,
+			`GET_FORMAT((SELECT "a"), (SELECT "b"))`,
 			`> GET_FORMAT((
 >   SELECT
->     a
+>     "a"
 > ), (
 >   SELECT
->     b
+>     "b"
 > ))
 `,
 			nil,
@@ -1574,10 +1574,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`HOUR((SELECT a))`,
+			`HOUR((SELECT "a"))`,
 			`> HOUR((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -1588,10 +1588,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`LAST_DAY((SELECT a))`,
+			`LAST_DAY((SELECT "a"))`,
 			`> LAST_DAY((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -1602,10 +1602,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`LOCALTIME((SELECT a))`,
+			`LOCALTIME((SELECT "a"))`,
 			`> LOCALTIME((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -1616,10 +1616,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`LOCALTIMESTAMP((SELECT a))`,
+			`LOCALTIMESTAMP((SELECT "a"))`,
 			`> LOCALTIMESTAMP((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -1633,13 +1633,13 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("b")),
 				),
 			),
-			`MAKEDATE((SELECT a), (SELECT b))`,
+			`MAKEDATE((SELECT "a"), (SELECT "b"))`,
 			`> MAKEDATE((
 >   SELECT
->     a
+>     "a"
 > ), (
 >   SELECT
->     b
+>     "b"
 > ))
 `,
 			nil,
@@ -1656,16 +1656,16 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("c")),
 				),
 			),
-			`MAKETIME((SELECT a), (SELECT b), (SELECT c))`,
+			`MAKETIME((SELECT "a"), (SELECT "b"), (SELECT "c"))`,
 			`> MAKETIME((
 >   SELECT
->     a
+>     "a"
 > ), (
 >   SELECT
->     b
+>     "b"
 > ), (
 >   SELECT
->     c
+>     "c"
 > ))
 `,
 			nil,
@@ -1676,10 +1676,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`MICROSECOND((SELECT a))`,
+			`MICROSECOND((SELECT "a"))`,
 			`> MICROSECOND((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -1690,10 +1690,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`MINUTE((SELECT a))`,
+			`MINUTE((SELECT "a"))`,
 			`> MINUTE((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -1704,10 +1704,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`MONTH((SELECT a))`,
+			`MONTH((SELECT "a"))`,
 			`> MONTH((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -1718,10 +1718,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`MONTHNAME((SELECT a))`,
+			`MONTHNAME((SELECT "a"))`,
 			`> MONTHNAME((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -1732,10 +1732,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`NOW((SELECT a))`,
+			`NOW((SELECT "a"))`,
 			`> NOW((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -1749,13 +1749,13 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("b")),
 				),
 			),
-			`PERIOD_ADD((SELECT a), (SELECT b))`,
+			`PERIOD_ADD((SELECT "a"), (SELECT "b"))`,
 			`> PERIOD_ADD((
 >   SELECT
->     a
+>     "a"
 > ), (
 >   SELECT
->     b
+>     "b"
 > ))
 `,
 			nil,
@@ -1769,13 +1769,13 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("b")),
 				),
 			),
-			`PERIOD_DIFF((SELECT a), (SELECT b))`,
+			`PERIOD_DIFF((SELECT "a"), (SELECT "b"))`,
 			`> PERIOD_DIFF((
 >   SELECT
->     a
+>     "a"
 > ), (
 >   SELECT
->     b
+>     "b"
 > ))
 `,
 			nil,
@@ -1786,10 +1786,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`QUARTER((SELECT a))`,
+			`QUARTER((SELECT "a"))`,
 			`> QUARTER((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -1800,10 +1800,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`SEC_TO_TIME((SELECT a))`,
+			`SEC_TO_TIME((SELECT "a"))`,
 			`> SEC_TO_TIME((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -1814,10 +1814,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`SECOND((SELECT a))`,
+			`SECOND((SELECT "a"))`,
 			`> SECOND((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -1831,13 +1831,13 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("b")),
 				),
 			),
-			`STR_TO_DATE((SELECT a), (SELECT b))`,
+			`STR_TO_DATE((SELECT "a"), (SELECT "b"))`,
 			`> STR_TO_DATE((
 >   SELECT
->     a
+>     "a"
 > ), (
 >   SELECT
->     b
+>     "b"
 > ))
 `,
 			nil,
@@ -1853,13 +1853,13 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					),
 				).Day(),
 			),
-			`SUBDATE((SELECT a), INTERVAL (SELECT b) DAY)`,
+			`SUBDATE((SELECT "a"), INTERVAL (SELECT "b") DAY)`,
 			`> SUBDATE((
 >   SELECT
->     a
+>     "a"
 > ), INTERVAL (
 >   SELECT
->     b
+>     "b"
 > ) DAY)
 `,
 			nil,
@@ -1873,13 +1873,13 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("b")),
 				),
 			),
-			`SUBTIME((SELECT a), (SELECT b))`,
+			`SUBTIME((SELECT "a"), (SELECT "b"))`,
 			`> SUBTIME((
 >   SELECT
->     a
+>     "a"
 > ), (
 >   SELECT
->     b
+>     "b"
 > ))
 `,
 			nil,
@@ -1890,10 +1890,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`SYSDATE((SELECT a))`,
+			`SYSDATE((SELECT "a"))`,
 			`> SYSDATE((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -1904,10 +1904,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`TIME((SELECT a))`,
+			`TIME((SELECT "a"))`,
 			`> TIME((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -1921,13 +1921,13 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("b")),
 				),
 			),
-			`TIME_FORMAT((SELECT a), (SELECT b))`,
+			`TIME_FORMAT((SELECT "a"), (SELECT "b"))`,
 			`> TIME_FORMAT((
 >   SELECT
->     a
+>     "a"
 > ), (
 >   SELECT
->     b
+>     "b"
 > ))
 `,
 			nil,
@@ -1938,10 +1938,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`TIME_TO_SEC((SELECT a))`,
+			`TIME_TO_SEC((SELECT "a"))`,
 			`> TIME_TO_SEC((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -1955,13 +1955,13 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("b")),
 				),
 			),
-			`TIMEDIFF((SELECT a), (SELECT b))`,
+			`TIMEDIFF((SELECT "a"), (SELECT "b"))`,
 			`> TIMEDIFF((
 >   SELECT
->     a
+>     "a"
 > ), (
 >   SELECT
->     b
+>     "b"
 > ))
 `,
 			nil,
@@ -1975,13 +1975,13 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("b")),
 				),
 			),
-			`TIMESTAMP((SELECT a), (SELECT b))`,
+			`TIMESTAMP((SELECT "a"), (SELECT "b"))`,
 			`> TIMESTAMP((
 >   SELECT
->     a
+>     "a"
 > ), (
 >   SELECT
->     b
+>     "b"
 > ))
 `,
 			nil,
@@ -1998,16 +1998,16 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("c")),
 				),
 			),
-			`TIMESTAMPADD((SELECT a), (SELECT b), (SELECT c))`,
+			`TIMESTAMPADD((SELECT "a"), (SELECT "b"), (SELECT "c"))`,
 			`> TIMESTAMPADD((
 >   SELECT
->     a
+>     "a"
 > ), (
 >   SELECT
->     b
+>     "b"
 > ), (
 >   SELECT
->     c
+>     "c"
 > ))
 `,
 			nil,
@@ -2024,16 +2024,16 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("c")),
 				),
 			),
-			`TIMESTAMPDIFF((SELECT a), (SELECT b), (SELECT c))`,
+			`TIMESTAMPDIFF((SELECT "a"), (SELECT "b"), (SELECT "c"))`,
 			`> TIMESTAMPDIFF((
 >   SELECT
->     a
+>     "a"
 > ), (
 >   SELECT
->     b
+>     "b"
 > ), (
 >   SELECT
->     c
+>     "c"
 > ))
 `,
 			nil,
@@ -2044,10 +2044,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`TO_DAYS((SELECT a))`,
+			`TO_DAYS((SELECT "a"))`,
 			`> TO_DAYS((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -2058,10 +2058,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`TO_SECONDS((SELECT a))`,
+			`TO_SECONDS((SELECT "a"))`,
 			`> TO_SECONDS((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -2072,10 +2072,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`UNIX_TIMESTAMP((SELECT a))`,
+			`UNIX_TIMESTAMP((SELECT "a"))`,
 			`> UNIX_TIMESTAMP((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -2093,10 +2093,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`UTC_TIME((SELECT a))`,
+			`UTC_TIME((SELECT "a"))`,
 			`> UTC_TIME((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -2107,10 +2107,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`UTC_TIMESTAMP((SELECT a))`,
+			`UTC_TIMESTAMP((SELECT "a"))`,
 			`> UTC_TIMESTAMP((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -2124,13 +2124,13 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("b")),
 				),
 			),
-			`WEEK((SELECT a), (SELECT b))`,
+			`WEEK((SELECT "a"), (SELECT "b"))`,
 			`> WEEK((
 >   SELECT
->     a
+>     "a"
 > ), (
 >   SELECT
->     b
+>     "b"
 > ))
 `,
 			nil,
@@ -2141,10 +2141,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`WEEKDAY((SELECT a))`,
+			`WEEKDAY((SELECT "a"))`,
 			`> WEEKDAY((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -2155,10 +2155,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`WEEKOFYEAR((SELECT a))`,
+			`WEEKOFYEAR((SELECT "a"))`,
 			`> WEEKOFYEAR((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -2170,10 +2170,10 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("a")),
 				),
 			),
-			`YEAR((SELECT a))`,
+			`YEAR((SELECT "a"))`,
 			`> YEAR((
 >   SELECT
->     a
+>     "a"
 > ))
 `,
 			nil,
@@ -2187,13 +2187,13 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("b")),
 				),
 			),
-			`YEARWEEK((SELECT a), (SELECT b))`,
+			`YEARWEEK((SELECT "a"), (SELECT "b"))`,
 			`> YEARWEEK((
 >   SELECT
->     a
+>     "a"
 > ), (
 >   SELECT
->     b
+>     "b"
 > ))
 `,
 			nil,

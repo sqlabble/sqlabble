@@ -20,54 +20,54 @@ func TestSubqueryJoin(t *testing.T) {
 		{
 			stmt.NewSubquery(stmt.NewSelect()).
 				As("a"),
-			`(SELECT) AS a`,
+			`(SELECT) AS "a"`,
 			`> (
 >   SELECT
-> ) AS a
+> ) AS "a"
 `,
 			nil,
 		},
 		{
 			stmt.NewSubquery(stmt.NewSelect()).
 				Join(stmt.NewTable("bar")),
-			`(SELECT) JOIN bar`,
+			`(SELECT) JOIN "bar"`,
 			`> (
 >   SELECT
 > )
-> JOIN bar
+> JOIN "bar"
 `,
 			nil,
 		},
 		{
 			stmt.NewSubquery(stmt.NewSelect()).
 				InnerJoin(stmt.NewTable("bar")),
-			`(SELECT) INNER JOIN bar`,
+			`(SELECT) INNER JOIN "bar"`,
 			`> (
 >   SELECT
 > )
-> INNER JOIN bar
+> INNER JOIN "bar"
 `,
 			nil,
 		},
 		{
 			stmt.NewSubquery(stmt.NewSelect()).
 				LeftJoin(stmt.NewTable("bar")),
-			`(SELECT) LEFT JOIN bar`,
+			`(SELECT) LEFT JOIN "bar"`,
 			`> (
 >   SELECT
 > )
-> LEFT JOIN bar
+> LEFT JOIN "bar"
 `,
 			nil,
 		},
 		{
 			stmt.NewSubquery(stmt.NewSelect()).
 				RightJoin(stmt.NewTable("bar")),
-			`(SELECT) RIGHT JOIN bar`,
+			`(SELECT) RIGHT JOIN "bar"`,
 			`> (
 >   SELECT
 > )
-> RIGHT JOIN bar
+> RIGHT JOIN "bar"
 `,
 			nil,
 		},
@@ -106,7 +106,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 	}{
 		{
 			stmt.NewSubquery(stmt.NewSelect()),
-			"(SELECT)",
+			`(SELECT)`,
 			`> (
 >   SELECT
 > )
@@ -116,7 +116,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 		{
 			stmt.NewSubquery(stmt.NewSelect()).
 				Eq(stmt.NewVal(100)),
-			"(SELECT) = ?",
+			`(SELECT) = ?`,
 			`> (
 >   SELECT
 > ) = ?
@@ -128,7 +128,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 		{
 			stmt.NewSubquery(stmt.NewSelect()).
 				NotEq(stmt.NewVal(100)),
-			"(SELECT) != ?",
+			`(SELECT) != ?`,
 			`> (
 >   SELECT
 > ) != ?
@@ -140,7 +140,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 		{
 			stmt.NewSubquery(stmt.NewSelect()).
 				Gt(stmt.NewVal(100)),
-			"(SELECT) > ?",
+			`(SELECT) > ?`,
 			`> (
 >   SELECT
 > ) > ?
@@ -152,7 +152,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 		{
 			stmt.NewSubquery(stmt.NewSelect()).
 				Gte(stmt.NewVal(100)),
-			"(SELECT) >= ?",
+			`(SELECT) >= ?`,
 			`> (
 >   SELECT
 > ) >= ?
@@ -164,7 +164,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 		{
 			stmt.NewSubquery(stmt.NewSelect()).
 				Lt(stmt.NewVal(100)),
-			"(SELECT) < ?",
+			`(SELECT) < ?`,
 			`> (
 >   SELECT
 > ) < ?
@@ -176,7 +176,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 		{
 			stmt.NewSubquery(stmt.NewSelect()).
 				Lte(stmt.NewVal(100)),
-			"(SELECT) <= ?",
+			`(SELECT) <= ?`,
 			`> (
 >   SELECT
 > ) <= ?
@@ -188,7 +188,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 		{
 			stmt.NewSubquery(stmt.NewSelect()).
 				Like(stmt.NewVal("bar")),
-			"(SELECT) LIKE ?",
+			`(SELECT) LIKE ?`,
 			`> (
 >   SELECT
 > ) LIKE ?
@@ -200,7 +200,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 		{
 			stmt.NewSubquery(stmt.NewSelect()).
 				RegExp(stmt.NewVal("bar")),
-			"(SELECT) REGEXP ?",
+			`(SELECT) REGEXP ?`,
 			`> (
 >   SELECT
 > ) REGEXP ?
@@ -215,7 +215,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 					stmt.NewVal(100),
 					stmt.NewVal(200),
 				),
-			"(SELECT) BETWEEN ? AND ?",
+			`(SELECT) BETWEEN ? AND ?`,
 			`> (
 >   SELECT
 > ) BETWEEN ? AND ?
@@ -228,7 +228,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 		{
 			stmt.NewSubquery(stmt.NewSelect()).
 				IsNull(),
-			"(SELECT) IS NULL",
+			`(SELECT) IS NULL`,
 			`> (
 >   SELECT
 > ) IS NULL
@@ -238,7 +238,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 		{
 			stmt.NewSubquery(stmt.NewSelect()).
 				IsNotNull(),
-			"(SELECT) IS NOT NULL",
+			`(SELECT) IS NOT NULL`,
 			`> (
 >   SELECT
 > ) IS NOT NULL
@@ -250,7 +250,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 				In(stmt.NewVals(
 					100, 200, 300,
 				)),
-			"(SELECT) IN (?, ?, ?)",
+			`(SELECT) IN (?, ?, ?)`,
 			`> (
 >   SELECT
 > ) IN (?, ?, ?)
@@ -266,7 +266,7 @@ func TestSubOperationLeftSide(t *testing.T) {
 				NotIn(stmt.NewVals(
 					100, 200, 300,
 				)),
-			"(SELECT) NOT IN (?, ?, ?)",
+			`(SELECT) NOT IN (?, ?, ?)`,
 			`> (
 >   SELECT
 > ) NOT IN (?, ?, ?)
@@ -317,10 +317,10 @@ func TestSubOperationRightSide(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("bar")),
 				),
 			),
-			"foo = (SELECT bar)",
-			`> foo = (
+			`"foo" = (SELECT "bar")`,
+			`> "foo" = (
 >   SELECT
->     bar
+>     "bar"
 > )
 `,
 			nil,
@@ -332,10 +332,10 @@ func TestSubOperationRightSide(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("bar")),
 				),
 			),
-			"foo != (SELECT bar)",
-			`> foo != (
+			`"foo" != (SELECT "bar")`,
+			`> "foo" != (
 >   SELECT
->     bar
+>     "bar"
 > )
 `,
 			nil,
@@ -347,10 +347,10 @@ func TestSubOperationRightSide(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("bar")),
 				),
 			),
-			"foo > (SELECT bar)",
-			`> foo > (
+			`"foo" > (SELECT "bar")`,
+			`> "foo" > (
 >   SELECT
->     bar
+>     "bar"
 > )
 `,
 			nil,
@@ -362,10 +362,10 @@ func TestSubOperationRightSide(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("bar")),
 				),
 			),
-			"foo >= (SELECT bar)",
-			`> foo >= (
+			`"foo" >= (SELECT "bar")`,
+			`> "foo" >= (
 >   SELECT
->     bar
+>     "bar"
 > )
 `,
 			nil,
@@ -377,10 +377,10 @@ func TestSubOperationRightSide(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("bar")),
 				),
 			),
-			"foo < (SELECT bar)",
-			`> foo < (
+			`"foo" < (SELECT "bar")`,
+			`> "foo" < (
 >   SELECT
->     bar
+>     "bar"
 > )
 `,
 			nil,
@@ -392,10 +392,10 @@ func TestSubOperationRightSide(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("bar")),
 				),
 			),
-			"foo <= (SELECT bar)",
-			`> foo <= (
+			`"foo" <= (SELECT "bar")`,
+			`> "foo" <= (
 >   SELECT
->     bar
+>     "bar"
 > )
 `,
 			nil,
@@ -407,10 +407,10 @@ func TestSubOperationRightSide(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("bar")),
 				),
 			),
-			"foo LIKE (SELECT bar)",
-			`> foo LIKE (
+			`"foo" LIKE (SELECT "bar")`,
+			`> "foo" LIKE (
 >   SELECT
->     bar
+>     "bar"
 > )
 `,
 			nil,
@@ -422,10 +422,10 @@ func TestSubOperationRightSide(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("bar")),
 				),
 			),
-			"foo REGEXP (SELECT bar)",
-			`> foo REGEXP (
+			`"foo" REGEXP (SELECT "bar")`,
+			`> "foo" REGEXP (
 >   SELECT
->     bar
+>     "bar"
 > )
 `,
 			nil,
@@ -436,10 +436,10 @@ func TestSubOperationRightSide(t *testing.T) {
 				In(stmt.NewSubquery(
 					stmt.NewSelect(stmt.NewColumn("bar")),
 				)),
-			"foo IN (SELECT bar)",
-			`> foo IN (
+			`"foo" IN (SELECT "bar")`,
+			`> "foo" IN (
 >   SELECT
->     bar
+>     "bar"
 > )
 `,
 			nil,
@@ -450,10 +450,10 @@ func TestSubOperationRightSide(t *testing.T) {
 				NotIn(stmt.NewSubquery(
 					stmt.NewSelect(stmt.NewColumn("bar")),
 				)),
-			"foo NOT IN (SELECT bar)",
-			`> foo NOT IN (
+			`"foo" NOT IN (SELECT "bar")`,
+			`> "foo" NOT IN (
 >   SELECT
->     bar
+>     "bar"
 > )
 `,
 			nil,
@@ -499,13 +499,13 @@ func TestSubOperationBothSide(t *testing.T) {
 					stmt.NewSelect(stmt.NewColumn("bar")),
 				),
 			),
-			"(SELECT foo) = (SELECT bar)",
+			`(SELECT "foo") = (SELECT "bar")`,
 			`> (
 >   SELECT
->     foo
+>     "foo"
 > ) = (
 >   SELECT
->     bar
+>     "bar"
 > )
 `,
 			nil,

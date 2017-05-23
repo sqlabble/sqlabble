@@ -19,7 +19,7 @@ func TestDeleteSQL(t *testing.T) {
 	}{
 		{
 			stmt.NewDelete(),
-			"DELETE",
+			`DELETE`,
 			`> DELETE
 `,
 			nil,
@@ -28,10 +28,10 @@ func TestDeleteSQL(t *testing.T) {
 			stmt.NewDelete().From(
 				stmt.NewTable("foo"),
 			),
-			"DELETE FROM foo",
+			`DELETE FROM "foo"`,
 			`> DELETE
 > FROM
->   foo
+>   "foo"
 `,
 			nil,
 		},

@@ -51,7 +51,7 @@ func TestMain(m *testing.M) {
 func TestMapper(t *testing.T) {
 	u := foo.NewUserDB()
 	{
-		query, values := builder.Standard.Build(
+		query, values := builder.MySQL.Build(
 			q.CreateTableIfNotExists(
 				u.Table,
 			).Definitions(
@@ -68,7 +68,7 @@ func TestMapper(t *testing.T) {
 
 	pt := foo.NewProfileDB()
 	{
-		query, values := builder.Standard.Build(
+		query, values := builder.MySQLIndented.Build(
 			q.CreateTableIfNotExists(
 				pt.Table,
 			).Definitions(
@@ -85,7 +85,7 @@ func TestMapper(t *testing.T) {
 
 	ft := foo.NewFriendDB()
 	{
-		query, values := builder.Standard.Build(
+		query, values := builder.MySQLIndented.Build(
 			q.CreateTableIfNotExists(
 				ft.Table,
 			).Definitions(
@@ -155,7 +155,7 @@ func TestMapper(t *testing.T) {
 					append(
 						u.Selectors(),
 						q.Subquery(
-							q.Select(q.Column("COUNT(*)")).
+							q.Select(q.Count(q.Wildcard)).
 								From(ft.TableAlias).
 								Where(
 									q.Or(

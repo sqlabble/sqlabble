@@ -21,11 +21,11 @@ func TestSubqueryAlias(t *testing.T) {
 			stmt.NewSubquery(stmt.NewSelect()).
 				As("foo").
 				Join(stmt.NewTable("bar")),
-			`(SELECT) AS foo JOIN bar`,
+			`(SELECT) AS "foo" JOIN "bar"`,
 			`> (
 >   SELECT
-> ) AS foo
-> JOIN bar
+> ) AS "foo"
+> JOIN "bar"
 `,
 			nil,
 		},
@@ -33,11 +33,11 @@ func TestSubqueryAlias(t *testing.T) {
 			stmt.NewSubquery(stmt.NewSelect()).
 				As("foo").
 				InnerJoin(stmt.NewTable("bar")),
-			`(SELECT) AS foo INNER JOIN bar`,
+			`(SELECT) AS "foo" INNER JOIN "bar"`,
 			`> (
 >   SELECT
-> ) AS foo
-> INNER JOIN bar
+> ) AS "foo"
+> INNER JOIN "bar"
 `,
 			nil,
 		},
@@ -45,11 +45,11 @@ func TestSubqueryAlias(t *testing.T) {
 			stmt.NewSubquery(stmt.NewSelect()).
 				As("foo").
 				LeftJoin(stmt.NewTable("bar")),
-			`(SELECT) AS foo LEFT JOIN bar`,
+			`(SELECT) AS "foo" LEFT JOIN "bar"`,
 			`> (
 >   SELECT
-> ) AS foo
-> LEFT JOIN bar
+> ) AS "foo"
+> LEFT JOIN "bar"
 `,
 			nil,
 		},
@@ -57,11 +57,11 @@ func TestSubqueryAlias(t *testing.T) {
 			stmt.NewSubquery(stmt.NewSelect()).
 				As("foo").
 				RightJoin(stmt.NewTable("bar")),
-			`(SELECT) AS foo RIGHT JOIN bar`,
+			`(SELECT) AS "foo" RIGHT JOIN "bar"`,
 			`> (
 >   SELECT
-> ) AS foo
-> RIGHT JOIN bar
+> ) AS "foo"
+> RIGHT JOIN "bar"
 `,
 			nil,
 		},

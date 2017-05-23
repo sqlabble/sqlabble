@@ -21,9 +21,9 @@ func TestOrderBySQL(t *testing.T) {
 			stmt.NewOrderBy(
 				stmt.NewColumn("foo").Asc(),
 			),
-			"ORDER BY foo ASC",
+			`ORDER BY "foo" ASC`,
 			`> ORDER BY
->   foo ASC
+>   "foo" ASC
 `,
 			nil,
 		},
@@ -33,11 +33,11 @@ func TestOrderBySQL(t *testing.T) {
 				stmt.NewColumn("bar").Asc(),
 				stmt.NewColumn("baz").Desc(),
 			),
-			"ORDER BY foo DESC, bar ASC, baz DESC",
+			`ORDER BY "foo" DESC, "bar" ASC, "baz" DESC`,
 			`> ORDER BY
->   foo DESC
->   , bar ASC
->   , baz DESC
+>   "foo" DESC
+>   , "bar" ASC
+>   , "baz" DESC
 `,
 			nil,
 		},
@@ -45,9 +45,9 @@ func TestOrderBySQL(t *testing.T) {
 			stmt.NewOrderBy(
 				stmt.NewColumn("foo").Asc(),
 			).Limit(10),
-			"ORDER BY foo ASC LIMIT ?",
+			`ORDER BY "foo" ASC LIMIT ?`,
 			`> ORDER BY
->   foo ASC
+>   "foo" ASC
 > LIMIT
 >   ?
 `,

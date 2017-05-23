@@ -19,7 +19,7 @@ func TestFuncOperationLeftSide(t *testing.T) {
 	}{
 		{
 			stmt.NewCurDate(),
-			"CURDATE()",
+			`CURDATE()`,
 			`> CURDATE()
 `,
 			nil,
@@ -27,7 +27,7 @@ func TestFuncOperationLeftSide(t *testing.T) {
 		{
 			stmt.NewCurDate().
 				Eq(stmt.NewVal(100)),
-			"CURDATE() = ?",
+			`CURDATE() = ?`,
 			`> CURDATE() = ?
 `,
 			[]interface{}{
@@ -37,7 +37,7 @@ func TestFuncOperationLeftSide(t *testing.T) {
 		{
 			stmt.NewCurDate().
 				NotEq(stmt.NewVal(100)),
-			"CURDATE() != ?",
+			`CURDATE() != ?`,
 			`> CURDATE() != ?
 `,
 			[]interface{}{
@@ -47,7 +47,7 @@ func TestFuncOperationLeftSide(t *testing.T) {
 		{
 			stmt.NewCurDate().
 				Gt(stmt.NewVal(100)),
-			"CURDATE() > ?",
+			`CURDATE() > ?`,
 			`> CURDATE() > ?
 `,
 			[]interface{}{
@@ -57,7 +57,7 @@ func TestFuncOperationLeftSide(t *testing.T) {
 		{
 			stmt.NewCurDate().
 				Gte(stmt.NewVal(100)),
-			"CURDATE() >= ?",
+			`CURDATE() >= ?`,
 			`> CURDATE() >= ?
 `,
 			[]interface{}{
@@ -67,7 +67,7 @@ func TestFuncOperationLeftSide(t *testing.T) {
 		{
 			stmt.NewCurDate().
 				Lt(stmt.NewVal(100)),
-			"CURDATE() < ?",
+			`CURDATE() < ?`,
 			`> CURDATE() < ?
 `,
 			[]interface{}{
@@ -77,7 +77,7 @@ func TestFuncOperationLeftSide(t *testing.T) {
 		{
 			stmt.NewCurDate().
 				Lte(stmt.NewVal(100)),
-			"CURDATE() <= ?",
+			`CURDATE() <= ?`,
 			`> CURDATE() <= ?
 `,
 			[]interface{}{
@@ -87,7 +87,7 @@ func TestFuncOperationLeftSide(t *testing.T) {
 		{
 			stmt.NewCurDate().
 				Like(stmt.NewVal("bar")),
-			"CURDATE() LIKE ?",
+			`CURDATE() LIKE ?`,
 			`> CURDATE() LIKE ?
 `,
 			[]interface{}{
@@ -97,7 +97,7 @@ func TestFuncOperationLeftSide(t *testing.T) {
 		{
 			stmt.NewCurDate().
 				RegExp(stmt.NewVal("bar")),
-			"CURDATE() REGEXP ?",
+			`CURDATE() REGEXP ?`,
 			`> CURDATE() REGEXP ?
 `,
 			[]interface{}{
@@ -110,7 +110,7 @@ func TestFuncOperationLeftSide(t *testing.T) {
 					stmt.NewVal(100),
 					stmt.NewVal(200),
 				),
-			"CURDATE() BETWEEN ? AND ?",
+			`CURDATE() BETWEEN ? AND ?`,
 			`> CURDATE() BETWEEN ? AND ?
 `,
 			[]interface{}{
@@ -123,7 +123,7 @@ func TestFuncOperationLeftSide(t *testing.T) {
 				In(stmt.NewVals(
 					100, 200, 300,
 				)),
-			"CURDATE() IN (?, ?, ?)",
+			`CURDATE() IN (?, ?, ?)`,
 			`> CURDATE() IN (?, ?, ?)
 `,
 			[]interface{}{
@@ -137,7 +137,7 @@ func TestFuncOperationLeftSide(t *testing.T) {
 				NotIn(stmt.NewVals(
 					100, 200, 300,
 				)),
-			"CURDATE() NOT IN (?, ?, ?)",
+			`CURDATE() NOT IN (?, ?, ?)`,
 			`> CURDATE() NOT IN (?, ?, ?)
 `,
 			[]interface{}{
@@ -340,8 +340,8 @@ func TestFuncOperationRightSide(t *testing.T) {
 			stmt.NewColumn("foo").Eq(
 				stmt.NewCurDate(),
 			),
-			"foo = CURDATE()",
-			`> foo = CURDATE()
+			`"foo" = CURDATE()`,
+			`> "foo" = CURDATE()
 `,
 			nil,
 		},
@@ -349,8 +349,8 @@ func TestFuncOperationRightSide(t *testing.T) {
 			stmt.NewColumn("foo").NotEq(
 				stmt.NewCurDate(),
 			),
-			"foo != CURDATE()",
-			`> foo != CURDATE()
+			`"foo" != CURDATE()`,
+			`> "foo" != CURDATE()
 `,
 			nil,
 		},
@@ -358,8 +358,8 @@ func TestFuncOperationRightSide(t *testing.T) {
 			stmt.NewColumn("foo").Gt(
 				stmt.NewCurDate(),
 			),
-			"foo > CURDATE()",
-			`> foo > CURDATE()
+			`"foo" > CURDATE()`,
+			`> "foo" > CURDATE()
 `,
 			nil,
 		},
@@ -367,8 +367,8 @@ func TestFuncOperationRightSide(t *testing.T) {
 			stmt.NewColumn("foo").Gte(
 				stmt.NewCurDate(),
 			),
-			"foo >= CURDATE()",
-			`> foo >= CURDATE()
+			`"foo" >= CURDATE()`,
+			`> "foo" >= CURDATE()
 `,
 			nil,
 		},
@@ -376,8 +376,8 @@ func TestFuncOperationRightSide(t *testing.T) {
 			stmt.NewColumn("foo").Lt(
 				stmt.NewCurDate(),
 			),
-			"foo < CURDATE()",
-			`> foo < CURDATE()
+			`"foo" < CURDATE()`,
+			`> "foo" < CURDATE()
 `,
 			nil,
 		},
@@ -385,8 +385,8 @@ func TestFuncOperationRightSide(t *testing.T) {
 			stmt.NewColumn("foo").Lte(
 				stmt.NewCurDate(),
 			),
-			"foo <= CURDATE()",
-			`> foo <= CURDATE()
+			`"foo" <= CURDATE()`,
+			`> "foo" <= CURDATE()
 `,
 			nil,
 		},
@@ -394,8 +394,8 @@ func TestFuncOperationRightSide(t *testing.T) {
 			stmt.NewColumn("foo").Like(
 				stmt.NewCurDate(),
 			),
-			"foo LIKE CURDATE()",
-			`> foo LIKE CURDATE()
+			`"foo" LIKE CURDATE()`,
+			`> "foo" LIKE CURDATE()
 `,
 			nil,
 		},
@@ -403,8 +403,8 @@ func TestFuncOperationRightSide(t *testing.T) {
 			stmt.NewColumn("foo").RegExp(
 				stmt.NewCurDate(),
 			),
-			"foo REGEXP CURDATE()",
-			`> foo REGEXP CURDATE()
+			`"foo" REGEXP CURDATE()`,
+			`> "foo" REGEXP CURDATE()
 `,
 			nil,
 		},

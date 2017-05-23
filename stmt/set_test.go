@@ -21,9 +21,9 @@ func TestSet(t *testing.T) {
 			stmt.NewSet(
 				stmt.NewColumn("foo").Assign(stmt.NewVal(100)),
 			),
-			"SET foo = ?",
+			`SET "foo" = ?`,
 			`> SET
->   foo = ?
+>   "foo" = ?
 `,
 			[]interface{}{
 				100,
@@ -33,9 +33,9 @@ func TestSet(t *testing.T) {
 			stmt.NewSet(
 				stmt.NewColumn("foo").Assign(stmt.NewCurDate()),
 			),
-			"SET foo = CURDATE()",
+			`SET "foo" = CURDATE()`,
 			`> SET
->   foo = CURDATE()
+>   "foo" = CURDATE()
 `,
 			nil,
 		},
@@ -44,16 +44,16 @@ func TestSet(t *testing.T) {
 				stmt.NewColumn("foo").Assign(
 					stmt.NewSubquery(
 						stmt.NewSelect(
-							stmt.NewColumn("count(*)"),
+							stmt.NewCount(stmt.NewWildcard()),
 						),
 					),
 				),
 			),
-			"SET foo = (SELECT count(*))",
+			`SET "foo" = (SELECT COUNT(*))`,
 			`> SET
->   foo = (
+>   "foo" = (
 >     SELECT
->       count(*)
+>       COUNT(*)
 >   )
 `,
 			nil,
@@ -63,10 +63,10 @@ func TestSet(t *testing.T) {
 				stmt.NewColumn("foo").Assign(stmt.NewVal(100)),
 				stmt.NewColumn("bar").Assign(stmt.NewVal(200)),
 			),
-			"SET foo = ?, bar = ?",
+			`SET "foo" = ?, "bar" = ?`,
 			`> SET
->   foo = ?
->   , bar = ?
+>   "foo" = ?
+>   , "bar" = ?
 `,
 			[]interface{}{
 				100,
@@ -79,11 +79,11 @@ func TestSet(t *testing.T) {
 				stmt.NewColumn("bar").Assign(stmt.NewVal(200)),
 				stmt.NewColumn("baz").Assign(stmt.NewVal(300)),
 			),
-			"SET foo = ?, bar = ?, baz = ?",
+			`SET "foo" = ?, "bar" = ?, "baz" = ?`,
 			`> SET
->   foo = ?
->   , bar = ?
->   , baz = ?
+>   "foo" = ?
+>   , "bar" = ?
+>   , "baz" = ?
 `,
 			[]interface{}{
 				100,
@@ -99,13 +99,13 @@ func TestSet(t *testing.T) {
 			).Where(
 				stmt.NewColumn("qux").Lte(stmt.NewVal(400)),
 			),
-			"SET foo = ?, bar = ?, baz = ? WHERE qux <= ?",
+			`SET "foo" = ?, "bar" = ?, "baz" = ? WHERE "qux" <= ?`,
 			`> SET
->   foo = ?
->   , bar = ?
->   , baz = ?
+>   "foo" = ?
+>   , "bar" = ?
+>   , "baz" = ?
 > WHERE
->   qux <= ?
+>   "qux" <= ?
 `,
 			[]interface{}{
 				100,

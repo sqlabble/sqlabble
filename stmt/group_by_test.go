@@ -21,9 +21,9 @@ func TestGroupBySQL(t *testing.T) {
 			stmt.NewGroupBy(
 				stmt.NewColumn("foo"),
 			),
-			"GROUP BY foo",
+			`GROUP BY "foo"`,
 			`> GROUP BY
->   foo
+>   "foo"
 `,
 			nil,
 		},
@@ -33,11 +33,11 @@ func TestGroupBySQL(t *testing.T) {
 				stmt.NewColumn("bar"),
 				stmt.NewColumn("baz"),
 			),
-			"GROUP BY foo, bar, baz",
+			`GROUP BY "foo", "bar", "baz"`,
 			`> GROUP BY
->   foo
->   , bar
->   , baz
+>   "foo"
+>   , "bar"
+>   , "baz"
 `,
 			nil,
 		},
@@ -45,11 +45,11 @@ func TestGroupBySQL(t *testing.T) {
 			stmt.NewGroupBy(
 				stmt.NewColumn("foo"),
 			).Having(
-				stmt.NewColumn("COUNT(*)").Gt(stmt.NewVal(200)),
+				stmt.NewCount(stmt.NewWildcard()).Gt(stmt.NewVal(200)),
 			),
-			"GROUP BY foo HAVING COUNT(*) > ?",
+			`GROUP BY "foo" HAVING COUNT(*) > ?`,
 			`> GROUP BY
->   foo
+>   "foo"
 > HAVING
 >   COUNT(*) > ?
 `,
@@ -63,11 +63,11 @@ func TestGroupBySQL(t *testing.T) {
 			).OrderBy(
 				stmt.NewColumn("age").Asc(),
 			),
-			"GROUP BY foo ORDER BY age ASC",
+			`GROUP BY "foo" ORDER BY "age" ASC`,
 			`> GROUP BY
->   foo
+>   "foo"
 > ORDER BY
->   age ASC
+>   "age" ASC
 `,
 			nil,
 		},
@@ -75,9 +75,9 @@ func TestGroupBySQL(t *testing.T) {
 			stmt.NewGroupBy(
 				stmt.NewColumn("foo"),
 			).Limit(20),
-			"GROUP BY foo LIMIT ?",
+			`GROUP BY "foo" LIMIT ?`,
 			`> GROUP BY
->   foo
+>   "foo"
 > LIMIT
 >   ?
 `,

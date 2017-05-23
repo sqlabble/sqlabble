@@ -60,7 +60,11 @@ func (t Table) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 	if t.Name == "" {
 		return nil, nil
 	}
-	return tokenizer.NewLine(token.Word(t.Name)), nil
+	return tokenizer.NewLine(
+		token.LQuote,
+		token.Word(t.Name),
+		token.RQuote,
+	), nil
 }
 
 func (t Table) name() string {
