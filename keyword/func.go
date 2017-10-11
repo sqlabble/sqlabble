@@ -33,6 +33,7 @@ const (
 	Localtimestamp        = "LOCALTIMESTAMP"
 	Makedate              = "MAKEDATE"
 	Maketime              = "MAKETIME"
+	Max                   = "MAX"
 	Microsecond           = "MICROSECOND"
 	Minute                = "MINUTE"
 	Month                 = "MONTH"
