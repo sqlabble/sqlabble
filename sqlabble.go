@@ -42,4 +42,5 @@ var (
 	Wildcard = stmt.NewWildcard()
 
 	Count = stmt.NewCount
+	Max   = stmt.NewMax
 )
