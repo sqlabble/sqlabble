@@ -1,15 +1,25 @@
 package stmt
 
-import "github.com/minodisk/sqlabble/keyword"
+import (
+	"github.com/minodisk/sqlabble/keyword"
+	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
+)
 
-var (
-	FSP0 = NewVal(0)
-	FSP1 = NewVal(1)
-	FSP2 = NewVal(2)
-	FSP3 = NewVal(3)
-	FSP4 = NewVal(4)
-	FSP5 = NewVal(5)
-	FSP6 = NewVal(6)
+type FSP string
+
+func (fsp FSP) nodeize() (tokenizer.Tokenizer, []interface{}) {
+	return tokenizer.NewLine(token.Word(fsp)), nil
+}
+
+const (
+	FSP0 FSP = "0"
+	FSP1 FSP = "1"
+	FSP2 FSP = "2"
+	FSP3 FSP = "3"
+	FSP4 FSP = "4"
+	FSP5 FSP = "5"
+	FSP6 FSP = "6"
 )
 
 var (
@@ -87,21 +97,21 @@ func NewCurrentDate() Func {
 	}
 }
 
-func NewCurrentTime(fsp ValOrColOrFuncOrSub) Func {
+func NewCurrentTime(fsp FSP) Func {
 	return Func{
 		name: keyword.CurrentTime,
 		args: Args{fsp},
 	}
 }
 
-func NewCurrentTimestamp(fsp ValOrColOrFuncOrSub) Func {
+func NewCurrentTimestamp(fsp FSP) Func {
 	return Func{
 		name: keyword.CurrentTimestamp,
 		args: Args{fsp},
 	}
 }
 
-func NewCurtime(fsp ValOrColOrFuncOrSub) Func {
+func NewCurtime(fsp FSP) Func {
 	return Func{
 		name: keyword.Curtime,
 		args: Args{fsp},
@@ -220,14 +230,14 @@ func NewLastDay(date ValOrColOrFuncOrSub) Func {
 	}
 }
 
-func NewLocaltime(fsp ValOrColOrFuncOrSub) Func {
+func NewLocaltime(fsp FSP) Func {
 	return Func{
 		name: keyword.Localtime,
 		args: Args{fsp},
 	}
 }
 
-func NewLocaltimestamp(fsp ValOrColOrFuncOrSub) Func {
+func NewLocaltimestamp(fsp FSP) Func {
 	return Func{
 		name: keyword.Localtimestamp,
 		args: Args{fsp},
@@ -276,7 +286,7 @@ func NewMonthname(date ValOrColOrFuncOrSub) Func {
 	}
 }
 
-func NewNow(fsp ValOrColOrFuncOrSub) Func {
+func NewNow(fsp FSP) Func {
 	return Func{
 		name: keyword.Now,
 		args: Args{fsp},
@@ -339,7 +349,7 @@ func NewSubtime(date1, date2 ValOrColOrFuncOrSub) Func {
 	}
 }
 
-func NewSysdate(fsp ValOrColOrFuncOrSub) Func {
+func NewSysdate(fsp FSP) Func {
 	return Func{
 		name: keyword.Sysdate,
 		args: Args{fsp},
@@ -423,17 +433,17 @@ func NewUtcDate() Func {
 	}
 }
 
-func NewUtcTime(fsp ValOrColOrFuncOrSub) Func {
+func NewUtcTime(fsp FSP) Func {
 	return Func{
 		name: keyword.UtcTime,
 		args: Args{fsp},
 	}
 }
 
-func NewUtcTimestamp(date ValOrColOrFuncOrSub) Func {
+func NewUtcTimestamp(fsp FSP) Func {
 	return Func{
 		name: keyword.UtcTimestamp,
-		args: Args{date},
+		args: Args{fsp},
 	}
 }
 
