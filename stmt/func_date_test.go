@@ -73,31 +73,25 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			nil,
 		},
 		{
-			stmt.NewCurrentTime(stmt.NewVal("1981-01-01")),
-			`CURRENT_TIME(?)`,
-			`> CURRENT_TIME(?)
+			stmt.NewCurrentTime(stmt.FSP0),
+			`CURRENT_TIME(0)`,
+			`> CURRENT_TIME(0)
 `,
-			[]interface{}{
-				"1981-01-01",
-			},
+			nil,
 		},
 		{
-			stmt.NewCurrentTimestamp(stmt.NewVal("1981-01-01")),
-			`CURRENT_TIMESTAMP(?)`,
-			`> CURRENT_TIMESTAMP(?)
+			stmt.NewCurrentTimestamp(stmt.FSP0),
+			`CURRENT_TIMESTAMP(0)`,
+			`> CURRENT_TIMESTAMP(0)
 `,
-			[]interface{}{
-				"1981-01-01",
-			},
+			nil,
 		},
 		{
-			stmt.NewCurtime(stmt.NewVal("1981-01-01")),
-			`CURTIME(?)`,
-			`> CURTIME(?)
+			stmt.NewCurtime(stmt.FSP0),
+			`CURTIME(0)`,
+			`> CURTIME(0)
 `,
-			[]interface{}{
-				"1981-01-01",
-			},
+			nil,
 		},
 		{
 			stmt.NewDate(stmt.NewVal("1981-01-01")),
@@ -268,22 +262,18 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewLocaltime(stmt.NewVal("1981-01-01")),
-			`LOCALTIME(?)`,
-			`> LOCALTIME(?)
+			stmt.NewLocaltime(stmt.FSP0),
+			`LOCALTIME(0)`,
+			`> LOCALTIME(0)
 `,
-			[]interface{}{
-				"1981-01-01",
-			},
+			nil,
 		},
 		{
-			stmt.NewLocaltimestamp(stmt.NewVal("1981-01-01")),
-			`LOCALTIMESTAMP(?)`,
-			`> LOCALTIMESTAMP(?)
+			stmt.NewLocaltimestamp(stmt.FSP0),
+			`LOCALTIMESTAMP(0)`,
+			`> LOCALTIMESTAMP(0)
 `,
-			[]interface{}{
-				"1981-01-01",
-			},
+			nil,
 		},
 		{
 			stmt.NewMakedate(
@@ -350,13 +340,11 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewNow(stmt.NewVal("1981-01-01")),
-			`NOW(?)`,
-			`> NOW(?)
+			stmt.NewNow(stmt.FSP0),
+			`NOW(0)`,
+			`> NOW(0)
 `,
-			[]interface{}{
-				"1981-01-01",
-			},
+			nil,
 		},
 		{
 			stmt.NewPeriodAdd(
@@ -451,13 +439,11 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			},
 		},
 		{
-			stmt.NewSysdate(stmt.NewVal("1981-01-01")),
-			`SYSDATE(?)`,
-			`> SYSDATE(?)
+			stmt.NewSysdate(stmt.FSP0),
+			`SYSDATE(0)`,
+			`> SYSDATE(0)
 `,
-			[]interface{}{
-				"1981-01-01",
-			},
+			nil,
 		},
 		{
 			stmt.NewTime(stmt.NewVal("1981-01-01")),
@@ -584,21 +570,17 @@ func TestDateAndTimeFuncsWithVal(t *testing.T) {
 			stmt.NewUtcTime(
 				stmt.FSP0,
 			),
-			`UTC_TIME(?)`,
-			`> UTC_TIME(?)
+			`UTC_TIME(0)`,
+			`> UTC_TIME(0)
 `,
-			[]interface{}{
-				0,
-			},
+			nil,
 		},
 		{
-			stmt.NewUtcTimestamp(stmt.NewVal("1981-01-01")),
-			`UTC_TIMESTAMP(?)`,
-			`> UTC_TIMESTAMP(?)
+			stmt.NewUtcTimestamp(stmt.FSP0),
+			`UTC_TIMESTAMP(0)`,
+			`> UTC_TIMESTAMP(0)
 `,
-			[]interface{}{
-				"1981-01-01",
-			},
+			nil,
 		},
 		{
 			stmt.NewWeek(
@@ -726,27 +708,6 @@ func TestDateAndTimeFuncsWithCol(t *testing.T) {
 			stmt.NewCurrentDate(),
 			`CURRENT_DATE()`,
 			`> CURRENT_DATE()
-`,
-			nil,
-		},
-		{
-			stmt.NewCurrentTime(stmt.NewColumn("foo")),
-			`CURRENT_TIME("foo")`,
-			`> CURRENT_TIME("foo")
-`,
-			nil,
-		},
-		{
-			stmt.NewCurrentTimestamp(stmt.NewColumn("foo")),
-			`CURRENT_TIMESTAMP("foo")`,
-			`> CURRENT_TIMESTAMP("foo")
-`,
-			nil,
-		},
-		{
-			stmt.NewCurtime(stmt.NewColumn("foo")),
-			`CURTIME("foo")`,
-			`> CURTIME("foo")
 `,
 			nil,
 		},
@@ -881,20 +842,6 @@ func TestDateAndTimeFuncsWithCol(t *testing.T) {
 			nil,
 		},
 		{
-			stmt.NewLocaltime(stmt.NewColumn("foo")),
-			`LOCALTIME("foo")`,
-			`> LOCALTIME("foo")
-`,
-			nil,
-		},
-		{
-			stmt.NewLocaltimestamp(stmt.NewColumn("foo")),
-			`LOCALTIMESTAMP("foo")`,
-			`> LOCALTIMESTAMP("foo")
-`,
-			nil,
-		},
-		{
 			stmt.NewMakedate(
 				stmt.NewColumn("foo"),
 				stmt.NewColumn("bar"),
@@ -940,13 +887,6 @@ func TestDateAndTimeFuncsWithCol(t *testing.T) {
 			stmt.NewMonthname(stmt.NewColumn("foo")),
 			`MONTHNAME("foo")`,
 			`> MONTHNAME("foo")
-`,
-			nil,
-		},
-		{
-			stmt.NewNow(stmt.NewColumn("foo")),
-			`NOW("foo")`,
-			`> NOW("foo")
 `,
 			nil,
 		},
@@ -1018,13 +958,6 @@ func TestDateAndTimeFuncsWithCol(t *testing.T) {
 			),
 			`SUBTIME("foo", "bar")`,
 			`> SUBTIME("foo", "bar")
-`,
-			nil,
-		},
-		{
-			stmt.NewSysdate(stmt.NewColumn("foo")),
-			`SYSDATE("foo")`,
-			`> SYSDATE("foo")
 `,
 			nil,
 		},
@@ -1119,20 +1052,6 @@ func TestDateAndTimeFuncsWithCol(t *testing.T) {
 			stmt.NewUtcDate(),
 			`UTC_DATE()`,
 			`> UTC_DATE()
-`,
-			nil,
-		},
-		{
-			stmt.NewUtcTime(stmt.NewColumn("foo")),
-			`UTC_TIME("foo")`,
-			`> UTC_TIME("foo")
-`,
-			nil,
-		},
-		{
-			stmt.NewUtcTimestamp(stmt.NewColumn("foo")),
-			`UTC_TIMESTAMP("foo")`,
-			`> UTC_TIMESTAMP("foo")
 `,
 			nil,
 		},
@@ -1287,48 +1206,6 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 			stmt.NewCurrentDate(),
 			`CURRENT_DATE()`,
 			`> CURRENT_DATE()
-`,
-			nil,
-		},
-		{
-			stmt.NewCurrentTime(
-				stmt.NewSubquery(
-					stmt.NewSelect(stmt.NewColumn("a")),
-				),
-			),
-			`CURRENT_TIME((SELECT "a"))`,
-			`> CURRENT_TIME((
->   SELECT
->     "a"
-> ))
-`,
-			nil,
-		},
-		{
-			stmt.NewCurrentTimestamp(
-				stmt.NewSubquery(
-					stmt.NewSelect(stmt.NewColumn("a")),
-				),
-			),
-			`CURRENT_TIMESTAMP((SELECT "a"))`,
-			`> CURRENT_TIMESTAMP((
->   SELECT
->     "a"
-> ))
-`,
-			nil,
-		},
-		{
-			stmt.NewCurtime(
-				stmt.NewSubquery(
-					stmt.NewSelect(stmt.NewColumn("a")),
-				),
-			),
-			`CURTIME((SELECT "a"))`,
-			`> CURTIME((
->   SELECT
->     "a"
-> ))
 `,
 			nil,
 		},
@@ -1597,34 +1474,6 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 			nil,
 		},
 		{
-			stmt.NewLocaltime(
-				stmt.NewSubquery(
-					stmt.NewSelect(stmt.NewColumn("a")),
-				),
-			),
-			`LOCALTIME((SELECT "a"))`,
-			`> LOCALTIME((
->   SELECT
->     "a"
-> ))
-`,
-			nil,
-		},
-		{
-			stmt.NewLocaltimestamp(
-				stmt.NewSubquery(
-					stmt.NewSelect(stmt.NewColumn("a")),
-				),
-			),
-			`LOCALTIMESTAMP((SELECT "a"))`,
-			`> LOCALTIMESTAMP((
->   SELECT
->     "a"
-> ))
-`,
-			nil,
-		},
-		{
 			stmt.NewMakedate(
 				stmt.NewSubquery(
 					stmt.NewSelect(stmt.NewColumn("a")),
@@ -1720,20 +1569,6 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 			),
 			`MONTHNAME((SELECT "a"))`,
 			`> MONTHNAME((
->   SELECT
->     "a"
-> ))
-`,
-			nil,
-		},
-		{
-			stmt.NewNow(
-				stmt.NewSubquery(
-					stmt.NewSelect(stmt.NewColumn("a")),
-				),
-			),
-			`NOW((SELECT "a"))`,
-			`> NOW((
 >   SELECT
 >     "a"
 > ))
@@ -1880,20 +1715,6 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 > ), (
 >   SELECT
 >     "b"
-> ))
-`,
-			nil,
-		},
-		{
-			stmt.NewSysdate(
-				stmt.NewSubquery(
-					stmt.NewSelect(stmt.NewColumn("a")),
-				),
-			),
-			`SYSDATE((SELECT "a"))`,
-			`> SYSDATE((
->   SELECT
->     "a"
 > ))
 `,
 			nil,
@@ -2088,34 +1909,6 @@ func TestDateAndTimeFuncsWithSubquery(t *testing.T) {
 			nil,
 		},
 		{
-			stmt.NewUtcTime(
-				stmt.NewSubquery(
-					stmt.NewSelect(stmt.NewColumn("a")),
-				),
-			),
-			`UTC_TIME((SELECT "a"))`,
-			`> UTC_TIME((
->   SELECT
->     "a"
-> ))
-`,
-			nil,
-		},
-		{
-			stmt.NewUtcTimestamp(
-				stmt.NewSubquery(
-					stmt.NewSelect(stmt.NewColumn("a")),
-				),
-			),
-			`UTC_TIMESTAMP((SELECT "a"))`,
-			`> UTC_TIMESTAMP((
->   SELECT
->     "a"
-> ))
-`,
-			nil,
-		},
-		{
 			stmt.NewWeek(
 				stmt.NewSubquery(
 					stmt.NewSelect(stmt.NewColumn("a")),
@@ -2285,33 +2078,6 @@ func TestDateAndTimeFuncsWithFunc(t *testing.T) {
 			nil,
 		},
 		{
-			stmt.NewCurrentTime(
-				stmt.NewCurDate(),
-			),
-			`CURRENT_TIME(CURDATE())`,
-			`> CURRENT_TIME(CURDATE())
-`,
-			nil,
-		},
-		{
-			stmt.NewCurrentTimestamp(
-				stmt.NewCurDate(),
-			),
-			`CURRENT_TIMESTAMP(CURDATE())`,
-			`> CURRENT_TIMESTAMP(CURDATE())
-`,
-			nil,
-		},
-		{
-			stmt.NewCurtime(
-				stmt.NewCurDate(),
-			),
-			`CURTIME(CURDATE())`,
-			`> CURTIME(CURDATE())
-`,
-			nil,
-		},
-		{
 			stmt.NewDate(
 				stmt.NewCurDate(),
 			),
@@ -2473,24 +2239,6 @@ func TestDateAndTimeFuncsWithFunc(t *testing.T) {
 			nil,
 		},
 		{
-			stmt.NewLocaltime(
-				stmt.NewCurDate(),
-			),
-			`LOCALTIME(CURDATE())`,
-			`> LOCALTIME(CURDATE())
-`,
-			nil,
-		},
-		{
-			stmt.NewLocaltimestamp(
-				stmt.NewCurDate(),
-			),
-			`LOCALTIMESTAMP(CURDATE())`,
-			`> LOCALTIMESTAMP(CURDATE())
-`,
-			nil,
-		},
-		{
 			stmt.NewMakedate(
 				stmt.NewVal(2011),
 				stmt.NewVal(365),
@@ -2551,15 +2299,6 @@ func TestDateAndTimeFuncsWithFunc(t *testing.T) {
 			),
 			`MONTHNAME(CURDATE())`,
 			`> MONTHNAME(CURDATE())
-`,
-			nil,
-		},
-		{
-			stmt.NewNow(
-				stmt.NewCurDate(),
-			),
-			`NOW(CURDATE())`,
-			`> NOW(CURDATE())
 `,
 			nil,
 		},
@@ -2652,15 +2391,6 @@ func TestDateAndTimeFuncsWithFunc(t *testing.T) {
 			[]interface{}{
 				"1 1:1:1.000002",
 			},
-		},
-		{
-			stmt.NewSysdate(
-				stmt.NewCurDate(),
-			),
-			`SYSDATE(CURDATE())`,
-			`> SYSDATE(CURDATE())
-`,
-			nil,
 		},
 		{
 			stmt.NewTime(
@@ -2775,26 +2505,6 @@ func TestDateAndTimeFuncsWithFunc(t *testing.T) {
 			stmt.NewUtcDate(),
 			`UTC_DATE()`,
 			`> UTC_DATE()
-`,
-			nil,
-		},
-		{
-			stmt.NewUtcTime(
-				stmt.FSP0,
-			),
-			`UTC_TIME(?)`,
-			`> UTC_TIME(?)
-`,
-			[]interface{}{
-				0,
-			},
-		},
-		{
-			stmt.NewUtcTimestamp(
-				stmt.NewCurDate(),
-			),
-			`UTC_TIMESTAMP(CURDATE())`,
-			`> UTC_TIMESTAMP(CURDATE())
 `,
 			nil,
 		},
