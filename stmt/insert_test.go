@@ -107,6 +107,31 @@ func TestInsertSQL(t *testing.T) {
 `,
 			nil,
 		},
+		{
+			stmt.NewInsertInto(
+				stmt.NewTable("users"),
+				stmt.NewColumn("name"),
+				stmt.NewColumn("age"),
+			).Select(
+				stmt.NewColumn("name"),
+				stmt.NewColumn("age"),
+			).From(
+				stmt.NewTable("users"),
+			),
+			`INSERT INTO "users" ("name", "age") SELECT "name", "age" FROM "users"`,
+			`> INSERT INTO
+>   "users" (
+>     "name"
+>     , "age"
+>   )
+> SELECT
+>   "name"
+>   , "age"
+> FROM
+>   "users"
+`,
+			nil,
+		},
 	} {
 		c := c
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {

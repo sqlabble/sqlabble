@@ -7,6 +7,7 @@ import (
 )
 
 type Select struct {
+	prev Prever
 	distinct bool
 	columns  []ColOrAliasOrFuncOrSub
 }
@@ -57,5 +58,5 @@ func (s Select) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 }
 
 func (s Select) previous() Prever {
-	return nil
+	return s.prev
 }
