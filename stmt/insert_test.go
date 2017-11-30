@@ -110,13 +110,16 @@ func TestInsertSQL(t *testing.T) {
 		{
 			stmt.NewInsertInto(
 				stmt.NewTable("users"),
-				stmt.NewColumn("name"),
-				stmt.NewColumn("age"),
+				stmt.NewColumn("first_name"),
+				stmt.NewColumn("last_name"),
 			).Select(
-				stmt.NewColumn("name"),
-				stmt.NewColumn("age"),
+				stmt.NewColumn("first_name"),
+				stmt.NewVal("NEW LAST NAME"),
 			).From(
 				stmt.NewTable("users"),
+			).Where(
+				stmt.NewColumn("user_id").
+					Eq(stmt.NewVal(100)),
 			),
 			`INSERT INTO "users" ("name", "age") SELECT "name", "age" FROM "users"`,
 			`> INSERT INTO
@@ -125,12 +128,17 @@ func TestInsertSQL(t *testing.T) {
 >     , "age"
 >   )
 > SELECT
->   "name"
->   , "age"
+>   "first_name"
+>   , ?
 > FROM
 >   "users"
+> WHERE
+>   "foo" = ?
 `,
-			nil,
+			[]interface{}{
+				"NEW LAST NAME",
+				100,
+			},
 		},
 	} {
 		c := c
