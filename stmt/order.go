@@ -7,7 +7,7 @@ import (
 )
 
 type Order struct {
-	column ColOrAliasOrFuncOrSub
+	column ValOrColOrAliasOrFuncOrSub
 	dir    keyword.Direction
 }
 

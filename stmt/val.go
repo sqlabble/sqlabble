@@ -33,6 +33,13 @@ func (p Val) isValOrColOrFuncOrSub() bool {
 	return true
 }
 
+// isColOrAliasOrFuncOrSub always returns true.
+// This method exists only to implement the interface ColOrAliasOrFuncOrSub.
+// This is a shit of duck typing, but anyway it works.
+func (p Val) isValOrColOrAliasOrFuncOrSub() bool {
+	return true
+}
+
 type Vals []Val
 
 func NewVals(values ...interface{}) Vals {

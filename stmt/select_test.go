@@ -141,6 +141,18 @@ func TestSelectSQL(t *testing.T) {
 				" ",
 			},
 		},
+		{
+			stmt.NewSelect(
+				stmt.NewVal(1),
+			),
+			`SELECT ?`,
+			`> SELECT
+>   ?
+`,
+			[]interface{}{
+				1,
+			},
+		},
 	} {
 		c := c
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {

@@ -121,11 +121,11 @@ func TestInsertSQL(t *testing.T) {
 				stmt.NewColumn("user_id").
 					Eq(stmt.NewVal(100)),
 			),
-			`INSERT INTO "users" ("name", "age") SELECT "name", "age" FROM "users"`,
+			`INSERT INTO "users" ("first_name", "last_name") SELECT "first_name", ? FROM "users" WHERE "user_id" = ?`,
 			`> INSERT INTO
 >   "users" (
->     "name"
->     , "age"
+>     "first_name"
+>     , "last_name"
 >   )
 > SELECT
 >   "first_name"
@@ -133,7 +133,7 @@ func TestInsertSQL(t *testing.T) {
 > FROM
 >   "users"
 > WHERE
->   "foo" = ?
+>   "user_id" = ?
 `,
 			[]interface{}{
 				"NEW LAST NAME",
