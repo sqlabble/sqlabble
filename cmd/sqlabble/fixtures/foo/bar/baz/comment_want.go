@@ -55,9 +55,9 @@ func (c CommentDB) ColumnAliases() []stmt.ColumnAlias {
 	return aliases
 }
 
-func (c CommentDB) Selectors() []stmt.ColOrAliasOrFuncOrSub {
+func (c CommentDB) Selectors() []stmt.ValOrColOrAliasOrFuncOrSub {
 	as := c.ColumnAliases()
-	is := make([]stmt.ColOrAliasOrFuncOrSub, len(as))
+	is := make([]stmt.ValOrColOrAliasOrFuncOrSub, len(as))
 	for i, a := range as {
 		is[i] = a
 	}
