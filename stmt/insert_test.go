@@ -107,6 +107,39 @@ func TestInsertSQL(t *testing.T) {
 `,
 			nil,
 		},
+		{
+			stmt.NewInsertInto(
+				stmt.NewTable("users"),
+				stmt.NewColumn("first_name"),
+				stmt.NewColumn("last_name"),
+			).Select(
+				stmt.NewColumn("first_name"),
+				stmt.NewVal("NEW LAST NAME"),
+			).From(
+				stmt.NewTable("users"),
+			).Where(
+				stmt.NewColumn("user_id").
+					Eq(stmt.NewVal(100)),
+			),
+			`INSERT INTO "users" ("first_name", "last_name") SELECT "first_name", ? FROM "users" WHERE "user_id" = ?`,
+			`> INSERT INTO
+>   "users" (
+>     "first_name"
+>     , "last_name"
+>   )
+> SELECT
+>   "first_name"
+>   , ?
+> FROM
+>   "users"
+> WHERE
+>   "user_id" = ?
+`,
+			[]interface{}{
+				"NEW LAST NAME",
+				100,
+			},
+		},
 	} {
 		c := c
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {

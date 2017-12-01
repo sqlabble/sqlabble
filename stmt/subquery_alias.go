@@ -82,6 +82,6 @@ func (a SubqueryAlias) isJoinerOrAlias() bool {
 // isColOrAliasOrFuncOrSub always returns true.
 // This method exists only to implement the interface ColOrAliasOrFuncOrSub.
 // This is a shit of duck typing, but anyway it works.
-func (a SubqueryAlias) isColOrAliasOrFuncOrSub() bool {
+func (a SubqueryAlias) isValOrColOrAliasOrFuncOrSub() bool {
 	return true
 }

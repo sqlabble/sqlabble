@@ -63,9 +63,9 @@ func (u UserDB) ColumnAliases() []stmt.ColumnAlias {
 	return aliases
 }
 
-func (u UserDB) Selectors() []stmt.ColOrAliasOrFuncOrSub {
+func (u UserDB) Selectors() []stmt.ValOrColOrAliasOrFuncOrSub {
 	as := u.ColumnAliases()
-	is := make([]stmt.ColOrAliasOrFuncOrSub, len(as))
+	is := make([]stmt.ValOrColOrAliasOrFuncOrSub, len(as))
 	for i, a := range as {
 		is[i] = a
 	}
@@ -145,9 +145,9 @@ func (p ProfileDB) ColumnAliases() []stmt.ColumnAlias {
 	return aliases
 }
 
-func (p ProfileDB) Selectors() []stmt.ColOrAliasOrFuncOrSub {
+func (p ProfileDB) Selectors() []stmt.ValOrColOrAliasOrFuncOrSub {
 	as := p.ColumnAliases()
-	is := make([]stmt.ColOrAliasOrFuncOrSub, len(as))
+	is := make([]stmt.ValOrColOrAliasOrFuncOrSub, len(as))
 	for i, a := range as {
 		is[i] = a
 	}
@@ -220,9 +220,9 @@ func (f FriendDB) ColumnAliases() []stmt.ColumnAlias {
 	return aliases
 }
 
-func (f FriendDB) Selectors() []stmt.ColOrAliasOrFuncOrSub {
+func (f FriendDB) Selectors() []stmt.ValOrColOrAliasOrFuncOrSub {
 	as := f.ColumnAliases()
-	is := make([]stmt.ColOrAliasOrFuncOrSub, len(as))
+	is := make([]stmt.ValOrColOrAliasOrFuncOrSub, len(as))
 	for i, a := range as {
 		is[i] = a
 	}

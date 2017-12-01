@@ -7,18 +7,19 @@ import (
 )
 
 type Select struct {
+	prev Prever
 	distinct bool
-	columns  []ColOrAliasOrFuncOrSub
+	columns  []ValOrColOrAliasOrFuncOrSub
 }
 
-func NewSelect(columns ...ColOrAliasOrFuncOrSub) Select {
+func NewSelect(columns ...ValOrColOrAliasOrFuncOrSub) Select {
 	return Select{
 		distinct: false,
 		columns:  columns,
 	}
 }
 
-func NewSelectDistinct(columns ...ColOrAliasOrFuncOrSub) Select {
+func NewSelectDistinct(columns ...ValOrColOrAliasOrFuncOrSub) Select {
 	return Select{
 		distinct: true,
 		columns:  columns,
@@ -57,5 +58,5 @@ func (s Select) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 }
 
 func (s Select) previous() Prever {
-	return nil
+	return s.prev
 }

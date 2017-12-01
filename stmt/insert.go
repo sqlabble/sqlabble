@@ -60,3 +60,9 @@ func (i InsertInto) Values(paramses ...Vals) Values {
 	v.prev = i
 	return v
 }
+
+func (i InsertInto) Select(columns ...ValOrColOrAliasOrFuncOrSub) Select {
+	s := NewSelect(columns...)
+	s.prev = i
+	return s
+}
