@@ -70,6 +70,6 @@ func (c ColumnAlias) isColOrAliasOrSub() bool {
 // isColOrAliasOrFuncOrSub always returns true.
 // This method exists only to implement the interface ColOrAliasOrFuncOrSub.
 // This is a shit of duck typing, but anyway it works.
-func (c ColumnAlias) isValOrColOrAliasOrFuncOrSub() bool {
+func (c ColumnAlias) isValOrColOrAliasOrFuncOrSubOrFormula() bool {
 	return true
 }

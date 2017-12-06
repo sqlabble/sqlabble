@@ -248,7 +248,7 @@ func (c Column) isColOrAliasOrSub() bool {
 // isColOrAliasOrFuncOrSub always returns true.
 // This method exists only to implement the interface ColOrAliasOrFuncOrSub.
 // This is a shit of duck typing, but anyway it works.
-func (c Column) isValOrColOrAliasOrFuncOrSub() bool {
+func (c Column) isValOrColOrAliasOrFuncOrSubOrFormula() bool {
 	return true
 }
 
@@ -256,5 +256,12 @@ func (c Column) isValOrColOrAliasOrFuncOrSub() bool {
 // This method exists only to implement the interface ValOrColOrFuncOrSub.
 // This is a shit of duck typing, but anyway it works.
 func (c Column) isValOrColOrFuncOrSub() bool {
+	return true
+}
+
+// isValOrColOrAliasOrSubOrForm always returns true.
+// This method exists only to implement the interface ValOrColOrAliasOrSubOrForm.
+// This is a shit of duck typing, but anyway it works.
+func (c Column) isValOrColOrSubOrFormula() bool {
 	return true
 }

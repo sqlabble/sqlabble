@@ -115,9 +115,9 @@ func ({{ $receiver }} {{ $tableType }}) ColumnAliases() []stmt.ColumnAlias {
 	return aliases
 }
 
-func ({{ $receiver }} {{ $tableType }}) Selectors() []stmt.ValOrColOrAliasOrFuncOrSub {
+func ({{ $receiver }} {{ $tableType }}) Selectors() []stmt.ValOrColOrAliasOrFuncOrSubOrFormula {
 	as := {{ $receiver }}.ColumnAliases()
-	is := make([]stmt.ValOrColOrAliasOrFuncOrSub, len(as))
+	is := make([]stmt.ValOrColOrAliasOrFuncOrSubOrFormula, len(as))
 	for i, a := range as {
 		is[i] = a
 	}

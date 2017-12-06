@@ -55,9 +55,9 @@ func (p PostDB) ColumnAliases() []stmt.ColumnAlias {
 	return aliases
 }
 
-func (p PostDB) Selectors() []stmt.ValOrColOrAliasOrFuncOrSub {
+func (p PostDB) Selectors() []stmt.ValOrColOrAliasOrFuncOrSubOrFormula {
 	as := p.ColumnAliases()
-	is := make([]stmt.ValOrColOrAliasOrFuncOrSub, len(as))
+	is := make([]stmt.ValOrColOrAliasOrFuncOrSubOrFormula, len(as))
 	for i, a := range as {
 		is[i] = a
 	}

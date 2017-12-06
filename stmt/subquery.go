@@ -171,6 +171,13 @@ func (s Subquery) isColOrAliasOrSub() bool {
 // isColOrAliasOrFuncOrSub always returns true.
 // This method exists only to implement the interface ColOrAliasOrFuncOrSub.
 // This is a shit of duck typing, but anyway it works.
-func (s Subquery) isValOrColOrAliasOrFuncOrSub() bool {
+func (s Subquery) isValOrColOrAliasOrFuncOrSubOrFormula() bool {
+	return true
+}
+
+// isValOrColOrAliasOrSubOrForm always returns true.
+// This method exists only to implement the interface ValOrColOrAliasOrSubOrForm.
+// This is a shit of duck typing, but anyway it works.
+func (s Subquery) isValOrColOrSubOrFormula() bool {
 	return true
 }
