@@ -53,12 +53,12 @@ const (
 
 // Arithmetic operators.
 const (
-	Add Operator = "+"
-	Sub Operator = "-"
-	Mul Operator = "*"
-	Div Operator = "/"
+	Add        Operator = "+"
+	Sub        Operator = "-"
+	Mul        Operator = "*"
+	Div        Operator = "/"
 	IntegerDiv Operator = "DIV"
-	Mod Operator = "%"
+	Mod        Operator = "%"
 )
 
 // Alias operators.

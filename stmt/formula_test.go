@@ -19,8 +19,8 @@ func TestFormulaSQL(t *testing.T) {
 	}{
 		{
 			stmt.NewAdd(
-					stmt.NewVal(1),
-					stmt.NewVal(1),
+				stmt.NewVal(1),
+				stmt.NewVal(1),
 			),
 			`? + ?`,
 			`> ?

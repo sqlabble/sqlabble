@@ -7,7 +7,7 @@ import (
 )
 
 type Select struct {
-	prev Prever
+	prev     Prever
 	distinct bool
 	columns  []ValOrColOrAliasOrFuncOrSubOrFormula
 }

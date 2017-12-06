@@ -2,13 +2,13 @@ package stmt
 
 import (
 	"github.com/minodisk/sqlabble/keyword"
-	"github.com/minodisk/sqlabble/tokenizer"
 	"github.com/minodisk/sqlabble/token"
+	"github.com/minodisk/sqlabble/tokenizer"
 )
 
 type Formula struct {
 	arithmetic keyword.Operator
-	numeric []ValOrColOrSubOrFormula
+	numeric    []ValOrColOrSubOrFormula
 }
 
 func (f Formula) nodeize() (tokenizer.Tokenizer, []interface{}) {
@@ -34,50 +34,49 @@ func (f Formula) keyword() keyword.Operator {
 func NewAdd(numeric ...ValOrColOrSubOrFormula) Formula {
 	return Formula{
 		arithmetic: keyword.Add,
-		numeric: numeric,
+		numeric:    numeric,
 	}
 }
 
 func NewSub(numeric ...ValOrColOrSubOrFormula) Formula {
 	return Formula{
 		arithmetic: keyword.Sub,
-		numeric: numeric,
+		numeric:    numeric,
 	}
 }
 
 func NewMul(numeric ...ValOrColOrSubOrFormula) Formula {
 	return Formula{
 		arithmetic: keyword.Mul,
-		numeric: numeric,
+		numeric:    numeric,
 	}
 }
 
 func NewDiv(numeric ...ValOrColOrSubOrFormula) Formula {
 	return Formula{
 		arithmetic: keyword.Div,
-		numeric: numeric,
+		numeric:    numeric,
 	}
 }
 
 func NewIntegerDiv(numeric ...ValOrColOrSubOrFormula) Formula {
 	return Formula{
 		arithmetic: keyword.IntegerDiv,
-		numeric: numeric,
+		numeric:    numeric,
 	}
 }
-
 
 func NewMod(numeric ...ValOrColOrSubOrFormula) Formula {
 	return Formula{
 		arithmetic: keyword.Mod,
-		numeric: numeric,
+		numeric:    numeric,
 	}
 }
 
 // isValOrColOrAliasOrSubOrForm always returns true.
 // This method exists only to implement the interface ValOrColOrAliasOrSubOrForm.
 // This is a shit of duck typing, but anyway it works.
-func (f Formula) isValOrColOrSubOrFormula() bool{
+func (f Formula) isValOrColOrSubOrFormula() bool {
 	return true
 }
 
