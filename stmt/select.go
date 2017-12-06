@@ -9,17 +9,17 @@ import (
 type Select struct {
 	prev Prever
 	distinct bool
-	columns  []ValOrColOrAliasOrFuncOrSub
+	columns  []ValOrColOrAliasOrFuncOrSubOrFormula
 }
 
-func NewSelect(columns ...ValOrColOrAliasOrFuncOrSub) Select {
+func NewSelect(columns ...ValOrColOrAliasOrFuncOrSubOrFormula) Select {
 	return Select{
 		distinct: false,
 		columns:  columns,
 	}
 }
 
-func NewSelectDistinct(columns ...ValOrColOrAliasOrFuncOrSub) Select {
+func NewSelectDistinct(columns ...ValOrColOrAliasOrFuncOrSubOrFormula) Select {
 	return Select{
 		distinct: true,
 		columns:  columns,

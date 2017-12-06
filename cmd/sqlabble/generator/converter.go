@@ -115,9 +115,9 @@ func ({{ $receiver }} {{ $tableType }}) ColumnAliases() []stmt.ColumnAlias {
 	return aliases
 }
 
-func ({{ $receiver }} {{ $tableType }}) Selectors() []stmt.ValOrColOrAliasOrFuncOrSub {
+func ({{ $receiver }} {{ $tableType }}) Selectors() []stmt.ValOrColOrAliasOrFuncOrSubOrFormula {
 	as := {{ $receiver }}.ColumnAliases()
-	is := make([]stmt.ValOrColOrAliasOrFuncOrSub, len(as))
+	is := make([]stmt.ValOrColOrAliasOrFuncOrSubOrFormula, len(as))
 	for i, a := range as {
 		is[i] = a
 	}
@@ -254,7 +254,7 @@ type Scanner interface {
 	pkg := ParsePackage(fset, info, f, scanner)
 	if len(pkg.Tables) == 0 {
 		return nil, errors.New("no table found in package")
-	}
+	}g
 
 	var buf bytes.Buffer
 	if err := impl.Execute(&buf, pkg); err != nil {

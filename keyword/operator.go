@@ -57,6 +57,7 @@ const (
 	Sub Operator = "-"
 	Mul Operator = "*"
 	Div Operator = "/"
+	IntegerDiv Operator = "DIV"
 	Mod Operator = "%"
 )
 

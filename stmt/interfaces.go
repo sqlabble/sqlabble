@@ -71,9 +71,14 @@ type ColOrAliasOrSub interface {
 	isColOrAliasOrSub() bool
 }
 
-type ValOrColOrAliasOrFuncOrSub interface {
+type ValOrColOrAliasOrFuncOrSubOrFormula interface {
 	Statement
-	isValOrColOrAliasOrFuncOrSub() bool
+	isValOrColOrAliasOrFuncOrSubOrFormula() bool
+}
+
+type ValOrColOrSubOrFormula interface {
+	Statement
+	isValOrColOrSubOrFormula() bool
 }
 
 type ComparisonOrLogicalOperation interface {
@@ -92,7 +97,7 @@ type SimpleThenOrElse interface {
 }
 
 type Selector interface {
-	Select(columns ...ValOrColOrAliasOrFuncOrSub) Select
+	Select(columns ...ValOrColOrAliasOrFuncOrSubOrFormula) Select
 }
 
 type Fromer interface {

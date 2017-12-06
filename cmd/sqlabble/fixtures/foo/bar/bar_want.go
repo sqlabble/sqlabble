@@ -63,9 +63,9 @@ func (a ArticleDB) ColumnAliases() []stmt.ColumnAlias {
 	return aliases
 }
 
-func (a ArticleDB) Selectors() []stmt.ValOrColOrAliasOrFuncOrSub {
+func (a ArticleDB) Selectors() []stmt.ValOrColOrAliasOrFuncOrSubOrFormula {
 	as := a.ColumnAliases()
-	is := make([]stmt.ValOrColOrAliasOrFuncOrSub, len(as))
+	is := make([]stmt.ValOrColOrAliasOrFuncOrSubOrFormula, len(as))
 	for i, a := range as {
 		is[i] = a
 	}

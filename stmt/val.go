@@ -36,7 +36,14 @@ func (p Val) isValOrColOrFuncOrSub() bool {
 // isColOrAliasOrFuncOrSub always returns true.
 // This method exists only to implement the interface ColOrAliasOrFuncOrSub.
 // This is a shit of duck typing, but anyway it works.
-func (p Val) isValOrColOrAliasOrFuncOrSub() bool {
+func (p Val) isValOrColOrAliasOrFuncOrSubOrFormula() bool {
+	return true
+}
+
+// isValOrColOrAliasOrSubOrForm always returns true.
+// This method exists only to implement the interface ValOrColOrAliasOrSubOrForm.
+// This is a shit of duck typing, but anyway it works.
+func (f Val) isValOrColOrSubOrFormula() bool{
 	return true
 }
 
