@@ -83,6 +83,6 @@ func (f Formula) isValOrColOrSubOrFormula() bool {
 // isColOrAliasOrFuncOrSub always returns true.
 // This method exists only to implement the interface ColOrAliasOrFuncOrSub.
 // This is a shit of duck typing, but anyway it works.
-func (s Formula) isValOrColOrAliasOrFuncOrSubFormula() bool {
+func (s Formula) isValOrColOrAliasOrFuncOrSubOrFormula() bool {
 	return true
 }

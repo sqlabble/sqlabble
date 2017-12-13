@@ -43,4 +43,11 @@ var (
 
 	Count = stmt.NewCount
 	Max   = stmt.NewMax
+
+	Add        = stmt.NewAdd
+	Sub        = stmt.NewSub
+	Mul        = stmt.NewMul
+	Div        = stmt.NewDiv
+	IntegerDiv = stmt.NewIntegerDiv
+	Mod        = stmt.NewMod
 )
