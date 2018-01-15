@@ -50,4 +50,6 @@ var (
 	Div        = stmt.NewDiv
 	IntegerDiv = stmt.NewIntegerDiv
 	Mod        = stmt.NewMod
+
+	IFNULL = stmt.NewIFNULL
 )
