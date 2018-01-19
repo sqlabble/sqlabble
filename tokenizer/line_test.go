@@ -5,9 +5,9 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/minodisk/sqlabble/internal/diff"
-	"github.com/minodisk/sqlabble/token"
-	"github.com/minodisk/sqlabble/tokenizer"
+	"github.com/sqlabble/sqlabble/internal/diff"
+	"github.com/sqlabble/sqlabble/token"
+	"github.com/sqlabble/sqlabble/tokenizer"
 )
 
 func TestLine(t *testing.T) {

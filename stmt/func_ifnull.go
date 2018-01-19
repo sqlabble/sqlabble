@@ -1,6 +1,6 @@
 package stmt
 
-import "github.com/minodisk/sqlabble/keyword"
+import "github.com/sqlabble/sqlabble/keyword"
 
 func NewIFNULL(expr1, expr2 ValOrColOrFuncOrSub) Func {
 	return Func{

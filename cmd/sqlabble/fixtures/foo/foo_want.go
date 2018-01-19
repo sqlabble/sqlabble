@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"strings"
 
-	"github.com/minodisk/sqlabble/stmt"
+	"github.com/sqlabble/sqlabble/stmt"
 )
 
 type UserDB struct {

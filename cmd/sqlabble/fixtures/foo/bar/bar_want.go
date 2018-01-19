@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"strings"
 
-	"github.com/minodisk/sqlabble/cmd/sqlabble/fixtures/foo"
-	"github.com/minodisk/sqlabble/stmt"
+	"github.com/sqlabble/sqlabble/cmd/sqlabble/fixtures/foo"
+	"github.com/sqlabble/sqlabble/stmt"
 )
 
 type ArticleDB struct {

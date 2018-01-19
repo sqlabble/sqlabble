@@ -1,6 +1,6 @@
 FROM golang:1.8
 
-WORKDIR /go/src/github.com/minodisk/sqlabble
+WORKDIR /go/src/github.com/sqlabble/sqlabble
 RUN go get -u \
       github.com/golang/dep/...
 COPY . .

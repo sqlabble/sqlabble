@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/minodisk/sqlabble/cmd/sqlabble/generator"
+	"github.com/sqlabble/sqlabble/cmd/sqlabble/generator"
 )
 
 func TestParseDBTag(t *testing.T) {

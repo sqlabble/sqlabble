@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/minodisk/sqlabble/cmd/sqlabble/generator"
-	"github.com/minodisk/sqlabble/internal/diff"
+	"github.com/sqlabble/sqlabble/cmd/sqlabble/generator"
+	"github.com/sqlabble/sqlabble/internal/diff"
 )
 
 func TestConvertFile(t *testing.T) {

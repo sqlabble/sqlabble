@@ -1,9 +1,9 @@
 package stmt
 
 import (
-	"github.com/minodisk/sqlabble/keyword"
-	"github.com/minodisk/sqlabble/token"
-	"github.com/minodisk/sqlabble/tokenizer"
+	"github.com/sqlabble/sqlabble/keyword"
+	"github.com/sqlabble/sqlabble/token"
+	"github.com/sqlabble/sqlabble/tokenizer"
 )
 
 type JoinOperation struct {

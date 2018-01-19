@@ -1,8 +1,8 @@
 package builder
 
 import (
-	"github.com/minodisk/sqlabble/stmt"
-	"github.com/minodisk/sqlabble/token"
+	"github.com/sqlabble/sqlabble/stmt"
+	"github.com/sqlabble/sqlabble/token"
 )
 
 // Typical builders commonly used to build queries.

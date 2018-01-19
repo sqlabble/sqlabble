@@ -9,10 +9,10 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
-	q "github.com/minodisk/sqlabble"
-	"github.com/minodisk/sqlabble/builder"
-	"github.com/minodisk/sqlabble/cmd/sqlabble/fixtures/foo"
-	"github.com/minodisk/sqlabble/internal/diff"
+	q "github.com/sqlabble/sqlabble"
+	"github.com/sqlabble/sqlabble/builder"
+	"github.com/sqlabble/sqlabble/cmd/sqlabble/fixtures/foo"
+	"github.com/sqlabble/sqlabble/internal/diff"
 )
 
 var (

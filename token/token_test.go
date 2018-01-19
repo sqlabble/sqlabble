@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/minodisk/sqlabble/internal/diff"
-	"github.com/minodisk/sqlabble/token"
+	"github.com/sqlabble/sqlabble/internal/diff"
+	"github.com/sqlabble/sqlabble/token"
 )
 
 func TestToken(t *testing.T) {

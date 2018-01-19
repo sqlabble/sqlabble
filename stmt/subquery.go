@@ -1,6 +1,6 @@
 package stmt
 
-import "github.com/minodisk/sqlabble/tokenizer"
+import "github.com/sqlabble/sqlabble/tokenizer"
 
 type Subquery struct {
 	stmt Statement

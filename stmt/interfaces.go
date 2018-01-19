@@ -1,8 +1,8 @@
 package stmt
 
 import (
-	"github.com/minodisk/sqlabble/keyword"
-	"github.com/minodisk/sqlabble/tokenizer"
+	"github.com/sqlabble/sqlabble/keyword"
+	"github.com/sqlabble/sqlabble/tokenizer"
 )
 
 // Statement is the interface of the component
