@@ -5,8 +5,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/minodisk/sqlabble/internal/diff"
-	"github.com/minodisk/sqlabble/stmt"
+	"github.com/sqlabble/sqlabble/internal/diff"
+	"github.com/sqlabble/sqlabble/stmt"
 )
 
 func TestOrderBySQL(t *testing.T) {

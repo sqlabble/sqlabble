@@ -26,7 +26,7 @@ import (
 	"database/sql"
 	"strings"
 
-	"github.com/minodisk/sqlabble/stmt"
+	"github.com/sqlabble/sqlabble/stmt"
 )
 
 {{- range .Tables }}
@@ -232,7 +232,7 @@ type Scanner interface {
 		Defs: map[*ast.Ident]types.Object{},
 		Uses: map[*ast.Ident]types.Object{},
 	}
-	if _, err := conf.Check("github.com/minodisk/sqlabble/cmd/sqlabble/foo/bar/baz/"+srcFilename, fset, fs, info); err != nil {
+	if _, err := conf.Check("github.com/sqlabble/sqlabble/cmd/sqlabble/foo/bar/baz/"+srcFilename, fset, fs, info); err != nil {
 		return nil, err
 	}
 

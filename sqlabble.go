@@ -1,7 +1,7 @@
 package sqlabble
 
 import (
-	"github.com/minodisk/sqlabble/stmt"
+	"github.com/sqlabble/sqlabble/stmt"
 )
 
 // Methods exported to make statements.

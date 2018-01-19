@@ -1,6 +1,6 @@
 package tokenizer
 
-import "github.com/minodisk/sqlabble/token"
+import "github.com/sqlabble/sqlabble/token"
 
 var (
 	EmptyLine = Line{}

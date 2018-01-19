@@ -1,8 +1,8 @@
 package stmt_test
 
 import (
-	"github.com/minodisk/sqlabble/builder"
-	"github.com/minodisk/sqlabble/token"
+	"github.com/sqlabble/sqlabble/builder"
+	"github.com/sqlabble/sqlabble/token"
 )
 
 var (

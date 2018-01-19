@@ -6,8 +6,8 @@ import (
 	"sort"
 	"testing"
 
-	main "github.com/minodisk/sqlabble/cmd/sqlabble"
-	"github.com/minodisk/sqlabble/internal/diff"
+	main "github.com/sqlabble/sqlabble/cmd/sqlabble"
+	"github.com/sqlabble/sqlabble/internal/diff"
 )
 
 func TestGlobs(t *testing.T) {

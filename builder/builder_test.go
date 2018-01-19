@@ -5,10 +5,10 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/minodisk/sqlabble/builder"
-	"github.com/minodisk/sqlabble/internal/diff"
-	"github.com/minodisk/sqlabble/stmt"
-	"github.com/minodisk/sqlabble/token"
+	"github.com/sqlabble/sqlabble/builder"
+	"github.com/sqlabble/sqlabble/internal/diff"
+	"github.com/sqlabble/sqlabble/stmt"
+	"github.com/sqlabble/sqlabble/token"
 )
 
 var (

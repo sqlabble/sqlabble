@@ -1,6 +1,6 @@
 package bar
 
-import "github.com/minodisk/sqlabble/cmd/sqlabble/fixtures/foo"
+import "github.com/sqlabble/sqlabble/cmd/sqlabble/fixtures/foo"
 
 // +db:"articles"
 type Article struct {

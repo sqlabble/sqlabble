@@ -1,8 +1,8 @@
 package stmt
 
 import (
-	"github.com/minodisk/sqlabble/token"
-	"github.com/minodisk/sqlabble/tokenizer"
+	"github.com/sqlabble/sqlabble/token"
+	"github.com/sqlabble/sqlabble/tokenizer"
 )
 
 var (

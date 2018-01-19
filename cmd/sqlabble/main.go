@@ -6,7 +6,7 @@ import (
 	"os"
 
 	zglob "github.com/mattn/go-zglob"
-	"github.com/minodisk/sqlabble/cmd/sqlabble/generator"
+	"github.com/sqlabble/sqlabble/cmd/sqlabble/generator"
 )
 
 func main() {

@@ -1,6 +1,6 @@
 package stmt
 
-import "github.com/minodisk/sqlabble/keyword"
+import "github.com/sqlabble/sqlabble/keyword"
 
 func NewCount(col ValOrColOrFuncOrSub) Func {
 	return Func{
