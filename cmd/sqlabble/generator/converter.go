@@ -226,7 +226,7 @@ type Scanner interface {
 	}
 
 	conf := &types.Config{
-		Importer: importer.Default(),
+		Importer: importer.For("source", nil),
 	}
 	info := &types.Info{
 		Defs: map[*ast.Ident]types.Object{},
