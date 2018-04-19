@@ -35,6 +35,35 @@ func TestDeleteSQL(t *testing.T) {
 `,
 			nil,
 		},
+		{
+			stmt.NewDelete(
+				stmt.NewTable("hoge"),
+			).From(
+				stmt.NewTable("foo"),
+			),
+			`DELETE "hoge" FROM "foo"`,
+			`> DELETE "hoge"
+> FROM
+>   "foo"
+`,
+			nil,
+		},
+		{
+			stmt.NewDelete(
+				stmt.NewTable("foo"),
+			).From(
+				stmt.NewTable("foo").
+					InnerJoin(stmt.NewTable("hoge")).
+					On(stmt.NewColumn("foo_id"), stmt.NewColumn("hoge_id")),
+			),
+			`DELETE "foo" FROM "foo" INNER JOIN "hoge" ON "foo_id" = "hoge_id"`,
+			`> DELETE "foo"
+> FROM
+>   "foo"
+>   INNER JOIN "hoge" ON "foo_id" = "hoge_id"
+`,
+			nil,
+		},
 	} {
 		c := c
 		t.Run(fmt.Sprintf("%d Build", i), func(t *testing.T) {
