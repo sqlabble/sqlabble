@@ -44,14 +44,12 @@ func (s Select) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
 		tokenizers[i], vals = c.nodeize()
 		values = append(values, vals...)
 	}
-
 	tokens := token.NewTokens(token.Word(keyword.Select))
 	if s.distinct {
 		tokens = tokens.Append(
 			token.Word(keyword.Distinct),
 		)
 	}
-
 	return tokenizer.NewContainer(
 		tokenizer.NewLine(tokens...),
 	).SetMiddle(
