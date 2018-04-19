@@ -6,13 +6,17 @@ import (
 	"github.com/sqlabble/sqlabble/tokenizer"
 )
 
-type Delete struct{}
-
-func NewDelete() Delete {
-	return Delete{}
+type Delete struct {
+	tables []Table
 }
 
-func (d Delete) From(t Table) From {
+func NewDelete(tables ...Table) Delete {
+	return Delete{
+		tables: tables,
+	}
+}
+
+func (d Delete) From(t JoinerOrAlias) From {
 	f := NewFrom(t)
 	f.prev = d
 	return f
@@ -23,9 +27,17 @@ func (d Delete) nodeize() (tokenizer.Tokenizer, []interface{}) {
 }
 
 func (d Delete) nodeizeSelf() (tokenizer.Tokenizer, []interface{}) {
-	return tokenizer.NewContainer(
-		tokenizer.NewLine(token.Word(keyword.Delete)),
-	), nil
+	tokenizers := make(tokenizer.Tokenizers, len(d.tables))
+	values := []interface{}{}
+	for i, t := range d.tables {
+		var vals []interface{}
+		tokenizers[i], vals = t.nodeize()
+		values = append(values, vals...)
+	}
+
+	return tokenizers.Prepend(
+		token.Word(keyword.Delete),
+	), values
 }
 
 func (d Delete) previous() Prever {
