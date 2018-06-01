@@ -1,6 +1,9 @@
 package sqlabble
 
 import (
+	"database/sql"
+
+	"github.com/sqlabble/sqlabble/builder"
 	"github.com/sqlabble/sqlabble/stmt"
 )
 
@@ -53,3 +56,30 @@ var (
 
 	IFNULL = stmt.NewIFNULL
 )
+
+// Session wraps sql.DB
+type Session struct {
+	*sql.DB
+	Builder *builder.Builder
+}
+
+// NewSession create a Session instance
+func NewSession(builderName string, db *sql.DB) (*Session, error) {
+	var b *builder.Builder
+	switch builderName {
+	case "standard":
+		b = &builder.Standard
+	case "standard_indented":
+		b = &builder.StandardIndented
+	case "mysql":
+		b = &builder.MySQL
+	case "mysql_indented":
+		b = &builder.MySQLIndented
+	default:
+		return nil, builder.NewErrBuilderNotSupported(builderName)
+	}
+	return &Session{
+		DB:      db,
+		Builder: b,
+	}, nil
+}

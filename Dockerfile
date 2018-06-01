@@ -1,4 +1,4 @@
-FROM golang:1.8
+FROM golang:1.10.2
 
 WORKDIR /go/src/github.com/sqlabble/sqlabble
 RUN go get -u \
