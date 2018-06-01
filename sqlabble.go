@@ -59,12 +59,19 @@ var (
 
 // Session wraps sql.DB
 type Session struct {
-	*sql.DB
+	DBInterface
 	Builder *builder.Builder
 }
 
+// DBInterface *sql.DB or *sql.Tx
+type DBInterface interface {
+	Query(query string, args ...interface{}) (*sql.Rows, error)
+	QueryRow(query string, args ...interface{}) *sql.Row
+	Exec(query string, args ...interface{}) (sql.Result, error)
+}
+
 // NewSession create a Session instance
-func NewSession(builderName string, db *sql.DB) (*Session, error) {
+func NewSession(builderName string, db DBInterface) (*Session, error) {
 	var b *builder.Builder
 	switch builderName {
 	case "standard":
@@ -79,7 +86,7 @@ func NewSession(builderName string, db *sql.DB) (*Session, error) {
 		return nil, builder.NewErrBuilderNotSupported(builderName)
 	}
 	return &Session{
-		DB:      db,
-		Builder: b,
+		DBInterface: db,
+		Builder:     b,
 	}, nil
 }
