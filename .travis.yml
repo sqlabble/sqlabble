@@ -1,0 +1,17 @@
+---
+language: go
+
+go:
+  - tip
+
+services:
+  - docker
+
+before_install:
+  - openssl aes-256-cbc -K $encrypted_224d43ebbc15_key -iv $encrypted_224d43ebbc15_iv -in secret.env.travisci.encrypted -out secret.env -d
+
+script:
+  - docker-compose -f docker-compose.ci.yml up --build --abort-on-container-exit --exit-code-from sqlabble
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

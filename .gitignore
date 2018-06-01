@@ -28,3 +28,6 @@ _testmain.go
 
 # Vendor
 vendor
+
+# coverage
+/coverage.txt

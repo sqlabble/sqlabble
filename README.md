@@ -1,4 +1,11 @@
-# sqlabble [![Codeship Status for sqlabble/sqlabble](https://img.shields.io/codeship/f3642650-d5ab-0134-3d76-0246ca48a45f/master.svg?style=flat)](https://app.codeship.com/projects/202522) [![Go Report Card](https://goreportcard.com/badge/github.com/sqlabble/sqlabble)](https://goreportcard.com/report/github.com/sqlabble/sqlabble) [![codecov](https://codecov.io/gh/sqlabble/sqlabble/branch/master/graph/badge.svg)](https://codecov.io/gh/sqlabble/sqlabble) [![GoDoc](https://img.shields.io/badge/godoc-reference-5272B4.svg?style=flat)](https://godoc.org/github.com/sqlabble/sqlabble) [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
+# sqlabble
+
+[![Codeship Status for sqlabble/sqlabble](https://img.shields.io/codeship/f3642650-d5ab-0134-3d76-0246ca48a45f/master.svg?style=flat)](https://app.codeship.com/projects/202522)
+[![Build Status](https://travis-ci.org/sqlabble/sqlabble.svg?branch=master)](https://travis-ci.org/sqlabble/sqlabble)
+[![Go Report Card](https://goreportcard.com/badge/github.com/sqlabble/sqlabble)](https://goreportcard.com/report/github.com/sqlabble/sqlabble)
+[![codecov](https://codecov.io/gh/sqlabble/sqlabble/branch/master/graph/badge.svg)](https://codecov.io/gh/sqlabble/sqlabble)
+[![GoDoc](https://img.shields.io/badge/godoc-reference-5272B4.svg?style=flat)](https://godoc.org/github.com/sqlabble/sqlabble)
+[![MIT License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat)](LICENSE)
 
 
 

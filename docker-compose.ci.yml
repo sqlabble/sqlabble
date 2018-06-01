@@ -4,14 +4,14 @@ services:
 
   sqlabble:
     build: .
-    links:
+    depends_on:
       - mysql
-    encrypted_env_file: secret.env.codeship.encrypted
-    cached: true
+    env_file: secret.env
+    volumes:
+      - ./:/go/src/github.com/sqlabble/sqlabble
 
   mysql:
     image: mysql:5.7
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
       MYSQL_DATABASE: 'sqlabble'
-    cached: true

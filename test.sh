@@ -14,4 +14,3 @@ if [ "$CI" = "true" ]; then
   curl -o upload.sh https://codecov.io/bash
   bash ./upload.sh
 fi
-rm -rf coverage.txt
