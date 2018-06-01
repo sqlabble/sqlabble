@@ -5,13 +5,16 @@
   name = "github.com/go-sql-driver/mysql"
   packages = ["."]
   revision = "a0583e0143b1624142adab07e0e97fe106d99561"
-  version = "v1.3"
+  version = "v1.3.0"
 
 [[projects]]
   branch = "master"
   name = "github.com/mattn/go-zglob"
-  packages = [".","fastwalk"]
-  revision = "95345c4e1c0ebc9d16a3284177f09360f4d20fab"
+  packages = [
+    ".",
+    "fastwalk"
+  ]
+  revision = "9960a25705902198f55789b9b689a686682798b5"
 
 [[projects]]
   branch = "master"
@@ -20,20 +23,24 @@
   revision = "19ee324b82de8fe2964199d506441926d772cda4"
 
 [[projects]]
-  branch = "master"
   name = "github.com/sergi/go-diff"
   packages = ["diffmatchpatch"]
-  revision = "feef008d51ad2b3778f85d387ccf91735543008d"
+  revision = "1744e2970ca51c86172c8190fadad617561ed6e7"
+  version = "v1.0.0"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/tools"
-  packages = ["go/ast/astutil","imports"]
-  revision = "c853fd576988aeebd3665f6224972f1379960013"
+  packages = [
+    "go/ast/astutil",
+    "imports",
+    "internal/fastwalk"
+  ]
+  revision = "a5b4c53f6e8bdcafa95a94671bf2d1203365858b"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "5eed09f20a723e6014e9618a08ed025f23197f759dedd8a75beb1c4eaf1608c2"
+  inputs-digest = "ddf49648c65939ce10058b475f0389200f25ba795577f67c289c1bb6614ddd09"
   solver-name = "gps-cdcl"
   solver-version = 1

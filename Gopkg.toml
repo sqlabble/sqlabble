@@ -51,6 +51,6 @@
 
 
 
-[[dependencies]]
+[[constraint]]
   branch = "master"
   name = "golang.org/x/tools"
