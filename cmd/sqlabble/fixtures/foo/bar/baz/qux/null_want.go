@@ -106,8 +106,8 @@ func (a ArticleDB) Map(rows *sql.Rows) ([]Article, error) {
 }
 
 // QueryOne Select single record
-func (a ArticleDB) QueryOne(sess *sqlabble.Session, s stmt.Statement) (Article, error) {
-	query, values := sess.Builder.Build(s)
+func (a ArticleDB) QueryOne(sess *sqlabble.Session, st stmt.Statement) (Article, error) {
+	query, values := sess.Builder.Build(st)
 	rows, err := sess.Query(query, values...)
 	if err != nil {
 		return Article{}, err
@@ -153,8 +153,8 @@ func (a ArticleDB) Count(sess *sqlabble.Session, op stmt.ComparisonOrLogicalOper
 }
 
 // Query select some records
-func (a ArticleDB) Query(sess *sqlabble.Session, s stmt.Statement) ([]Article, error) {
-	query, values := sess.Builder.Build(s)
+func (a ArticleDB) Query(sess *sqlabble.Session, st stmt.Statement) ([]Article, error) {
+	query, values := sess.Builder.Build(st)
 	rows, err := sess.Query(query, values...)
 	if err != nil {
 		return []Article{}, err
@@ -168,8 +168,8 @@ func (a ArticleDB) Query(sess *sqlabble.Session, s stmt.Statement) ([]Article, e
 }
 
 // Exec execute a query
-func (a ArticleDB) Exec(sess *sqlabble.Session, s stmt.Statement) (sql.Result, error) {
-	query, values := sess.Builder.Build(s)
+func (a ArticleDB) Exec(sess *sqlabble.Session, st stmt.Statement) (sql.Result, error) {
+	query, values := sess.Builder.Build(st)
 	result, err := sess.Exec(query, values...)
 	if err != nil {
 		return nil, err

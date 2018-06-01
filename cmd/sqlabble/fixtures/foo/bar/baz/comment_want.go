@@ -96,8 +96,8 @@ func (c CommentDB) Map(rows *sql.Rows) ([]Comment, error) {
 }
 
 // QueryOne Select single record
-func (c CommentDB) QueryOne(sess *sqlabble.Session, s stmt.Statement) (Comment, error) {
-	query, values := sess.Builder.Build(s)
+func (c CommentDB) QueryOne(sess *sqlabble.Session, st stmt.Statement) (Comment, error) {
+	query, values := sess.Builder.Build(st)
 	rows, err := sess.Query(query, values...)
 	if err != nil {
 		return Comment{}, err
@@ -143,8 +143,8 @@ func (c CommentDB) Count(sess *sqlabble.Session, op stmt.ComparisonOrLogicalOper
 }
 
 // Query select some records
-func (c CommentDB) Query(sess *sqlabble.Session, s stmt.Statement) ([]Comment, error) {
-	query, values := sess.Builder.Build(s)
+func (c CommentDB) Query(sess *sqlabble.Session, st stmt.Statement) ([]Comment, error) {
+	query, values := sess.Builder.Build(st)
 	rows, err := sess.Query(query, values...)
 	if err != nil {
 		return []Comment{}, err
@@ -158,8 +158,8 @@ func (c CommentDB) Query(sess *sqlabble.Session, s stmt.Statement) ([]Comment, e
 }
 
 // Exec execute a query
-func (c CommentDB) Exec(sess *sqlabble.Session, s stmt.Statement) (sql.Result, error) {
-	query, values := sess.Builder.Build(s)
+func (c CommentDB) Exec(sess *sqlabble.Session, st stmt.Statement) (sql.Result, error) {
+	query, values := sess.Builder.Build(st)
 	result, err := sess.Exec(query, values...)
 	if err != nil {
 		return nil, err
