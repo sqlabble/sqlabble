@@ -51,7 +51,7 @@ Examples:
   %s ./*.go
   %s ./**/*.go
   %s -suffix _gen ./**/*.go
-`)
+`, name, name, name)
 	}
 	fs.StringVar(&op.Suffix, "suffix", "_sqlabble", "suffix of the file to be generated")
 	if err := fs.Parse(args[1:]); err != nil {
