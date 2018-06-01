@@ -25,7 +25,7 @@ type ErrFoundMultipleRecords struct {
 }
 
 func (err ErrFoundMultipleRecords) Error() string {
-	return fmt.Sprint("multiple records of %s's table are found", err.table)
+	return fmt.Sprintf("multiple records of %s's table are found", err.table)
 }
 
 // NewErrFoundMultipleRecords create an ErrFoundMultipleRecords instance
