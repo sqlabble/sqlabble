@@ -211,3 +211,80 @@ func TestSelect(t *testing.T) {
 		t.Errorf("id got %d; want %d", id, 3)
 	}
 }
+
+func TestNewSession(t *testing.T) {
+	type args struct {
+		builderName string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *q.Session
+		wantErr error
+	}{
+		{
+			name: "check `standard`",
+			args: args{
+				builderName: "standard",
+			},
+			want: &q.Session{
+				DB:      nil,
+				Builder: &builder.Standard,
+			},
+			wantErr: nil,
+		},
+		{
+			name: "check `standard_indented`",
+			args: args{
+				builderName: "standard_indented",
+			},
+			want: &q.Session{
+				DB:      nil,
+				Builder: &builder.StandardIndented,
+			},
+			wantErr: nil,
+		},
+		{
+			name: "check `mysql`",
+			args: args{
+				builderName: "mysql",
+			},
+			want: &q.Session{
+				DB:      nil,
+				Builder: &builder.MySQL,
+			},
+			wantErr: nil,
+		},
+		{
+			name: "check `mysql_indented`",
+			args: args{
+				builderName: "mysql_indented",
+			},
+			want: &q.Session{
+				DB:      nil,
+				Builder: &builder.MySQLIndented,
+			},
+			wantErr: nil,
+		},
+		{
+			name: "check `hoge_fuga`",
+			args: args{
+				builderName: "hoge_fuga",
+			},
+			want:    nil,
+			wantErr: builder.NewErrBuilderNotSupported("hoge_fuga"),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := q.NewSession(tt.args.builderName, nil)
+			if !reflect.DeepEqual(err, tt.wantErr) {
+				t.Errorf("NewSession() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewSession() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

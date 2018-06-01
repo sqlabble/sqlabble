@@ -49,8 +49,18 @@
 ## what source location any dependent projects specify.
 # source = "https://github.com/myfork/package.git"
 
-
-
-[[dependencies]]
+[[constraint]]
   branch = "master"
   name = "golang.org/x/tools"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/mattn/go-zglob"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/minodisk/caseconv"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/sergi/go-diff"
