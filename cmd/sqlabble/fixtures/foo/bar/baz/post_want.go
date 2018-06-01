@@ -96,8 +96,8 @@ func (p PostDB) Map(rows *sql.Rows) ([]Post, error) {
 }
 
 // QueryOne Select single record
-func (p PostDB) QueryOne(sess *sqlabble.Session, s stmt.Statement) (Post, error) {
-	query, values := sess.Builder.Build(s)
+func (p PostDB) QueryOne(sess *sqlabble.Session, st stmt.Statement) (Post, error) {
+	query, values := sess.Builder.Build(st)
 	rows, err := sess.Query(query, values...)
 	if err != nil {
 		return Post{}, err
@@ -143,8 +143,8 @@ func (p PostDB) Count(sess *sqlabble.Session, op stmt.ComparisonOrLogicalOperati
 }
 
 // Query select some records
-func (p PostDB) Query(sess *sqlabble.Session, s stmt.Statement) ([]Post, error) {
-	query, values := sess.Builder.Build(s)
+func (p PostDB) Query(sess *sqlabble.Session, st stmt.Statement) ([]Post, error) {
+	query, values := sess.Builder.Build(st)
 	rows, err := sess.Query(query, values...)
 	if err != nil {
 		return []Post{}, err
@@ -158,8 +158,8 @@ func (p PostDB) Query(sess *sqlabble.Session, s stmt.Statement) ([]Post, error) 
 }
 
 // Exec execute a query
-func (p PostDB) Exec(sess *sqlabble.Session, s stmt.Statement) (sql.Result, error) {
-	query, values := sess.Builder.Build(s)
+func (p PostDB) Exec(sess *sqlabble.Session, st stmt.Statement) (sql.Result, error) {
+	query, values := sess.Builder.Build(st)
 	result, err := sess.Exec(query, values...)
 	if err != nil {
 		return nil, err

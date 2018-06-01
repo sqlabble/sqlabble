@@ -104,8 +104,8 @@ func (u UserDB) Map(rows *sql.Rows) ([]User, error) {
 }
 
 // QueryOne Select single record
-func (u UserDB) QueryOne(sess *sqlabble.Session, s stmt.Statement) (User, error) {
-	query, values := sess.Builder.Build(s)
+func (u UserDB) QueryOne(sess *sqlabble.Session, st stmt.Statement) (User, error) {
+	query, values := sess.Builder.Build(st)
 	rows, err := sess.Query(query, values...)
 	if err != nil {
 		return User{}, err
@@ -151,8 +151,8 @@ func (u UserDB) Count(sess *sqlabble.Session, op stmt.ComparisonOrLogicalOperati
 }
 
 // Query select some records
-func (u UserDB) Query(sess *sqlabble.Session, s stmt.Statement) ([]User, error) {
-	query, values := sess.Builder.Build(s)
+func (u UserDB) Query(sess *sqlabble.Session, st stmt.Statement) ([]User, error) {
+	query, values := sess.Builder.Build(st)
 	rows, err := sess.Query(query, values...)
 	if err != nil {
 		return []User{}, err
@@ -166,8 +166,8 @@ func (u UserDB) Query(sess *sqlabble.Session, s stmt.Statement) ([]User, error) 
 }
 
 // Exec execute a query
-func (u UserDB) Exec(sess *sqlabble.Session, s stmt.Statement) (sql.Result, error) {
-	query, values := sess.Builder.Build(s)
+func (u UserDB) Exec(sess *sqlabble.Session, st stmt.Statement) (sql.Result, error) {
+	query, values := sess.Builder.Build(st)
 	result, err := sess.Exec(query, values...)
 	if err != nil {
 		return nil, err
@@ -265,8 +265,8 @@ func (p ProfileDB) Map(rows *sql.Rows) ([]Profile, error) {
 }
 
 // QueryOne Select single record
-func (p ProfileDB) QueryOne(sess *sqlabble.Session, s stmt.Statement) (Profile, error) {
-	query, values := sess.Builder.Build(s)
+func (p ProfileDB) QueryOne(sess *sqlabble.Session, st stmt.Statement) (Profile, error) {
+	query, values := sess.Builder.Build(st)
 	rows, err := sess.Query(query, values...)
 	if err != nil {
 		return Profile{}, err
@@ -312,8 +312,8 @@ func (p ProfileDB) Count(sess *sqlabble.Session, op stmt.ComparisonOrLogicalOper
 }
 
 // Query select some records
-func (p ProfileDB) Query(sess *sqlabble.Session, s stmt.Statement) ([]Profile, error) {
-	query, values := sess.Builder.Build(s)
+func (p ProfileDB) Query(sess *sqlabble.Session, st stmt.Statement) ([]Profile, error) {
+	query, values := sess.Builder.Build(st)
 	rows, err := sess.Query(query, values...)
 	if err != nil {
 		return []Profile{}, err
@@ -327,8 +327,8 @@ func (p ProfileDB) Query(sess *sqlabble.Session, s stmt.Statement) ([]Profile, e
 }
 
 // Exec execute a query
-func (p ProfileDB) Exec(sess *sqlabble.Session, s stmt.Statement) (sql.Result, error) {
-	query, values := sess.Builder.Build(s)
+func (p ProfileDB) Exec(sess *sqlabble.Session, st stmt.Statement) (sql.Result, error) {
+	query, values := sess.Builder.Build(st)
 	result, err := sess.Exec(query, values...)
 	if err != nil {
 		return nil, err
@@ -419,8 +419,8 @@ func (f FriendDB) Map(rows *sql.Rows) ([]Friend, error) {
 }
 
 // QueryOne Select single record
-func (f FriendDB) QueryOne(sess *sqlabble.Session, s stmt.Statement) (Friend, error) {
-	query, values := sess.Builder.Build(s)
+func (f FriendDB) QueryOne(sess *sqlabble.Session, st stmt.Statement) (Friend, error) {
+	query, values := sess.Builder.Build(st)
 	rows, err := sess.Query(query, values...)
 	if err != nil {
 		return Friend{}, err
@@ -466,8 +466,8 @@ func (f FriendDB) Count(sess *sqlabble.Session, op stmt.ComparisonOrLogicalOpera
 }
 
 // Query select some records
-func (f FriendDB) Query(sess *sqlabble.Session, s stmt.Statement) ([]Friend, error) {
-	query, values := sess.Builder.Build(s)
+func (f FriendDB) Query(sess *sqlabble.Session, st stmt.Statement) ([]Friend, error) {
+	query, values := sess.Builder.Build(st)
 	rows, err := sess.Query(query, values...)
 	if err != nil {
 		return []Friend{}, err
@@ -481,8 +481,8 @@ func (f FriendDB) Query(sess *sqlabble.Session, s stmt.Statement) ([]Friend, err
 }
 
 // Exec execute a query
-func (f FriendDB) Exec(sess *sqlabble.Session, s stmt.Statement) (sql.Result, error) {
-	query, values := sess.Builder.Build(s)
+func (f FriendDB) Exec(sess *sqlabble.Session, st stmt.Statement) (sql.Result, error) {
+	query, values := sess.Builder.Build(st)
 	result, err := sess.Exec(query, values...)
 	if err != nil {
 		return nil, err

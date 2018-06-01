@@ -155,8 +155,8 @@ func ({{ $receiver }} {{ $tableType }}) Map(rows *sql.Rows) ([]{{ $baseType }}, 
 }
 
 // QueryOne Select single record
-func ({{ $receiver }} {{ $tableType }}) QueryOne(sess *sqlabble.Session, s stmt.Statement) ({{ $baseType }}, error) {
-	query, values := sess.Builder.Build(s)
+func ({{ $receiver }} {{ $tableType }}) QueryOne(sess *sqlabble.Session, st stmt.Statement) ({{ $baseType }}, error) {
+	query, values := sess.Builder.Build(st)
 	rows, err := sess.Query(query, values...)
 	if err != nil {
 		return {{ $baseType }}{}, err
@@ -202,8 +202,8 @@ func ({{ $receiver }} {{ $tableType }}) Count(sess *sqlabble.Session, op stmt.Co
 }
 
 // Query select some records
-func ({{ $receiver }} {{ $tableType }}) Query(sess *sqlabble.Session, s stmt.Statement) ([]{{ $baseType }}, error) {
-	query, values := sess.Builder.Build(s)
+func ({{ $receiver }} {{ $tableType }}) Query(sess *sqlabble.Session, st stmt.Statement) ([]{{ $baseType }}, error) {
+	query, values := sess.Builder.Build(st)
 	rows, err := sess.Query(query, values...)
 	if err != nil {
 		return []{{ $baseType }}{}, err
@@ -217,8 +217,8 @@ func ({{ $receiver }} {{ $tableType }}) Query(sess *sqlabble.Session, s stmt.Sta
 }
 
 // Exec execute a query
-func ({{ $receiver }} {{ $tableType }}) Exec(sess *sqlabble.Session, s stmt.Statement) (sql.Result, error) {
-	query, values := sess.Builder.Build(s)
+func ({{ $receiver }} {{ $tableType }}) Exec(sess *sqlabble.Session, st stmt.Statement) (sql.Result, error) {
+	query, values := sess.Builder.Build(st)
 	result, err := sess.Exec(query, values...)
 	if err != nil {
 		return nil, err
