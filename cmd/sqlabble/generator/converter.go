@@ -179,11 +179,11 @@ func ({{ $receiver }} {{ $tableType }}) Count(sess *sqlabble.Session, op stmt.Co
 	var query string
 	var values []interface{}
 
-	f := sqlabble.Select(sqlabble.Count(sqlabble.Wildcard)).From({{ $receiver }}.Table)
+	fc := sqlabble.Select(sqlabble.Count(sqlabble.Wildcard)).From({{ $receiver }}.Table)
 	if op != nil {
-		query, values = sess.Builder.Build(f.Where(op))
+		query, values = sess.Builder.Build(fc.Where(op))
 	} else {
-		query, values = sess.Builder.Build(f)
+		query, values = sess.Builder.Build(fc)
 	}
 	rows, err := sess.Query(query, values...)
 	if err != nil {
