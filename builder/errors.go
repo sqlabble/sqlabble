@@ -13,7 +13,7 @@ func (err ErrBuilderNotSupported) Error() string {
 	return fmt.Sprintf("%s builder not supported", err.builderName)
 }
 
-// NewErrBuilderNotSupported create ErrBuilderNotSupported instance
+// NewErrBuilderNotSupported create an ErrBuilderNotSupported instance
 func NewErrBuilderNotSupported(builderName string) ErrBuilderNotSupported {
 	return ErrBuilderNotSupported{
 		builderName: builderName,
